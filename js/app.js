@@ -26,15 +26,16 @@ await arrancar('inicio');
 /* ==========================================================
    MINIATURAS VIVAS DE LAS PLANTILLAS
    ========================================================== */
-const urlPlantilla = (id, nombre = '', color = '') => {
+const urlPlantilla = (id, nombre = '', color = '', mini = false) => {
   const q = new URLSearchParams({ t: id });
   if (nombre) q.set('n', nombre);
   if (color) q.set('c', color);
+  if (mini) q.set('m', '1'); // miniatura: sin animaciones de scroll
   return `plantilla.html?${q}`;
 };
 const ro = new ResizeObserver(es => es.forEach(en => en.target.style.setProperty('--s', en.contentRect.width / 1280)));
 const miniatura = (id, nombre, color, lazy = true) =>
-  `<div class="thumb"><div class="thumb-load">${spinner()}</div><iframe src="${urlPlantilla(id, nombre, color)}" tabindex="-1" aria-hidden="true" ${lazy ? 'loading="lazy"' : ''} title=""></iframe></div>`;
+  `<div class="thumb"><div class="thumb-load">${spinner()}</div><iframe src="${urlPlantilla(id, nombre, color, true)}" tabindex="-1" aria-hidden="true" ${lazy ? 'loading="lazy"' : ''} title=""></iframe></div>`;
 const vigilarMiniaturas = raiz => $$('.thumb', raiz).forEach(t => ro.observe(t));
 // Quitar el "cargando" cuando la miniatura termina de cargar
 document.addEventListener('load', e => {
@@ -76,7 +77,7 @@ function mostrarVitrina(i) {
       o.classList.remove('on', 'rec');
       setTimeout(() => f.classList.add('rec'), 700);
     });
-    f.src = urlPlantilla(id);
+    f.src = urlPlantilla(id, '', '', true);
   });
   vt.activa = sig;
   $('#vtUrl').textContent = p.dominio;
@@ -87,7 +88,7 @@ function mostrarVitrina(i) {
   });
   $('#vitrina').style.setProperty('--vt', p.c.accent);
   clearTimeout(vtTimer);
-  if (!vtPausa && !matchMedia('(prefers-reduced-motion: reduce)').matches) vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA);
+  if (!vtPausa && vtVisible !== false && !document.hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA);
 }
 $('#vtChips').addEventListener('click', e => { const b = e.target.closest('[data-vt]'); if (b) mostrarVitrina(+b.dataset.vt); });
 $('#vitrina').addEventListener('pointerenter', () => { vtPausa = true; clearTimeout(vtTimer); $('.hero-art').classList.add('pausa'); });
@@ -96,6 +97,15 @@ const abrirVitrina = () => abrirPreview(VITRINA[vtIdx]);
 $('#vitrina').addEventListener('click', abrirVitrina);
 $('#vitrina').addEventListener('keydown', e => { if (e.key === 'Enter') abrirVitrina(); });
 const arrancarVitrina = () => setTimeout(() => { escalaVitrina(); mostrarVitrina(0); }, 200);
+// Fluidez: la vitrina solo cambia de diseño cuando está a la vista (no recarga nada fuera de pantalla)
+let vtVisible = true;
+const reanudarVitrina = () => { if (vtVisible && !vtPausa && !document.hidden) { clearTimeout(vtTimer); vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA); } };
+new IntersectionObserver(([e]) => {
+  vtVisible = e.isIntersecting;
+  $('.hero-art').classList.toggle('dormida', !vtVisible);
+  vtVisible ? reanudarVitrina() : clearTimeout(vtTimer);
+}, { threshold: .05 }).observe($('#vitrina'));
+document.addEventListener('visibilitychange', () => document.hidden ? clearTimeout(vtTimer) : reanudarVitrina());
 document.readyState === 'complete' ? arrancarVitrina() : addEventListener('load', arrancarVitrina);
 
 /* ==========================================================
@@ -104,7 +114,7 @@ document.readyState === 'complete' ? arrancarVitrina() : addEventListener('load'
 $('#planes').innerHTML = PLANES.map(p => `
   <article class="plan-card reveal ${p.popular ? 'popular' : ''}">
     ${p.popular ? '<span class="tag">El más pedido</span>' : ''}
-    <div class="pc-top"><span class="pc-ic">${icono(p.icono)}</span><span class="pc-time">⏱ ${esc(p.entrega)}</span></div>
+    <div class="pc-top"><span class="pc-ic">${icono(p.icono)}</span><span class="pc-time">${icono('clock')} ${esc(p.entrega)}</span></div>
     <h3>${esc(p.nombre)}</h3>
     <p class="pc-desc">${esc(p.desc)}</p>
     <div class="pc-price"><small>desde</small> ${euros(p.precio)}</div>
@@ -131,8 +141,8 @@ $('#disenosGrid').innerHTML = PLANTILLAS.map(p => `
   <article class="dz reveal" data-ver="${p.id}" data-grupo="${GRUPO[p.id] || 'local'}" tabindex="0" role="button" aria-label="Ver diseño ${esc(p.nombre)}" style="--c:${p.c.accent}">
     <div class="dz-win">
       <div class="dz-bar"><i></i><i></i><i></i><span>${esc(p.dominio)}</span></div>
-      <div class="dz-view"><div class="thumb-load">${spinner()}</div><iframe src="${urlPlantilla(p.id)}" loading="lazy" tabindex="-1" aria-hidden="true" title=""></iframe></div>
-      <span class="dz-scroll" aria-hidden="true">↕ recorre la web</span>
+      <div class="dz-view"><div class="thumb-load">${spinner()}</div><iframe src="${urlPlantilla(p.id, '', '', true)}" loading="lazy" tabindex="-1" aria-hidden="true" title=""></iframe></div>
+      <span class="dz-scroll" aria-hidden="true">${icono('move')} recorre la web</span>
     </div>
     <div class="dz-info">
       <div><b>${esc(p.nombre)}</b><small>${esc(p.sector)}</small></div>
@@ -174,10 +184,10 @@ async function pintarOpiniones() {
         <blockquote>“${esc(r.texto)}”</blockquote>
         <figcaption><span class="avatar sm">${esc((r.nombre || '?')[0])}</span><span><b>${esc(r.nombre)}</b><small>${esc(r.plan || '')} · ${fecha(r.createdAt)}</small></span></figcaption>
       </figure>`).join('')
-    : `<div class="empty"><div class="em">⭐</div><b>Aún no hay opiniones publicadas</b><p>Cuando entreguemos las primeras webs, aquí verás lo que opinan nuestros clientes.</p></div>`;
+    : `<div class="empty"><div class="em">${icono('star')}</div><b>Aún no hay opiniones publicadas</b><p>Cuando entreguemos las primeras webs, aquí verás lo que opinan nuestros clientes.</p></div>`;
 
   $('#opActions').innerHTML = `
-    ${CONFIG.trustpilot ? `<a class="btn btn-primary" href="${esc(CONFIG.trustpilot)}" target="_blank" rel="noopener">⭐ Ver opiniones en Trustpilot</a>` : ''}
+    ${CONFIG.trustpilot ? `<a class="btn btn-primary" href="${esc(CONFIG.trustpilot)}" target="_blank" rel="noopener">${icono('star')}<span>Ver opiniones en Trustpilot</span></a>` : ''}
     <button class="btn btn-ghost" data-mis-pedidos>¿Ya eres cliente? Deja tu opinión</button>`;
   $$('#opGrid .reveal').forEach(el => io.observe(el));
 }
@@ -422,7 +432,7 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
   if (b && b.plan === plan.id && Date.now() - b.t < 7 * 864e5 && b.campos?.negocio) {
     restaurarBorrador(b);
     inicio = Math.min(b.paso || 0, PASOS.length - 2);
-    setTimeout(() => toast('Hemos recuperado lo que ya habías rellenado ✍️'), 400);
+    setTimeout(() => toast('Hemos recuperado lo que ya habías rellenado', 'ok'), 400);
   }
   W.paso = inicio;
   irA(inicio);
@@ -550,7 +560,7 @@ function pintarSelectorDiseno() {
     </label>`).join('') + `
     <label class="pick">
       <input type="radio" name="plantilla" value="cero" ${W.plantilla === 'cero' ? 'checked' : ''}>
-      <div class="pick-card cero"><div class="cero-ic">✦</div><b>Diseño desde cero</b><small>Lo creamos 100 % a tu medida a partir del cuestionario.</small></div>
+      <div class="pick-card cero"><div class="cero-ic">${icono('sparkle')}</div><b>Diseño desde cero</b><small>Lo creamos 100 % a tu medida a partir del cuestionario.</small></div>
     </label>`;
   vigilarMiniaturas($('#pickGrid'));
 }
@@ -579,7 +589,7 @@ function pintarResumen() {
     <h3 class="paso-h">Revisa tu pedido</h3>
     <div class="rs-card">
       <div class="rs-plan">
-        ${pl ? `<div class="rs-thumb">${miniatura(pl.id, r.negocio, r.color, false)}</div>` : '<div class="rs-thumb cero-mini">✦</div>'}
+        ${pl ? `<div class="rs-thumb">${miniatura(pl.id, r.negocio, r.color, false)}</div>` : `<div class="rs-thumb cero-mini">${icono('sparkle')}</div>`}
         <div><b>${esc(p.nombre)}</b><small>${pl ? `Diseño ${esc(pl.nombre)}` : 'Diseño desde cero'} · ${esc(r.negocio)}</small></div>
       </div>
       ${fila('Sector', r.sector)}${fila('Objetivo', r.objetivo)}${fila('Estilo', r.estilo)}
@@ -677,7 +687,7 @@ async function pintarPedidos() {
   try {
     misPedidos = await store.misPedidos();
     if (!misPedidos.length) {
-      list.innerHTML = `<div class="empty"><div class="em">🛍️</div><b>Aún no tienes pedidos</b><p>Elige el tipo de web que necesitas para empezar.</p><a href="#webs" class="btn btn-primary" data-close style="margin-top:18px">Ver webs y precios</a></div>`;
+      list.innerHTML = `<div class="empty"><div class="em">${icono('bag')}</div><b>Aún no tienes pedidos</b><p>Elige el tipo de web que necesitas para empezar.</p><a href="#webs" class="btn btn-primary" data-close style="margin-top:18px">Ver webs y precios</a></div>`;
       return;
     }
     list.innerHTML = misPedidos.map(p => {
@@ -695,7 +705,7 @@ async function pintarPedidos() {
           <div class="mp-tareas">${TAREAS.map(([k, t]) => `<span class="${p.estado === 'entregado' || p.tareas?.[k] ? 'ok' : ''}">${t}</span>`).join('')}</div></div>`}
         <div class="mp-foot"><span>Ref. ${refPedido(p.id)}</span><b>${euros(p.total)}${p.mensual ? ` <small>+ ${euros(p.mensual)}/mes</small>` : ''}</b></div>
         <div class="mp-pay">${botonPago(p)}</div>
-        ${p.asignadoNombre ? `<p class="mp-who">👩‍💻 Trabajando en ella: <b>${esc(p.asignadoNombre)}</b></p>` : ''}
+        ${p.asignadoNombre ? `<p class="mp-who">${icono('laptop')} Trabajando en ella: <b>${esc(p.asignadoNombre)}</b></p>` : ''}
         ${p.estado === 'entregado' && !p.resenada ? `<button class="btn btn-ghost w100 mp-rate" data-valorar="${esc(p.id)}">${icono('star')} Valorar mi web</button>` : ''}
       </article>`;
     }).join('');

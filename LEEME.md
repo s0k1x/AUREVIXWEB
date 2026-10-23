@@ -70,6 +70,15 @@ y tú los ves en el panel desde cualquier dispositivo.
 - Atajo **/** para buscar en el panel y número de pendientes en el icono de la app instalada.
 - **Imagen para compartir** (`icons/og.png`): la que sale al pegar el enlace en WhatsApp o redes. Cámbiala cuando tengas tu marca.
 
+## 4c. Diseños de ejemplo: fotos e iconos
+- Los 6 diseños (`js/plantillas.js`) usan **fotos reales de Pexels** (gratis, sin atribución obligatoria).
+  Cada foto es un número (por ejemplo `img: 1319462`). Para cambiarla, busca otra en pexels.com, abre la foto
+  y copia el número que sale al final de la dirección (`pexels.com/es-es/foto/...-1319462/`).
+- Si una foto no carga, se ve un degradado del color del diseño: nunca queda un hueco roto.
+- Para la web de un cliente, sustituye esas fotos por las suyas.
+- Todos los iconos están en `js/iconos.js`. En el HTML se usan así: `<i data-i="star"></i>`.
+  (Los mensajes de WhatsApp sí llevan algún emoji, porque ahí quedan bien.)
+
 ## 4b. Vendedores y comisiones (Trabaja con nosotros)
 - El % de comisión está en `config.js → comision` (ahora **30**). La página «Trabaja con nosotros» y la calculadora usan ese número.
 - Cada trabajador tiene en *Panel → Mis ventas* su **enlace personal** (`index.html?ref=...`). Si un cliente entra por ese enlace

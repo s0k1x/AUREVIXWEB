@@ -24,7 +24,7 @@ export function botonPago(p) {
   const fase = faseDePago(p);
   if (!fase) {
     const e = PAGOS[p.pagoEstado || 'pendiente'];
-    return `<span class="pill ${e.cls}">💶 ${e.txt}</span>`;
+    return `<span class="pill ${e.cls}">${e.txt}</span>`;
   }
   const imp = fase === 'senal' ? importeSenal(p) : importeResto(p);
   return `
@@ -90,7 +90,7 @@ export function abrirPago(p, fase = faseDePago(p), alTerminar = () => {}) {
         </div>
         <div class="flip-card-back">
           <span class="fcd-strip"></span><span class="fcd-sign"></span><span class="fcd-cvv">${ref.slice(-3)}</span>
-          <span class="fcd-secure">🔒 Nunca te pediremos los datos de tu tarjeta aquí</span>
+          <span class="fcd-secure">${icono('lock')} Nunca te pediremos los datos de tu tarjeta aquí</span>
         </div>
       </div>
     </div>
@@ -198,7 +198,7 @@ export function abrirResena(p, alTerminar = () => {}) {
           <h3>¡Muchas gracias!</h3>
           <p class="muted">Tu opinión se publicará en cuanto la revisemos.</p>
           ${CONFIG.trustpilot ? `<p class="muted" style="margin-bottom:14px">¿Nos ayudas también dejando tu opinión en Trustpilot? Nos ayuda mucho a crecer.</p>
-          <a class="btn btn-primary w100" href="${esc(CONFIG.trustpilot)}" target="_blank" rel="noopener">⭐ Opinar en Trustpilot</a>` : ''}
+          <a class="btn btn-primary w100" href="${esc(CONFIG.trustpilot)}" target="_blank" rel="noopener">${icono('star')}<span>Opinar en Trustpilot</span></a>` : ''}
           <button class="btn btn-ghost w100" data-close type="button">Cerrar</button>
         </div>`;
       alTerminar(p);

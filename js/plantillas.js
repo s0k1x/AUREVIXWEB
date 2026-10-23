@@ -1,99 +1,116 @@
 /* ==========================================================
-   Plantillas de webs predeterminadas
-   Cada una se pinta en plantilla.html?t=ID&n=Nombre&c=%23color
-   Para añadir una nueva: copia un bloque y cambia textos/colores
+   Diseños de ejemplo (se pintan en plantilla.html?t=ID&n=Nombre&c=%23color)
+   Fotos: Pexels (uso gratuito). Cambia los números de "img" por otras fotos de pexels.com
+   Para añadir un diseño: copia un bloque y cambia textos, colores y fotos.
    ========================================================== */
+import { icono } from './iconos.js';
+
+const F = (id, w = 1200) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
 
 export const PLANTILLAS = [
   {
-    id: 'filo', dominio: 'barberiafilo.com', nombre: 'Filo', sector: 'Barbería · Peluquería', desc: 'Oscuro y elegante, con lista de precios y reservas.',
-    marca: 'Barbería Filo',
+    id: 'filo', dominio: 'barberiafilo.com', nombre: 'Filo', sector: 'Barbería · Peluquería',
+    desc: 'Oscuro y elegante, con foto a pantalla completa, precios y reservas.', marca: 'Barbería Filo',
     fuentes: { d: 'Oswald', b: 'Work Sans', url: 'family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600' },
-    c: { bg: '#0f0d0b', surface: '#1a1612', text: '#f1e9dc', muted: '#a8998a', accent: '#c9a24a' },
-    estilo: { radio: '2px', mayus: true, peso: 600 },
-    hero: { tipo: 'center', kicker: 'Desde 2015 · Centro ciudad', titulo: 'Cortes con oficio.', texto: 'Barbería clásica con técnica moderna. Pide tu cita en un minuto y olvídate de esperar.', cta: 'Reservar cita', cta2: 'Ver precios' },
+    c: { bg: '#0e0c0a', surface: '#181410', text: '#f3ebde', muted: '#a99a89', accent: '#c9a24a' },
+    estilo: { radio: '3px', mayus: true, peso: 600 },
+    tel: '600 123 456', redes: true,
+    hero: { tipo: 'imagen', img: 1319462, kicker: 'Desde 2015 · Centro ciudad', titulo: 'Cortes con oficio.', texto: 'Barbería clásica con técnica moderna. Pide tu cita en un minuto y olvídate de esperar.', cta: 'Reservar cita', cta2: 'Ver precios', meta: [['star', '4,9 · 230 reseñas'], ['clock', 'Hoy hasta las 20:30']] },
+    cinta: ['Corte clásico', 'Degradados', 'Arreglo de barba', 'Afeitado a navaja', 'Productos premium'],
     secciones: [
-      { tipo: 'lista', id: 'precios', titulo: 'Servicios y precios', grupos: [{ items: [['Corte clásico', '14 €', '30 min'], ['Degradado / fade', '16 €', '40 min'], ['Arreglo de barba', '10 €', '20 min'], ['Corte + barba', '22 €', '50 min'], ['Afeitado a navaja', '15 €', '30 min'], ['Corte infantil', '10 €', '25 min']] }] },
-      { tipo: 'galeria', titulo: 'Nuestro trabajo' },
-      { tipo: 'opiniones', titulo: 'Lo que dicen', items: [['Javier M.', 'El mejor degradado que me han hecho. Ya no voy a otro sitio.'], ['Rubén S.', 'Trato de 10 y siempre puntuales con la cita.'], ['Álex P.', 'Ambiente top y precios muy justos.']] },
-      { tipo: 'info', titulo: 'Ven a vernos', horario: [['Lunes a viernes', '10:00 – 20:30'], ['Sábados', '9:30 – 14:00'], ['Domingos', 'Cerrado']], direccion: 'Calle Mayor, 12 · Centro' },
-      { tipo: 'cta', titulo: '¿Te toca corte?', texto: 'Reserva ahora y te guardamos tu hueco.', boton: 'Reservar por WhatsApp' }
+      { tipo: 'lista', id: 'precios', kicker: 'Servicios', titulo: 'Precios claros, sin sorpresas', img: 897265, etiqueta: 'Toalla caliente incluida', grupos: [{ items: [['Corte clásico', '14 €', '30 min'], ['Degradado / fade', '16 €', '40 min'], ['Arreglo de barba', '10 €', '20 min'], ['Corte + barba', '22 €', '50 min'], ['Afeitado a navaja', '15 €', '30 min'], ['Corte infantil', '10 €', '25 min']] }] },
+      { tipo: 'galeria', id: 'trabajos', kicker: 'Nuestro trabajo', titulo: 'Cada corte, una firma', imgs: [1836983, 7697224, 7518731, 4625648, 897265] },
+      { tipo: 'opiniones', kicker: 'Opiniones', titulo: 'Lo que dicen en Google', nota: '4,9', total: 230, items: [['Javier Molina', 'El mejor degradado que me han hecho. Ya no voy a otro sitio.'], ['Rubén Sanz', 'Trato de 10 y siempre puntuales con la cita.'], ['Álex Prieto', 'Ambiente top y precios muy justos.']] },
+      { tipo: 'info', id: 'contacto', kicker: 'Dónde estamos', titulo: 'Ven a vernos', horario: [['Lunes a viernes', '10:00 – 20:30', [1, 2, 3, 4, 5], 10, 20.5], ['Sábados', '9:30 – 14:00', [6], 9.5, 14], ['Domingos', 'Cerrado', [0]]], direccion: 'Calle Mayor, 12 · Centro' },
+      { tipo: 'cta', titulo: '¿Te toca corte?', texto: 'Reserva ahora y te guardamos tu hueco.', boton: 'Reservar por WhatsApp', img: 7518731 }
     ]
   },
   {
-    id: 'brasa', dominio: 'brasayco.es', nombre: 'Brasa', sector: 'Restaurante · Bar', desc: 'Cálido y cercano, con carta digital y reservas.',
-    marca: 'Brasa & Co.',
+    id: 'brasa', dominio: 'brasayco.es', nombre: 'Brasa', sector: 'Restaurante · Bar',
+    desc: 'Cálido y apetecible, con carta digital, fotos de platos y reservas.', marca: 'Brasa & Co.',
     fuentes: { d: 'Fraunces', b: 'Inter', url: 'family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600' },
-    c: { bg: '#f6efe4', surface: '#fffaf2', text: '#2a1d14', muted: '#7a6656', accent: '#c4532d' },
-    estilo: { radio: '16px', mayus: false, peso: 700 },
-    hero: { tipo: 'split', kicker: 'Cocina a la brasa · Producto local', titulo: 'Fuego lento, sabor de siempre.', texto: 'Carnes, verduras de temporada y postres caseros en el corazón del barrio.', cta: 'Reservar mesa', cta2: 'Ver la carta' },
+    c: { bg: '#f7f0e5', surface: '#fffaf2', text: '#2a1d14', muted: '#7a6656', accent: '#c4532d' },
+    estilo: { radio: '18px', mayus: false, peso: 700 },
+    tel: '955 123 456', redes: true,
+    hero: { tipo: 'split', img: 4344576, kicker: 'Cocina a la brasa · Producto local', titulo: 'Fuego lento, sabor de siempre.', texto: 'Carnes maduradas, verduras de temporada y postres caseros en el corazón del barrio.', cta: 'Reservar mesa', cta2: 'Ver la carta', badges: [['star', '4,8', '+500 opiniones'], ['flame', 'Brasa de encina', 'desde 1998']] },
+    cinta: ['Brasa de encina', 'Producto de km 0', 'Postres caseros', 'Vinos de la tierra', 'Terraza'],
     secciones: [
-      { tipo: 'ventajas', items: [['🔥', 'Brasa de encina', 'Cocinamos todo al carbón vegetal.'], ['🥬', 'Km 0', 'Verdura de huertas de la zona.'], ['🍰', 'Postres caseros', 'Hechos cada mañana.']] },
-      { tipo: 'lista', id: 'carta', titulo: 'La carta', grupos: [
-        { nombre: 'Para empezar', items: [['Croquetas de jamón (6)', '8,50 €'], ['Pimientos asados con ventresca', '11 €'], ['Provoleta a la brasa', '9 €']] },
-        { nombre: 'Principales', items: [['Chuletón de vaca madurada (1 kg)', '48 €'], ['Secreto ibérico', '17 €'], ['Lubina a la brasa', '19 €']] },
-        { nombre: 'Postres', items: [['Tarta de queso', '6 €'], ['Torrija caramelizada', '6,50 €']] }
+      { tipo: 'ventajas', items: [['flame', 'Brasa de encina', 'Cocinamos todo al carbón vegetal.'], ['leaf', 'Km 0', 'Verdura de huertas de la zona.'], ['cake', 'Postres caseros', 'Hechos cada mañana.']] },
+      { tipo: 'lista', id: 'carta', kicker: 'La carta', titulo: 'Para compartir (o no)', grupos: [
+        { nombre: 'Para empezar', img: 1251208, items: [['Croquetas de jamón (6)', '8,50 €'], ['Pimientos asados con ventresca', '11 €'], ['Provoleta a la brasa', '9 €']] },
+        { nombre: 'Principales', img: 1639558, items: [['Chuletón madurado (1 kg)', '48 €'], ['Secreto ibérico', '17 €'], ['Lubina a la brasa', '19 €']] },
+        { nombre: 'Postres', img: 1126359, items: [['Tarta de queso', '6 €'], ['Torrija caramelizada', '6,50 €']] }
       ] },
-      { tipo: 'galeria', titulo: 'Un vistazo' },
-      { tipo: 'info', titulo: 'Horario y ubicación', horario: [['Martes a jueves', '13:00 – 16:00 · 20:00 – 23:30'], ['Viernes y sábado', '13:00 – 16:30 · 20:00 – 00:30'], ['Domingo', '13:00 – 17:00'], ['Lunes', 'Cerrado']], direccion: 'Plaza del Carmen, 4' },
-      { tipo: 'cta', titulo: 'Te guardamos mesa', texto: 'Reserva en un momento por WhatsApp.', boton: 'Reservar mesa' }
+      { tipo: 'galeria', kicker: 'Un vistazo', titulo: 'Así se come en Brasa', imgs: [7474372, 776538, 6542790, 15750726, 1639558] },
+      { tipo: 'opiniones', kicker: 'Opiniones', titulo: 'Nuestros clientes repiten', nota: '4,8', total: 512, items: [['Marta Gil', 'El chuletón, espectacular. Y la tarta de queso, de otro planeta.'], ['Pedro Ruiz', 'Sitio acogedor y un trato buenísimo.'], ['Laura Vega', 'Reservamos por WhatsApp en un minuto. Volveremos.']] },
+      { tipo: 'info', id: 'contacto', kicker: 'Horario', titulo: 'Te esperamos', horario: [['Martes a jueves', '13:00 – 16:00 · 20:00 – 23:30', [2, 3, 4], 13, 23.5], ['Viernes y sábado', '13:00 – 16:30 · 20:00 – 00:30', [5, 6], 13, 24.5], ['Domingo', '13:00 – 17:00', [0], 13, 17], ['Lunes', 'Cerrado', [1]]], direccion: 'Plaza del Carmen, 4' },
+      { tipo: 'cta', titulo: 'Te guardamos mesa', texto: 'Reserva en un momento por WhatsApp.', boton: 'Reservar mesa', img: 776538 }
     ]
   },
   {
-    id: 'kiosko', dominio: 'kiosko.shop', nombre: 'Kiosko', sector: 'Tienda online', desc: 'Limpio y moderno, con catálogo y carrito.',
-    marca: 'Kiosko',
+    id: 'kiosko', dominio: 'kiosko.shop', nombre: 'Kiosko', sector: 'Tienda online',
+    desc: 'Tienda moderna con catálogo, carrito que funciona y envío rápido.', marca: 'Kiosko',
     fuentes: { d: 'Space Grotesk', b: 'Inter', url: 'family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600' },
-    c: { bg: '#f7f7f5', surface: '#ffffff', text: '#111111', muted: '#6b6b6b', accent: '#2f5bff' },
-    estilo: { radio: '14px', mayus: false, peso: 700 },
-    hero: { tipo: 'split', kicker: 'Nueva colección', titulo: 'Diseño que se usa todos los días.', texto: 'Productos hechos en pequeñas tiradas. Envío en 24/48 h y devoluciones gratis.', cta: 'Ver productos', cta2: 'Novedades' },
+    c: { bg: '#f6f6f3', surface: '#ffffff', text: '#111111', muted: '#6b6b6b', accent: '#2f5bff' },
+    estilo: { radio: '16px', mayus: false, peso: 700 },
+    tel: '600 555 777', redes: true, carrito: true,
+    hero: { tipo: 'split', img: 4940756, kicker: 'Nueva colección · Otoño', titulo: 'Diseño que se usa todos los días.', texto: 'Productos hechos en pequeñas tiradas. Envío en 24/48 h y devoluciones gratis.', cta: 'Ver productos', cta2: 'Novedades', badges: [['truck', 'Envío gratis', 'desde 40 €'], ['star', '4,9', '+1.200 pedidos']] },
+    cinta: ['Envío 24/48 h', 'Devoluciones gratis', 'Hecho en pequeñas tiradas', 'Pago seguro', 'Nueva colección'],
     secciones: [
-      { tipo: 'productos', id: 'tienda', titulo: 'Lo más vendido', items: [['Sudadera Básica', '39 €', 'Nuevo'], ['Gorra Logo', '22 €', ''], ['Taza Cerámica', '14 €', ''], ['Tote Bag', '18 €', '-20%'], ['Camiseta Oversize', '25 €', ''], ['Pack Pegatinas', '6 €', '']] },
-      { tipo: 'ventajas', items: [['🚚', 'Envío 24/48 h', 'Gratis a partir de 40 €.'], ['↩️', 'Devoluciones', '30 días sin preguntas.'], ['🔒', 'Pago seguro', 'Tarjeta, Bizum o PayPal.']] },
-      { tipo: 'opiniones', titulo: 'Clientes felices', items: [['Marta G.', 'Calidad increíble y llegó al día siguiente.'], ['Dani R.', 'La sudadera es comodísima. Repetiré.'], ['Lucía F.', 'Todo precioso, hasta el paquete.']] },
-      { tipo: 'cta', titulo: '10% en tu primer pedido', texto: 'Escríbenos y te mandamos tu código.', boton: 'Quiero mi descuento' }
+      { tipo: 'productos', id: 'tienda', kicker: 'Tienda', titulo: 'Lo más vendido', items: [['Sudadera Básica', '39 €', 'Nuevo', 9594679], ['Gorra Logo', '22 €', '', 1510509], ['Taza Cerámica', '14 €', '', 11075707], ['Tote Bag', '18 €', '-20%', 4068314], ['Camiseta Oversize', '25 €', '', 12039633], ['Pack Pegatinas', '6 €', '', 17567386]] },
+      { tipo: 'ventajas', items: [['truck', 'Envío 24/48 h', 'Gratis a partir de 40 €.'], ['undo', 'Devoluciones', '30 días sin preguntas.'], ['lock', 'Pago seguro', 'Tarjeta, Bizum o PayPal.']] },
+      { tipo: 'opiniones', kicker: 'Opiniones', titulo: 'Clientes felices', nota: '4,9', total: 1240, items: [['Marta García', 'Calidad increíble y llegó al día siguiente.'], ['Dani Ramos', 'La sudadera es comodísima. Repetiré.'], ['Lucía Fernández', 'Todo precioso, hasta el paquete.']] },
+      { tipo: 'cta', titulo: '10 % en tu primer pedido', texto: 'Escríbenos y te mandamos tu código.', boton: 'Quiero mi descuento', img: 5490969 }
     ]
   },
   {
-    id: 'lienzo', dominio: 'estudiolienzo.com', nombre: 'Lienzo', sector: 'Portfolio · Profesional', desc: 'Minimalista, tipografía grande y trabajos destacados.',
-    marca: 'Estudio Lienzo',
-    fuentes: { d: 'Instrument Serif', b: 'Inter', url: 'family=Instrument+Serif&family=Inter:wght@400;500;600' },
-    c: { bg: '#f1efe9', surface: '#e8e5dd', text: '#161616', muted: '#6e6a62', accent: '#e4572e' },
+    id: 'lienzo', dominio: 'estudiolienzo.com', nombre: 'Lienzo', sector: 'Portfolio · Profesional',
+    desc: 'Editorial y minimalista, con proyectos a pantalla grande.', marca: 'Estudio Lienzo',
+    fuentes: { d: 'Instrument Serif', b: 'Inter', url: 'family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600' },
+    c: { bg: '#f1efe9', surface: '#e7e3da', text: '#161616', muted: '#6e6a62', accent: '#e4572e' },
     estilo: { radio: '0px', mayus: false, peso: 400 },
-    hero: { tipo: 'big', kicker: 'Fotografía · Dirección de arte', titulo: 'Imágenes que cuentan historias.', texto: 'Trabajo con marcas y personas que quieren mostrar lo que hacen con calma y cuidado.', cta: 'Ver proyectos', cta2: 'Contactar' },
+    tel: '611 222 333', redes: true,
+    hero: { tipo: 'big', img: 9604191, kicker: 'Fotografía · Dirección de arte', titulo: 'Imágenes que cuentan <em>historias.</em>', texto: 'Trabajo con marcas y personas que quieren mostrar lo que hacen con calma y cuidado.', cta: 'Ver proyectos', cta2: 'Contactar' },
+    cinta: ['Moda', 'Interiorismo', 'Retrato', 'Gastronomía', 'Producto'],
     secciones: [
-      { tipo: 'proyectos', id: 'proyectos', titulo: 'Proyectos', items: [['Campaña Otoño', 'Moda · 2026'], ['Casa Lumbre', 'Interiorismo · 2026'], ['Retratos de oficio', 'Personal · 2025'], ['Sabores del sur', 'Gastronomía · 2025']] },
-      { tipo: 'sobre', titulo: 'Sobre mí', texto: 'Llevo diez años fotografiando marcas pequeñas y grandes. Me gusta la luz natural, los procesos lentos y los proyectos con alma. Si tienes una idea, cuéntamela.', datos: [['10+', 'años'], ['120', 'proyectos'], ['40', 'marcas']] },
-      { tipo: 'lista', titulo: 'Servicios', grupos: [{ items: [['Fotografía de producto', 'desde 250 €'], ['Retrato profesional', 'desde 120 €'], ['Dirección de arte', 'a consultar']] }] },
+      { tipo: 'proyectos', id: 'proyectos', kicker: 'Selección', titulo: 'Proyectos recientes', items: [['Campaña Otoño', 'Moda · 2026', 20617022], ['Casa Lumbre', 'Interiorismo · 2026', 12285892], ['Retratos de oficio', 'Personal · 2025', 20446138], ['Sabores del sur', 'Gastronomía · 2025', 7474372]] },
+      { tipo: 'sobre', kicker: 'Sobre mí', titulo: 'Diez años mirando despacio', img: 19002588, texto: 'Fotografío marcas pequeñas y grandes. Me gusta la luz natural, los procesos lentos y los proyectos con alma. Si tienes una idea, cuéntamela.', datos: [['10+', 'años'], ['120', 'proyectos'], ['40', 'marcas']] },
+      { tipo: 'lista', kicker: 'Servicios', titulo: 'Cómo puedo ayudarte', grupos: [{ items: [['Fotografía de producto', 'desde 250 €'], ['Retrato profesional', 'desde 120 €'], ['Dirección de arte', 'a consultar']] }] },
       { tipo: 'cta', titulo: '¿Trabajamos juntos?', texto: 'Respondo en menos de 24 horas.', boton: 'Escríbeme' }
     ]
   },
   {
-    id: 'calma', dominio: 'calmaestetica.es', nombre: 'Calma', sector: 'Estética · Salud · Bienestar', desc: 'Suave y relajante, con reserva de citas.',
-    marca: 'Calma Estética',
-    fuentes: { d: 'Playfair Display', b: 'DM Sans', url: 'family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500;600' },
+    id: 'calma', dominio: 'calmaestetica.es', nombre: 'Calma', sector: 'Estética · Salud · Bienestar',
+    desc: 'Suave y luminoso, con tratamientos, galería y reserva de citas.', marca: 'Calma Estética',
+    fuentes: { d: 'Playfair Display', b: 'DM Sans', url: 'family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@400;500;600' },
     c: { bg: '#f3f5f0', surface: '#ffffff', text: '#23302a', muted: '#6b7a71', accent: '#6f8f72' },
-    estilo: { radio: '26px', mayus: false, peso: 500 },
-    hero: { tipo: 'split', kicker: 'Centro de estética y bienestar', titulo: 'Un rato solo para ti.', texto: 'Tratamientos faciales y corporales en un espacio tranquilo. Reserva tu cita online cuando quieras.', cta: 'Reservar cita', cta2: 'Tratamientos' },
+    estilo: { radio: '28px', mayus: false, peso: 500 },
+    tel: '622 444 555', redes: true,
+    hero: { tipo: 'split', img: 3985329, kicker: 'Centro de estética y bienestar', titulo: 'Un rato solo <em>para ti.</em>', texto: 'Tratamientos faciales y corporales en un espacio tranquilo. Reserva tu cita online cuando quieras.', cta: 'Reservar cita', cta2: 'Tratamientos', badges: [['star', '5,0', '180 opiniones'], ['calendar', 'Cita online', 'en 1 minuto']] },
+    cinta: ['Limpieza facial', 'Masaje relajante', 'Manicura', 'Láser', 'Pestañas'],
     secciones: [
-      { tipo: 'lista', id: 'tratamientos', titulo: 'Tratamientos', grupos: [{ items: [['Limpieza facial profunda', '45 €', '60 min'], ['Masaje relajante', '50 €', '60 min'], ['Manicura semipermanente', '22 €', '45 min'], ['Depilación láser (zona)', 'desde 35 €', '20 min'], ['Lifting de pestañas', '38 €', '50 min']] }] },
-      { tipo: 'reserva', titulo: 'Reserva tu cita' },
-      { tipo: 'opiniones', titulo: 'Opiniones', items: [['Elena V.', 'Salgo siempre como nueva. Un sitio precioso.'], ['Paula C.', 'Muy profesionales y súper cuidadosas.'], ['Nerea L.', 'Reservar online es comodísimo.']] },
-      { tipo: 'info', titulo: 'Dónde estamos', horario: [['Lunes a viernes', '9:30 – 20:00'], ['Sábados', '10:00 – 14:00']], direccion: 'Av. de la Paz, 27, local 2' }
+      { tipo: 'lista', id: 'tratamientos', kicker: 'Tratamientos', titulo: 'Cuídate como mereces', img: 6628587, etiqueta: 'Productos naturales', grupos: [{ items: [['Limpieza facial profunda', '45 €', '60 min'], ['Masaje relajante', '50 €', '60 min'], ['Manicura semipermanente', '22 €', '45 min'], ['Depilación láser (zona)', 'desde 35 €', '20 min'], ['Lifting de pestañas', '38 €', '50 min']] }] },
+      { tipo: 'reserva', id: 'reserva', kicker: 'Reserva online', titulo: 'Elige día y hora' },
+      { tipo: 'galeria', kicker: 'El centro', titulo: 'Un espacio para desconectar', imgs: [11774389, 19239100, 208504, 1926811, 19641836] },
+      { tipo: 'opiniones', kicker: 'Opiniones', titulo: 'Lo que sienten nuestras clientas', nota: '5,0', total: 180, items: [['Elena Vidal', 'Salgo siempre como nueva. Un sitio precioso.'], ['Paula Castro', 'Muy profesionales y súper cuidadosas.'], ['Nerea López', 'Reservar online es comodísimo.']] },
+      { tipo: 'info', id: 'contacto', kicker: 'Visítanos', titulo: 'Dónde estamos', horario: [['Lunes a viernes', '9:30 – 20:00', [1, 2, 3, 4, 5], 9.5, 20], ['Sábados', '10:00 – 14:00', [6], 10, 14], ['Domingos', 'Cerrado', [0]]], direccion: 'Av. de la Paz, 27, local 2' }
     ]
   },
   {
-    id: 'pulso', dominio: 'pulsogym.es', nombre: 'Pulso', sector: 'Gimnasio · Deporte', desc: 'Enérgico y potente, con clases y tarifas.',
-    marca: 'Pulso Gym',
+    id: 'pulso', dominio: 'pulsogym.es', nombre: 'Pulso', sector: 'Gimnasio · Deporte',
+    desc: 'Enérgico y potente, con foto a pantalla completa, clases y tarifas.', marca: 'Pulso Gym',
     fuentes: { d: 'Anton', b: 'Inter', url: 'family=Anton&family=Inter:wght@400;500;600;700' },
-    c: { bg: '#0b0b0b', surface: '#171717', text: '#ffffff', muted: '#9a9a9a', accent: '#ff5a1f' },
-    estilo: { radio: '8px', mayus: true, peso: 400 },
-    hero: { tipo: 'big', kicker: 'Abierto 6:00 – 23:00', titulo: 'Entrena sin excusas.', texto: 'Sala de musculación, clases dirigidas y entrenadores que se acuerdan de tu nombre.', cta: 'Prueba gratis', cta2: 'Ver tarifas' },
+    c: { bg: '#0a0a0a', surface: '#151515', text: '#ffffff', muted: '#9a9a9a', accent: '#ff5a1f' },
+    estilo: { radio: '10px', mayus: true, peso: 400 },
+    tel: '633 777 999', redes: true,
+    hero: { tipo: 'imagen', img: 685531, kicker: 'Abierto de 6:00 a 23:00', titulo: 'Entrena sin excusas.', texto: 'Sala de musculación, clases dirigidas y entrenadores que se acuerdan de tu nombre.', cta: 'Prueba gratis', cta2: 'Ver tarifas', meta: [['users', '+1.500 socios'], ['dumbbell', '800 m² de sala']] },
+    cinta: ['Fuerza', 'HIIT', 'Cross training', 'Boxeo', 'Yoga', 'Spinning'],
     secciones: [
-      { tipo: 'sobre', titulo: 'Más que un gimnasio', texto: 'Más de 800 m² de entrenamiento, vestuarios renovados y un ambiente que engancha.', datos: [['800 m²', 'de sala'], ['40+', 'clases/semana'], ['12', 'entrenadores']] },
-      { tipo: 'precios', id: 'tarifas', titulo: 'Tarifas', items: [['Básica', '29 €', ['Sala de musculación', 'Horario completo'], false], ['Total', '39 €', ['Todo lo de Básica', 'Clases ilimitadas', 'App de entreno'], true], ['Premium', '59 €', ['Todo lo de Total', '2 sesiones de entrenador', 'Nutricionista'], false]] },
-      { tipo: 'galeria', titulo: 'Las instalaciones' },
-      { tipo: 'opiniones', titulo: 'Socios', items: [['Iván T.', 'En 4 meses he cambiado por completo. Los monitores, top.'], ['Sonia M.', 'Las clases de HIIT son adictivas.'], ['Kike R.', 'Abre temprano y nunca está lleno.']] },
-      { tipo: 'cta', titulo: 'Tu primera semana gratis', texto: 'Sin matrícula ni permanencia.', boton: 'Quiero probar' }
+      { tipo: 'sobre', kicker: 'El club', titulo: 'Más que un gimnasio', img: 3838977, texto: 'Más de 800 m² de entrenamiento, vestuarios renovados y un ambiente que engancha. Te acompañamos desde el primer día.', datos: [['800 m²', 'de sala'], ['40+', 'clases/semana'], ['12', 'entrenadores']] },
+      { tipo: 'precios', id: 'tarifas', kicker: 'Tarifas', titulo: 'Elige tu plan', items: [['Básica', '29 €', ['Sala de musculación', 'Horario completo'], false], ['Total', '39 €', ['Todo lo de Básica', 'Clases ilimitadas', 'App de entreno'], true], ['Premium', '59 €', ['Todo lo de Total', '2 sesiones con entrenador', 'Nutricionista'], false]] },
+      { tipo: 'galeria', kicker: 'Instalaciones', titulo: 'Donde pasa todo', imgs: [2628215, 4720813, 4162485, 14502821, 3766211] },
+      { tipo: 'opiniones', kicker: 'Socios', titulo: 'Resultados reales', nota: '4,8', total: 640, items: [['Iván Torres', 'En 4 meses he cambiado por completo. Los monitores, top.'], ['Sonia Martín', 'Las clases de HIIT son adictivas.'], ['Kike Rubio', 'Abre temprano y nunca está lleno.']] },
+      { tipo: 'cta', titulo: 'Tu primera semana gratis', texto: 'Sin matrícula ni permanencia.', boton: 'Quiero probar', img: 2628215 }
     ]
   }
 ];
@@ -101,141 +118,154 @@ export const PLANTILLAS = [
 export const plantillaPorId = id => PLANTILLAS.find(p => p.id === id);
 
 /* ==========================================================
-   Pintado de la plantilla (solo se usa en plantilla.html)
+   PINTADO (solo plantilla.html)
    ========================================================== */
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-
-function hexValido(h) { return /^#[0-9a-f]{6}$/i.test(h || ''); }
+const hexValido = h => /^#[0-9a-f]{6}$/i.test(h || '');
 function tintaPara(hex) {
   const n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
-  const L = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-  return L > 0.6 ? '#111111' : '#ffffff';
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 > 0.6 ? '#111111' : '#ffffff';
 }
-
-const foto = (i, etiqueta = '') =>
-  `<div class="ph ph${i % 6}">${etiqueta ? `<span>${esc(etiqueta)}</span>` : ''}</div>`;
+// Foto real con fondo de color mientras carga (si falla, queda el degradado)
+let maxW = 4000; // en miniaturas se piden fotos pequeñas: carga más rápido
+const foto = (id, w = 1000, alt = '', cls = '') =>
+  `<div class="ph ${cls}">${id ? `<img src="${F(id, Math.min(w, maxW))}" alt="${esc(alt)}" loading="lazy" decoding="async" onload="this.classList.add('ok')" onerror="this.remove()">` : ''}</div>`;
+const cab = s => `<div class="sh rv">${s.kicker ? `<span class="kick">${esc(s.kicker)}</span>` : ''}<h2 class="h2">${s.titulo || ''}</h2></div>`;
+const iniciales = n => n.split(' ').map(p => p[0]).slice(0, 2).join('');
 
 const S = {
   lista: s => `
-    <section class="sec" id="${s.id || ''}">
-      <div class="w"><h2 class="h2">${esc(s.titulo)}</h2>
-      <div class="lista ${s.grupos.length > 1 ? 'multi' : ''}">
-        ${s.grupos.map(g => `<div class="grupo">${g.nombre ? `<h3>${esc(g.nombre)}</h3>` : ''}
-          ${g.items.map(([n, p, d]) => `<div class="li"><div><b>${esc(n)}</b>${d ? `<small>${esc(d)}</small>` : ''}</div><i></i><span>${esc(p)}</span></div>`).join('')}
-        </div>`).join('')}
-      </div></div>
-    </section>`,
+    <section class="sec" id="${s.id || ''}"><div class="w">
+      ${cab(s)}
+      <div class="${s.img ? 'lista-g' : ''}">
+        <div class="lista ${s.grupos.length > 1 ? 'multi' : ''}">
+          ${s.grupos.map(g => `<div class="grupo rv">${g.img ? `<div class="g-img">${foto(g.img, 700, g.nombre)}</div>` : ''}${g.nombre ? `<h3>${esc(g.nombre)}</h3>` : ''}
+            ${g.items.map(([n, p, d]) => `<div class="li"><div><b>${esc(n)}</b>${d ? `<small>${icono('clock')} ${esc(d)}</small>` : ''}</div><i></i><span>${esc(p)}</span></div>`).join('')}
+          </div>`).join('')}
+        </div>
+        ${s.img ? `<div class="lista-img rv">${foto(s.img, 900)}${s.etiqueta ? `<span class="etq">${icono('award')} ${esc(s.etiqueta)}</span>` : ''}</div>` : ''}
+      </div>
+    </div></section>`,
 
   galeria: s => `
-    <section class="sec"><div class="w"><h2 class="h2">${esc(s.titulo)}</h2>
-      <div class="galeria">${[0, 1, 2, 3, 4].map(i => foto(i)).join('')}</div>
+    <section class="sec" id="${s.id || ''}"><div class="w">${cab(s)}
+      <div class="gal">${s.imgs.map((id, i) => `<figure class="g g${i} rv">${foto(id, i === 0 ? 1100 : 700)}<span class="g-ic">${icono('plus')}</span></figure>`).join('')}</div>
     </div></section>`,
 
   opiniones: s => `
-    <section class="sec alt"><div class="w"><h2 class="h2">${esc(s.titulo)}</h2>
-      <div class="ops">${s.items.map(([n, t]) => `<figure class="op"><div class="stars">★★★★★</div><blockquote>“${esc(t)}”</blockquote><figcaption>${esc(n)}</figcaption></figure>`).join('')}</div>
+    <section class="sec alt"><div class="w">
+      <div class="op-h">${cab(s)}
+        <div class="op-sum rv"><b>${esc(s.nota)}</b><div><span class="stars">★★★★★</span><small>${s.total} reseñas en Google</small></div></div>
+      </div>
+      <div class="ops">${s.items.map(([n, t], i) => `
+        <figure class="op rv"><span class="q">${icono('quote')}</span><blockquote>${esc(t)}</blockquote>
+          <figcaption><span class="av av${i}">${esc(iniciales(n))}</span><span><b>${esc(n)}</b><small><span class="stars sm">★★★★★</span> hace ${[2, 5, 9][i]} días</small></span></figcaption></figure>`).join('')}</div>
     </div></section>`,
 
-  info: s => `
-    <section class="sec" id="contacto"><div class="w info">
-      <div><h2 class="h2">${esc(s.titulo)}</h2>
-        <div class="horario">${s.horario.map(([d, h]) => `<div><span>${esc(d)}</span><b>${esc(h)}</b></div>`).join('')}</div>
-        <p class="dir">📍 ${esc(s.direccion)}</p>
+  info: (s, p) => `
+    <section class="sec" id="${s.id || 'contacto'}"><div class="w info">
+      <div class="rv">${cab(s)}
+        <div class="estado" data-estado></div>
+        <div class="horario">${s.horario.map(([d, h, dias = [], a, c]) => `<div data-dias="${dias.join(',')}" data-a="${a ?? ''}" data-c="${c ?? ''}"><span>${esc(d)}</span><b>${esc(h)}</b></div>`).join('')}</div>
+        <p class="dir">${icono('pin')} ${esc(s.direccion)}</p>
+        <div class="btns"><a class="b b1" href="#">${icono('pin')} Cómo llegar</a><a class="b b2" href="#">${icono('call')} ${esc(p.tel)}</a></div>
       </div>
-      <div class="mapa"><div class="pin"></div></div>
+      <div class="mapa rv"><div class="calle c1"></div><div class="calle c2"></div><div class="calle c3"></div><div class="pin">${icono('pin')}</div><span class="mapa-tag">${esc(p.marca)}</span></div>
     </div></section>`,
 
   cta: s => `
-    <section class="sec"><div class="w"><div class="cta">
-      <h2>${esc(s.titulo)}</h2><p>${esc(s.texto)}</p>
-      <a class="b b1" href="#">${esc(s.boton)}</a>
+    <section class="sec"><div class="w"><div class="cta ${s.img ? 'conimg' : ''} rv">
+      ${s.img ? foto(s.img, 1600, '', 'cta-bg') : ''}
+      <div class="cta-in"><h2>${esc(s.titulo)}</h2><p>${esc(s.texto)}</p><a class="b b1" href="#">${esc(s.boton)} ${icono('arrow')}</a></div>
     </div></div></section>`,
 
   ventajas: s => `
     <section class="sec tight"><div class="w ventajas">
-      ${s.items.map(([e, t, d]) => `<div class="v"><span class="ve">${e}</span><div><b>${esc(t)}</b><p>${esc(d)}</p></div></div>`).join('')}
+      ${s.items.map(([ic, t, d]) => `<div class="v rv"><span class="ve">${icono(ic)}</span><div><b>${esc(t)}</b><p>${esc(d)}</p></div></div>`).join('')}
     </div></section>`,
 
   productos: s => `
-    <section class="sec" id="${s.id || ''}"><div class="w"><h2 class="h2">${esc(s.titulo)}</h2>
-      <div class="prods">${s.items.map(([n, p, tag], i) => `
-        <div class="prod">${foto(i)}${tag ? `<em class="tag">${esc(tag)}</em>` : ''}
-          <div class="pi"><div><b>${esc(n)}</b><span>${esc(p)}</span></div><button class="add" aria-label="Añadir">+</button></div>
+    <section class="sec" id="${s.id || ''}"><div class="w">${cab(s)}
+      <div class="prods">${s.items.map(([n, p, tag, img]) => `
+        <div class="prod rv"><div class="prod-img">${foto(img, 600, n)}${tag ? `<em class="tag">${esc(tag)}</em>` : ''}</div>
+          <div class="pi"><div><b>${esc(n)}</b><span>${esc(p)}</span></div><button class="add" aria-label="Añadir ${esc(n)} al carrito">${icono('plus')}</button></div>
         </div>`).join('')}</div>
     </div></section>`,
 
   proyectos: s => `
-    <section class="sec" id="${s.id || ''}"><div class="w"><h2 class="h2">${esc(s.titulo)}</h2>
-      <div class="proys">${s.items.map(([n, d], i) => `<a class="proy" href="#">${foto(i + 1)}<div><b>${esc(n)}</b><small>${esc(d)}</small></div></a>`).join('')}</div>
+    <section class="sec" id="${s.id || ''}"><div class="w">${cab(s)}
+      <div class="proys">${s.items.map(([n, d, img], i) => `<a class="proy rv ${i % 3 === 0 ? 'ancho' : ''}" href="#">${foto(img, 1200, n)}<div class="proy-i"><b>${esc(n)}</b><small>${esc(d)}</small><span>${icono('arrow')}</span></div></a>`).join('')}</div>
     </div></section>`,
 
   sobre: s => `
-    <section class="sec alt"><div class="w sobre">
-      <div><h2 class="h2">${esc(s.titulo)}</h2><p class="txt">${esc(s.texto)}</p></div>
-      <div class="datos">${s.datos.map(([n, l]) => `<div><b>${esc(n)}</b><span>${esc(l)}</span></div>`).join('')}</div>
+    <section class="sec alt"><div class="w sobre ${s.img ? 'conimg' : ''}">
+      ${s.img ? `<div class="sobre-img rv">${foto(s.img, 900)}</div>` : ''}
+      <div class="rv">${cab(s)}<p class="txt">${esc(s.texto)}</p>
+        <div class="datos">${s.datos.map(([n, l]) => `<div><b>${esc(n)}</b><span>${esc(l)}</span></div>`).join('')}</div></div>
     </div></section>`,
 
   precios: s => `
-    <section class="sec" id="${s.id || ''}"><div class="w"><h2 class="h2">${esc(s.titulo)}</h2>
+    <section class="sec" id="${s.id || ''}"><div class="w">${cab(s)}
       <div class="planes">${s.items.map(([n, p, l, dest]) => `
-        <div class="plan ${dest ? 'dest' : ''}">${dest ? '<em class="tag">Popular</em>' : ''}<b>${esc(n)}</b>
+        <div class="plan rv ${dest ? 'dest' : ''}">${dest ? '<em class="tag">Más elegido</em>' : ''}<b>${esc(n)}</b>
           <div class="pp">${esc(p)}<small>/mes</small></div>
-          <ul>${l.map(x => `<li>${esc(x)}</li>`).join('')}</ul><a class="b ${dest ? 'b1' : 'b2'}" href="#">Apuntarme</a>
+          <ul>${l.map(x => `<li>${icono('check')}${esc(x)}</li>`).join('')}</ul><a class="b ${dest ? 'b1' : 'b2'}" href="#">Apuntarme</a>
         </div>`).join('')}</div>
     </div></section>`,
 
   reserva: s => {
-    const dias = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const hoy = new Date();
+    const dias = Array.from({ length: 6 }, (_, i) => { const d = new Date(hoy); d.setDate(hoy.getDate() + i + 1); return d; });
     const horas = ['10:00', '10:30', '11:30', '12:00', '16:00', '17:30', '18:00', '19:00'];
+    const nd = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     return `
-    <section class="sec alt" id="reserva"><div class="w"><h2 class="h2">${esc(s.titulo)}</h2>
-      <div class="reserva">
-        <div class="dias">${dias.map((d, i) => `<button class="${i === 1 ? 'on' : ''}"><small>${d}</small><b>${12 + i}</b></button>`).join('')}</div>
-        <div class="horas">${horas.map((h, i) => `<button class="${i === 2 ? 'on' : ''} ${i === 4 ? 'off' : ''}">${h}</button>`).join('')}</div>
-        <a class="b b1" href="#">Confirmar cita · Mar 13, 11:30</a>
+    <section class="sec alt" id="${s.id || 'reserva'}"><div class="w">${cab(s)}
+      <div class="reserva rv">
+        <div class="dias">${dias.map((d, i) => `<button data-dia="${nd[d.getDay()]} ${d.getDate()}" class="${i === 0 ? 'on' : ''}"><small>${nd[d.getDay()]}</small><b>${d.getDate()}</b></button>`).join('')}</div>
+        <div class="horas">${horas.map((h, i) => `<button data-hora="${h}" class="${i === 2 ? 'on' : ''}" ${i === 4 ? 'disabled' : ''}>${h}</button>`).join('')}</div>
+        <a class="b b1 res-ok" href="#">${icono('calendar')} <span>Confirmar cita</span></a>
       </div>
     </div></section>`;
   }
 };
 
-function hero(p, marca) {
+function hero(p) {
   const h = p.hero;
-  const botones = `<div class="btns"><a class="b b1" href="#">${esc(h.cta)}</a><a class="b b2" href="#">${esc(h.cta2)}</a></div>`;
+  const btns = `<div class="btns"><a class="b b1" href="#">${esc(h.cta)} ${icono('arrow')}</a><a class="b b2" href="#">${esc(h.cta2)}</a></div>`;
+  const meta = h.meta ? `<div class="hmeta">${h.meta.map(([i, t]) => `<span>${icono(i)} ${esc(t)}</span>`).join('')}</div>` : '';
+  if (h.tipo === 'imagen') return `
+    <header class="hero img">
+      <div class="hbg">${foto(h.img, 1800, '', 'kb')}</div>
+      <div class="w hc"><span class="kick">${esc(h.kicker)}</span><h1>${h.titulo}</h1><p>${esc(h.texto)}</p>${btns}${meta}</div>
+      <a class="hscroll" href="#s1" aria-label="Bajar">${icono('down')}</a>
+    </header>`;
   if (h.tipo === 'split') return `
     <header class="hero split"><div class="w">
-      <div class="hc"><span class="kick">${esc(h.kicker)}</span><h1>${esc(h.titulo)}</h1><p>${esc(h.texto)}</p>${botones}</div>
-      <div class="hv">${foto(0)}<div class="badge"><b>4,9 ★</b><span>+200 opiniones</span></div></div>
-    </div></header>`;
-  if (h.tipo === 'big') return `
-    <header class="hero big"><div class="w">
-      <span class="kick">${esc(h.kicker)}</span><h1>${esc(h.titulo)}</h1>
-      <div class="hb"><p>${esc(h.texto)}</p>${botones}</div>
-      <div class="hv wide">${foto(3)}</div>
+      <div class="hc"><span class="kick">${esc(h.kicker)}</span><h1>${h.titulo}</h1><p>${esc(h.texto)}</p>${btns}</div>
+      <div class="hv">${foto(h.img, 1100, '', 'kb')}
+        ${(h.badges || []).map(([i, b, t], k) => `<div class="badge bd${k}">${icono(i)}<div><b>${esc(b)}</b><span>${esc(t)}</span></div></div>`).join('')}
+      </div>
     </div></header>`;
   return `
-    <header class="hero center"><div class="hbg">${foto(2)}</div><div class="w">
-      <span class="kick">${esc(h.kicker)}</span><h1>${esc(h.titulo)}</h1><p>${esc(h.texto)}</p>${botones}
-    </div></header>`;
+    <header class="hero big"><div class="w">
+      <span class="kick">${esc(h.kicker)}</span><h1>${h.titulo}</h1>
+      <div class="hb"><p>${esc(h.texto)}</p>${btns}</div>
+    </div><div class="hv wide">${foto(h.img, 2000, '', 'kb par')}</div></header>`;
 }
 
 export function pintarPlantilla(raiz, id, opciones = {}) {
   const p = plantillaPorId(id) || PLANTILLAS[0];
   const marca = (opciones.nombre || '').trim() || p.marca;
   const accent = hexValido(opciones.color) ? opciones.color : p.c.accent;
-  const r = document.documentElement.style;
-  r.setProperty('--bg', p.c.bg);
-  r.setProperty('--surface', p.c.surface);
-  r.setProperty('--text', p.c.text);
-  r.setProperty('--muted', p.c.muted);
-  r.setProperty('--accent', accent);
-  r.setProperty('--ink', tintaPara(accent));
-  r.setProperty('--fd', `'${p.fuentes.d}', Georgia, serif`);
-  r.setProperty('--fb', `'${p.fuentes.b}', system-ui, sans-serif`);
-  r.setProperty('--radius', p.estilo.radio);
-  r.setProperty('--hw', p.estilo.peso);
-  r.setProperty('--tt', p.estilo.mayus ? 'uppercase' : 'none');
-  document.documentElement.dataset.tema = p.id;
-  document.documentElement.style.colorScheme = tintaPara(p.c.bg) === '#ffffff' ? 'dark' : 'light';
+  const mini = !!opciones.mini;
+  maxW = mini ? 560 : 4000;
+  const r = document.documentElement;
+  const v = { '--bg': p.c.bg, '--surface': p.c.surface, '--text': p.c.text, '--muted': p.c.muted, '--accent': accent, '--ink': tintaPara(accent),
+    '--fd': `'${p.fuentes.d}', Georgia, serif`, '--fb': `'${p.fuentes.b}', system-ui, sans-serif`, '--radius': p.estilo.radio, '--hw': p.estilo.peso, '--tt': p.estilo.mayus ? 'uppercase' : 'none' };
+  Object.entries(v).forEach(([k, val]) => r.style.setProperty(k, val));
+  r.dataset.tema = p.id;
+  r.classList.toggle('mini', mini);
+  r.style.colorScheme = tintaPara(p.c.bg) === '#ffffff' ? 'dark' : 'light';
 
   const l = document.createElement('link');
   l.rel = 'stylesheet';
@@ -243,20 +273,90 @@ export function pintarPlantilla(raiz, id, opciones = {}) {
   document.head.appendChild(l);
   document.title = `${marca} · Vista previa`;
 
-  const links = p.secciones.filter(s => s.id).map(s => `<a href="#${s.id}">${esc(s.titulo)}</a>`).join('');
-  raiz.innerHTML = `
-    <nav class="nv"><div class="w">
-      <a class="lg" href="#">${esc(marca)}</a>
-      <div class="nl">${links}<a href="#contacto">Contacto</a></div>
-      <a class="b b1 sm" href="#">${esc(p.hero.cta)}</a>
-    </div></nav>
-    ${hero(p, marca)}
-    ${p.secciones.map(s => S[s.tipo] ? S[s.tipo](s) : '').join('')}
-    <footer class="ft"><div class="w"><b>${esc(marca)}</b><span>© ${new Date().getFullYear()} · Todos los derechos reservados</span></div></footer>
-    <a class="wa-float" href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg></a>`;
+  const links = p.secciones.filter(s => s.id && s.id !== 'contacto').map(s => `<a href="#${s.id}">${esc(s.kicker || s.titulo)}</a>`).join('') + '<a href="#contacto">Contacto</a>';
+  const sobreImagen = p.hero.tipo === 'imagen';
+  const horario = p.secciones.find(s => s.tipo === 'info');
 
+  raiz.innerHTML = `
+    <nav class="nv ${sobreImagen ? 'over' : ''}" id="nv"><div class="w">
+      <a class="lg" href="#">${esc(marca)}</a>
+      <div class="nl">${links}</div>
+      <div class="nv-r">
+        ${p.carrito ? `<button class="cart" aria-label="Carrito">${icono('bag')}<i id="cartN">0</i></button>` : ''}
+        <a class="b b1 sm nv-cta" href="#">${esc(p.hero.cta)}</a>
+        <button class="nv-menu" id="nvMenu" aria-label="Menú">${icono('menu')}</button>
+      </div>
+    </div></nav>
+    <div class="mnav" id="mnav">${links}<a class="b b1" href="#">${esc(p.hero.cta)}</a></div>
+    ${hero(p)}
+    ${p.cinta ? `<div class="cinta" id="s1"><div class="ct">${[...p.cinta, ...p.cinta, ...p.cinta].map(w => `<span>${esc(w)}</span>`).join('')}</div></div>` : ''}
+    ${p.secciones.map(s => S[s.tipo] ? S[s.tipo](s, { ...p, marca }) : '').join('')}
+    <footer class="ft"><div class="w ft-g">
+      <div><b class="lg">${esc(marca)}</b><p>${esc(p.desc)}</p>
+        ${p.redes ? `<div class="soc"><a href="#" aria-label="Instagram">${icono('instagram')}</a><a href="#" aria-label="Facebook">${icono('facebook')}</a><a href="#" aria-label="TikTok">${icono('tiktok')}</a></div>` : ''}</div>
+      <div><h4>Contacto</h4><p>${icono('call')} ${esc(p.tel)}</p>${horario ? `<p>${icono('pin')} ${esc(horario.direccion)}</p>` : ''}<p>${icono('mail')} hola@${esc(p.dominio)}</p></div>
+      ${horario ? `<div><h4>Horario</h4>${horario.horario.slice(0, 3).map(([d, h]) => `<p><span>${esc(d)}</span> ${esc(h)}</p>`).join('')}</div>` : `<div><h4>Enlaces</h4>${links}</div>`}
+    </div><div class="w ft-b"><span>© ${new Date().getFullYear()} ${esc(marca)}</span><span>Aviso legal · Privacidad · Cookies</span></div></footer>
+    <a class="wa-float" href="#" aria-label="WhatsApp">${icono('wa')}</a>
+    <div class="t-toast" id="tToast"></div>`;
+
+  /* ----- Interacción ----- */
   raiz.addEventListener('click', e => {
     const a = e.target.closest('a[href="#"], button');
-    if (a) e.preventDefault();
+    if (a && !a.matches('#nvMenu, .add, .dias button, .horas button, .cart, .res-ok')) e.preventDefault();
   });
+  // Navegación: transparente sobre la foto, sólida al bajar
+  const nv = document.getElementById('nv');
+  const alBajar = () => nv.classList.toggle('solid', scrollY > 40);
+  addEventListener('scroll', alBajar, { passive: true }); alBajar();
+  // Menú móvil
+  const mnav = document.getElementById('mnav');
+  document.getElementById('nvMenu').addEventListener('click', () => { mnav.classList.toggle('open'); nv.classList.toggle('menu'); });
+  mnav.addEventListener('click', e => { if (e.target.closest('a')) { mnav.classList.remove('open'); nv.classList.remove('menu'); } });
+  // Avisos dentro de la plantilla
+  const tt = document.getElementById('tToast'); let tTimer;
+  const aviso = t => { tt.innerHTML = `${icono('check')} ${t}`; tt.classList.add('on'); clearTimeout(tTimer); tTimer = setTimeout(() => tt.classList.remove('on'), 1800); };
+  // Carrito de la tienda
+  let n = 0;
+  raiz.querySelectorAll('.add').forEach(b => b.addEventListener('click', e => {
+    e.preventDefault();
+    n++; const c = document.getElementById('cartN'); if (c) { c.textContent = n; c.parentElement.classList.remove('bump'); void c.offsetWidth; c.parentElement.classList.add('bump'); }
+    b.classList.add('ok'); b.innerHTML = icono('check'); setTimeout(() => { b.classList.remove('ok'); b.innerHTML = icono('plus'); }, 1400);
+    aviso('Añadido al carrito');
+  }));
+  // Reserva interactiva
+  const res = raiz.querySelector('.reserva');
+  if (res) {
+    const etiqueta = () => {
+      const d = res.querySelector('.dias .on')?.dataset.dia, h = res.querySelector('.horas .on')?.dataset.hora;
+      res.querySelector('.res-ok span').textContent = `Confirmar cita · ${d}, ${h}`;
+    };
+    res.addEventListener('click', e => {
+      const b = e.target.closest('.dias button, .horas button');
+      if (b && !b.disabled) { b.parentElement.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); etiqueta(); }
+      if (e.target.closest('.res-ok')) { e.preventDefault(); aviso('¡Cita reservada! (demostración)'); }
+    });
+    etiqueta();
+  }
+  // Horario: resalta hoy y dice si está abierto
+  const ahora = new Date(), dia = ahora.getDay(), hora = ahora.getHours() + ahora.getMinutes() / 60;
+  let abierto = false;
+  raiz.querySelectorAll('.horario > div').forEach(f => {
+    const dias = f.dataset.dias.split(',').filter(Boolean).map(Number);
+    if (dias.includes(dia)) {
+      f.classList.add('hoy');
+      const a = parseFloat(f.dataset.a), c = parseFloat(f.dataset.c);
+      if (!isNaN(a) && hora >= a && hora < c) abierto = true;
+    }
+  });
+  const est = raiz.querySelector('[data-estado]');
+  if (est) est.innerHTML = `<span class="pill ${abierto ? 'si' : 'no'}"><i></i>${abierto ? 'Abierto ahora' : 'Cerrado ahora'}</span>`;
+  // Aparición suave al hacer scroll (en las miniaturas se muestra todo directamente)
+  if (!mini && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } }), { threshold: .12 });
+    raiz.querySelectorAll('.rv').forEach((el, i) => { el.style.transitionDelay = `${(i % 3) * 80}ms`; io.observe(el); });
+    // Parallax suave en la foto grande
+    const par = raiz.querySelector('.par img');
+    if (par) addEventListener('scroll', () => { par.style.transform = `translateY(${Math.min(scrollY * .12, 120)}px) scale(1.12)`; }, { passive: true });
+  } else r.classList.add('sin-anim');
 }

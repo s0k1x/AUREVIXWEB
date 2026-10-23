@@ -479,7 +479,6 @@ dialog.dlg-prev{padding:0}
 .lt-bar i{width:9px;height:9px;border-radius:50%;background:#3a3a44}
 .lt-bar i:nth-child(1){background:#ff6159}.lt-bar i:nth-child(2){background:#ffbd2e}.lt-bar i:nth-child(3){background:#28c941}
 .lt-url{margin-left:10px;flex:1;max-width:60%;font-family:var(--fm);font-size:11px;color:var(--muted);background:var(--bg);border-radius:7px;padding:3px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lt-url::before{content:"🔒 ";font-size:9px}
 .lt-view,.mv-view{position:relative;overflow:hidden;background:#fff;--s:.4;--d:0px}
 .lt-view{aspect-ratio:16/10}
 .lt-view iframe,.mv-view iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;transform:translateY(0) scale(var(--s));opacity:0;pointer-events:none;transition:opacity .7s var(--e-out),transform .6s var(--e-out)}
@@ -490,7 +489,7 @@ dialog.dlg-prev{padding:0}
 .pausa .lt-view iframe.rec,.pausa .mv-view iframe.rec{transition-duration:.7s,1.2s;transform:translateY(0) scale(var(--s))}
 .lt-base{height:14px;margin:0 -4%;border-radius:0 0 14px 14px;background:linear-gradient(#2a2a32,#151519);box-shadow:0 18px 30px -12px rgba(0,0,0,.9)}
 .lt-base::after{content:"";display:block;width:16%;height:5px;margin:0 auto;border-radius:0 0 8px 8px;background:#0d0d10}
-.movil{position:absolute;right:0;bottom:0;width:24%;z-index:2;padding:7px;border-radius:26px;background:#141418;border:1px solid rgba(255,255,255,.16);box-shadow:-20px 30px 60px -20px rgba(0,0,0,.9);transform:rotate(3deg);animation:float 7s ease-in-out infinite}
+.vt-movil{position:absolute;right:0;bottom:0;width:24%;z-index:2;padding:7px;border-radius:26px;background:#141418;border:1px solid rgba(255,255,255,.16);box-shadow:-20px 30px 60px -20px rgba(0,0,0,.9);transform:rotate(3deg);animation:float 7s ease-in-out infinite}
 .mv-notch{position:absolute;top:12px;left:50%;width:30%;height:9px;border-radius:99px;background:#000;transform:translateX(-50%);z-index:3}
 .mv-view{aspect-ratio:9/19.5;border-radius:20px}
 @keyframes float{50%{transform:rotate(3deg) translateY(-10px)}}
@@ -548,8 +547,51 @@ dialog.dlg-prev{padding:0}
   .vt-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:calc(var(--gutter) * -1);padding-right:var(--gutter)}
   .vt-chips::-webkit-scrollbar{display:none}
   .vt-chips button{flex:none}
-  .movil{border-radius:18px;padding:5px}
+  .vt-movil{border-radius:18px;padding:5px}
   .mv-view{border-radius:14px}
 }
 /* Evita que la fila de pestañas de la vitrina ensanche la portada en el móvil */
 .hero-grid > *,.hero-art,.vitrina{min-width:0}
+
+/* ==========================================================
+   Ronda 5 · Vitrina con marco real + cintas cruzadas
+   ========================================================== */
+.lt-screen{position:relative;padding:11px 11px 0;background:#0a0a0d;border:1px solid rgba(255,255,255,.13);border-radius:18px 18px 4px 4px;
+  box-shadow:0 40px 90px -40px rgba(0,0,0,.95),inset 0 0 0 1px rgba(255,255,255,.04)}
+.lt-screen::before{content:"";position:absolute;top:4px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#2a2a33}
+.lt-bar{border-radius:7px 7px 0 0}
+.lt-view,.mv-view{background:#0e0e12}
+.lt-view{border-radius:0}
+.lt-url::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 11V8a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1zm2 0h6V8a3 3 0 0 0-6 0z'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 11V8a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1zm2 0h6V8a3 3 0 0 0-6 0z'/%3E%3C/svg%3E") center/contain no-repeat}
+.lt-base{height:16px;margin:0 -5%;background:linear-gradient(#3a3a44,#1a1a1f 45%,#101013)}
+.vt-movil{background:#0a0a0d;border-color:rgba(255,255,255,.18)}
+/* El sello ya no tapa la barra del navegador: va arriba a la derecha, donde no hay nada */
+.sello{left:auto;right:2%;top:-44px}
+.vitrina:hover .sello{transform:scale(1.06)}
+.sello{transition:transform .5s var(--e-spring)}
+.lt-view iframe,.mv-view iframe{will-change:transform,opacity;backface-visibility:hidden}
+
+/* Dos cintas cruzadas a todo el ancho */
+.cintas{position:relative;overflow:hidden;overflow:clip;padding:46px 0;margin:-10px 0}
+.cintas .cinta{position:relative;z-index:1;width:104%;margin-left:-2%;padding:20px 0;border:0;background:var(--accent);transform:rotate(-2deg);box-shadow:0 20px 50px -20px rgba(200,245,96,.45)}
+.cintas .cinta .cinta-track span{color:var(--ink);font-size:clamp(20px,2.2vw,30px);font-weight:800;letter-spacing:-.02em}
+.cintas .cinta .cinta-track span::after{color:var(--ink);opacity:.5}
+.cintas .cinta-b{position:absolute;z-index:0;left:0;top:50%;margin-top:-34px;background:#1a1a20;box-shadow:none;transform:rotate(2.2deg);border-block:1px solid var(--line2)}
+.cintas .cinta-b .cinta-track{animation-direction:reverse;animation-duration:46s}
+.cintas .cinta-b .cinta-track span{color:var(--muted);font-family:var(--fm);font-size:clamp(13px,1.1vw,16px);font-weight:500;text-transform:uppercase;letter-spacing:.08em}
+.cintas .cinta-b .cinta-track span::after{color:var(--accent);opacity:1}
+@media (max-width:640px){
+  .sello{right:0;top:-30px}
+  .cintas{padding:34px 0}
+  .cintas .cinta{padding:15px 0;transform:rotate(-3deg)}
+  .cintas .cinta-b{margin-top:-24px;transform:rotate(3deg)}
+}
+@media (prefers-reduced-motion:reduce){.cinta-track{animation:none}}
+.cintas{margin-top:-40px}
+/* Vista previa en modo móvil: marco de teléfono centrado */
+.prev-frame{transition:width .5s var(--e-out),height .5s var(--e-out),border-radius .5s var(--e-out)}
+.prev-frame.movil{border-width:10px;border-color:#141418;outline:1px solid rgba(255,255,255,.14);border-radius:40px}
+/* Sin trabajo extra cuando la vitrina no se ve */
+.hero-art.dormida .vt-movil,.hero-art.dormida .sello svg,.hero-art.dormida .vt-prog{animation-play-state:paused!important}

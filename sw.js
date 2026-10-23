@@ -2,13 +2,13 @@
    Service worker — la web funciona sin conexión
    👉 Cada vez que subas cambios, sube VERSION (v1 → v2…)
    ========================================================== */
-const VERSION = 'v6';
+const VERSION = 'v7';
 const CACHE = `tumarca-${VERSION}`;
 
 const ARCHIVOS = [
   './', 'index.html', 'trabaja.html', 'panel.html', 'plantilla.html', 'terminos.html', 'offline.html',
   'style.css', 'componentes.css', 'animaciones.css', 'inicio.css', 'panel.css', 'trabaja.css', 'config.js',
-  'js/app.js', 'js/ui.js', 'js/store.js', 'js/plantillas.js', 'js/panel.js', 'js/pago.js', 'js/efectos.js',
+  'js/app.js', 'js/ui.js', 'js/store.js', 'js/plantillas.js', 'js/panel.js', 'js/pago.js', 'js/efectos.js', 'js/iconos.js',
   'manifest.json', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
 ];
 

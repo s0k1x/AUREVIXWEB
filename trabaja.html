@@ -52,7 +52,7 @@
         </div>
         <div class="perfiles">
           <article class="perfil reveal" style="--c:#b98cff">
-            <span class="pf-ic">🧠</span>
+            <span class="pf-ic"><i data-i="brain"></i></span>
             <h3>Inteligencia artificial</h3>
             <ul>
               <li>Usas ChatGPT, Claude u otras IA a diario</li>
@@ -61,7 +61,7 @@
             </ul>
           </article>
           <article class="perfil reveal" style="--c:#ff5a8a">
-            <span class="pf-ic">📱</span>
+            <span class="pf-ic"><i data-i="phone"></i></span>
             <h3>Redes sociales</h3>
             <ul>
               <li>Creas contenido para Instagram y TikTok</li>
@@ -70,7 +70,7 @@
             </ul>
           </article>
           <article class="perfil reveal" style="--c:#c8f560">
-            <span class="pf-ic">🤝</span>
+            <span class="pf-ic"><i data-i="handshake"></i></span>
             <h3>Ventas</h3>
             <ul>
               <li>Hablas con negocios sin miedo: en persona, WhatsApp o redes</li>
@@ -79,7 +79,7 @@
             </ul>
           </article>
         </div>
-        <p class="nota reveal">💡 No hace falta saber programar ni diseñar. Las webs las creamos nosotros; tú consigues los clientes.</p>
+        <p class="nota reveal"><i data-i="bulb"></i> No hace falta saber programar ni diseñar. Las webs las creamos nosotros; tú consigues los clientes.</p>
       </div>
     </section>
 
@@ -117,14 +117,14 @@
           <h2>Todo a tu favor para vender.</h2>
         </div>
         <div class="ventajas">
-          <div class="vj reveal"><span>💶</span><b><span data-comision></span> % de cada venta</b><p>Sin techo: cuantas más webs vendas, más ganas.</p></div>
-          <div class="vj reveal"><span>🔗</span><b>Tu enlace de ventas</b><p>Cada pedido que entra por tu enlace queda a tu nombre automáticamente.</p></div>
-          <div class="vj reveal"><span>📊</span><b>Tu propio panel</b><p>Ves tus ventas y tu comisión en tiempo real, sin preguntar a nadie.</p></div>
-          <div class="vj reveal"><span>🧰</span><b>Todo listo para vender</b><p>Catálogo, 6 diseños, precios cerrados y vista previa con el nombre del cliente.</p></div>
-          <div class="vj reveal"><span>🧠</span><b>Aprendes IA aplicada</b><p>Te enseñamos cómo usamos la IA para vender, crear contenido y cerrar más rápido.</p></div>
-          <div class="vj reveal"><span>🏠</span><b>Remoto y sin horarios</b><p>Trabaja desde donde quieras y cuando quieras.</p></div>
-          <div class="vj reveal"><span>🚫</span><b>Sin inversión</b><p>Empezar no te cuesta nada: ni cuotas, ni material, ni compras mínimas.</p></div>
-          <div class="vj reveal"><span>🌱</span><b>Sin experiencia previa</b><p>Si tienes ganas y sabes moverte en redes, te ayudamos a empezar.</p></div>
+          <div class="vj reveal"><span><i data-i="euro"></i></span><b><span data-comision></span> % de cada venta</b><p>Sin techo: cuantas más webs vendas, más ganas.</p></div>
+          <div class="vj reveal"><span><i data-i="link"></i></span><b>Tu enlace de ventas</b><p>Cada pedido que entra por tu enlace queda a tu nombre automáticamente.</p></div>
+          <div class="vj reveal"><span><i data-i="chart"></i></span><b>Tu propio panel</b><p>Ves tus ventas y tu comisión en tiempo real, sin preguntar a nadie.</p></div>
+          <div class="vj reveal"><span><i data-i="tool"></i></span><b>Todo listo para vender</b><p>Catálogo, 6 diseños, precios cerrados y vista previa con el nombre del cliente.</p></div>
+          <div class="vj reveal"><span><i data-i="brain"></i></span><b>Aprendes IA aplicada</b><p>Te enseñamos cómo usamos la IA para vender, crear contenido y cerrar más rápido.</p></div>
+          <div class="vj reveal"><span><i data-i="home"></i></span><b>Remoto y sin horarios</b><p>Trabaja desde donde quieras y cuando quieras.</p></div>
+          <div class="vj reveal"><span><i data-i="ban"></i></span><b>Sin inversión</b><p>Empezar no te cuesta nada: ni cuotas, ni material, ni compras mínimas.</p></div>
+          <div class="vj reveal"><span><i data-i="sprout"></i></span><b>Sin experiencia previa</b><p>Si tienes ganas y sabes moverte en redes, te ayudamos a empezar.</p></div>
         </div>
       </div>
     </section>
@@ -169,7 +169,7 @@
   <script type="module">
     import { CONFIG, PLANES } from './config.js';
     import * as store from './js/store.js';
-    import { $, $$, esc, euros, toast, arrancar, conSesion, fecha, campo, desplegable, opciones, aceptarTerminos, terminosAceptados, ocupado, etiquetas } from './js/ui.js';
+    import { $, $$, esc, euros, icono, toast, arrancar, conSesion, fecha, campo, desplegable, opciones, aceptarTerminos, terminosAceptados, ocupado, etiquetas } from './js/ui.js';
 
     const PCT = CONFIG.comision ?? 30;
     $$('[data-comision]').forEach(e => (e.textContent = PCT));
@@ -216,11 +216,11 @@
 
     function mostrarEstado(c) {
       const t = {
-        pendiente: ['📬', 'Candidatura recibida', 'La estamos revisando. Te avisaremos muy pronto.'],
-        aceptada: ['🎉', '¡Bienvenido al equipo!', 'Ya tienes tu panel y tu enlace de ventas.'],
-        rechazada: ['🙏', 'Gracias por tu interés', 'Esta vez no ha podido ser, pero guardamos tu candidatura para más adelante.']
-      }[c.estado] || ['📬', 'Candidatura recibida', ''];
-      card.innerHTML = `<div class="estado-cand"><div class="big">${t[0]}</div><h3>${t[1]}</h3><p>${t[2]}</p>
+        pendiente: ['inbox', 'Candidatura recibida', 'La estamos revisando. Te avisaremos muy pronto.'],
+        aceptada: ['party', '¡Bienvenido al equipo!', 'Ya tienes tu panel y tu enlace de ventas.'],
+        rechazada: ['heart', 'Gracias por tu interés', 'Esta vez no ha podido ser, pero guardamos tu candidatura para más adelante.']
+      }[c.estado] || ['inbox', 'Candidatura recibida', ''];
+      card.innerHTML = `<div class="estado-cand"><div class="big">${icono(t[0])}</div><h3>${t[1]}</h3><p>${t[2]}</p>
         <p style="font-size:14px">${esc(c.puesto)} · enviada el ${fecha(c.createdAt)}</p>
         ${c.estado === 'aceptada' ? '<a class="btn btn-primary" href="panel.html">Ir a mi panel</a>' : '<a class="btn btn-ghost" href="index.html">Volver al inicio</a>'}</div>`;
     }
@@ -232,7 +232,7 @@
       if (enviando) return;
       if (!u) return ponerFormulario();
       if (u.role === 'worker' || u.role === 'owner') {
-        card.innerHTML = `<div class="estado-cand"><div class="big">💼</div><h3>Ya formas parte del equipo</h3><p>En tu panel tienes tu enlace de ventas y tus comisiones.</p><a class="btn btn-primary" href="panel.html">Ir a mi panel</a></div>`;
+        card.innerHTML = `<div class="estado-cand"><div class="big">${icono('briefcase')}</div><h3>Ya formas parte del equipo</h3><p>En tu panel tienes tu enlace de ventas y tus comisiones.</p><a class="btn btn-primary" href="panel.html">Ir a mi panel</a></div>`;
         return;
       }
       try {
@@ -271,7 +271,7 @@
             nombre: datos.nombre.trim(), telefono: datos.telefono.trim(), puesto: datos.puesto, habilidades,
             experiencia: datos.experiencia, portfolio: (datos.portfolio || '').trim(), mensaje: datos.mensaje.trim()
           });
-          toast('¡Candidatura enviada! 🎉', 'ok');
+          toast('¡Candidatura enviada!', 'ok');
           mostrarEstado(c);
         } catch (err) {
           toast(err.message || 'No se pudo enviar', 'err');

@@ -30,7 +30,7 @@ const ventasDe = uid => datos.pedidos.filter(p => p.ref === uid && p.estado !== 
 const estadoComision = p => p.comisionPagada ? ['Cobrada', 'p-done'] : p.pagoEstado === 'pagado' ? ['Lista para cobrar', 'p-new'] : ['Cliente aún no ha pagado', 'p-pend'];
 const porPagar = uid => ventasDe(uid).filter(p => p.pagoEstado === 'pagado' && !p.comisionPagada);
 const nombreDe = uid => datos.usuarios.find(u => u.uid === uid)?.name || 'Vendedor';
-const vacio = (em, t, d = '') => `<div class="empty"><div class="em">${em}</div><b>${t}</b><p>${d}</p></div>`;
+const vacio = (ic, t, d = '') => `<div class="empty"><div class="em">${icono(ic)}</div><b>${t}</b><p>${d}</p></div>`;
 
 /* ---------- Arranque según el rol ---------- */
 store.alCambiarUsuario(async u => {
@@ -38,7 +38,7 @@ store.alCambiarUsuario(async u => {
   if (!u) return sinSesion();
   if (u.role === 'client') return sinPermiso();
   $('#pnRole').textContent = u.role === 'owner' ? 'Panel de propietario' : 'Panel de trabajador';
-  $('#pnHello').textContent = `Hola, ${u.name.split(' ')[0]} 👋`;
+  $('#pnHello').innerHTML = `Hola, ${esc(u.name.split(' ')[0])} <span class="saludo">${icono('hand')}</span>`;
   $('#pnRefresh').hidden = false;
   const tabs = u.role === 'owner'
     ? [['resumen', 'Resumen'], ['pedidos', 'Pedidos'], ['candidaturas', 'Candidaturas'], ['resenas', 'Reseñas'], ['equipo', 'Equipo']]
@@ -57,12 +57,12 @@ function cabeceraVacia(rol, hola) {
 }
 function sinSesion() {
   cabeceraVacia('Panel', 'Acceso del equipo');
-  body.innerHTML = `<div class="card gate"><div class="em">🔐</div><h3>Inicia sesión</h3><p class="muted">Este panel es para el propietario y los trabajadores.</p><button class="btn btn-primary" id="gateLogin"><span>Iniciar sesión</span></button></div>`;
+  body.innerHTML = `<div class="card gate"><div class="em">${icono('lock')}</div><h3>Inicia sesión</h3><p class="muted">Este panel es para el propietario y los trabajadores.</p><button class="btn btn-primary" id="gateLogin"><span>Iniciar sesión</span></button></div>`;
   $('#gateLogin').addEventListener('click', () => pedirLogin('Entra con tu cuenta del equipo.'));
 }
 function sinPermiso() {
   cabeceraVacia('Panel', 'Zona del equipo');
-  body.innerHTML = `<div class="card gate"><div class="em">💼</div><h3>Este panel es para el equipo</h3><p class="muted">Tu cuenta es de cliente. Puedes ver tus pedidos o unirte al equipo.</p>
+  body.innerHTML = `<div class="card gate"><div class="em">${icono('briefcase')}</div><h3>Este panel es para el equipo</h3><p class="muted">Tu cuenta es de cliente. Puedes ver tus pedidos o unirte al equipo.</p>
     <div class="gate-btns"><a class="btn btn-primary" href="index.html#mis-pedidos">Mis pedidos</a><a class="btn btn-ghost" href="trabaja.html">Trabaja con nosotros</a></div></div>`;
 }
 
@@ -84,7 +84,7 @@ async function cargar() {
     try { pend ? navigator.setAppBadge?.(pend) : navigator.clearAppBadge?.(); } catch {}
   } catch (e) {
     console.error(e);
-    body.innerHTML = `<div class="card gate"><div class="em">⚠️</div><h3>No se pudieron cargar los datos</h3><p class="muted">${esc(e.message)}</p><p class="muted" style="font-size:13px">Si acabas de conectar Firebase, revisa las reglas de Firestore (LEEME.md).</p></div>`;
+    body.innerHTML = `<div class="card gate"><div class="em">${icono('alert')}</div><h3>No se pudieron cargar los datos</h3><p class="muted">${esc(e.message)}</p><p class="muted" style="font-size:13px">Si acabas de conectar Firebase, revisa las reglas de Firestore (LEEME.md).</p></div>`;
   }
 }
 $('#pnRefresh').addEventListener('click', async e => { const b = e.currentTarget; ocupado(b, true); await cargar(); ocupado(b, false); toast('Actualizado'); });
@@ -126,7 +126,7 @@ function filaPedido(p, { coger = false } = {}) {
   <article class="row" data-open="${p.id}" tabindex="0" role="button">
     <div class="row-main">
       <div class="row-t"><b>${esc(neg(p))}</b><span class="pill ${e.cls}">${e.txt}</span>
-        ${p.pagoEstado === 'verificando' ? '<span class="pill p-pend">💶 Pago por verificar</span>' : ''}
+        ${p.pagoEstado === 'verificando' ? '<span class="pill p-pend">Pago por verificar</span>' : ''}
         ${p.urgente ? '<span class="pill p-off">Urgente</span>' : ''}</div>
       <small>${esc(p.planNombre)} · ${pl ? esc(pl.nombre) : 'A medida'} · ${esc(p.clienteNombre)} · ${haceCuanto(p.createdAt)}</small>
       ${p.estado !== 'cancelado' ? `<div class="row-prog" title="Progreso ${progreso(p)} %"><i style="--w:${progreso(p)}%"></i></div>` : ''}
@@ -160,17 +160,17 @@ function resumen() {
       ${kpi('Pagos por verificar', P.filter(p => p.pagoEstado === 'verificando').length, 'revisa Bizum / banco', 'pedidos')}
       ${kpi('Cobrado', euros(cobrado), `de ${euros(volumen)} en pedidos`)}
       ${kpi('Mensualidades', euros(mensual) + '<small>/mes</small>', 'mantenimiento')}
-      ${kpi('Valoración', pub.length ? media.toFixed(1).replace('.', ',') + ' ★' : '—', `${pub.length} publicadas`, 'resenas')}
+      ${kpi('Valoración', pub.length ? media.toFixed(1).replace('.', ',') + ' / 5' : '—', `${pub.length} publicadas`, 'resenas')}
       ${kpi('Comisiones por pagar', euros(trabajadores().reduce((s, w) => s + porPagar(w.uid).reduce((a, p) => a + comision(p), 0), 0)), `${trabajadores().length} vendedores · ${datos.cands.filter(c => c.estado === 'pendiente').length} candidaturas`, 'equipo')}
     </div>
     <div class="cols">
       <div class="card">
         <div class="card-h"><h3>Últimos pedidos</h3><button class="link-btn" data-go="pedidos">Ver todos</button></div>
-        <div class="rows">${P.slice(0, 5).map(p => filaPedido(p)).join('') || vacio('📭', 'Aún no hay pedidos')}</div>
+        <div class="rows">${P.slice(0, 5).map(p => filaPedido(p)).join('') || vacio('inbox', 'Aún no hay pedidos')}</div>
       </div>
       <div class="card">
         <div class="card-h"><h3>Pedidos por tipo de web</h3></div>
-        ${porPlan.length ? `<div class="bars">${porPlan.map(x => `<div class="bar"><span>${esc(x.n)}</span><div><i style="width:${(x.v / max) * 100}%"></i></div><b>${x.v}</b></div>`).join('')}</div>` : vacio('📊', 'Sin datos todavía')}
+        ${porPlan.length ? `<div class="bars">${porPlan.map(x => `<div class="bar"><span>${esc(x.n)}</span><div><i style="width:${(x.v / max) * 100}%"></i></div><b>${x.v}</b></div>`).join('')}</div>` : vacio('chart', 'Sin datos todavía')}
         <div class="card-h" style="margin-top:26px"><h3>Carga del equipo</h3></div>
         ${trabajadores().length ? `<div class="team-load">${trabajadores().map(w => {
           const n = P.filter(p => p.asignado === w.uid && activo(p)).length;
@@ -181,7 +181,7 @@ function resumen() {
 }
 
 /* ---------- PROPIETARIO: Pedidos ---------- */
-const FILTROS = { todos: 'Todos', pago: '💶 Por verificar', ...Object.fromEntries(Object.entries(ESTADOS).map(([k, v]) => [k, v.txt])) };
+const FILTROS = { todos: 'Todos', pago: 'Pago por verificar', ...Object.fromEntries(Object.entries(ESTADOS).map(([k, v]) => [k, v.txt])) };
 function pasaFiltro(p, k) {
   if (k === 'todos') return true;
   if (k === 'pago') return p.pagoEstado === 'verificando';
@@ -207,7 +207,7 @@ function vistaPedidos() {
       </div>
     </div>
     <div class="opts filters">${Object.entries(FILTROS).map(([k, t]) => `<label class="opt"><input type="radio" name="flt" value="${k}" ${filtro.estado === k ? 'checked' : ''}><span><i>${t} · ${base.filter(p => pasaFiltro(p, k)).length}</i></span></label>`).join('')}</div>
-    ${vista === 'tablero' ? tablero(lista) : `<div class="rows card flush">${lista.map(p => filaPedido(p)).join('') || vacio('🔍', 'No hay pedidos aquí')}</div>`}`;
+    ${vista === 'tablero' ? tablero(lista) : `<div class="rows card flush">${lista.map(p => filaPedido(p)).join('') || vacio('search', 'No hay pedidos aquí')}</div>`}`;
   $$('[data-vista]').forEach(b => b.addEventListener('click', () => {
     vista = b.dataset.vista;
     try { localStorage.setItem('tm_vista', vista); } catch {}
@@ -237,7 +237,7 @@ function tablero(lista) {
         <article class="kcard" draggable="true" data-open="${p.id}" data-id="${p.id}" tabindex="0">
           <div class="kc-t"><b>${esc(neg(p))}</b><span>${euros(p.total)}</span></div>
           <small>${esc(p.planNombre)} · ${esc(p.clienteNombre)}</small>
-          <div class="kc-tags">${p.pagoEstado === 'verificando' ? '<span class="pill p-pend">💶 Verificar</span>' : ''}${p.urgente ? '<span class="pill p-off">Urgente</span>' : ''}</div>
+          <div class="kc-tags">${p.pagoEstado === 'verificando' ? '<span class="pill p-pend">Verificar pago</span>' : ''}${p.urgente ? '<span class="pill p-off">Urgente</span>' : ''}</div>
           <div class="kc-f"><div class="row-prog"><i style="--w:${progreso(p)}%"></i></div>${p.asignadoNombre ? avatar({ name: p.asignadoNombre }, 'sm') : '<span class="who none">—</span>'}</div>
         </article>`).join('') || '<p class="col-empty">Suelta aquí</p>'}</div>
     </div>`;
@@ -300,23 +300,23 @@ function candidaturas() {
       <p class="cand-msg">“${esc(c.mensaje)}”</p>
       ${c.habilidades?.length ? `<div class="chips-mini">${c.habilidades.map(h => `<span>${esc(h)}</span>`).join('')}</div>` : ''}
       <div class="cand-meta">
-        <span>✉️ ${esc(c.email)}</span><span>📞 ${esc(c.telefono)}</span>
-        ${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">🔗 ${esc(c.portfolio)}</a>` : ''}
-        <span>🗓 ${haceCuanto(c.createdAt)}</span>
+        <span>${icono('mail')} ${esc(c.email)}</span><span>${icono('call')} ${esc(c.telefono)}</span>
+        ${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">${icono('link')} ${esc(c.portfolio)}</a>` : ''}
+        <span>${icono('calendar')} ${haceCuanto(c.createdAt)}</span>
       </div>
       <div class="cand-btns">
         ${c.estado === 'pendiente' ? `<button class="btn btn-sm btn-primary" data-aceptar="${c.id}">${icono('check')}<span>Aceptar</span></button><button class="btn btn-sm btn-ghost" data-rechazar="${c.id}"><span>Rechazar</span></button>` : ''}
         <a class="btn btn-sm btn-ghost" href="${waLink(`¡Hola ${c.nombre.split(' ')[0]}! Te escribimos de ${CONFIG.marca} por tu candidatura 🙂`, '34' + String(c.telefono).replace(/\D/g, '').slice(-9))}" target="_blank" rel="noopener">${icono('wa')}<span>WhatsApp</span></a>
       </div>
     </article>`;
-  }).join('')}</div>` : vacio('📭', 'Sin candidaturas', 'Cuando alguien rellene «Trabaja con nosotros» aparecerá aquí.');
+  }).join('')}</div>` : vacio('inbox', 'Sin candidaturas', 'Cuando alguien rellene «Trabaja con nosotros» aparecerá aquí.');
 }
 
 /* ---------- PROPIETARIO: Reseñas ---------- */
 function resenas() {
   const R = datos.resenas;
   body.innerHTML = `
-    <p class="muted hint">Las reseñas nuevas no se ven en la web hasta que las apruebes.${CONFIG.trustpilot ? ` · <a class="link-btn" href="${esc(CONFIG.trustpilot)}" target="_blank" rel="noopener">Ver Trustpilot ↗</a>` : ''}</p>
+    <p class="muted hint">Las reseñas nuevas no se ven en la web hasta que las apruebes.${CONFIG.trustpilot ? ` · <a class="link-btn" href="${esc(CONFIG.trustpilot)}" target="_blank" rel="noopener">Ver Trustpilot ${icono('external')}</a>` : ''}</p>
     ${R.length ? `<div class="cands">${R.map(r => `
       <article class="card cand">
         <div class="cand-h">${avatar({ name: r.nombre })}<div><b>${esc(r.nombre)}</b><small>${esc(r.plan || '')} · ${haceCuanto(r.createdAt)}</small></div>
@@ -329,7 +329,7 @@ function resenas() {
             : `<button class="btn btn-sm btn-primary" data-aprobar="${r.id}">${icono('check')}<span>Publicar</span></button>`}
           <button class="btn btn-sm btn-danger" data-borrar-r="${r.id}"><span>Borrar</span></button>
         </div>
-      </article>`).join('')}</div>` : vacio('⭐', 'Aún no hay reseñas', 'Los clientes pueden valorar su web cuando se la entregues.')}`;
+      </article>`).join('')}</div>` : vacio('star', 'Aún no hay reseñas', 'Los clientes pueden valorar su web cuando se la entregues.')}`;
 }
 
 /* ---------- PROPIETARIO: Equipo ---------- */
@@ -363,7 +363,7 @@ function equipo() {
     const u = datos.usuarios.find(x => (x.email || '').toLowerCase() === email);
     if (!u) { $('#addEmail').closest('.fc').classList.add('error'); return toast('No hay ninguna cuenta con ese email todavía', 'err'); }
     if (u.role !== 'client') return toast('Esa persona ya está en el equipo');
-    await accion(e.submitter, () => store.cambiarRol(u.uid, 'worker'), `${u.name} añadido al equipo 🎉`);
+    await accion(e.submitter, () => store.cambiarRol(u.uid, 'worker'), `${u.name} añadido al equipo`);
   });
 }
 
@@ -398,7 +398,7 @@ function ventas() {
           <small>${esc(p.planNombre)} · ${euros(p.total)} · ${haceCuanto(p.createdAt)}</small></div>
         <div class="row-side"><b class="row-price com">+${euros(comision(p))}</b></div>
       </article>`;
-    }).join('') || vacio('🔗', 'Aún no tienes ventas', 'Comparte tu enlace en redes o por WhatsApp para conseguir la primera.')}</div>`;
+    }).join('') || vacio('link', 'Aún no tienes ventas', 'Comparte tu enlace en redes o por WhatsApp para conseguir la primera.')}</div>`;
 }
 
 /* ---------- TRABAJADOR ---------- */
@@ -410,16 +410,16 @@ function mios() {
       <div class="kpi"><small>En revisión</small><b>${L.filter(p => p.estado === 'revision').length}</b></div>
       <div class="kpi"><small>Entregados</small><b>${datos.pedidos.filter(p => p.asignado === U.uid && p.estado === 'entregado').length}</b></div>
     </div>
-    <div class="rows card flush">${L.map(p => filaPedido(p)).join('') || vacio('☕', 'No tienes encargos activos', 'Mira en «Disponibles» para coger uno.')}</div>`;
+    <div class="rows card flush">${L.map(p => filaPedido(p)).join('') || vacio('coffee', 'No tienes encargos activos', 'Mira en «Disponibles» para coger uno.')}</div>`;
 }
 function disponibles() {
   const L = datos.pedidos.filter(p => !p.asignado && p.estado === 'nuevo');
   body.innerHTML = `<p class="muted hint">Pedidos nuevos sin asignar. Cógelo para que te aparezca en «Mis encargos».</p>
-    <div class="rows card flush">${L.map(p => filaPedido(p, { coger: true })).join('') || vacio('🎉', 'No hay pedidos libres', 'Vuelve más tarde.')}</div>`;
+    <div class="rows card flush">${L.map(p => filaPedido(p, { coger: true })).join('') || vacio('party', 'No hay pedidos libres', 'Vuelve más tarde.')}</div>`;
 }
 function historial() {
   const L = datos.pedidos.filter(p => p.asignado === U.uid && !activo(p));
-  body.innerHTML = `<div class="rows card flush">${L.map(p => filaPedido(p)).join('') || vacio('📁', 'Aún no has terminado ningún encargo')}</div>`;
+  body.innerHTML = `<div class="rows card flush">${L.map(p => filaPedido(p)).join('') || vacio('folder', 'Aún no has terminado ningún encargo')}</div>`;
 }
 
 /* ---------- Acciones (un solo manejador para todo el panel) ---------- */
@@ -438,7 +438,7 @@ body.addEventListener('click', async e => {
     if (d.coger) return accion(t, () => coger(d.coger), '¡Encargo cogido! Ya está en «Mis encargos»');
     if (d.aceptar) {
       const c = datos.cands.find(x => x.id === d.aceptar);
-      return accion(t, async () => { await store.cambiarRol(c.uid, 'worker'); await store.actualizarCandidatura(c.id, { estado: 'aceptada' }); }, `${c.nombre.split(' ')[0]} ya forma parte del equipo 🎉`);
+      return accion(t, async () => { await store.cambiarRol(c.uid, 'worker'); await store.actualizarCandidatura(c.id, { estado: 'aceptada' }); }, `${c.nombre.split(' ')[0]} ya forma parte del equipo`);
     }
     if (d.rechazar) return accion(t, () => store.actualizarCandidatura(d.rechazar, { estado: 'rechazada' }), 'Candidatura rechazada');
     if (d.quitar) {
@@ -450,9 +450,9 @@ body.addEventListener('click', async e => {
       const pp = porPagar(d.pagarCom);
       const total = pp.reduce((a, p) => a + comision(p), 0);
       if (!confirm(`¿Has pagado ${euros(total)} de comisiones a ${nombreDe(d.pagarCom)}? Se marcarán como cobradas.`)) return;
-      return accion(t, () => Promise.all(pp.map(p => store.actualizarPedido(p.id, { comisionPagada: Date.now() }))), 'Comisiones marcadas como pagadas 💶');
+      return accion(t, () => Promise.all(pp.map(p => store.actualizarPedido(p.id, { comisionPagada: Date.now() }))), 'Comisiones marcadas como pagadas');
     }
-    if (d.aprobar) return accion(t, () => store.actualizarResena(d.aprobar, { aprobada: true }), 'Reseña publicada en la web ⭐');
+    if (d.aprobar) return accion(t, () => store.actualizarResena(d.aprobar, { aprobada: true }), 'Reseña publicada en la web');
     if (d.ocultar) return accion(t, () => store.actualizarResena(d.ocultar, { aprobada: false }), 'Reseña ocultada');
     if (d.borrarR) {
       if (!confirm('¿Borrar esta reseña?')) return;
@@ -511,7 +511,7 @@ function abrirPedido(id) {
         <label class="fc-select"><span>Pago</span>
           <select id="odPago" ${puedeEditar ? '' : 'disabled'}>${Object.entries(PAGOS).map(([k, v]) => `<option value="${k}" ${pago === k ? 'selected' : ''}>${v.txt}</option>`).join('')}</select></label>
         <p>${pago === 'verificando'
-          ? `💶 El cliente dice que ha pagado ${p.pagoFase === 'resto' ? 'el resto' : 'la señal'} (<b>${euros(p.pagoFase === 'resto' ? p.total - senal : senal)}</b>) por <b>${METODOS[p.pagoMetodo] || p.pagoMetodo}</b> ${p.pagoAviso ? haceCuanto(p.pagoAviso) : ''}. Compruébalo y márcalo como pagado.`
+          ? `${icono('euro')} El cliente dice que ha pagado ${p.pagoFase === 'resto' ? 'el resto' : 'la señal'} (<b>${euros(p.pagoFase === 'resto' ? p.total - senal : senal)}</b>) por <b>${METODOS[p.pagoMetodo] || p.pagoMetodo}</b> ${p.pagoAviso ? haceCuanto(p.pagoAviso) : ''}. Compruébalo y márcalo como pagado.`
           : p.pagoMetodo ? `Último pago por ${METODOS[p.pagoMetodo] || p.pagoMetodo}.` : `Señal: ${euros(senal)} · Resto: ${euros((p.total || 0) - senal)}`}</p>
       </div>
 
@@ -536,7 +536,7 @@ function abrirPedido(id) {
       <div class="kvs">
         ${p.ref ? `<div class="kv"><span>Vendido por</span><b>${esc(nombreDe(p.ref))} · ${PCT} % = ${euros(comision(p))} ${p.comisionPagada ? '(pagada)' : ''}</b></div>` : ''}
         ${fila('Tipo de web', p.planNombre)}
-        <div class="kv"><span>Diseño</span><b>${pl ? `${esc(pl.nombre)} <a class="link-btn" href="${prevURL}" target="_blank" rel="noopener">ver ↗</a>` : 'Desde cero'}</b></div>
+        <div class="kv"><span>Diseño</span><b>${pl ? `${esc(pl.nombre)} <a class="link-btn" href="${prevURL}" target="_blank" rel="noopener">ver ${icono('external')}</a>` : 'Desde cero'}</b></div>
         ${fila('Precio base', euros(p.precioBase || 0))}
         ${(p.extras || []).map(x => fila(x.nombre, '+' + euros(x.precio) + (x.mensual ? '/mes' : ''))).join('')}
         ${p.urgente ? fila('Urgente', 'Sí') : ''}
@@ -550,7 +550,7 @@ function abrirPedido(id) {
         ${r.color ? `<div class="kv"><span>Color</span><b><i class="dotc" style="background:${esc(r.color)}"></i>${esc(r.color)}</b></div>` : ''}
         ${fila('Logo', r.logo)}${fila('Textos y fotos', r.contenido)}${fila('Plazo', r.plazo)}
       </div>
-      ${r.comentarios ? `<div class="od-note">💬 ${esc(r.comentarios)}</div>` : ''}
+      ${r.comentarios ? `<div class="od-note">${icono('message')} ${esc(r.comentarios)}</div>` : ''}
 
       <h4 class="od-h">Notas internas</h4>
       <div class="notes">${(p.notas || []).map(n => `<div class="note"><div><b>${esc(n.autor)}</b><small>${haceCuanto(n.t)}</small></div><p>${esc(n.texto)}</p></div>`).join('') || '<p class="muted" style="font-size:14px">Sin notas todavía.</p>'}</div>
@@ -572,7 +572,7 @@ function abrirPedido(id) {
   $$('[data-tarea]', box).forEach(c => c.addEventListener('change', () => {
     const tareas = { ...(p.tareas || {}), [c.dataset.tarea]: c.checked };
     const todas = TAREAS.every(([k]) => tareas[k]);
-    guardar({ tareas }, todas ? '¡Todo listo! Puedes marcarla como entregada 🎉' : 'Tarea actualizada');
+    guardar({ tareas }, todas ? '¡Todo listo! Ya puedes marcarla como entregada' : 'Tarea actualizada');
   }));
   $('#odEstado', box)?.addEventListener('change', e => guardar({ estado: e.target.value }, `Estado: ${ESTADOS[e.target.value].txt}`));
   $('#odPago', box)?.addEventListener('change', e => guardar({ pagoEstado: e.target.value }, `Pago: ${PAGOS[e.target.value].txt}`));

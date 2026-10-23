@@ -246,3 +246,24 @@ dialog.dlg::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit
 
 /* Cabecera y pie pegados a los bordes de la pantalla */
 .header .wrap,.footer .footer-inner{max-width:none;padding-left:var(--borde);padding-right:var(--borde)}
+
+/* ==========================================================
+   Iconos en lugar de emojis
+   ========================================================== */
+.empty .em,.gate .em,.estado-cand .big{width:64px;height:64px;margin:0 auto 14px;border-radius:20px;display:grid;place-items:center;font-size:0;
+  background:var(--accent-soft);color:var(--accent);border:1px solid rgba(200,245,96,.25);box-shadow:0 10px 30px -12px rgba(200,245,96,.4)}
+.empty .em svg,.gate .em svg,.estado-cand .big svg{width:28px;height:28px}
+.saludo{display:inline-grid;place-items:center;vertical-align:middle;width:1em;height:1em;color:var(--accent);transform-origin:70% 80%;animation:saludar 2.2s var(--e-out) .4s 2}
+.saludo svg{width:.8em;height:.8em}
+@keyframes saludar{0%,60%,100%{transform:rotate(0)}10%,30%{transform:rotate(16deg)}20%,40%{transform:rotate(-8deg)}}
+.pc-time,.cand-meta span,.cand-meta a,.fcd-secure,.dz-scroll,.demo-box b,.link-btn{display:inline-flex;align-items:center;gap:6px}
+.mp-who,.od-note,.nota{display:flex;align-items:center;gap:8px}
+.demo-banner{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 6px}
+.od-pay p svg{vertical-align:-2px;margin-right:4px}
+.pc-time svg,.mp-who svg,.cand-meta svg,.fcd-secure svg,.dz-scroll svg,.demo-banner svg,.demo-box b svg,.link-btn svg,.od-pay p svg{width:14px;height:14px;flex:none}
+.od-note svg,.nota svg{width:18px;height:18px;flex:none;color:var(--accent)}
+.pf-ic svg{width:26px;height:26px}
+.vj > span{display:inline-grid!important;place-items:center;width:52px;height:52px;border-radius:16px;background:var(--accent-soft);color:var(--accent);border:1px solid rgba(200,245,96,.2)}
+.vj > span svg{width:24px;height:24px}
+.cero-ic svg,.cero-mini svg{width:24px;height:24px}
+.toast .t-ic svg{width:14px;height:14px}

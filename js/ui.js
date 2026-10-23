@@ -4,6 +4,8 @@
 import { CONFIG } from '../config.js';
 import * as store from './store.js';
 import { iniciarEfectos } from './efectos.js';
+import { icono, pintarIconos, SVG_WA } from './iconos.js';
+export { icono, pintarIconos };
 
 /* ---------- Utilidades ---------- */
 export const $ = (s, c = document) => c.querySelector(s);
@@ -49,39 +51,10 @@ export const progreso = p => {
 };
 
 /* ---------- Iconos ---------- */
-const ICONOS = {
-  landing: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h8"/>',
-  portfolio: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
-  negocio: '<path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/>',
-  reservas: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 15h3"/>',
-  tienda: '<path d="M6 6h15l-2 9H8L6 6zM6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>',
-  medida: '<path d="m8 9-4 3 4 3M16 9l4 3-4 3M13.5 6l-3 12"/>',
-  check: '<path d="m5 12 5 5 9-10"/>',
-  x: '<path d="M6 6l12 12M18 6 6 18"/>',
-  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
-  panel: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
-  bag: '<path d="M5 8h14l-1 13H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
-  logout: '<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/>',
-  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
-  eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
-  briefcase: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>',
-  phone: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
-  bank: '<path d="M3 10h18L12 4 3 10zM5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 21h18"/>',
-  card: '<rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20M6 15h4"/>',
-  wallet: '<path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3"/><path d="M21 9h-6a3 3 0 0 0 0 6h6V9z"/>',
-  copy: '<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
-  star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9L12 3z"/>',
-  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
-  refresh: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
-  shield: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3z"/><path d="m9 12 2 2 4-4"/>'
-};
-const SVG_WA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>';
+
 export const SVG_GOOGLE = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
 const SVG_GITHUB = '<svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 .4C7.2.4 0 7.6 0 16.4c0 7.1 4.6 13.1 10.9 15.2.8.2 1.1-.3 1.1-.8v-2.7c-4.5 1-5.4-2.2-5.4-2.2-.7-1.8-1.8-2.3-1.8-2.3-1.4-1 .1-1 .1-1 1.6.1 2.4 1.6 2.4 1.6 1.4 2.4 3.7 1.7 4.7 1.3.1-1 .6-1.7 1-2.1-3.6-.4-7.3-1.8-7.3-7.9 0-1.8.6-3.2 1.6-4.3-.2-.4-.7-2 .1-4.2 0 0 1.3-.4 4.4 1.6a15 15 0 0 1 8 0c3-2.1 4.4-1.6 4.4-1.6.9 2.2.3 3.8.2 4.2 1 1.1 1.6 2.5 1.6 4.3 0 6.1-3.7 7.5-7.3 7.9.6.5 1.1 1.5 1.1 3v4.4c0 .4.3.9 1.1.8C27.4 29.5 32 23.5 32 16.4 32 7.6 24.8.4 16 .4z"/></svg>';
 
-export const icono = (n, cls = '') =>
-  n === 'wa' ? SVG_WA.replace('<svg', `<svg class="${cls}"`)
-    : `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONOS[n] || ''}</svg>`;
 
 export const avatar = (u, cls = '') =>
   u.photo
@@ -197,7 +170,7 @@ export function toast(texto, tipo = '') {
     t.id = 'toast'; t.setAttribute('role', 'status');
     document.body.appendChild(t);
   }
-  const ic = { ok: '✓', err: '!' }[tipo] || 'i';
+  const ic = icono({ ok: 'check', err: 'alert' }[tipo] || 'bulb');
   t.innerHTML = `<span class="t-ic">${ic}</span><span>${esc(texto)}</span>`;
   t.className = 'toast';
   void t.offsetWidth;
@@ -280,7 +253,7 @@ export function pintarPie() {
         <a href="trabaja.html">Trabaja con nosotros</a>
         <a href="terminos.html">Términos y privacidad</a>
         <a href="${waLink('¡Hola! Vengo de vuestra web 🙂')}" target="_blank" rel="noopener">WhatsApp</a>
-        <button class="link-btn" data-install hidden>📲 Instalar app</button>
+        <button class="link-btn" data-install hidden>${icono('download')} Instalar app</button>
       </div>
       <p>© ${new Date().getFullYear()} ${esc(CONFIG.marca)}</p>
     </div>`;
@@ -358,7 +331,7 @@ function crearLogin() {
       <p class="signup"><span id="lgSwitchTxt">¿No tienes cuenta?</span> <button class="link-btn" id="lgSwitch" type="button">Regístrate</button></p>
       ${store.modoDemo ? `
       <div class="demo-box">
-        <b>🧪 Modo demo</b>
+        <b>${icono('flask')} Modo demo</b>
         <p>Firebase aún no está conectado, así que el acceso es de prueba. Entra con un rol:</p>
         <div class="demo-btns">
           <button class="btn btn-sm btn-ghost" data-demo="client">Cliente</button>
@@ -471,10 +444,11 @@ export async function arrancar(pagina) {
   if (store.modoDemo) {
     const b = document.createElement('div');
     b.className = 'demo-banner';
-    b.innerHTML = `🧪 <b>Modo demo</b> · los datos se guardan solo en este dispositivo. <button class="link-btn" data-login>Probar paneles</button>`;
+    b.innerHTML = `${icono('flask')} <b>Modo demo</b> · los datos se guardan solo en este dispositivo. <button class="link-btn" data-login>Probar paneles</button>`;
     document.body.prepend(b);
   }
   etiquetas();
+  pintarIconos();
   // Las tarjetas de marca se animan al verse en pantalla (en móvil no hay "hover")
   prepararMarcas();
   addEventListener('resize', () => prepararMarcas());
@@ -506,8 +480,8 @@ function instalarPWA() {
       ev.prompt();
       const { outcome } = await ev.userChoice;
       ev = null;
-      if (outcome === 'accepted') toast('¡Instalada! 🎉');
-    } else if (ios) toast('Pulsa Compartir ⬆︎ y «Añadir a pantalla de inicio»');
+      if (outcome === 'accepted') toast('¡Instalada! Ya la tienes en tu pantalla de inicio', 'ok');
+    } else if (ios) toast('Pulsa Compartir y luego «Añadir a pantalla de inicio»');
     else toast('Abre el menú del navegador y elige «Instalar app»');
   });
   if (ios) $$('[data-install]').forEach(b => (b.hidden = false));
