@@ -505,3 +505,12 @@ html.intro body>*:not(.splash){visibility:hidden}
 .lg-marca{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px auto 18px}
 .lg-marca img:first-child{width:40px;height:40px;object-fit:contain}
 .lg-marca .wordmark{height:17px;width:auto}
+
+/* Nada puede ensanchar la página en el móvil (tablas de Ajustes, formularios…) */
+.aj-body > *,.aj-body form,.aj-b{min-width:0;max-width:100%}
+.aj-tabla{max-width:100%}
+.pn,.pn > *,.wrap{min-width:0}
+.cli{min-width:0;max-width:100%}
+.cli-n{flex:none;max-width:46%}
+.cli .cli-n small{white-space:normal;overflow:visible}
+@media (max-width:480px){.cli summary{gap:10px}.cli{padding:0 14px}}
