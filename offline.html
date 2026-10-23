@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c0c0e">
+  <title>Sin conexión · TuMarca</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;display:grid;place-items:center;padding:24px;background:#0c0c0e;color:#f3f1ea;font-family:system-ui,-apple-system,sans-serif;text-align:center}
+    .box{max-width:360px}
+    .mark{width:64px;height:64px;margin:0 auto 24px;border-radius:18px;background:#c8f560;color:#0c0c0e;display:grid;place-items:center;font-size:30px;font-weight:800;transform:rotate(-6deg)}
+    h1{font-size:26px;margin-bottom:10px;letter-spacing:-.02em}
+    p{color:#a19f96;line-height:1.6;margin-bottom:28px}
+    button{height:50px;padding:0 26px;border:0;border-radius:99px;background:#c8f560;color:#0c0c0e;font:inherit;font-weight:600;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="mark">✦</div>
+    <h1>Estás sin conexión</h1>
+    <p>No hay internet ahora mismo. En cuanto vuelva la conexión podrás seguir viendo la web y pedir tu presupuesto.</p>
+    <button onclick="location.reload()">Reintentar</button>
+  </div>
+</body>
+</html>

@@ -1,0 +1,150 @@
+/* ==========================================================
+   ANIMACIONES SUAVES
+   Mismas curvas y tiempos en toda la web:
+   --e-out (frenada suave) y --e-spring (pequeño rebote), en style.css
+   Si el móvil tiene activado "reducir movimiento", casi todo se desactiva.
+   ========================================================== */
+
+/* ---------- Botones ---------- */
+.btn{transition:transform .35s var(--e-spring),background-color .3s var(--e-out),color .3s var(--e-out),border-color .3s var(--e-out),box-shadow .5s var(--e-out),background-size .45s var(--e-out);
+  overflow:hidden;isolation:isolate}
+.btn svg{transition:transform .35s var(--e-spring)}
+@media (hover:hover){
+  .btn:hover{transform:translateY(-2px)}
+  .btn:hover svg:last-child:not(:first-child){transform:translateX(3px)}
+}
+.btn:active{transform:translateY(0) scale(.96);transition-duration:.12s}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* Botón fantasma que se rellena de color al pasar por encima */
+.btn-fill{background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:left center;background-size:0% 100%}
+@media (hover:hover){.btn-fill:hover{background-size:100% 100%;color:var(--ink);border-color:var(--accent);box-shadow:0 10px 30px -8px rgba(200,245,96,.5)}}
+
+/* Onda al tocar (la crea efectos.js) — se nota también en el móvil */
+.ripple{position:absolute;border-radius:50%;pointer-events:none;transform:scale(0);opacity:.35;background:currentColor;animation:onda .6s var(--e-out) forwards;z-index:-1}
+@keyframes onda{to{transform:scale(1);opacity:0}}
+
+/* Botones pequeños, iconos y enlaces */
+.social,.icon-btn{isolation:isolate;overflow:hidden}
+.icon-btn,.dlg-x,.menu-btn,.user-btn,.social,.seg button{transition:transform .3s var(--e-spring),background-color .25s var(--e-out),border-color .25s var(--e-out),color .25s var(--e-out)}
+@media (hover:hover){
+  .icon-btn:hover,.dlg-x:hover{transform:scale(1.08);border-color:var(--line2);background:rgba(255,255,255,.08)}
+  .dlg-x:hover{transform:rotate(90deg)}
+  .user-btn:hover{transform:scale(1.06)}
+}
+.icon-btn:active,.dlg-x:active,.menu-btn:active,.social:active{transform:scale(.92)}
+.link-btn{position:relative;transition:color .25s var(--e-out)}
+
+/* Subrayado que crece en los enlaces del menú y del pie */
+.nav a:not(.btn),.footer-links a{position:relative}
+.nav a:not(.btn)::after,.footer-links a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;border-radius:2px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .4s var(--e-out)}
+@media (hover:hover){.nav a:not(.btn):hover::after,.footer-links a:hover::after{transform:scaleX(1);transform-origin:left}}
+.nav a.act::after{transform:scaleX(1)}
+
+/* ---------- Tarjetas: elevación + foco de luz que sigue al ratón ---------- */
+.plan-card,.dz,.op-card,.kpi,.puesto,.cand,.mp,.step,.v{position:relative}
+.plan-card,.dz,.op-card,.puesto{transition:transform .5s var(--e-out),border-color .4s var(--e-out),box-shadow .5s var(--e-out)}
+.foco::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .4s var(--e-out);z-index:0;
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(200,245,96,.10),transparent 45%)}
+.plan-card.popular.foco::before{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.35),transparent 45%)}
+@media (hover:hover){
+  .foco:hover::before{opacity:1}
+  .plan-card:hover,.op-card:hover,.puesto:hover{transform:translateY(-6px);box-shadow:0 24px 50px -24px rgba(0,0,0,.8)}
+  .dz:hover{transform:translateY(-6px) rotate(-.4deg);box-shadow:0 30px 60px -28px rgba(0,0,0,.9)}
+  .plan-card:hover .pc-ic{transform:rotate(-8deg) scale(1.08)}
+  .dz:hover .dz-dot{transform:scale(1.25)}
+}
+.pc-ic,.dz-dot,.icon{transition:transform .45s var(--e-spring)}
+.plan-card > *,.op-card > *{position:relative;z-index:1}
+
+/* ---------- Apariciones al hacer scroll (con un leve desenfoque) ---------- */
+.js .reveal{opacity:0;transform:translateY(26px);filter:blur(6px);transition:opacity .8s var(--e-out),transform .8s var(--e-out),filter .8s var(--e-out)}
+.js .reveal.in{opacity:1;transform:none;filter:none}
+
+/* Portada: entrada escalonada */
+.hero-copy > *{animation:subir .9s var(--e-out) both}
+.hero-copy > :nth-child(2){animation-delay:.08s}
+.hero-copy > :nth-child(3){animation-delay:.16s}
+.hero-copy > :nth-child(4){animation-delay:.24s}
+.hero-copy > :nth-child(5){animation-delay:.32s}
+.hero-art{animation:aparecer 1.2s .3s var(--e-out) both}
+@keyframes subir{from{opacity:0;transform:translateY(22px)}}
+@keyframes aparecer{from{opacity:0;transform:translateY(30px) scale(.96)}}
+
+/* ---------- Diálogos: entran y salen suaves ---------- */
+dialog.dlg{opacity:0;transition:opacity .3s var(--e-out),overlay .3s allow-discrete,display .3s allow-discrete}
+dialog.dlg[open]{opacity:1;animation:none}
+@starting-style{dialog.dlg[open]{opacity:0}}
+dialog.dlg::backdrop{opacity:0;transition:opacity .3s var(--e-out),overlay .3s allow-discrete,display .3s allow-discrete}
+dialog.dlg[open]::backdrop{opacity:1}
+@starting-style{dialog.dlg[open]::backdrop{opacity:0}}
+.dlg-box{transition:transform .4s var(--e-out)}
+dialog.dlg:not([open]) .dlg-box{transform:translateY(18px) scale(.98)}
+dialog.dlg-side:not([open]) .dlg-box{transform:translateX(40px)}
+
+/* Pasos del cuestionario: deslizan según vayas hacia delante o atrás */
+.wiz-body[data-dir="fwd"] .paso.on{animation:pasoFwd .45s var(--e-out)}
+.wiz-body[data-dir="back"] .paso.on{animation:pasoBack .45s var(--e-out)}
+@keyframes pasoFwd{from{opacity:0;transform:translateX(28px)}}
+@keyframes pasoBack{from{opacity:0;transform:translateX(-28px)}}
+.wiz-total b{display:inline-block;transition:transform .3s var(--e-spring)}
+.wiz-total b.bump{animation:bump .45s var(--e-spring)}
+@keyframes bump{40%{transform:scale(1.12);color:var(--accent)}}
+
+/* ---------- Pestañas del panel con indicador animado ---------- */
+.tabs button{position:relative;border-bottom-color:transparent!important;transition:color .25s var(--e-out)}
+.tabs button::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;border-radius:2px;background:var(--accent);transform:scaleX(0);transition:transform .4s var(--e-spring)}
+.tabs button.on::after{transform:scaleX(1)}
+.badge{animation:pop .5s var(--e-spring)}
+
+/* ---------- Menú del usuario y menú móvil ---------- */
+.user-menu{transition:opacity .25s var(--e-out),transform .35s var(--e-spring),visibility .25s}
+.user-menu a,.user-menu button{transition:background-color .2s var(--e-out),transform .25s var(--e-out)}
+@media (hover:hover){.user-menu a:hover,.user-menu button:hover{transform:translateX(3px)}}
+@media (max-width:900px){
+  .nav a{opacity:0;transform:translateY(-6px);transition:opacity .3s var(--e-out),transform .35s var(--e-out)}
+  .header.open .nav a{opacity:1;transform:none}
+  .header.open .nav a:nth-child(2){transition-delay:.04s}
+  .header.open .nav a:nth-child(3){transition-delay:.08s}
+  .header.open .nav a:nth-child(4){transition-delay:.12s}
+}
+/* La cabecera se esconde al bajar y vuelve al subir */
+.header{transition:transform .4s var(--e-out),background .3s,border-color .3s}
+.header.hide{transform:translateY(-110%)}
+
+/* ---------- Preguntas frecuentes: se abren con suavidad ---------- */
+:root{interpolate-size:allow-keywords}
+.faq details::details-content{height:0;overflow:clip;transition:height .4s var(--e-out),content-visibility .4s allow-discrete}
+.faq details[open]::details-content{height:auto}
+.faq details{transition:border-color .3s var(--e-out),background-color .3s var(--e-out)}
+.faq summary{transition:color .2s}
+@media (hover:hover){.faq summary:hover{color:var(--accent)}}
+.faq summary::after{transition:transform .4s var(--e-spring)}
+
+/* ---------- Campos, opciones y extras ---------- */
+.opt > span{transition:color .3s var(--e-out),background-color .3s var(--e-out),box-shadow .3s var(--e-out),transform .3s var(--e-spring)}
+.opt:active > span{transform:scale(.95)}
+.check-card{transition:border-color .3s var(--e-out),background-color .3s var(--e-out),transform .3s var(--e-spring)}
+.check-card:active{transform:scale(.985)}
+.pick-card{transition:border-color .3s var(--e-out),box-shadow .4s var(--e-out),transform .4s var(--e-out)}
+@media (hover:hover){.pick:hover .pick-card{transform:translateY(-3px)}}
+.sw span{transition:transform .3s var(--e-spring),box-shadow .3s var(--e-out)}
+.row{transition:background-color .2s var(--e-out),transform .3s var(--e-out)}
+@media (hover:hover){.row:hover{transform:translateX(3px)}}
+.kpi{transition:transform .4s var(--e-out),border-color .3s var(--e-out)}
+@media (hover:hover){.kpi[data-go]:hover{transform:translateY(-3px)}}
+
+/* ---------- Avisos ---------- */
+.toast{transition:opacity .35s var(--e-out),transform .5s var(--e-spring)}
+
+/* ---------- Barra de progreso de lectura ---------- */
+.progreso{position:fixed;left:0;top:0;height:2px;width:100%;z-index:60;background:var(--accent);transform-origin:left;transform:scaleX(var(--p,0));box-shadow:0 0 10px var(--accent);pointer-events:none}
+
+@keyframes pop{from{transform:scale(0)}}
+
+@media (prefers-reduced-motion:reduce){
+  .js .reveal{filter:none}
+  .hero-copy > *,.hero-art,.sello,.cinta-track,.wa-fab::before{animation:none!important}
+  .scribble path{stroke-dashoffset:0;animation:none}
+}
+.num{font:inherit;color:inherit;font-style:normal;font-variant-numeric:tabular-nums}

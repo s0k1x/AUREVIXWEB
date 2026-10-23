@@ -1,0 +1,64 @@
+rules_version = '2';
+// Reglas de seguridad de Firestore.
+// 👉 Cambia el email de abajo por el tuyo (el mismo que en config.js → propietarios)
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function logueado() { return request.auth != null; }
+    function esPropietario() {
+      return logueado() && request.auth.token.email in ['tuemail@gmail.com'];
+    }
+    function esTrabajador() {
+      return logueado()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'worker';
+    }
+    function esEquipo() { return esPropietario() || esTrabajador(); }
+    function soloCambia(campos) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(campos);
+    }
+
+    // Usuarios: cada uno crea su ficha como "client"; solo el propietario cambia roles
+    match /users/{uid} {
+      allow read: if logueado() && (request.auth.uid == uid || esEquipo());
+      allow create: if logueado() && request.auth.uid == uid && request.resource.data.role == 'client';
+      allow update: if esPropietario()
+        || (logueado() && request.auth.uid == uid && request.resource.data.role == resource.data.role);
+      allow delete: if esPropietario();
+    }
+
+    // Pedidos
+    match /orders/{id} {
+      allow create: if logueado() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.estado == 'nuevo'
+        && request.resource.data.pagoEstado == 'pendiente';
+      allow read: if logueado() && (resource.data.uid == request.auth.uid || esEquipo());
+      // El equipo lo gestiona todo; el cliente solo puede avisar de un pago o marcar que ha dejado reseña
+      allow update: if esEquipo()
+        || (logueado() && resource.data.uid == request.auth.uid && (
+              (soloCambia(['pagoEstado', 'pagoMetodo', 'pagoFase', 'pagoAviso']) && request.resource.data.pagoEstado == 'verificando')
+              || (soloCambia(['resenada']) && request.resource.data.resenada == true)
+           ));
+      allow delete: if esPropietario();
+    }
+
+    // Candidaturas de "Trabaja con nosotros"
+    match /applications/{id} {
+      allow create: if logueado() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.estado == 'pendiente';
+      allow read: if logueado() && (resource.data.uid == request.auth.uid || esPropietario());
+      allow update, delete: if esPropietario();
+    }
+
+    // Reseñas: cualquiera ve las aprobadas; solo el propietario aprueba
+    match /resenas/{id} {
+      allow read: if resource.data.aprobada == true
+        || (logueado() && (resource.data.uid == request.auth.uid || esPropietario()));
+      allow create: if logueado() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.aprobada == false
+        && request.resource.data.estrellas is int
+        && request.resource.data.estrellas >= 1 && request.resource.data.estrellas <= 5;
+      allow update, delete: if esPropietario();
+    }
+  }
+}

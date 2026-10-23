@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Trabaja con nosotros · TuMarca</title>
+  <meta name="description" content="Únete al equipo: buscamos diseñadores, programadores, comerciales y gestores de redes.">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0c0c0e">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="componentes.css">
+  <link rel="stylesheet" href="animaciones.css">
+  <style>
+    .t-hero{padding:70px 0 40px}
+    .t-hero h1{font-size:clamp(42px,7vw,72px);font-weight:800;margin:18px 0 18px;max-width:820px}
+    .t-hero h1 em{font-style:normal;color:var(--accent)}
+    .t-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:start;padding-bottom:90px}
+    .puestos{display:grid;gap:12px}
+    .puesto{display:flex;gap:16px;align-items:flex-start;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+    .puesto .em{width:46px;height:46px;border-radius:13px;background:var(--accent-soft);display:grid;place-items:center;font-size:22px;flex:none}
+    .puesto b{display:block;font-size:17px;font-family:var(--fd)}
+    .puesto p{color:var(--muted);font-size:14.5px}
+    .perks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+    .perks div{padding:16px;border-radius:14px;border:1px dashed var(--line2);font-size:14.5px}
+    .perks b{display:block;font-size:15px;margin-bottom:2px}
+    .perks span{color:var(--muted);font-size:13.5px}
+    .h-sub{font-size:22px;margin:0 0 16px}
+    .form-card{position:sticky;top:90px}
+    .form-card h2{font-size:28px;margin:0 0 6px}
+    .form-card > p{color:var(--muted);margin-bottom:6px;font-size:15px}
+    .cand-terms{margin:22px 0 20px}
+    .estado-cand{text-align:center;padding:16px 0}
+    .estado-cand .big{font-size:46px;margin-bottom:8px}
+    .estado-cand h3{font-size:24px;margin-bottom:8px}
+    .estado-cand p{color:var(--muted);margin-bottom:16px}
+    @media (max-width:900px){.t-grid{grid-template-columns:1fr}.form-card{position:static}}
+    @media (max-width:560px){.t-hero{padding:40px 0 20px}.perks{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header id="header"></header>
+
+  <main class="wrap">
+    <div class="t-hero">
+      <span class="eyebrow">Trabaja con nosotros</span>
+      <h1>Crea webs bonitas <em>con nosotros.</em></h1>
+      <p class="lead">Estamos creciendo y buscamos gente con ganas de aprender y de hacer las cosas bien. Trabajo en remoto, proyectos reales y buen ambiente.</p>
+    </div>
+
+    <div class="t-grid">
+      <div>
+        <h3 class="h-sub">Buscamos</h3>
+        <div class="puestos">
+          <div class="puesto"><span class="em">🎨</span><div><b>Diseño web / UI</b><p>Creas diseños que enamoran y piensas primero en el móvil.</p></div></div>
+          <div class="puesto"><span class="em">💻</span><div><b>Programación web</b><p>HTML, CSS y JavaScript. Si sabes algo de backend, mejor.</p></div></div>
+          <div class="puesto"><span class="em">🤝</span><div><b>Ventas / comercial</b><p>Hablas con negocios de tu zona y les ayudas a tener su web.</p></div></div>
+          <div class="puesto"><span class="em">📱</span><div><b>Redes sociales</b><p>Contenido para Instagram y TikTok que atrae clientes.</p></div></div>
+        </div>
+        <div class="perks">
+          <div><b>🏠 100 % remoto</b><span>Trabaja desde donde quieras.</span></div>
+          <div><b>⏰ Horario flexible</b><span>Tú organizas tu tiempo.</span></div>
+          <div><b>💶 Pago por proyecto</b><span>Cobras por cada web entregada.</span></div>
+          <div><b>🚀 Aprende</b><span>Proyectos reales desde el día 1.</span></div>
+        </div>
+      </div>
+
+      <div class="card form-card" id="formCard">
+        <h2>Envía tu candidatura</h2>
+        <p>Te responderemos en menos de una semana.</p>
+        <form id="candForm" novalidate>
+          <div id="candCampos"></div>
+          <button class="btn btn-primary w100" type="submit" id="cSend"><span>Enviar candidatura</span></button>
+          <p class="muted" style="font-size:13px;text-align:center;margin-top:12px">Te pediremos iniciar sesión para que puedas ver el estado de tu candidatura.</p>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer id="footer"></footer>
+
+  <script type="module">
+    import * as store from './js/store.js';
+    import { $, $$, esc, toast, arrancar, conSesion, fecha, campo, desplegable, opciones, aceptarTerminos, terminosAceptados, ocupado, etiquetas } from './js/ui.js';
+
+    // Campos del formulario (componentes del kit)
+    $('#candCampos').innerHTML = `
+      ${campo({ id: 'cNombre', name: 'nombre', label: 'Nombre y apellidos', required: true, attrs: 'autocomplete="name"' })}
+      ${campo({ id: 'cTel', name: 'telefono', label: 'Teléfono', type: 'tel', required: true, attrs: 'inputmode="tel" autocomplete="tel"' })}
+      ${desplegable({ id: 'cPuesto', name: 'puesto', label: 'Puesto', opciones: ['Diseño web / UI', 'Programación web', 'Ventas / comercial', 'Redes sociales', 'Otro'] })}
+      <span class="q-label">Experiencia</span>
+      ${opciones('experiencia', ['Menos de 1 año', '1–3 años', 'Más de 3 años'])}
+      ${campo({ id: 'cPort', name: 'portfolio', label: 'Portfolio, GitHub o Instagram', hint: 'Opcional: un enlace a tus trabajos' })}
+      ${campo({ id: 'cMsg', name: 'mensaje', label: '¿Por qué quieres unirte?', type: 'textarea', required: true })}
+      <div class="cand-terms">${aceptarTerminos('cTerms', 'Acepto la <a href="terminos.html#privacidad" target="_blank">política de privacidad</a> y que guardéis mis datos para este proceso')}</div>`;
+
+    await arrancar('trabaja');
+    etiquetas();
+
+    const card = $('#formCard');
+    const formHTML = card.innerHTML;
+
+    function mostrarEstado(c) {
+      const t = {
+        pendiente: ['📬', 'Candidatura recibida', 'La estamos revisando. Te avisaremos muy pronto.'],
+        aceptada: ['🎉', '¡Bienvenido al equipo!', 'Ya tienes acceso al panel de trabajador.'],
+        rechazada: ['🙏', 'Gracias por tu interés', 'Esta vez no ha podido ser, pero guardamos tu candidatura para futuros proyectos.']
+      }[c.estado] || ['📬', 'Candidatura recibida', ''];
+      card.innerHTML = `<div class="estado-cand"><div class="big">${t[0]}</div><h3>${t[1]}</h3><p>${t[2]}</p>
+        <p style="font-size:14px">${esc(c.puesto)} · enviada el ${fecha(c.createdAt)}</p>
+        ${c.estado === 'aceptada' ? '<a class="btn btn-primary" href="panel.html">Ir a mi panel</a>' : '<a class="btn btn-ghost" href="index.html">Volver al inicio</a>'}</div>`;
+    }
+
+    let enviando = false;
+    const ponerFormulario = () => { if (!$('#candForm')) { card.innerHTML = formHTML; etiquetas(card); enlazar(); } };
+
+    async function comprobar(u) {
+      if (enviando) return;
+      if (!u) return ponerFormulario();
+      if (u.role === 'worker' || u.role === 'owner') {
+        card.innerHTML = `<div class="estado-cand"><div class="big">💼</div><h3>Ya formas parte del equipo</h3><p>Entra en tu panel para ver tus encargos.</p><a class="btn btn-primary" href="panel.html">Ir a mi panel</a></div>`;
+        return;
+      }
+      try {
+        const c = await store.miCandidatura();
+        if (c) return mostrarEstado(c);
+      } catch (e) { console.warn(e); }
+      ponerFormulario();
+      const n = $('#cNombre'); if (n && !n.value) n.value = u.name;
+    }
+    enlazar();
+    store.alCambiarUsuario(comprobar);
+
+    function enlazar() {
+      const form = $('#candForm');
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        let ok = true;
+        [['#cNombre', v => v.trim().length > 1], ['#cTel', v => v.replace(/\D/g, '').length >= 9], ['#cMsg', v => v.trim().length > 4]].forEach(([s, f]) => {
+          const el = $(s); const mal = !f(el.value);
+          el.closest('.fc').classList.toggle('error', mal);
+          if (mal && ok) { el.focus(); ok = false; }
+        });
+        if (!ok) return toast('Revisa los campos marcados', 'err');
+        if (!terminosAceptados('cTerms')) return;
+        const datos = Object.fromEntries(new FormData(form));
+        enviando = true;
+        const u = await conSesion('Inicia sesión para enviar tu candidatura y ver su estado.');
+        if (!u) { enviando = false; return; }
+        const btn = $('#cSend'); ocupado(btn, true);
+        try {
+          const previa = await store.miCandidatura();
+          if (previa) { enviando = false; toast('Ya habías enviado una candidatura'); return mostrarEstado(previa); }
+          const c = await store.enviarCandidatura({
+            nombre: datos.nombre.trim(), telefono: datos.telefono.trim(), puesto: datos.puesto,
+            experiencia: datos.experiencia, portfolio: (datos.portfolio || '').trim(), mensaje: datos.mensaje.trim()
+          });
+          toast('¡Candidatura enviada! 🎉');
+          mostrarEstado(c);
+        } catch (err) {
+          toast(err.message || 'No se pudo enviar', 'err');
+          ocupado(btn, false);
+        }
+        enviando = false;
+      });
+    }
+  </script>
+</body>
+</html>

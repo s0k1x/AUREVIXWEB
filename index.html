@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>TuMarca · Diseño de páginas web</title>
+  <meta name="description" content="Páginas web profesionales para tu negocio: landing pages, webs de negocio, reservas y tiendas online. Elige diseño, rellena un cuestionario y la tienes en días.">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0c0c0e">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta property="og:title" content="Diseño de páginas web">
+  <meta property="og:description" content="Elige tu web, rellena un cuestionario de 2 minutos y la tienes en días.">
+  <meta property="og:image" content="icons/icon-512.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="componentes.css">
+  <link rel="stylesheet" href="animaciones.css">
+  <link rel="stylesheet" href="inicio.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"TuMarca","description":"Diseño de páginas web para negocios: landing pages, webs de negocio, reservas y tiendas online.","areaServed":"ES","priceRange":"149€ - 990€"}</script>
+</head>
+<body>
+  <header id="header"></header>
+
+  <main>
+    <!-- ===== PORTADA ===== -->
+    <section class="hero">
+      <div class="hero-bg bg-stripes" aria-hidden="true"></div>
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <span class="status"><i class="dot"></i> Aceptando nuevos proyectos</span>
+          <h1>Webs con <span class="scribble">carácter<svg viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true"><path d="M3 21c40-9 92-15 150-13 50 2 96 7 144 4-38 4-84 9-131 9"/></svg></span>.<br>Listas en días.</h1>
+          <p class="lead">Nada de plantillas sin alma. Eliges un punto de partida, lo hacemos <b>tuyo</b> y sigues cómo avanza desde el móvil.</p>
+          <div class="hero-ctas">
+            <a href="#webs" class="btn btn-primary">Ver webs y precios <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a href="#disenos" class="btn btn-ghost">Ver diseños</a>
+          </div>
+          <div class="trust">
+            <div><b>Desde <em class="num" data-count="149">149</em> €</b><span>precio cerrado</span></div>
+            <div><b>3–14 días</b><span>de entrega</span></div>
+            <div><b><em class="num" data-count="50">50</em> %</b><span>al empezar, resto al final</span></div>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div id="heroArt"></div>
+          <svg class="sello" viewBox="0 0 120 120" aria-hidden="true">
+            <defs><path id="circ" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"/></defs>
+            <text><textPath href="#circ">DISEÑO WEB · A TU MEDIDA · DISEÑO WEB · A TU MEDIDA ·</textPath></text>
+          </svg>
+          <span class="nota-mano">tócalos, son reales ↓</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CINTA DE SECTORES ===== -->
+    <div class="cinta" aria-hidden="true"><div class="cinta-track">
+      <span>Barberías</span><span>Restaurantes</span><span>Tiendas</span><span>Clínicas</span><span>Gimnasios</span><span>Academias</span><span>Fotógrafos</span><span>Estética</span>
+      <span>Barberías</span><span>Restaurantes</span><span>Tiendas</span><span>Clínicas</span><span>Gimnasios</span><span>Academias</span><span>Fotógrafos</span><span>Estética</span>
+    </div></div>
+
+    <!-- ===== WEBS Y PRECIOS ===== -->
+    <section id="webs" class="alt">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>01</b>Webs y precios</span>
+          <h2>Elige tu web. Sin letra pequeña.</h2>
+          <p class="lead">Precios de partida claros. Al darle a comprar te explicamos qué incluye y te hacemos unas preguntas para ajustar el presupuesto.</p>
+        </div>
+        <div class="planes" id="planes"></div>
+      </div>
+    </section>
+
+    <!-- ===== DISEÑOS ===== -->
+    <section id="disenos">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>02</b>Diseños</span>
+          <h2>Empieza con un diseño. Acaba con el tuyo.</h2>
+          <p class="lead">Elige uno como punto de partida y lo adaptamos a tu marca: colores, textos, fotos y secciones. Toca cualquiera para verlo en grande.</p>
+        </div>
+        <div class="disenos" id="disenosGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== CÓMO FUNCIONA ===== -->
+    <section id="como" class="alt">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>03</b>Cómo funciona</span>
+          <h2>De la idea a tu web en 4 pasos.</h2>
+        </div>
+        <div class="steps">
+          <div class="step reveal"><h3>Elige y cuéntanos</h3><p>Escoge el tipo de web, responde el cuestionario y elige un diseño base.</p></div>
+          <div class="step reveal"><h3>Confirma</h3><p>Revisamos tu pedido, te escribimos y pagas el 50 % para empezar.</p></div>
+          <div class="step reveal"><h3>Lo creamos</h3><p>Diseñamos tu web y sigues el estado de tu pedido desde tu cuenta.</p></div>
+          <div class="step reveal"><h3>¡Publicada!</h3><p>Te la entregamos con tu dominio, pagas el resto y listo.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== OPINIONES ===== -->
+    <section id="opiniones">
+      <div class="wrap">
+        <div class="sec-head reveal op-head">
+          <div>
+            <span class="eyebrow"><b>04</b>Opiniones</span>
+            <h2>Lo dicen ellos, no nosotros.</h2>
+          </div>
+          <div class="op-score" id="opScore"></div>
+        </div>
+        <div class="op-grid" id="opGrid"></div>
+        <div class="op-actions" id="opActions"></div>
+      </div>
+    </section>
+
+    <!-- ===== TRABAJA CON NOSOTROS ===== -->
+    <section class="join-sec">
+      <div class="wrap">
+        <div class="join reveal">
+          <div>
+            <span class="eyebrow"><b>05</b>Equipo</span>
+            <h2>¿Diseñas o programas? Trabaja con nosotros.</h2>
+            <p>Buscamos personas con ganas de crear webs bonitas. Trabajo en remoto y proyectos reales desde el primer día.</p>
+          </div>
+          <a href="trabaja.html" class="btn btn-dark">Trabaja con nosotros <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== DUDAS ===== -->
+    <section id="faq" class="alt">
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="eyebrow"><b>06</b>Dudas</span><h2>Lo que siempre nos preguntan.</h2></div>
+        <div class="faq reveal">
+          <details><summary>¿El precio es el final?</summary><p>Es el precio de partida. Con el cuestionario añades extras si los necesitas (dominio, logo, textos…) y ves el total al momento, antes de confirmar nada.</p></details>
+          <details><summary>¿Cómo se paga?</summary><p>Cuando confirmas el pedido te escribimos. Pagas el 50 % para empezar (Bizum o transferencia) y el resto cuando la web esté terminada y te guste.</p></details>
+          <details><summary>¿Puedo cambiar el diseño que elija?</summary><p>Claro. El diseño es un punto de partida: cambiamos colores, textos, fotos y secciones para que sea tuyo.</p></details>
+          <details><summary>¿Cómo sé cómo va mi web?</summary><p>Entra con tu cuenta y en «Mis pedidos» verás el estado: nuevo, en curso, en revisión o entregado.</p></details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer"></footer>
+
+  <a class="wa-fab" data-wa-fab href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+    <span>¿Dudas? Escríbenos</span>
+  </a>
+
+  <!-- ===== COMPRA (cuestionario) ===== -->
+  <dialog class="dlg dlg-wiz" id="compraDlg" data-backdrop="no" aria-labelledby="wizTitle">
+    <div class="dlg-box wiz">
+      <div class="wiz-head">
+        <button class="icon-btn" id="wizBack" aria-label="Atrás"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+        <div class="wiz-title"><small id="wizStep">Paso 1 de 6</small><b id="wizTitle">Web</b></div>
+        <button class="icon-btn" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="wiz-bar"><i id="wizBar"></i></div>
+      <form class="wiz-body" id="wizForm" novalidate></form>
+      <div class="wiz-foot" id="wizFoot">
+        <div class="wiz-total"><small>Total estimado</small><b id="wizTotal">0 €</b><span id="wizMensual"></span></div>
+        <button class="btn btn-primary" id="wizNext">Continuar</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ===== VISTA PREVIA DE DISEÑO ===== -->
+  <dialog class="dlg dlg-prev" id="prevDlg" aria-labelledby="prevTitle">
+    <div class="prev">
+      <div class="prev-bar">
+        <div class="prev-name"><b id="prevTitle">Diseño</b><small id="prevSector"></small></div>
+        <div class="seg" role="group" aria-label="Dispositivo">
+          <button data-dev="movil" class="on" aria-label="Móvil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></button>
+          <button data-dev="pc" aria-label="Ordenador"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
+        </div>
+        <button class="btn btn-sm btn-primary" id="prevPick">Elegir este</button>
+        <button class="icon-btn" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="prev-stage" id="prevStage"><div class="prev-frame" id="prevFrame"><iframe id="prevIframe" title="Vista previa del diseño"></iframe></div></div>
+    </div>
+  </dialog>
+
+  <!-- ===== MIS PEDIDOS ===== -->
+  <dialog class="dlg" id="pedidosDlg" aria-labelledby="pedTitle">
+    <div class="dlg-box">
+      <button class="dlg-x" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <h2 class="dlg-h" id="pedTitle">Mis pedidos</h2>
+      <div id="pedidosList"></div>
+    </div>
+  </dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

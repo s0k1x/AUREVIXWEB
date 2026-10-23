@@ -1,0 +1,283 @@
+/* ==========================================================
+   KIT DE COMPONENTES
+   Basados en piezas de Uiverse.io, adaptados a la paleta de la web
+   (colores en style.css → :root). Cada bloque indica su origen.
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   1. BOTONES CON BRILLO  (Uiverse · mrhyddenn)
+   ---------------------------------------------------------- */
+.btn{text-transform:uppercase;letter-spacing:.09em;font-weight:700;font-size:13.5px}
+.btn-primary{box-shadow:0 0 22px rgba(200,245,96,.32);transition:box-shadow .5s,transform .15s,background .2s}
+.btn-primary:hover{background:var(--accent);box-shadow:0 0 5px var(--accent),0 0 25px var(--accent),0 0 50px rgba(200,245,96,.55),0 0 100px rgba(200,245,96,.3)}
+.btn-wa{box-shadow:0 0 22px rgba(37,211,102,.3);transition:box-shadow .5s,transform .15s}
+.btn-wa:hover{box-shadow:0 0 5px #25d366,0 0 25px #25d366,0 0 50px rgba(37,211,102,.5)}
+.btn-dark{transition:box-shadow .5s,transform .15s}
+.btn-dark:hover{box-shadow:0 0 0 2px var(--ink),0 12px 30px rgba(0,0,0,.35)}
+.btn-google{text-transform:none;letter-spacing:0;font-size:15px}
+
+/* ----------------------------------------------------------
+   2. CAMPOS CON ETIQUETA ANIMADA  (Uiverse · liyaxu123)
+   <div class="fc"><input placeholder=" "><label>Texto</label></div>
+   Las letras de la etiqueta se separan solas con JS (ui.js → etiquetas())
+   ---------------------------------------------------------- */
+.fc{position:relative;margin:30px 0 22px}
+.fc input,.fc textarea{display:block;width:100%;background:transparent;border:0;border-bottom:2px solid var(--line2);border-radius:0;padding:12px 0 10px;font-size:17px;color:var(--text);outline:0;transition:border-color .3s}
+.fc textarea{resize:vertical;min-height:88px;line-height:1.5}
+.fc label{position:absolute;top:12px;left:0;pointer-events:none;display:flex;white-space:nowrap;max-width:100%}
+.fc label span{display:inline-block;min-width:5px;font-size:17px;color:var(--muted);transition:.3s cubic-bezier(.68,-.55,.265,1.55)}
+.fc input:focus,.fc input:not(:placeholder-shown),.fc textarea:focus,.fc textarea:not(:placeholder-shown){border-bottom-color:var(--accent)}
+.fc input:focus + label span,.fc input:not(:placeholder-shown) + label span,
+.fc textarea:focus + label span,.fc textarea:not(:placeholder-shown) + label span{color:var(--accent);transform:translateY(-30px);font-size:14px}
+.fc-hint{display:block;font-size:12.5px;color:var(--dim);margin-top:6px}
+.fc.error input,.fc.error textarea{border-bottom-color:var(--danger)}
+.fc.error label span,.fc.error input + label span,.fc.error textarea + label span{color:var(--danger)}
+.fc input:-webkit-autofill{-webkit-text-fill-color:var(--text);transition:background-color 9999s}
+
+/* Desplegable a juego */
+.fc-select{margin:22px 0}
+.fc-select > span{display:block;font-size:14px;color:var(--accent);margin-bottom:2px}
+.fc-select select{width:100%;background:transparent;border:0;border-bottom:2px solid var(--line2);border-radius:0;padding:10px 28px 10px 0;font-size:17px;color:var(--text);outline:0;-webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8f560' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 2px center;background-size:18px}
+.fc-select select:focus{border-bottom-color:var(--accent)}
+.fc-select option{background:var(--card2);color:var(--text)}
+.q-label{display:block;font-size:14px;font-weight:600;color:var(--text);margin:24px 0 10px}
+
+/* ----------------------------------------------------------
+   3. OPCIONES TIPO TECLA  (Uiverse · WhiteNervosa)
+   <div class="opts"><label class="opt"><input type="radio"><span><i>Texto</i></span></label></div>
+   ---------------------------------------------------------- */
+.opts{display:flex;flex-wrap:wrap;gap:7px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt > span{display:flex;align-items:center;justify-content:center;min-width:56px;height:40px;padding:0 15px;border-radius:9px;cursor:pointer;user-select:none;
+  background:rgba(255,255,255,.04);color:rgba(255,255,255,.72);
+  box-shadow:rgba(0,0,0,.25) 0 2px 1px 0 inset,rgba(255,255,255,.08) 0 1px 1px 0;
+  transition:color .3s cubic-bezier(.25,.8,.25,1),background-color .3s cubic-bezier(.25,.8,.25,1),box-shadow .3s cubic-bezier(.25,.8,.25,1)}
+.opt > span i{font-style:normal;font-size:14.5px;font-weight:700;pointer-events:none;transition:transform .3s cubic-bezier(.25,.8,.25,1)}
+.opt > span:hover{background:#26262e;color:#fff;box-shadow:rgba(0,0,0,.3) 0 -4px 1px 0 inset,rgba(255,255,255,.1) 0 -1px 1px 0,rgba(0,0,0,.2) 0 2px 4px 1px}
+.opt > span:hover i,.opt input:checked + span i{transform:translateY(-2px)}
+.opt input:checked + span{background:#46621a;color:#f4ffd9;box-shadow:rgba(0,0,0,.3) 0 -4px 1px 0 inset,rgba(255,255,255,.17) 0 -1px 1px 0,rgba(0,0,0,.2) 0 2px 4px 1px}
+.opt input:checked + span:hover{background:#4f6f1d}
+.opt input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ----------------------------------------------------------
+   4. CHECK ANIMADO  (Uiverse · SelfMadeSystem)
+   <input type="checkbox"> seguido de <span class="ck-mark"></span>
+   ---------------------------------------------------------- */
+.ck-mark{position:relative;flex:none;font-size:20px;width:1.3em;height:1.3em;border-radius:.25em;background:transparent;transition:all .25s}
+.ck-mark::after{content:"";position:absolute;left:0;top:0;width:1.05em;height:1.05em;border:.1em solid var(--muted);border-radius:.25em;transform:rotate(0);transition:all .25s,border-width .1s}
+input:checked ~ .ck-mark{background:var(--accent)}
+input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;border-color:transparent var(--ink) var(--ink) transparent;border-width:0 .15em .15em 0;border-radius:0;transform:rotate(45deg)}
+
+/* ----------------------------------------------------------
+   5. INTERRUPTOR  (Uiverse · namecho)
+   <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+   ---------------------------------------------------------- */
+.switch{--bw:3.3em;--bh:1.9em;--td:1.4em;--off:calc((var(--bh) - var(--td)) / 2);--sh:10px;--wider:2.8em;font-size:15px;flex:none;display:inline-flex;cursor:pointer}
+.switch input{position:absolute;opacity:0;pointer-events:none}
+.slider{display:inline-block;width:var(--bw);height:var(--bh);background:#34343d;border-radius:calc(var(--bh) / 2);position:relative;transition:.3s all ease-in-out}
+.slider::after{content:"";display:inline-block;width:var(--td);height:var(--td);background:#fff;border-radius:calc(var(--td) / 2);position:absolute;top:var(--off);transform:translateX(var(--off));box-shadow:var(--sh) 0 calc(var(--sh) * 4) rgba(0,0,0,.15);transition:.3s all ease-in-out}
+.switch input:checked + .slider{background:var(--accent)}
+.switch input:checked + .slider::after{background:var(--ink);transform:translateX(calc(var(--bw) - var(--td) - var(--off)));box-shadow:calc(var(--sh) * -1) 0 calc(var(--sh) * 4) rgba(0,0,0,.15)}
+.switch input:active + .slider::after{width:var(--wider)}
+.switch input:checked:active + .slider::after{transform:translateX(calc(var(--bw) - var(--wider) - var(--off)))}
+.switch input:focus-visible + .slider{outline:2px solid var(--accent);outline-offset:3px}
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.02);cursor:pointer}
+.switch-row b{display:block;font-size:15px}
+.switch-row small{color:var(--muted);font-size:13px}
+
+/* ----------------------------------------------------------
+   6. ACEPTAR TÉRMINOS  (Uiverse · ahmed_8975)
+   ---------------------------------------------------------- */
+.gl-checkbox{display:inline-flex;align-items:center;gap:.85rem;cursor:pointer;user-select:none;position:relative}
+.gl-checkbox__input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.gl-checkbox__box{width:22px;height:22px;min-width:22px;border-radius:7px;background:rgba(255,255,255,.05);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+  transition:background .3s ease,border-color .3s ease,box-shadow .3s ease,transform .35s cubic-bezier(.34,1.56,.64,1)}
+.gl-checkbox__box::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at center,rgba(200,240,96,.35) 0%,transparent 70%);opacity:0;transform:scale(0);transition:opacity .3s ease,transform .4s ease}
+.gl-checkbox:hover .gl-checkbox__box{border-color:rgba(200,240,96,.35);transform:scale(1.06)}
+.gl-checkbox__input:checked ~ .gl-checkbox__box{background:linear-gradient(135deg,#c8f060,#60f0b8);border-color:transparent;box-shadow:0 0 0 3px rgba(200,240,96,.15),0 4px 14px rgba(200,240,96,.3);transform:scale(1.05)}
+.gl-checkbox__input:checked ~ .gl-checkbox__box::before{opacity:1;transform:scale(1.5)}
+.gl-checkbox__input:focus-visible ~ .gl-checkbox__box{outline:2px solid var(--accent);outline-offset:3px}
+.gl-checkbox__check{width:13px;height:13px;color:#080a0f;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .3s cubic-bezier(.34,1.56,.64,1) .05s}
+.gl-checkbox__input:checked ~ .gl-checkbox__box .gl-checkbox__check{stroke-dashoffset:0}
+.gl-checkbox__label{font-size:.9rem;color:rgba(255,255,255,.55);transition:color .25s ease;line-height:1.45}
+.gl-checkbox__label a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+.gl-checkbox:hover .gl-checkbox__label{color:rgba(255,255,255,.8)}
+.gl-checkbox__input:checked ~ .gl-checkbox__label{color:rgba(255,255,255,.9)}
+.gl-checkbox.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* ----------------------------------------------------------
+   7. CARGANDO  (Uiverse · abrahamcalsin)
+   ---------------------------------------------------------- */
+.dot-spinner{--uib-size:2.8rem;--uib-speed:.9s;--uib-color:var(--accent);position:relative;display:flex;align-items:center;justify-content:flex-start;height:var(--uib-size);width:var(--uib-size)}
+.dot-spinner.sm{--uib-size:1.25rem;--uib-color:currentColor}
+.dot-spinner__dot{position:absolute;top:0;left:0;display:flex;align-items:center;justify-content:flex-start;height:100%;width:100%}
+.dot-spinner__dot::before{content:"";height:20%;width:20%;border-radius:50%;background-color:var(--uib-color);transform:scale(0);opacity:.5;animation:pulse0112 calc(var(--uib-speed) * 1.111) ease-in-out infinite;box-shadow:0 0 20px rgba(200,245,96,.25)}
+.dot-spinner__dot:nth-child(2){transform:rotate(45deg)}
+.dot-spinner__dot:nth-child(2)::before{animation-delay:calc(var(--uib-speed) * -.875)}
+.dot-spinner__dot:nth-child(3){transform:rotate(90deg)}
+.dot-spinner__dot:nth-child(3)::before{animation-delay:calc(var(--uib-speed) * -.75)}
+.dot-spinner__dot:nth-child(4){transform:rotate(135deg)}
+.dot-spinner__dot:nth-child(4)::before{animation-delay:calc(var(--uib-speed) * -.625)}
+.dot-spinner__dot:nth-child(5){transform:rotate(180deg)}
+.dot-spinner__dot:nth-child(5)::before{animation-delay:calc(var(--uib-speed) * -.5)}
+.dot-spinner__dot:nth-child(6){transform:rotate(225deg)}
+.dot-spinner__dot:nth-child(6)::before{animation-delay:calc(var(--uib-speed) * -.375)}
+.dot-spinner__dot:nth-child(7){transform:rotate(270deg)}
+.dot-spinner__dot:nth-child(7)::before{animation-delay:calc(var(--uib-speed) * -.25)}
+.dot-spinner__dot:nth-child(8){transform:rotate(315deg)}
+.dot-spinner__dot:nth-child(8)::before{animation-delay:calc(var(--uib-speed) * -.125)}
+@keyframes pulse0112{0%,100%{transform:scale(0);opacity:.5}50%{transform:scale(1);opacity:1}}
+.loading-box{display:grid;place-items:center;gap:14px;padding:60px 20px;color:var(--muted);font-size:14px}
+.btn.loading{color:transparent!important;pointer-events:none}
+.btn.loading > :not(.dot-spinner){visibility:hidden}
+.btn .dot-spinner.sm{position:absolute;left:50%;top:50%;margin:-.625rem 0 0 -.625rem}
+.btn-primary .dot-spinner.sm,.btn-google .dot-spinner.sm{--uib-color:var(--ink)}
+.btn-ghost .dot-spinner.sm,.btn-dark .dot-spinner.sm{--uib-color:var(--accent)}
+
+/* ----------------------------------------------------------
+   8. BUSCADOR  (Uiverse · LightAndy1)
+   ---------------------------------------------------------- */
+.search-group{display:flex;align-items:center;position:relative;line-height:28px;width:100%;max-width:340px}
+.search-group .input{width:100%;height:45px;padding-left:2.6rem;padding-right:1rem;font-size:15px;box-shadow:0 0 0 1.5px #2b2c37,0 0 25px -17px #000;border:0;border-radius:12px;background:#16171d;outline:none;color:#d9dae3;transition:all .25s cubic-bezier(.19,1,.22,1);cursor:text}
+.search-group .input::placeholder{color:#8b8c99}
+.search-group .input:hover{box-shadow:0 0 0 2.5px #2f303d,0 0 25px -15px #000}
+.search-group .input:active{transform:scale(.97)}
+.search-group .input:focus{box-shadow:0 0 0 2.5px var(--accent)}
+.search-icon{position:absolute;left:1rem;fill:#8b8c99;width:1rem;height:1rem;pointer-events:none;z-index:1}
+
+/* ----------------------------------------------------------
+   9. ESTRELLAS  (Uiverse · andrew-demchenk0)
+   ---------------------------------------------------------- */
+.rating{display:inline-flex;flex-direction:row-reverse;justify-content:flex-end}
+.rating > input{position:absolute;appearance:none;opacity:0}
+.rating > label{cursor:pointer;font-size:38px;line-height:1;color:#4a4a52;padding:0 3px;transition:color .15s,transform .15s}
+.rating > label::before{content:"★"}
+.rating > label:hover,.rating > label:hover ~ label{color:#ff9e0b}
+.rating > input:checked ~ label{color:#ffa723}
+.rating > input:checked + label:hover,.rating > input:checked + label:hover ~ label,
+.rating > input:checked ~ label:hover,.rating > input:checked ~ label:hover ~ label,
+.rating > label:hover ~ input:checked ~ label{color:#e58e09}
+.rating > input:focus-visible + label{outline:2px solid var(--accent);border-radius:6px}
+.rating > label:active{transform:scale(.85)}
+/* Solo lectura */
+.stars{--v:5;position:relative;display:inline-block;font-size:17px;line-height:1;letter-spacing:2px;color:#3e3e46}
+.stars::before{content:"★★★★★"}
+.stars::after{content:"★★★★★";position:absolute;inset:0;width:calc(var(--v) / 5 * 100%);overflow:hidden;color:#ffa723;white-space:nowrap}
+
+/* ----------------------------------------------------------
+   10. MÉTODOS DE PAGO  (Uiverse · SmookyDev, sin Tailwind)
+   ---------------------------------------------------------- */
+.pay-methods{display:grid;gap:8px}
+.pm{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.02);cursor:pointer;overflow:hidden;transition:all .5s}
+.pm:hover{background:rgba(255,255,255,.05)}
+.pm-l{display:flex;align-items:center;gap:12px;min-width:0}
+.pm-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.06);flex:none;transition:all .5s}
+.pm-ic svg{width:22px;height:22px}
+.pm-tx b{display:block;font-size:15px}
+.pm-tx small{display:block;font-size:12.5px;color:var(--muted);transform:translateY(110%);opacity:0;transition:all .6s;white-space:nowrap}
+.pm input{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--line2);flex:none;transition:all .3s;margin:0}
+.pm:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.pm:has(input:checked) .pm-ic{background:var(--accent);color:var(--ink)}
+.pm:has(input:checked) .pm-tx b{color:#eaffb8}
+.pm:has(input:checked) .pm-tx small{transform:none;opacity:1}
+.pm input:checked{border:6px solid var(--accent);background:var(--ink)}
+.pm input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pm-tag{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:99px;background:rgba(74,222,128,.14);color:var(--ok);margin-left:6px;vertical-align:middle}
+
+/* ----------------------------------------------------------
+   11. TARJETA QUE GIRA  (Uiverse · Praashoo7, adaptada)
+   ---------------------------------------------------------- */
+.flip-card{background:transparent;width:280px;height:176px;perspective:1000px;color:#fff;margin:0 auto;cursor:pointer;font-size:16px}
+.flip-card-inner{position:relative;width:100%;height:100%;text-align:left;transition:transform .8s;transform-style:preserve-3d}
+.flip-card:hover .flip-card-inner,.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
+.flip-card-front,.flip-card-back{position:absolute;inset:0;border-radius:1rem;-webkit-backface-visibility:hidden;backface-visibility:hidden;overflow:hidden;
+  box-shadow:rgba(0,0,0,.4) 0 2px 2px,rgba(0,0,0,.3) 0 7px 13px -3px,rgba(255,255,255,.06) 0 -1px 0 inset}
+.flip-card-front{background:radial-gradient(circle at 85% 0%,rgba(200,245,96,.35),transparent 55%),linear-gradient(135deg,#1d1d24,#0f0f13)}
+.flip-card-back{background:#17171c;transform:rotateY(180deg)}
+.fcd-brand{position:absolute;top:16px;right:18px;font-family:var(--fd);font-weight:800;font-size:15px;letter-spacing:.02em;color:var(--accent)}
+.fcd-chip{position:absolute;top:44px;left:20px;width:40px;height:30px;border-radius:6px;background:linear-gradient(135deg,#e9d18f,#b8934a 60%,#e9d18f);box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.fcd-chip::before{content:"";position:absolute;inset:7px 0;border-top:1px solid rgba(0,0,0,.3);border-bottom:1px solid rgba(0,0,0,.3)}
+.fcd-chip::after{content:"";position:absolute;inset:0 13px;border-left:1px solid rgba(0,0,0,.3);border-right:1px solid rgba(0,0,0,.3)}
+.fcd-nfc{position:absolute;top:48px;left:70px;width:20px;height:20px;color:rgba(255,255,255,.7)}
+.fcd-num{position:absolute;left:20px;top:92px;font-family:ui-monospace,monospace;font-size:15px;letter-spacing:.14em;font-weight:700}
+.fcd-name{position:absolute;left:20px;bottom:18px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fcd-amount{position:absolute;right:18px;bottom:16px;text-align:right}
+.fcd-amount small{display:block;font-size:8px;letter-spacing:.14em;opacity:.6}
+.fcd-amount b{font-family:var(--fd);font-size:18px}
+.fcd-strip{position:absolute;left:0;right:0;top:22px;height:34px;background:repeating-linear-gradient(45deg,#303030,#303030 10px,#202020 10px,#202020 20px)}
+.fcd-sign{position:absolute;left:16px;top:72px;width:150px;height:28px;background:#fff;border-radius:3px}
+.fcd-cvv{position:absolute;left:176px;top:72px;width:70px;height:28px;background:#fff;border-radius:3px;color:#000;font-weight:700;display:grid;place-items:center;font-size:13px}
+.fcd-secure{position:absolute;left:16px;bottom:16px;font-size:11px;color:rgba(255,255,255,.6)}
+
+/* ----------------------------------------------------------
+   12. BOTÓN DE PAGO CON TERMINAL  (Uiverse · Admin12121, adaptado)
+   ---------------------------------------------------------- */
+.pay-cta{display:flex;width:100%;height:96px;position:relative;border-radius:16px;background:var(--card2);border:1px solid var(--line2);overflow:hidden;cursor:pointer;transition:.3s ease-in-out;text-align:left;padding:0;color:var(--text)}
+.pay-cta:hover,.pay-cta.play{transform:scale(1.015)}
+.pay-cta .left-side{background:var(--accent);width:104px;height:100%;position:relative;display:flex;justify-content:center;align-items:center;transition:.3s;flex-shrink:0;overflow:hidden}
+.pay-cta.play .left-side{width:100%}
+.pay-cta .right-side{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 18px;overflow:hidden;white-space:nowrap;transition:.3s}
+.pay-cta .right-side small{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.pay-cta .right-side b{font-family:var(--fd);font-size:24px;letter-spacing:-.02em}
+.pay-cta .arrow{width:18px;height:18px;fill:var(--muted);flex:none;transition:transform .3s}
+.pay-cta:hover .arrow{transform:translateX(4px);fill:var(--accent)}
+.pay-cta .pc-card{width:62px;height:40px;background:#efffc9;border-radius:6px;position:absolute;display:flex;z-index:10;flex-direction:column;align-items:center;box-shadow:8px 8px 9px -2px rgba(70,98,26,.6)}
+.pay-cta .pc-card-line{width:56px;height:11px;background:#9fd23a;border-radius:2px;margin-top:6px}
+.pay-cta .pc-buttons{width:7px;height:7px;background:#5f8d14;box-shadow:0 -9px 0 0 #4f7a0d,0 9px 0 0 #7fb126;border-radius:50%;transform:rotate(90deg);margin:9px 0 0 -26px}
+.pay-cta .pc-post{width:56px;height:66px;background:#dddde0;position:absolute;z-index:11;top:100px;border-radius:6px;overflow:hidden}
+.pay-cta .pc-post-line{width:42px;height:8px;background:#545354;position:absolute;border-radius:0 0 3px 3px;right:7px;top:7px}
+.pay-cta .pc-post-line::before{content:"";position:absolute;width:42px;height:8px;background:#757375;top:-7px}
+.pay-cta .pc-screen{width:42px;height:21px;background:#fff;position:absolute;top:19px;right:7px;border-radius:3px}
+.pay-cta .pc-numbers{width:10px;height:10px;background:#838183;box-shadow:0 -16px 0 0 #838183,0 16px 0 0 #838183;border-radius:2px;position:absolute;transform:rotate(90deg);left:23px;top:46px}
+.pay-cta .pc-numbers2{width:10px;height:10px;background:#aaa9ab;box-shadow:0 -16px 0 0 #aaa9ab,0 16px 0 0 #aaa9ab;border-radius:2px;position:absolute;transform:rotate(90deg);left:23px;top:60px}
+.pay-cta .pc-euro{position:absolute;width:100%;left:0;top:0;font-size:15px;font-weight:700;color:#46621a;text-align:center}
+.pay-cta:hover .pc-card,.pay-cta.play .pc-card{animation:pc-card 1.2s cubic-bezier(.645,.045,.355,1) both}
+.pay-cta:hover .pc-post,.pay-cta.play .pc-post{animation:pc-post 1s cubic-bezier(.165,.84,.44,1) both}
+.pay-cta:hover .pc-euro,.pay-cta.play .pc-euro{animation:pc-euro .3s 1s backwards}
+@keyframes pc-card{0%{transform:translateY(0)}50%,60%{transform:translateY(-62px) rotate(90deg)}100%{transform:translateY(-6px) rotate(90deg)}}
+@keyframes pc-post{50%{transform:translateY(0)}100%{transform:translateY(-70px)}}
+@keyframes pc-euro{0%{opacity:0;transform:translateY(-5px)}100%{opacity:1;transform:translateY(0)}}
+
+/* ----------------------------------------------------------
+   13. TARJETA DE MARCA ANIMADA  (Uiverse · Smit-Prajapati, adaptada)
+   Se activa al pasar el ratón o con la clase .on (al verse en pantalla)
+   ---------------------------------------------------------- */
+.brand-card{--bc:var(--accent);--bg:#141418;width:100%;max-width:360px;height:200px;background:var(--bg);position:relative;display:grid;place-content:center;border-radius:14px;overflow:hidden;transition:all .5s ease-in-out;border:1px solid var(--line);margin:0 auto}
+.brand-card .border{position:absolute;inset:0;border:2px solid var(--bc);opacity:0;transform:rotate(10deg);transition:all .5s ease-in-out;pointer-events:none}
+.brand-card .bottom-text{position:absolute;left:50%;bottom:13px;transform:translateX(-50%);font-size:7px;text-transform:uppercase;padding:0 5px 0 8px;color:var(--bc);background:var(--bg);opacity:0;letter-spacing:7px;transition:all .5s ease-in-out;white-space:nowrap}
+.brand-card .content{transition:all .5s ease-in-out;position:relative}
+.brand-card .logo{height:40px;position:relative;width:38px;overflow:hidden;transition:all 1s ease-in-out;display:flex;align-items:center}
+.brand-card .logo1{height:36px;width:36px;flex:none;border-radius:10px;background:var(--bc);color:var(--ink);display:grid;place-items:center;transform:rotate(-6deg)}
+.brand-card .logo1 svg{width:21px;height:21px;stroke-width:2.6}
+.brand-card .logo2{position:absolute;left:46px;top:50%;transform:translateY(-50%);font-family:var(--fd);font-weight:800;font-size:30px;letter-spacing:-.02em;white-space:nowrap;color:transparent;-webkit-text-stroke:1px var(--bc);line-height:1}
+.brand-card .trail{position:absolute;right:0;top:0;height:100%;width:100%;opacity:0;pointer-events:none}
+.brand-card .logo-bottom-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin-top:34px;color:var(--bc);padding-left:8px;font-size:10px;opacity:0;letter-spacing:normal;white-space:nowrap;transition:all .5s ease-in-out .5s;text-transform:uppercase}
+.brand-card:hover,.brand-card.on{border-radius:0;transform:scale(1.04)}
+.brand-card:hover .logo,.brand-card.on .logo{width:var(--w,190px);animation:bc-opacity 1s ease-in-out}
+.brand-card:hover .border,.brand-card.on .border{inset:15px;opacity:1;transform:rotate(0)}
+.brand-card:hover .bottom-text,.brand-card.on .bottom-text{letter-spacing:3px;opacity:1;transform:translateX(-50%)}
+.brand-card:hover .logo-bottom-text,.brand-card.on .logo-bottom-text{opacity:1;letter-spacing:6px}
+.brand-card:hover .trail,.brand-card.on .trail{animation:bc-trail 1s ease-in-out}
+@keyframes bc-opacity{0%{border-right:1px solid transparent}10%,80%{border-right:1px solid var(--bc)}100%{border-right:1px solid transparent}}
+@keyframes bc-trail{0%{background:linear-gradient(90deg,rgba(200,245,96,0) 90%,var(--bc) 100%);opacity:0}30%,70%{background:linear-gradient(90deg,rgba(200,245,96,0) 70%,var(--bc) 100%);opacity:1}95%{background:linear-gradient(90deg,rgba(200,245,96,0) 90%,var(--bc) 100%);opacity:0}}
+
+/* ----------------------------------------------------------
+   14. FONDOS  (Uiverse · jeremyssocial y chase2k25, en tonos suaves)
+   ---------------------------------------------------------- */
+.bg-stripes{background:linear-gradient(135deg,#0c0c0e 25%,#121216 25%,#121216 50%,#0c0c0e 50%,#0c0c0e 75%,#121216 75%,#121216);background-size:40px 40px;animation:bg-move 4s linear infinite}
+@keyframes bg-move{0%{background-position:0 0}100%{background-position:40px 40px}}
+.bg-bands{background:repeating-linear-gradient(135deg,#0f0f12 0px,#0f0f12 60px,#0f0f1299 70px,#17171c 130px)}
+
+/* ----------------------------------------------------------
+   Intro de marca (pantalla de bienvenida)
+   ---------------------------------------------------------- */
+.splash{position:fixed;inset:0;z-index:2000;background:repeating-linear-gradient(135deg,#0f0f12 0px,#0f0f12 60px,#141418 70px,#17171c 130px);display:grid;place-items:center;transition:opacity .5s,visibility .5s}
+.splash.out{opacity:0;visibility:hidden}
+.splash .brand-card{background:#141418;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+
+@media (prefers-reduced-motion:reduce){
+  .bg-stripes{animation:none}
+}
