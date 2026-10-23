@@ -620,3 +620,149 @@ html.intro body>*:not(.splash){visibility:hidden}
   .medias .btn{grid-column:1 / -1;grid-row:2;width:100%;justify-content:center}
   .medias #mediasX{grid-column:3;grid-row:1}
 }
+
+/* v23 · Cargas: aviso si tarda y error con «Reintentar» */
+.loading-box .lb-lento{opacity:0;font-size:12.5px;color:var(--muted);animation:lb-lento .5s ease 8s forwards;text-align:center;max-width:28ch}
+@keyframes lb-lento{to{opacity:.85}}
+.carga-error{display:grid;justify-items:center;gap:8px;text-align:center;padding:40px 18px}
+.carga-error .em{color:#ffb84d}
+.carga-error p{max-width:34ch;margin:0 auto 6px}
+.aj-fijo .btn{min-width:0;white-space:nowrap;text-transform:none;letter-spacing:0}
+@media (max-width:520px){.aj-fijo #resetNeg{flex:0 0 auto}.aj-fijo #gNeg{flex:1 1 auto}}
+/* Mientras se guarda un cambio del pedido, la ficha no admite otro toque */
+.od-guardando .od-col{pointer-events:none;opacity:.6;transition:opacity .2s}
+/* v23 · El número de la campana no se corta */
+.icon-btn.av-btn{overflow:visible}
+.av-badge{z-index:2;pointer-events:none}
+
+/* ==========================================================
+   v23 · Móvil sin barras que se deslizan de lado y sin textos partidos
+   ========================================================== */
+.nw{white-space:nowrap}
+
+/* Datos separados por «·»: el punto nunca queda suelto al cortar la línea */
+.meta{display:block;overflow:hidden;color:var(--muted);font-size:13px;line-height:1.5;margin-top:3px}
+.meta-in{display:flex;flex-wrap:wrap;margin-left:-14px}
+.meta-in > span{white-space:nowrap}
+.meta-in > span::before{content:"·";display:inline-block;width:14px;text-align:center}
+.od-head-t{min-width:0}
+.od-head-t .meta:first-child{margin:0}
+.od-head-t h2{overflow-wrap:break-word}
+
+/* Precio de la tarjeta del proyecto: «+ 15 €/mes» siempre en una pieza */
+.mp-precio{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15}
+.mp-precio > span,.mp-precio small{white-space:nowrap}
+.mp-precio small{display:block;margin-top:2px}
+
+/* Datos del proyecto: el valor ocupa todo el ancho (no se parten las palabras) */
+.mp-dato b{overflow-wrap:break-word;word-break:normal;min-width:0}
+
+/* Aviso de pago en la ficha del pedido */
+.od-pay p.od-pay-info{display:flex;gap:9px;align-items:flex-start;line-height:1.5}
+.od-pay p.od-pay-info > svg{display:block;margin:3px 0 0;width:16px;height:16px;color:#fbbf24}
+
+@media (max-width:640px){
+  /* Etapas: todas a la vista, sin deslizar. Solo se lee el nombre de la etapa actual */
+  .etapas{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));overflow:visible;margin:16px 0 34px;padding:0;gap:0}
+  .etapas::before,.etapas::after{display:block;top:16px}
+  .etapas li{flex:none;min-width:0}
+  .etapas .et-in,.etapas button,.etapas.editable button{padding:0;gap:0}
+  .et-ic{width:34px;height:34px;font-size:14px}
+  .et-ic svg{width:15px;height:15px}
+  .etapas .actual .et-ic{box-shadow:0 0 0 4px var(--accent-soft)}
+  .etapas .et-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .etapas .actual .et-t{clip:auto;width:auto;height:auto;overflow:visible;top:42px;left:50%;transform:translateX(-50%);font-size:12.5px;color:var(--text)}
+  .etapas li:first-child.actual .et-t{left:0;transform:none}
+  .etapas li:last-child.actual .et-t{left:auto;right:0;transform:none}
+  .etapas li:nth-child(2).actual .et-t{left:0;transform:none}
+  .etapas li:nth-last-child(2).actual .et-t{left:auto;right:0;transform:none}
+
+  /* Tarjeta del proyecto */
+  .mp-dato{grid-template-columns:18px minmax(0,1fr);padding:11px 12px}
+  .mp-dato svg{grid-row:auto;width:16px;height:16px;margin-top:0}
+  .mp-dato b{grid-column:1/-1;margin-top:4px;font-size:14px}
+  .mp-resumen > div:nth-child(3){grid-column:1/-1}
+
+  /* Pestañas del panel: en filas, sin deslizar */
+  .tabs{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:6px;overflow:visible;border-bottom:0;margin-bottom:20px}
+  .tabs button{justify-content:center;gap:6px;padding:10px 6px;font-size:13.5px;border:1px solid var(--line)!important;border-radius:12px;margin:0;background:rgba(255,255,255,.02);min-width:0}
+  .tabs button span{overflow:hidden;text-overflow:ellipsis}
+  .tabs button::after{display:none}
+  .tabs button.on{background:var(--accent-soft);border-color:rgba(200,245,96,.45)!important;color:var(--text)}
+  .tabs button.on svg{color:var(--accent)}
+  .tabs .badge{position:absolute;top:-6px;right:-4px}
+
+  /* Secciones de Ajustes: en filas, sin deslizar */
+  .aj-nav{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));overflow:visible;gap:6px;padding:8px}
+  .aj-nav a{white-space:normal;padding:10px 12px;font-size:13.5px;line-height:1.25;border:1px solid var(--line)}
+  .aj-nav a.on{border-color:rgba(200,245,96,.45)}
+}
+
+/* v23 · Chat del asistente: en el móvil, a pantalla completa */
+@media (max-width:560px){
+  html.chat-abierto,html.chat-abierto body{overflow:hidden}
+  html.chat-abierto .arriba,html.chat-abierto .cookies{display:none}
+  #chat.abierto{inset:0;right:0;bottom:0}
+  #chat.abierto .chat-panel{position:fixed;inset:0;width:100%;height:100%;height:100dvh;border-radius:0;border:0;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+  #chat.abierto .chat-fab{display:none}
+}
+
+/* v23 · Tablas de precios de Ajustes: en el móvil, una ficha por plan */
+.aj-cel{display:contents}
+.aj-cel-t{display:none}
+@media (max-width:640px){
+  .aj-tabla{overflow:visible}
+  .aj-th{display:none}
+  .aj-tr,.aj-tabla.extras .aj-tr{grid-template-columns:1fr 1fr;min-width:0;gap:10px 12px;padding:12px}
+  .aj-tr > span:first-child{grid-column:1/-1}
+  .aj-cel{display:grid;gap:5px;min-width:0}
+  .aj-cel-t{display:block;font-size:12px;color:var(--muted)}
+  .aj-ck .aj-cel-t{display:inline;font-size:13px;color:var(--text)}
+  .aj-tr .c-act{order:1}.aj-tr .c-des{order:2}.aj-tr .c-pre{order:3}.aj-tr .c-dia{order:4}.aj-tr .c-pla{order:5;grid-column:1/-1}
+  .aj-tabla.extras .c-pre{grid-column:auto}
+
+  /* Filtros (diseños de la portada, pedidos y soporte del panel): en filas, sin deslizar */
+  .dz-filtro,.opts.filters{flex-wrap:wrap;overflow:visible;margin-right:0;padding-right:0}
+  .dz-filtro .opt > span,.opts.filters .opt > span{height:34px;padding:0 11px;font-size:13px;min-width:0}
+  .opts.filters{gap:6px}
+
+  /* Pestañas de cada proyecto: las 5 caben siempre */
+  .mp-tabs{overflow:visible;gap:2px}
+  .mp-tabs{justify-content:space-between}
+  .mp-tabs button{flex:0 0 40px;padding:0;min-width:0}
+  .mp-tabs button.on{flex:1 1 auto;padding:0 10px}
+  .mp-tabs button.on span{overflow:hidden;text-overflow:ellipsis}
+  .opts.filters .opt > span i,.dz-filtro .opt > span i{font-size:13px}
+  .opts.filters .opt.cero{display:none}
+}
+@media (max-width:640px){.mp-toggle .mp-precio{align-items:flex-start}}
+.mp-top-r > b.mp-precio{display:flex;flex-direction:column;align-items:flex-end}
+@media (max-width:640px){
+  .mp-toggle .mp-top-r > b.mp-precio{align-items:flex-start;text-align:left}
+  .mp-tabs{gap:2px}
+  .mp-tabs button{flex:0 0 36px}
+  .mp-tabs button.on{padding:0 8px}
+}
+@media (max-width:380px){.mp-tabs button.on svg{display:none}}
+
+/* v23 · Mega prompt con IA */
+.od-ia{appearance:none;width:100%;display:flex;align-items:center;gap:12px;margin:0 0 16px;padding:14px;border-radius:14px;border:1px solid rgba(200,245,96,.35);background:linear-gradient(135deg,rgba(200,245,96,.12),rgba(200,245,96,.03));color:var(--text);font:inherit;text-align:left;cursor:pointer;transition:transform .2s var(--e-out),border-color .2s}
+.od-ia:hover{border-color:var(--accent);transform:translateY(-1px)}
+.od-ia > span:nth-child(2){flex:1;min-width:0;display:grid;gap:2px}
+.od-ia b{font-size:15px}
+.od-ia small{color:var(--muted);font-size:12.5px;line-height:1.35}
+.od-ia > svg{width:18px;height:18px;color:var(--accent);flex:none}
+.od-ia-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--accent);color:var(--ink);flex:none}
+.od-ia-ic svg{width:18px;height:18px}
+.mp-dlg{width:min(760px,100%)}
+.mp-dlg .dlg-h{display:flex;align-items:center;gap:10px}
+.mp-dlg .dlg-h svg{width:22px;height:22px;color:var(--accent)}
+.mp-sub{margin:-6px 0 12px;font-size:13.5px}
+.mp-tag{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin:0 0 10px}
+.mp-tag svg{width:15px;height:15px;flex:none}
+.mp-tag.ia{color:var(--accent)}
+.mp-texto{width:100%;min-height:min(52vh,460px);resize:vertical;padding:14px;border-radius:14px;border:1px solid var(--line2);background:var(--field);color:var(--text);font:500 13px/1.55 var(--fm);white-space:pre-wrap;overflow-wrap:break-word}
+.mp-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.mp-btns .btn{flex:1 1 auto}
+.mp-nota{font-size:12.5px;margin-top:10px}
+html[data-tema=claro] .od-ia{border-color:rgba(79,133,12,.35);background:linear-gradient(135deg,rgba(79,133,12,.1),rgba(79,133,12,.02))}

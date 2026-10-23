@@ -202,3 +202,20 @@ Si quieres más protección, puedes hacer el repositorio **privado** (GitHub Pag
   - Tú lo revisas en el panel → «Vídeos»: aprobar, añadir bonus, marcar pagado o «Pagar todo» a un creador.
 - **Más**: aviso de «pedido a medias» en la portada, confeti al enviar un pedido y botón para volver arriba.
 - Opcional: vuelve a desplegar la función `asistente` para que la IA conozca el descuento y el pago por vídeo (sin desplegar, el asistente lo responde igual con sus respuestas propias).
+
+## 16. Versión 23: web reforzada y mega prompt con IA
+**Qué hay que hacer:** sube el contenido del zip a GitHub y recarga la web con la caché limpia. Para que el mega prompt use Gemini,
+vuelve a desplegar la función `asistente` (Supabase → Edge Functions → asistente → pega el nuevo `supabase/functions/asistente/index.ts` → Deploy).
+No hace falta ejecutar ningún SQL nuevo.
+
+- **Se acabaron los «Cargando…» infinitos.** Al volver a la web desde otra app, Supabase podía quedarse bloqueado y ninguna consulta terminaba
+  (Ayuda y soporte, Guardar ajustes…). Ahora: el aviso de sesión no bloquea nada, ninguna petición espera más de 20 s, el candado de sesión
+  no puede atascar la web y, si algo falla, sale el motivo con un botón **Reintentar**.
+- **Pedidos sin duplicados:** si la conexión se corta justo al enviar un pedido, al reintentar no se crea otro igual.
+- **Guardar ajustes:** guarda todo a la vez, avisa si algo falla y no se queda girando.
+- **Móvil:** nada se desliza de lado (pestañas del panel y de Ajustes en filas, etapas del proyecto siempre visibles, filtros en filas,
+  tablas de precios como fichas), sin palabras partidas, chat del asistente a pantalla completa, número de la campana entero.
+- **Mega prompt con IA** (Panel → abre un pedido → «Mega prompt con IA»): junta cuestionario, plan, extras, diseño, contenido, dominio,
+  cambios, mensajes del cliente y notas internas, y Gemini escribe un prompt completo para crear su web. Copiar o descargar en .txt.
+  Solo lo puede pedir el equipo. Si la IA no responde, se genera igualmente una versión ordenada sin IA.
+- Stripe y PayPal quitados (v22): solo Bizum y transferencia. Los datos se cambian en Ajustes → Negocio → «Cobros y comisiones».
