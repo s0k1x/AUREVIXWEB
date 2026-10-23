@@ -226,3 +226,8 @@ No hace falta ejecutar ningún SQL nuevo.
 - **iPhone:** en el móvil la cabecera es opaca y ya no se esconde al bajar, así la zona de la hora no enseña la página por detrás.
 - **Formas de pago:** el subtítulo se ve siempre; la tarjeta ya no pisa el número con el importe.
 - **Reseñas:** son las de tu web (Supabase), no las de Trustpilot. Al publicar una, el cliente ve un botón para opinar también en Trustpilot (se le copia su texto).
+
+## 18. Versión v25 — iPhone: franja de aviso y hora
+- La franja de aviso (y la de modo demo) ahora va **debajo** de la cabecera. Antes iba pegada arriba del todo, detrás de la hora del iPhone, y la cabecera dejaba un hueco vacío enorme debajo.
+- Pantallas de 360 px: el titular de portada y dos textos pequeños ya no se salen.
+- Sube todo y recarga con caché limpia (el service worker pasa a v25).

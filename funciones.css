@@ -791,3 +791,11 @@ html{background:var(--bg)}
   .progreso{display:none}
 }
 @media (max-width:640px){html[data-tema=claro] body .header,html[data-tema=claro] body .header.scrolled{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none}}
+
+/* v25 · iPhone: la franja de aviso ya no va detrás de la hora; queda bajo la cabecera */
+.header + .anuncio,.header + .demo-banner{z-index:1}
+.demo-banner{padding-top:8px}
+.demo-banner + .header{top:0}
+/* v25 · pantallas muy estrechas (360 px) */
+@media (max-width:380px){.hero h1{font-size:40px}}
+.mp-dato span,.pg-fila small{overflow-wrap:anywhere}
