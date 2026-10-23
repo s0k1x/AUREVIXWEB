@@ -412,7 +412,7 @@ dialog.dlg-prev{padding:0}
 .dz-filtro{margin:-14px 0 24px}
 .dz{transition:opacity .35s var(--e-out),transform .45s var(--e-out),border-color .4s,box-shadow .5s}
 .dz.fuera{opacity:0;transform:scale(.94)}
-.dz .dz-win{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .5s var(--e-out)}
+
 
 /* Línea de tiempo de "Cómo funciona" */
 .steps.timeline{position:relative;--prog:0}
@@ -595,3 +595,24 @@ dialog.dlg-prev{padding:0}
 .prev-frame.movil{border-width:10px;border-color:#141418;outline:1px solid rgba(255,255,255,.14);border-radius:40px}
 /* Sin trabajo extra cuando la vitrina no se ve */
 .hero-art.dormida .vt-movil,.hero-art.dormida .sello svg,.hero-art.dormida .vt-prog{animation-play-state:paused!important}
+
+/* ==========================================================
+   Ronda 6 · Pestañas de la vitrina (sustituyen a las pastillas)
+   ========================================================== */
+.vt-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 14px;margin-top:6px}
+.vt-tabs button{appearance:none;background:none;border:0;font:inherit;cursor:pointer;border-radius:0;position:relative;display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:baseline;text-align:left;padding:14px 0 4px;border-top:1px solid var(--line2);color:var(--muted);transition:color .3s}
+.vt-tabs small{font-family:var(--fm);font-size:11px;color:var(--dim)}
+.vt-tabs span{font-family:var(--fd);font-weight:700;font-size:16px;letter-spacing:-.01em}
+.vt-tabs em{grid-column:2;font-style:normal;font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vt-tabs button:hover{color:var(--text)}
+.vt-tabs button.on{color:var(--text)}
+.vt-tabs button.on small{color:var(--c)}
+.vt-tabs .vt-prog{position:absolute;left:0;top:-1px;height:2px;width:100%;background:var(--c);transform-origin:left;transform:scaleX(0)}
+.vt-tabs button.on .vt-prog{animation:vtprog 5.2s linear forwards}
+.pausa .vt-tabs button.on .vt-prog,.hero-art.dormida .vt-tabs .vt-prog{animation-play-state:paused}
+@media (max-width:640px){
+  .vt-tabs{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 12px}
+  .vt-tabs em{display:none}
+  .vt-tabs span{font-size:15px}
+  .vt-tabs button{padding:10px 0 6px}
+}

@@ -276,7 +276,7 @@ function pintarSesion(u) {
       <div class="user-menu" role="menu">
         <div class="um-head">${avatar(u, 'lg')}<div><b>${esc(u.name)}</b><small>${esc(u.email)}</small><span class="role-tag r-${u.role}">${ROLES[u.role]}</span></div></div>
         ${panel ? `<a href="panel.html" role="menuitem">${icono('panel')} ${panel}</a>` : ''}
-        <a href="index.html#mis-pedidos" role="menuitem" data-mis-pedidos>${icono('bag')} Mis pedidos</a>
+        <a href="index.html#mis-pedidos" role="menuitem" data-mis-pedidos>${icono("bag")} Mis proyectos</a>
         <a href="trabaja.html" role="menuitem">${icono('briefcase')} Trabaja con nosotros</a>
         <button role="menuitem" data-logout>${icono('logout')} Cerrar sesión</button>
       </div>
@@ -332,7 +332,7 @@ function crearLogin() {
       ${store.modoDemo ? `
       <div class="demo-box">
         <b>${icono('flask')} Modo demo</b>
-        <p>Firebase aún no está conectado, así que el acceso es de prueba. Entra con un rol:</p>
+        <p>La web todavía no está conectada a Supabase, así que el acceso es de prueba. Entra con un rol:</p>
         <div class="demo-btns">
           <button class="btn btn-sm btn-ghost" data-demo="client">Cliente</button>
           <button class="btn btn-sm btn-ghost" data-demo="worker">Trabajador</button>
@@ -397,7 +397,7 @@ function crearLogin() {
     if (loginResolver) { loginResolver(store.usuarioActual()); loginResolver = null; }
   });
   store.alCambiarUsuario(u => {
-    if (u && d.open) { cerrar(d); toast(`¡Hola, ${u.name.split(' ')[0]}!`, 'ok'); }
+    if (u && d.open) { cerrar(d); toast(`Sesión iniciada como ${u.name.split(' ')[0]}`, 'ok'); }
   });
   return d;
 }
@@ -405,7 +405,7 @@ function crearLogin() {
 /** Abre el login y devuelve el usuario (o null si lo cierra) */
 export function pedirLogin(subtitulo) {
   const d = $('#loginDlg') || crearLogin();
-  $('#lgSub').textContent = subtitulo || 'Para guardar tu pedido y seguir su estado.';
+  $('#lgSub').textContent = subtitulo || 'Para guardar tu pedido y seguir cada etapa de tu web.';
   $('#lgErr').textContent = '';
   abrir(d);
   return new Promise(r => (loginResolver = r));
@@ -480,7 +480,7 @@ function instalarPWA() {
       ev.prompt();
       const { outcome } = await ev.userChoice;
       ev = null;
-      if (outcome === 'accepted') toast('¡Instalada! Ya la tienes en tu pantalla de inicio', 'ok');
+      if (outcome === 'accepted') toast('App instalada en tu pantalla de inicio', 'ok');
     } else if (ios) toast('Pulsa Compartir y luego «Añadir a pantalla de inicio»');
     else toast('Abre el menú del navegador y elige «Instalar app»');
   });

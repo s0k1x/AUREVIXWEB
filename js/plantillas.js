@@ -10,16 +10,16 @@ const F = (id, w = 1200) => `https://images.pexels.com/photos/${id}/pexels-photo
 export const PLANTILLAS = [
   {
     id: 'filo', dominio: 'barberiafilo.com', nombre: 'Filo', sector: 'Barbería · Peluquería',
-    desc: 'Oscuro y elegante, con foto a pantalla completa, precios y reservas.', marca: 'Barbería Filo',
+    desc: 'Estética oscura y elegante con portada a pantalla completa, lista de precios y reserva de cita.', marca: 'Barbería Filo',
     fuentes: { d: 'Oswald', b: 'Work Sans', url: 'family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600' },
     c: { bg: '#0e0c0a', surface: '#181410', text: '#f3ebde', muted: '#a99a89', accent: '#c9a24a' },
     estilo: { radio: '3px', mayus: true, peso: 600 },
     tel: '600 123 456', redes: true,
-    hero: { tipo: 'imagen', img: 1319462, kicker: 'Desde 2015 · Centro ciudad', titulo: 'Cortes con oficio.', texto: 'Barbería clásica con técnica moderna. Pide tu cita en un minuto y olvídate de esperar.', cta: 'Reservar cita', cta2: 'Ver precios', meta: [['star', '4,9 · 230 reseñas'], ['clock', 'Hoy hasta las 20:30']] },
+    hero: { tipo: 'imagen', img: 8218487, kicker: 'Desde 2015 · Centro ciudad', titulo: 'Cortes con oficio.', texto: 'Barbería clásica en el centro. Cortes, degradados y arreglo de barba con cita previa, sin esperas.', cta: 'Reservar cita', cta2: 'Ver precios', meta: [['star', '4,9 · 230 reseñas'], ['clock', 'Hoy hasta las 20:30']] },
     cinta: ['Corte clásico', 'Degradados', 'Arreglo de barba', 'Afeitado a navaja', 'Productos premium'],
     secciones: [
       { tipo: 'lista', id: 'precios', kicker: 'Servicios', titulo: 'Precios claros, sin sorpresas', img: 897265, etiqueta: 'Toalla caliente incluida', grupos: [{ items: [['Corte clásico', '14 €', '30 min'], ['Degradado / fade', '16 €', '40 min'], ['Arreglo de barba', '10 €', '20 min'], ['Corte + barba', '22 €', '50 min'], ['Afeitado a navaja', '15 €', '30 min'], ['Corte infantil', '10 €', '25 min']] }] },
-      { tipo: 'galeria', id: 'trabajos', kicker: 'Nuestro trabajo', titulo: 'Cada corte, una firma', imgs: [1836983, 7697224, 7518731, 4625648, 897265] },
+      { tipo: 'galeria', id: 'trabajos', kicker: 'Nuestro trabajo', titulo: 'Cada corte, una firma', imgs: [7518728, 1836983, 7697224, 4625648, 7518731] },
       { tipo: 'opiniones', kicker: 'Opiniones', titulo: 'Lo que dicen en Google', nota: '4,9', total: 230, items: [['Javier Molina', 'El mejor degradado que me han hecho. Ya no voy a otro sitio.'], ['Rubén Sanz', 'Trato de 10 y siempre puntuales con la cita.'], ['Álex Prieto', 'Ambiente top y precios muy justos.']] },
       { tipo: 'info', id: 'contacto', kicker: 'Dónde estamos', titulo: 'Ven a vernos', horario: [['Lunes a viernes', '10:00 – 20:30', [1, 2, 3, 4, 5], 10, 20.5], ['Sábados', '9:30 – 14:00', [6], 9.5, 14], ['Domingos', 'Cerrado', [0]]], direccion: 'Calle Mayor, 12 · Centro' },
       { tipo: 'cta', titulo: '¿Te toca corte?', texto: 'Reserva ahora y te guardamos tu hueco.', boton: 'Reservar por WhatsApp', img: 7518731 }
@@ -27,7 +27,7 @@ export const PLANTILLAS = [
   },
   {
     id: 'brasa', dominio: 'brasayco.es', nombre: 'Brasa', sector: 'Restaurante · Bar',
-    desc: 'Cálido y apetecible, con carta digital, fotos de platos y reservas.', marca: 'Brasa & Co.',
+    desc: 'Tonos cálidos, carta digital con fotos de los platos, horario y reserva de mesa.', marca: 'Brasa & Co.',
     fuentes: { d: 'Fraunces', b: 'Inter', url: 'family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600' },
     c: { bg: '#f7f0e5', surface: '#fffaf2', text: '#2a1d14', muted: '#7a6656', accent: '#c4532d' },
     estilo: { radio: '18px', mayus: false, peso: 700 },
@@ -49,7 +49,7 @@ export const PLANTILLAS = [
   },
   {
     id: 'kiosko', dominio: 'kiosko.shop', nombre: 'Kiosko', sector: 'Tienda online',
-    desc: 'Tienda moderna con catálogo, carrito que funciona y envío rápido.', marca: 'Kiosko',
+    desc: 'Tienda online con catálogo, carrito de compra y ventajas de envío y devolución.', marca: 'Kiosko',
     fuentes: { d: 'Space Grotesk', b: 'Inter', url: 'family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600' },
     c: { bg: '#f6f6f3', surface: '#ffffff', text: '#111111', muted: '#6b6b6b', accent: '#2f5bff' },
     estilo: { radio: '16px', mayus: false, peso: 700 },
@@ -65,7 +65,7 @@ export const PLANTILLAS = [
   },
   {
     id: 'lienzo', dominio: 'estudiolienzo.com', nombre: 'Lienzo', sector: 'Portfolio · Profesional',
-    desc: 'Editorial y minimalista, con proyectos a pantalla grande.', marca: 'Estudio Lienzo',
+    desc: 'Diseño editorial y minimalista para mostrar proyectos a gran tamaño.', marca: 'Estudio Lienzo',
     fuentes: { d: 'Instrument Serif', b: 'Inter', url: 'family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600' },
     c: { bg: '#f1efe9', surface: '#e7e3da', text: '#161616', muted: '#6e6a62', accent: '#e4572e' },
     estilo: { radio: '0px', mayus: false, peso: 400 },
@@ -81,7 +81,7 @@ export const PLANTILLAS = [
   },
   {
     id: 'calma', dominio: 'calmaestetica.es', nombre: 'Calma', sector: 'Estética · Salud · Bienestar',
-    desc: 'Suave y luminoso, con tratamientos, galería y reserva de citas.', marca: 'Calma Estética',
+    desc: 'Diseño luminoso con lista de tratamientos, galería y reserva de cita online.', marca: 'Calma Estética',
     fuentes: { d: 'Playfair Display', b: 'DM Sans', url: 'family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@400;500;600' },
     c: { bg: '#f3f5f0', surface: '#ffffff', text: '#23302a', muted: '#6b7a71', accent: '#6f8f72' },
     estilo: { radio: '28px', mayus: false, peso: 500 },
@@ -98,7 +98,7 @@ export const PLANTILLAS = [
   },
   {
     id: 'pulso', dominio: 'pulsogym.es', nombre: 'Pulso', sector: 'Gimnasio · Deporte',
-    desc: 'Enérgico y potente, con foto a pantalla completa, clases y tarifas.', marca: 'Pulso Gym',
+    desc: 'Diseño de alto contraste con portada a pantalla completa, instalaciones y tarifas.', marca: 'Pulso Gym',
     fuentes: { d: 'Anton', b: 'Inter', url: 'family=Anton&family=Inter:wght@400;500;600;700' },
     c: { bg: '#0a0a0a', surface: '#151515', text: '#ffffff', muted: '#9a9a9a', accent: '#ff5a1f' },
     estilo: { radio: '10px', mayus: true, peso: 400 },
@@ -118,7 +118,7 @@ export const PLANTILLAS = [
 export const plantillaPorId = id => PLANTILLAS.find(p => p.id === id);
 
 /* ==========================================================
-   PINTADO (solo plantilla.html)
+   PINTADO (plantilla.html)
    ========================================================== */
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const hexValido = h => /^#[0-9a-f]{6}$/i.test(h || '');
@@ -126,31 +126,35 @@ function tintaPara(hex) {
   const n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
   return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 > 0.6 ? '#111111' : '#ffffff';
 }
-// Foto real con fondo de color mientras carga (si falla, queda el degradado)
-let maxW = 4000; // en miniaturas se piden fotos pequeñas: carga más rápido
-const foto = (id, w = 1000, alt = '', cls = '') =>
-  `<div class="ph ${cls}">${id ? `<img src="${F(id, Math.min(w, maxW))}" alt="${esc(alt)}" loading="lazy" decoding="async" onload="this.classList.add('ok')" onerror="this.remove()">` : ''}</div>`;
-const cab = s => `<div class="sh rv">${s.kicker ? `<span class="kick">${esc(s.kicker)}</span>` : ''}<h2 class="h2">${s.titulo || ''}</h2></div>`;
+
+/* Fotos rápidas: el navegador elige el tamaño justo para cada pantalla (srcset).
+   En las miniaturas se pide una sola foto pequeña. */
+let mini = false, prioridad = 0;
+const ANCHOS = [480, 800, 1200, 1800];
+function foto(id, { ancho = '100vw', alt = '', cls = '', primero = false } = {}) {
+  if (!id) return `<div class="ph ${cls}"></div>`;
+  const carga = primero || (mini && prioridad++ < 6) ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"';
+  const src = mini
+    ? `src="${F(id, primero ? 640 : 420)}"`
+    : `src="${F(id, 800)}" srcset="${ANCHOS.map(w => `${F(id, w)} ${w}w`).join(', ')}" sizes="${ancho}"`;
+  return `<div class="ph ${cls}"><img ${src} alt="${esc(alt)}" ${carga} decoding="async" onload="this.classList.add('ok')" onerror="this.remove()"></div>`;
+}
+const cab = (s, cls = '') => `<div class="sh ${cls}">${s.kicker ? `<span class="kick rv">${esc(s.kicker)}</span>` : ''}<h2 class="h2 parte">${s.titulo || ''}</h2></div>`;
 const iniciales = n => n.split(' ').map(p => p[0]).slice(0, 2).join('');
+const num = t => { const m = String(t).match(/^([\d.]+)(.*)$/); return m ? `<b data-n="${m[1].replace('.', '')}" data-suf="${esc(m[2])}">${esc(t)}</b>` : `<b>${esc(t)}</b>`; };
 
 const S = {
-  lista: s => `
-    <section class="sec" id="${s.id || ''}"><div class="w">
-      ${cab(s)}
-      <div class="${s.img ? 'lista-g' : ''}">
-        <div class="lista ${s.grupos.length > 1 ? 'multi' : ''}">
-          ${s.grupos.map(g => `<div class="grupo rv">${g.img ? `<div class="g-img">${foto(g.img, 700, g.nombre)}</div>` : ''}${g.nombre ? `<h3>${esc(g.nombre)}</h3>` : ''}
-            ${g.items.map(([n, p, d]) => `<div class="li"><div><b>${esc(n)}</b>${d ? `<small>${icono('clock')} ${esc(d)}</small>` : ''}</div><i></i><span>${esc(p)}</span></div>`).join('')}
-          </div>`).join('')}
-        </div>
-        ${s.img ? `<div class="lista-img rv">${foto(s.img, 900)}${s.etiqueta ? `<span class="etq">${icono('award')} ${esc(s.etiqueta)}</span>` : ''}</div>` : ''}
-      </div>
-    </div></section>`,
+  lista: s => s.img ? `
+    <section class="sec par-sec" id="${s.id || ''}">
+      <div class="par-txt">${cab(s)}${listaHTML(s)}</div>
+      <div class="par-img rvi">${foto(s.img, { ancho: '50vw' })}${s.etiqueta ? `<span class="etq">${icono('award')} ${esc(s.etiqueta)}</span>` : ''}</div>
+    </section>` : `
+    <section class="sec" id="${s.id || ''}"><div class="w">${cab(s)}${listaHTML(s)}</div></section>`,
 
   galeria: s => `
-    <section class="sec" id="${s.id || ''}"><div class="w">${cab(s)}
-      <div class="gal">${s.imgs.map((id, i) => `<figure class="g g${i} rv">${foto(id, i === 0 ? 1100 : 700)}<span class="g-ic">${icono('plus')}</span></figure>`).join('')}</div>
-    </div></section>`,
+    <section class="sec sin-pie" id="${s.id || ''}"><div class="w">${cab(s, 'fila')}</div>
+      <div class="gal">${s.imgs.map((id, i) => `<figure class="g g${i} rvi">${foto(id, { ancho: i === 0 ? '50vw' : '25vw' })}<span class="g-ic">${icono('plus')}</span></figure>`).join('')}</div>
+    </section>`,
 
   opiniones: s => `
     <section class="sec alt"><div class="w">
@@ -163,51 +167,52 @@ const S = {
     </div></section>`,
 
   info: (s, p) => `
-    <section class="sec" id="${s.id || 'contacto'}"><div class="w info">
-      <div class="rv">${cab(s)}
-        <div class="estado" data-estado></div>
-        <div class="horario">${s.horario.map(([d, h, dias = [], a, c]) => `<div data-dias="${dias.join(',')}" data-a="${a ?? ''}" data-c="${c ?? ''}"><span>${esc(d)}</span><b>${esc(h)}</b></div>`).join('')}</div>
-        <p class="dir">${icono('pin')} ${esc(s.direccion)}</p>
-        <div class="btns"><a class="b b1" href="#">${icono('pin')} Cómo llegar</a><a class="b b2" href="#">${icono('call')} ${esc(p.tel)}</a></div>
+    <section class="sec par-sec info" id="${s.id || 'contacto'}">
+      <div class="par-txt">${cab(s)}
+        <div class="estado rv" data-estado></div>
+        <div class="horario rv">${s.horario.map(([d, h, dias = [], a, c]) => `<div data-dias="${dias.join(',')}" data-a="${a ?? ''}" data-c="${c ?? ''}"><span>${esc(d)}</span><b>${esc(h)}</b></div>`).join('')}</div>
+        <p class="dir rv">${icono('pin')} ${esc(s.direccion)}</p>
+        <div class="btns rv"><a class="b b1" href="#">${icono('pin')} Cómo llegar</a><a class="b b2" href="#">${icono('call')} ${esc(p.tel)}</a></div>
       </div>
-      <div class="mapa rv"><div class="calle c1"></div><div class="calle c2"></div><div class="calle c3"></div><div class="pin">${icono('pin')}</div><span class="mapa-tag">${esc(p.marca)}</span></div>
-    </div></section>`,
+      <div class="mapa rvi"><div class="calle c1"></div><div class="calle c2"></div><div class="calle c3"></div><div class="pin">${icono('pin')}</div><span class="mapa-tag">${esc(p.marca)}</span></div>
+    </section>`,
 
   cta: s => `
-    <section class="sec"><div class="w"><div class="cta ${s.img ? 'conimg' : ''} rv">
-      ${s.img ? foto(s.img, 1600, '', 'cta-bg') : ''}
-      <div class="cta-in"><h2>${esc(s.titulo)}</h2><p>${esc(s.texto)}</p><a class="b b1" href="#">${esc(s.boton)} ${icono('arrow')}</a></div>
-    </div></div></section>`,
+    <section class="cta ${s.img ? 'conimg' : ''}">
+      ${s.img ? foto(s.img, { cls: 'cta-bg par' }) : ''}
+      <div class="cta-in w"><h2 class="parte">${esc(s.titulo)}</h2><p class="rv">${esc(s.texto)}</p><a class="b b1 rv" href="#">${esc(s.boton)} ${icono('arrow')}</a></div>
+    </section>`,
 
   ventajas: s => `
     <section class="sec tight"><div class="w ventajas">
-      ${s.items.map(([ic, t, d]) => `<div class="v rv"><span class="ve">${icono(ic)}</span><div><b>${esc(t)}</b><p>${esc(d)}</p></div></div>`).join('')}
+      ${s.items.map(([ic, t, d], i) => `<div class="v rv"><span class="ve">${icono(ic)}</span><div><small>0${i + 1}</small><b>${esc(t)}</b><p>${esc(d)}</p></div></div>`).join('')}
     </div></section>`,
 
   productos: s => `
-    <section class="sec" id="${s.id || ''}"><div class="w">${cab(s)}
+    <section class="sec" id="${s.id || ''}"><div class="w">${cab(s, 'fila')}
       <div class="prods">${s.items.map(([n, p, tag, img]) => `
-        <div class="prod rv"><div class="prod-img">${foto(img, 600, n)}${tag ? `<em class="tag">${esc(tag)}</em>` : ''}</div>
-          <div class="pi"><div><b>${esc(n)}</b><span>${esc(p)}</span></div><button class="add" aria-label="Añadir ${esc(n)} al carrito">${icono('plus')}</button></div>
+        <div class="prod rv"><div class="prod-img">${foto(img, { ancho: '(max-width:980px) 50vw, 25vw', alt: n })}${tag ? `<em class="tag">${esc(tag)}</em>` : ''}
+            <button class="add" aria-label="Añadir ${esc(n)} al carrito">${icono('plus')}<span>Añadir</span></button></div>
+          <div class="pi"><b>${esc(n)}</b><span>${esc(p)}</span></div>
         </div>`).join('')}</div>
     </div></section>`,
 
   proyectos: s => `
-    <section class="sec" id="${s.id || ''}"><div class="w">${cab(s)}
-      <div class="proys">${s.items.map(([n, d, img], i) => `<a class="proy rv ${i % 3 === 0 ? 'ancho' : ''}" href="#">${foto(img, 1200, n)}<div class="proy-i"><b>${esc(n)}</b><small>${esc(d)}</small><span>${icono('arrow')}</span></div></a>`).join('')}</div>
-    </div></section>`,
+    <section class="sec sin-pie" id="${s.id || ''}"><div class="w">${cab(s, 'fila')}</div>
+      <div class="proys">${s.items.map(([n, d, img], i) => `<a class="proy rvi ${i % 3 === 0 ? 'ancho' : ''}" href="#">${foto(img, { ancho: i % 3 === 0 ? '100vw' : '50vw', alt: n })}<div class="proy-i"><small>0${i + 1}</small><b>${esc(n)}</b><em>${esc(d)}</em><span>${icono('arrow')}</span></div></a>`).join('')}</div>
+    </section>`,
 
   sobre: s => `
-    <section class="sec alt"><div class="w sobre ${s.img ? 'conimg' : ''}">
-      ${s.img ? `<div class="sobre-img rv">${foto(s.img, 900)}</div>` : ''}
-      <div class="rv">${cab(s)}<p class="txt">${esc(s.texto)}</p>
-        <div class="datos">${s.datos.map(([n, l]) => `<div><b>${esc(n)}</b><span>${esc(l)}</span></div>`).join('')}</div></div>
-    </div></section>`,
+    <section class="sec par-sec alt sobre ${s.img ? '' : 'solo'}">
+      ${s.img ? `<div class="par-img rvi">${foto(s.img, { ancho: '50vw' })}</div>` : ''}
+      <div class="par-txt">${cab(s)}<p class="txt rv">${esc(s.texto)}</p>
+        <div class="datos">${s.datos.map(([n, l]) => `<div class="rv">${num(n)}<span>${esc(l)}</span></div>`).join('')}</div></div>
+    </section>`,
 
   precios: s => `
     <section class="sec" id="${s.id || ''}"><div class="w">${cab(s)}
       <div class="planes">${s.items.map(([n, p, l, dest]) => `
-        <div class="plan rv ${dest ? 'dest' : ''}">${dest ? '<em class="tag">Más elegido</em>' : ''}<b>${esc(n)}</b>
+        <div class="plan rv ${dest ? 'dest' : ''}">${dest ? '<em class="tag">El más elegido</em>' : ''}<b>${esc(n)}</b>
           <div class="pp">${esc(p)}<small>/mes</small></div>
           <ul>${l.map(x => `<li>${icono('check')}${esc(x)}</li>`).join('')}</ul><a class="b ${dest ? 'b1' : 'b2'}" href="#">Apuntarme</a>
         </div>`).join('')}</div>
@@ -219,7 +224,7 @@ const S = {
     const horas = ['10:00', '10:30', '11:30', '12:00', '16:00', '17:30', '18:00', '19:00'];
     const nd = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     return `
-    <section class="sec alt" id="${s.id || 'reserva'}"><div class="w">${cab(s)}
+    <section class="sec alt" id="${s.id || 'reserva'}"><div class="w reserva-g">${cab(s)}
       <div class="reserva rv">
         <div class="dias">${dias.map((d, i) => `<button data-dia="${nd[d.getDay()]} ${d.getDate()}" class="${i === 0 ? 'on' : ''}"><small>${nd[d.getDay()]}</small><b>${d.getDate()}</b></button>`).join('')}</div>
         <div class="horas">${horas.map((h, i) => `<button data-hora="${h}" class="${i === 2 ? 'on' : ''}" ${i === 4 ? 'disabled' : ''}>${h}</button>`).join('')}</div>
@@ -229,36 +234,42 @@ const S = {
   }
 };
 
+function listaHTML(s) {
+  return `<div class="lista ${s.grupos.length > 1 ? 'multi' : ''}">
+    ${s.grupos.map(g => `<div class="grupo rv">${g.img ? `<div class="g-img">${foto(g.img, { ancho: '33vw', alt: g.nombre })}</div>` : ''}${g.nombre ? `<h3>${esc(g.nombre)}</h3>` : ''}
+      ${g.items.map(([n, p, d]) => `<div class="li"><div><b>${esc(n)}</b>${d ? `<small>${icono('clock')} ${esc(d)}</small>` : ''}</div><i></i><span>${esc(p)}</span></div>`).join('')}
+    </div>`).join('')}
+  </div>`;
+}
+
 function hero(p) {
   const h = p.hero;
   const btns = `<div class="btns"><a class="b b1" href="#">${esc(h.cta)} ${icono('arrow')}</a><a class="b b2" href="#">${esc(h.cta2)}</a></div>`;
-  const meta = h.meta ? `<div class="hmeta">${h.meta.map(([i, t]) => `<span>${icono(i)} ${esc(t)}</span>`).join('')}</div>` : '';
   if (h.tipo === 'imagen') return `
     <header class="hero img">
-      <div class="hbg">${foto(h.img, 1800, '', 'kb')}</div>
-      <div class="w hc"><span class="kick">${esc(h.kicker)}</span><h1>${h.titulo}</h1><p>${esc(h.texto)}</p>${btns}${meta}</div>
-      <a class="hscroll" href="#s1" aria-label="Bajar">${icono('down')}</a>
+      <div class="hbg">${foto(h.img, { cls: 'kb', primero: true })}</div>
+      <div class="w hc"><span class="kick">${esc(h.kicker)}</span><h1 class="parte">${h.titulo}</h1><p>${esc(h.texto)}</p>${btns}</div>
+      ${h.meta ? `<div class="hstats">${h.meta.map(([i, t]) => `<span>${icono(i)} ${esc(t)}</span>`).join('')}<a class="hscroll" href="#s1" aria-label="Bajar">${icono('down')}</a></div>` : ''}
     </header>`;
   if (h.tipo === 'split') return `
-    <header class="hero split"><div class="w">
-      <div class="hc"><span class="kick">${esc(h.kicker)}</span><h1>${h.titulo}</h1><p>${esc(h.texto)}</p>${btns}</div>
-      <div class="hv">${foto(h.img, 1100, '', 'kb')}
+    <header class="hero split">
+      <div class="hc"><span class="kick">${esc(h.kicker)}</span><h1 class="parte">${h.titulo}</h1><p>${esc(h.texto)}</p>${btns}</div>
+      <div class="hv">${foto(h.img, { cls: 'kb', primero: true, ancho: '(max-width:980px) 100vw, 50vw' })}
         ${(h.badges || []).map(([i, b, t], k) => `<div class="badge bd${k}">${icono(i)}<div><b>${esc(b)}</b><span>${esc(t)}</span></div></div>`).join('')}
       </div>
-    </div></header>`;
+    </header>`;
   return `
     <header class="hero big"><div class="w">
-      <span class="kick">${esc(h.kicker)}</span><h1>${h.titulo}</h1>
+      <span class="kick">${esc(h.kicker)}</span><h1 class="parte">${h.titulo}</h1>
       <div class="hb"><p>${esc(h.texto)}</p>${btns}</div>
-    </div><div class="hv wide">${foto(h.img, 2000, '', 'kb par')}</div></header>`;
+    </div><div class="hv wide">${foto(h.img, { cls: 'par', primero: true })}</div></header>`;
 }
 
 export function pintarPlantilla(raiz, id, opciones = {}) {
   const p = plantillaPorId(id) || PLANTILLAS[0];
   const marca = (opciones.nombre || '').trim() || p.marca;
   const accent = hexValido(opciones.color) ? opciones.color : p.c.accent;
-  const mini = !!opciones.mini;
-  maxW = mini ? 560 : 4000;
+  mini = !!opciones.mini; prioridad = 0;
   const r = document.documentElement;
   const v = { '--bg': p.c.bg, '--surface': p.c.surface, '--text': p.c.text, '--muted': p.c.muted, '--accent': accent, '--ink': tintaPara(accent),
     '--fd': `'${p.fuentes.d}', Georgia, serif`, '--fb': `'${p.fuentes.b}', system-ui, sans-serif`, '--radius': p.estilo.radio, '--hw': p.estilo.peso, '--tt': p.estilo.mayus ? 'uppercase' : 'none' };
@@ -271,14 +282,13 @@ export function pintarPlantilla(raiz, id, opciones = {}) {
   l.rel = 'stylesheet';
   l.href = `https://fonts.googleapis.com/css2?${p.fuentes.url}&display=swap`;
   document.head.appendChild(l);
-  document.title = `${marca} · Vista previa`;
+  document.title = marca;
 
   const links = p.secciones.filter(s => s.id && s.id !== 'contacto').map(s => `<a href="#${s.id}">${esc(s.kicker || s.titulo)}</a>`).join('') + '<a href="#contacto">Contacto</a>';
-  const sobreImagen = p.hero.tipo === 'imagen';
   const horario = p.secciones.find(s => s.tipo === 'info');
 
   raiz.innerHTML = `
-    <nav class="nv ${sobreImagen ? 'over' : ''}" id="nv"><div class="w">
+    <nav class="nv ${p.hero.tipo === 'imagen' ? 'over' : ''}" id="nv"><div class="w">
       <a class="lg" href="#">${esc(marca)}</a>
       <div class="nl">${links}</div>
       <div class="nv-r">
@@ -291,57 +301,71 @@ export function pintarPlantilla(raiz, id, opciones = {}) {
     ${hero(p)}
     ${p.cinta ? `<div class="cinta" id="s1"><div class="ct">${[...p.cinta, ...p.cinta, ...p.cinta].map(w => `<span>${esc(w)}</span>`).join('')}</div></div>` : ''}
     ${p.secciones.map(s => S[s.tipo] ? S[s.tipo](s, { ...p, marca }) : '').join('')}
-    <footer class="ft"><div class="w ft-g">
-      <div><b class="lg">${esc(marca)}</b><p>${esc(p.desc)}</p>
+    <footer class="ft" id="${horario ? '' : 'contacto'}"><div class="w ft-g">
+      <div><p class="ft-lema">${esc(p.hero.texto)}</p>
         ${p.redes ? `<div class="soc"><a href="#" aria-label="Instagram">${icono('instagram')}</a><a href="#" aria-label="Facebook">${icono('facebook')}</a><a href="#" aria-label="TikTok">${icono('tiktok')}</a></div>` : ''}</div>
       <div><h4>Contacto</h4><p>${icono('call')} ${esc(p.tel)}</p>${horario ? `<p>${icono('pin')} ${esc(horario.direccion)}</p>` : ''}<p>${icono('mail')} hola@${esc(p.dominio)}</p></div>
       ${horario ? `<div><h4>Horario</h4>${horario.horario.slice(0, 3).map(([d, h]) => `<p><span>${esc(d)}</span> ${esc(h)}</p>`).join('')}</div>` : `<div><h4>Enlaces</h4>${links}</div>`}
-    </div><div class="w ft-b"><span>© ${new Date().getFullYear()} ${esc(marca)}</span><span>Aviso legal · Privacidad · Cookies</span></div></footer>
+    </div>
+    <div class="ft-marca" aria-hidden="true" style="--n:${Math.max(6, marca.length)}">${esc(marca)}</div>
+    <div class="w ft-b"><span>© ${new Date().getFullYear()} ${esc(marca)}</span><span>Aviso legal · Privacidad · Cookies</span></div></footer>
     <a class="wa-float" href="#" aria-label="WhatsApp">${icono('wa')}</a>
     <div class="t-toast" id="tToast"></div>`;
 
-  /* ----- Interacción ----- */
-  raiz.addEventListener('click', e => {
-    const a = e.target.closest('a[href="#"], button');
-    if (a && !a.matches('#nvMenu, .add, .dias button, .horas button, .cart, .res-ok')) e.preventDefault();
+  if (opciones.exportar) return; // al exportar se guarda tal cual y se activa al abrir el archivo
+  activarPlantilla({ check: icono('check'), plus: icono('plus') });
+}
+
+/* ==========================================================
+   ACTIVACIÓN (menú, carrito, reservas, horario y animaciones)
+   Es independiente a propósito: se copia tal cual dentro del
+   HTML que se exporta desde el panel.
+   ========================================================== */
+export function activarPlantilla(IC) {
+  const d = document, r = d.documentElement, mini = r.classList.contains('mini');
+  const $ = s => d.querySelector(s), $$ = s => [...d.querySelectorAll(s)];
+  d.addEventListener('click', e => {
+    const a = e.target.closest('a[href="#"]');
+    if (a) e.preventDefault();
   });
-  // Navegación: transparente sobre la foto, sólida al bajar
-  const nv = document.getElementById('nv');
+  // Navegación transparente sobre la foto y sólida al bajar
+  const nv = $('#nv');
   const alBajar = () => nv.classList.toggle('solid', scrollY > 40);
   addEventListener('scroll', alBajar, { passive: true }); alBajar();
-  // Menú móvil
-  const mnav = document.getElementById('mnav');
-  document.getElementById('nvMenu').addEventListener('click', () => { mnav.classList.toggle('open'); nv.classList.toggle('menu'); });
+  // Menú del móvil
+  const mnav = $('#mnav');
+  $('#nvMenu').addEventListener('click', () => { mnav.classList.toggle('open'); nv.classList.toggle('menu'); });
   mnav.addEventListener('click', e => { if (e.target.closest('a')) { mnav.classList.remove('open'); nv.classList.remove('menu'); } });
-  // Avisos dentro de la plantilla
-  const tt = document.getElementById('tToast'); let tTimer;
-  const aviso = t => { tt.innerHTML = `${icono('check')} ${t}`; tt.classList.add('on'); clearTimeout(tTimer); tTimer = setTimeout(() => tt.classList.remove('on'), 1800); };
-  // Carrito de la tienda
+  // Avisos
+  const tt = $('#tToast'); let tTimer;
+  const aviso = t => { tt.innerHTML = IC.check + ' ' + t; tt.classList.add('on'); clearTimeout(tTimer); tTimer = setTimeout(() => tt.classList.remove('on'), 1900); };
+  // Carrito
   let n = 0;
-  raiz.querySelectorAll('.add').forEach(b => b.addEventListener('click', e => {
-    e.preventDefault();
-    n++; const c = document.getElementById('cartN'); if (c) { c.textContent = n; c.parentElement.classList.remove('bump'); void c.offsetWidth; c.parentElement.classList.add('bump'); }
-    b.classList.add('ok'); b.innerHTML = icono('check'); setTimeout(() => { b.classList.remove('ok'); b.innerHTML = icono('plus'); }, 1400);
+  $$('.add').forEach(b => b.addEventListener('click', e => {
+    e.preventDefault(); n++;
+    const c = $('#cartN');
+    if (c) { c.textContent = n; c.parentElement.classList.remove('bump'); void c.offsetWidth; c.parentElement.classList.add('bump'); }
+    b.classList.add('ok'); setTimeout(() => b.classList.remove('ok'), 1400);
     aviso('Añadido al carrito');
   }));
-  // Reserva interactiva
-  const res = raiz.querySelector('.reserva');
+  // Reserva
+  const res = $('.reserva');
   if (res) {
     const etiqueta = () => {
-      const d = res.querySelector('.dias .on')?.dataset.dia, h = res.querySelector('.horas .on')?.dataset.hora;
-      res.querySelector('.res-ok span').textContent = `Confirmar cita · ${d}, ${h}`;
+      const dd = res.querySelector('.dias .on')?.dataset.dia, h = res.querySelector('.horas .on')?.dataset.hora;
+      res.querySelector('.res-ok span').textContent = `Confirmar cita · ${dd}, ${h}`;
     };
     res.addEventListener('click', e => {
       const b = e.target.closest('.dias button, .horas button');
       if (b && !b.disabled) { b.parentElement.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); etiqueta(); }
-      if (e.target.closest('.res-ok')) { e.preventDefault(); aviso('¡Cita reservada! (demostración)'); }
+      if (e.target.closest('.res-ok')) { e.preventDefault(); aviso('Cita solicitada'); }
     });
     etiqueta();
   }
-  // Horario: resalta hoy y dice si está abierto
+  // Horario: marca hoy y si está abierto
   const ahora = new Date(), dia = ahora.getDay(), hora = ahora.getHours() + ahora.getMinutes() / 60;
   let abierto = false;
-  raiz.querySelectorAll('.horario > div').forEach(f => {
+  $$('.horario > div').forEach(f => {
     const dias = f.dataset.dias.split(',').filter(Boolean).map(Number);
     if (dias.includes(dia)) {
       f.classList.add('hoy');
@@ -349,14 +373,69 @@ export function pintarPlantilla(raiz, id, opciones = {}) {
       if (!isNaN(a) && hora >= a && hora < c) abierto = true;
     }
   });
-  const est = raiz.querySelector('[data-estado]');
+  const est = $('[data-estado]');
   if (est) est.innerHTML = `<span class="pill ${abierto ? 'si' : 'no'}"><i></i>${abierto ? 'Abierto ahora' : 'Cerrado ahora'}</span>`;
-  // Aparición suave al hacer scroll (en las miniaturas se muestra todo directamente)
-  if (!mini && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } }), { threshold: .12 });
-    raiz.querySelectorAll('.rv').forEach((el, i) => { el.style.transitionDelay = `${(i % 3) * 80}ms`; io.observe(el); });
-    // Parallax suave en la foto grande
-    const par = raiz.querySelector('.par img');
-    if (par) addEventListener('scroll', () => { par.style.transform = `translateY(${Math.min(scrollY * .12, 120)}px) scale(1.12)`; }, { passive: true });
-  } else r.classList.add('sin-anim');
+
+  const quieto = mini || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window);
+  if (quieto) { r.classList.add('sin-anim'); return; }
+
+  // Titulares que suben palabra a palabra
+  $$('.parte').forEach(h => {
+    let i = 0;
+    const envolver = nodo => {
+      [...nodo.childNodes].forEach(ch => {
+        if (ch.nodeType === 3) {
+          const frag = d.createDocumentFragment();
+          ch.textContent.split(/(\s+)/).forEach(w => {
+            if (!w) return;
+            if (/^\s+$/.test(w)) { frag.appendChild(d.createTextNode(' ')); return; }
+            const o = d.createElement('span'); o.className = 'pw';
+            const t = d.createElement('span'); t.textContent = w; t.style.transitionDelay = `${i++ * 60}ms`;
+            o.appendChild(t); frag.appendChild(o);
+          });
+          ch.replaceWith(frag);
+        } else if (ch.nodeType === 1 && ch.tagName !== 'BR') {
+          const o = d.createElement('span'); o.className = 'pw';
+          ch.style.transitionDelay = `${i++ * 60}ms`;
+          ch.replaceWith(o); o.appendChild(ch);
+        }
+      });
+    };
+    envolver(h);
+  });
+  r.classList.add('anim');
+  // Aparición al hacer scroll
+  const io = new IntersectionObserver(es => es.forEach(x => {
+    if (!x.isIntersecting) return;
+    x.target.classList.add('in'); io.unobserve(x.target);
+    x.target.querySelectorAll('[data-n]').forEach(contar);
+  }), { threshold: .15, rootMargin: '0px 0px -6% 0px' });
+  $$('.rv, .rvi, .parte, .datos > div').forEach((el, k) => {
+    if (el.classList.contains('rv')) el.style.transitionDelay = `${(k % 3) * 90}ms`;
+    io.observe(el);
+  });
+  $$('.hero .parte').forEach(h => requestAnimationFrame(() => h.classList.add('in')));
+  // Contadores
+  function contar(b) {
+    const fin = +b.dataset.n, suf = b.dataset.suf || '', t0 = performance.now();
+    const paso = t => { const k = Math.min(1, (t - t0) / 1400), e = 1 - Math.pow(1 - k, 3);
+      b.textContent = Math.round(fin * e).toLocaleString('es-ES') + suf; if (k < 1) requestAnimationFrame(paso); };
+    requestAnimationFrame(paso);
+  }
+  // Parallax suave en las fotos grandes
+  const pars = $$('.par img');
+  if (pars.length) {
+    let pend = false;
+    const mover = () => {
+      pend = false;
+      pars.forEach(img => {
+        const b = img.parentElement.getBoundingClientRect();
+        if (b.bottom < 0 || b.top > innerHeight) return;
+        const k = (b.top + b.height / 2 - innerHeight / 2) / innerHeight;
+        img.style.transform = `translate3d(0, ${(-k * 60).toFixed(1)}px, 0) scale(1.14)`;
+      });
+    };
+    addEventListener('scroll', () => { if (!pend) { pend = true; requestAnimationFrame(mover); } }, { passive: true });
+    mover();
+  }
 }

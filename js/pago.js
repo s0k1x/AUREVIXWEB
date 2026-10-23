@@ -3,6 +3,7 @@
    ========================================================== */
 import { CONFIG } from '../config.js';
 import * as store from './store.js';
+import { etapaDe } from './proyecto.js';
 import { $, $$, esc, euros, icono, abrir, cerrar, toast, ocupado, campo, selectorEstrellas, waLink, refPedido, PAGOS, METODOS } from './ui.js';
 
 const P = CONFIG.pagos || {};
@@ -15,7 +16,7 @@ export function faseDePago(p) {
   const e = p.pagoEstado || 'pendiente';
   if (p.estado === 'cancelado') return null;
   if (e === 'pendiente') return 'senal';
-  if (e === 'senal' && p.estado === 'entregado') return 'resto';
+  if (e === 'senal' && (p.estado === 'entregado' || ['pago', 'publicada'].includes(etapaDe(p)))) return 'resto';
   return null;
 }
 
@@ -105,7 +106,7 @@ export function abrirPago(p, fase = faseDePago(p), alTerminar = () => {}) {
     </div>
     <div class="pay-detail" id="pagoDetalle"></div>
     <button class="btn btn-primary w100" id="pagoOk" type="button"><span>Ya he pagado</span></button>
-    <p class="muted pago-nota">Comprobamos el pago y lo verás reflejado en «Mis pedidos».</p>`
+    <p class="muted pago-nota">Comprobamos el pago y lo verás reflejado en «Mis proyectos».</p>`
     : `<div class="empty"><b>Aún no hay formas de pago configuradas</b><p>Escríbenos y te indicamos cómo pagar.</p></div>`}`;
 
   const detalle = () => {
@@ -144,8 +145,8 @@ export function abrirPago(p, fase = faseDePago(p), alTerminar = () => {}) {
       body.innerHTML = `
         <div class="exito">
           <div class="ok-ic">${icono('check')}</div>
-          <h3>¡Gracias!</h3>
-          <p class="muted">Hemos recibido tu aviso de pago de <b>${euros(imp)}</b> por ${METODOS[metodo]}. Lo comprobamos y lo verás en «Mis pedidos».</p>
+          <h3>Aviso de pago recibido</h3>
+          <p class="muted">Hemos recibido tu aviso de pago de <b>${euros(imp)}</b> por ${METODOS[metodo]}. Lo comprobaremos y verás la confirmación en «Mis proyectos».</p>
           <a class="btn btn-wa w100" href="${waLink(msg)}" target="_blank" rel="noopener">${icono('wa')} Enviar justificante</a>
           <button class="btn btn-ghost w100" data-close type="button">Cerrar</button>
         </div>`;
@@ -195,9 +196,9 @@ export function abrirResena(p, alTerminar = () => {}) {
       body.innerHTML = `
         <div class="exito">
           <div class="ok-ic">${icono('star')}</div>
-          <h3>¡Muchas gracias!</h3>
-          <p class="muted">Tu opinión se publicará en cuanto la revisemos.</p>
-          ${CONFIG.trustpilot ? `<p class="muted" style="margin-bottom:14px">¿Nos ayudas también dejando tu opinión en Trustpilot? Nos ayuda mucho a crecer.</p>
+          <h3>Gracias por tu valoración</h3>
+          <p class="muted">La publicaremos en la web después de revisarla.</p>
+          ${CONFIG.trustpilot ? `<p class="muted" style="margin-bottom:14px">Si quieres, también puedes dejar tu opinión en Trustpilot.</p>
           <a class="btn btn-primary w100" href="${esc(CONFIG.trustpilot)}" target="_blank" rel="noopener">${icono('star')}<span>Opinar en Trustpilot</span></a>` : ''}
           <button class="btn btn-ghost w100" data-close type="button">Cerrar</button>
         </div>`;

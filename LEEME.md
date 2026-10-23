@@ -3,140 +3,139 @@
 ## Qué hay dentro
 | Archivo | Para qué sirve |
 |---|---|
-| `index.html` | Portada: tipos de web y precios, diseños, cómo funciona, compra con cuestionario y «Mis pedidos» |
+| `index.html` | Portada: tipos de web y precios, diseños, cómo trabajamos, compra con cuestionario y «Mis proyectos» |
 | `plantilla.html` | Pinta los 6 diseños de ejemplo (con el nombre y color del cliente) |
 | `trabaja.html` | Página «Trabaja con nosotros» con formulario de candidatura |
-| `panel.html` | Panel de **propietario** (pedidos, candidaturas, equipo) y de **trabajador** (encargos) |
+| `panel.html` | Panel de **propietario** (pedidos, candidaturas, equipo) y de **trabajador** (encargos y ventas) |
 | `terminos.html` | Términos y condiciones + política de privacidad (se rellena con `config.js → legal`) |
-| `config.js` | ⚙️ **Todo lo que se cambia**: marca, WhatsApp, formas de pago, Trustpilot, datos legales, precios, extras, Firebase |
-| `animaciones.css` + `js/efectos.js` | Todas las animaciones: botones (onda, elevación, relleno), tarjetas con foco de luz, apariciones, diálogos, pasos, pestañas, contadores, barra de progreso, cabecera que se esconde |
-| `componentes.css` | Kit de componentes (botones con brillo, campos animados, opciones, checks, interruptores, estrellas, pagos, cargando, fondos…) |
-| `js/pago.js` | Ventana de pago y de reseñas del cliente |
-| `js/plantillas.js` | Textos y colores de los 6 diseños (puedes añadir más) |
-| `firestore.rules` | Reglas de seguridad para Firebase |
+| `config.js` | **Todo lo que se cambia**: marca, WhatsApp, pagos, datos legales, precios, extras, Supabase y asistente |
+| `js/proyecto.js` | Etapas del proyecto (dominio, contenido, diseño, revisión, pago final, publicada) |
+| `js/asistente.js` | Chat de dudas y «Te ayudo a elegir» |
+| `js/plantillas.js` | Textos, colores y fotos de los 6 diseños (puedes añadir más) |
+| `js/store.js` | Login y base de datos (Supabase o modo demo) |
+| `supabase/esquema.sql` | Tablas y permisos de la base de datos |
+| `supabase/functions/asistente/index.ts` | Función que habla con Gemini (la clave nunca va en la web) |
 | `manifest.json`, `sw.js`, `icons/` | Lo que la hace instalable como app (PWA) |
 
 ## 1. Cambia tus datos
 Abre `config.js` y cambia:
-- `marca` → el nombre cuando lo tengas (se cambia solo en toda la web, también en la intro animada)
+- `marca` → el nombre cuando lo tengas (se cambia solo en toda la web)
 - `whatsapp`, `email`
-- `pagos` → tu Bizum, IBAN y titular (ver punto 7)
+- `pagos` → tu Bizum, IBAN y titular (ver punto 8)
 - `legal` → tu nombre, NIF y domicilio para la página de términos
 - `trustpilot` → el enlace a tu página de Trustpilot cuando la crees
-- `propietarios` → **tu email de Google** (el que tendrá acceso total)
+- `propietarios` → **tu email** (el que tendrá acceso total)
 - Precios y extras en `PLANES` y `EXTRAS`
 
 El nombre también aparece en `manifest.json` (`name` y `short_name`): cámbialo ahí a mano.
 
 ## 2. Modo demo (ya funciona)
-Mientras `firebase` esté en `null`, la web funciona en **modo demo**:
-el login es de prueba y los pedidos se guardan solo en ese móvil.
-En la ventana de «Entrar» tienes botones para probar como **Cliente**, **Trabajador** o **Propietario**.
+Mientras `supabase.url` y `supabase.anonKey` estén vacíos, la web funciona en **modo demo**:
+el login es de prueba, los pedidos se guardan solo en ese navegador y el asistente responde con
+respuestas automáticas (sin IA). En «Entrar» tienes botones para probar como **Cliente**, **Trabajador** o **Propietario**.
 
-## 3. Activar el login con Google de verdad (Firebase, gratis)
-Todo se puede hacer desde el móvil en **console.firebase.google.com**:
+## 3. Conectar Supabase (login real y base de datos, plan gratuito)
+Todo se puede hacer desde el móvil en **supabase.com**:
 
-1. **Crear proyecto** → ponle un nombre → sin Analytics.
-2. En la portada del proyecto pulsa el icono **`</>` (Web)** → nombre de la app → **Registrar**.
-   Te enseña un bloque `firebaseConfig = { apiKey: ..., ... }`. Cópialo.
-3. Pégalo en `config.js` en lugar de `firebase: null`:
+1. **New project** → nombre → contraseña de la base de datos (guárdala) → región **Europe (Frankfurt o Irlanda)**.
+2. **SQL Editor → New query**. Abre `supabase/esquema.sql`, cambia `tuemail@gmail.com` por tu email,
+   pega todo y pulsa **Run**. Crea las tablas y los permisos.
+3. **Project Settings → API**: copia **Project URL** y la clave **anon public** en `config.js`:
    ```js
-   firebase: {
-     apiKey: "...",
-     authDomain: "...",
-     projectId: "...",
-     storageBucket: "...",
-     messagingSenderId: "...",
-     appId: "..."
+   supabase: {
+     url: 'https://abcdefgh.supabase.co',
+     anonKey: 'eyJhbGciOi...'
    }
    ```
-4. **Authentication** → Comenzar → **Método de acceso** → activa **Google** y **Correo electrónico/contraseña**.
-5. **Authentication → Configuración → Dominios autorizados** → añade tu dominio
-   (por ejemplo `tuusuario.github.io`).
-6. **Firestore Database** → Crear base de datos → modo **producción** → elige ubicación `eur3 (europe)`.
-7. Firestore → pestaña **Reglas** → borra lo que haya, pega el contenido de `firestore.rules`,
-   **cambia `tuemail@gmail.com` por tu email** y pulsa **Publicar**.
+   (La clave *anon* es pública, no pasa nada por ponerla en la web. La *service_role* no la pongas nunca.)
+4. **Authentication → URL Configuration**:
+   - *Site URL*: `https://s0k1x.github.io/websTdw/`
+   - *Redirect URLs*: añade `https://s0k1x.github.io/websTdw/**`
+5. **Authentication → Sign In / Providers**:
+   - **Email** ya viene activado (el cliente confirma su cuenta con un enlace en su correo).
+   - **Google**: en console.cloud.google.com → APIs y servicios → Credenciales → *Crear ID de cliente OAuth* (Aplicación web).
+     En «URI de redireccionamiento autorizados» pon `https://TU-PROYECTO.supabase.co/auth/v1/callback`.
+     Copia el *ID de cliente* y el *secreto* en Supabase → Google → Enable.
+   - **GitHub** (opcional): igual, y pon `loginGithub: true` en `config.js`.
 
-Listo: los clientes entran con Google o email, sus pedidos se guardan en la nube
-y tú los ves en el panel desde cualquier dispositivo.
+Listo: los clientes entran con Google o email, sus pedidos se guardan en la nube y los ves en el panel desde cualquier dispositivo.
 
-## 4. Herramientas que ya trae
-- **Te ayudo a elegir**: 3 preguntas y recomienda el tipo de web (con entrega urgente si la piden).
-- **Borrador automático**: si el cliente cierra el cuestionario, al volver recupera lo que había rellenado.
-- **Filtro de diseños** por tipo de negocio.
-- **Tareas por pedido** (diseño, contenido, desarrollo, revisión, publicación): las marca el equipo y el cliente ve la barra de progreso en «Mis pedidos».
-- **Tablero** en *Panel → Pedidos*: arrastra las tarjetas entre columnas para cambiar el estado (en ordenador).
+## 4. Activar el asistente con IA (Gemini)
+1. Entra en **aistudio.google.com → Get API key** y crea una clave.
+2. En Supabase: **Edge Functions → Deploy a new function → Via editor**. Nombre: `asistente`.
+   Borra el ejemplo, pega el contenido de `supabase/functions/asistente/index.ts` y pulsa **Deploy**.
+3. **Edge Functions → Secrets** → añade `GEMINI_API_KEY` con tu clave.
+   (Opcional: `GEMINI_MODEL` para cambiar de modelo; por defecto usa `gemini-3.5-flash-lite`, el más rápido y barato.)
+
+El asistente responde solo con los precios, extras y diseños de `config.js` y `js/plantillas.js`: si cambias un precio, el asistente lo sabe al momento.
+Si la IA falla o no está configurada, el chat sigue funcionando con respuestas automáticas.
+Revisa los límites y precios de la API de Gemini en ai.google.dev antes de abrir la web al público.
+
+## 5. Etapas de cada proyecto
+En *Panel → Pedidos* abre un pedido: arriba tienes la barra de etapas. Pulsa una etapa para cambiarla.
+
+| Etapa | Qué hace el cliente en «Mis proyectos» |
+|---|---|
+| Pedido recibido | Ve su pedido y puede pagar la señal |
+| Dominio | Elige un dominio nuevo (nombre + .com/.es…) o indica el que ya tiene |
+| Contenido | Envía textos, horario, redes y enlaces a fotos y logotipo (o lo manda por WhatsApp) |
+| Diseño | Espera; puede ver el diseño de partida |
+| Revisión | Abre la vista previa, la **aprueba** o **pide cambios** |
+| Pago final | Paga el resto |
+| Publicada | Ve el enlace a su web y puede valorar el servicio |
+
+Cuando el cliente completa el dominio, el contenido o aprueba la revisión, la etapa avanza sola.
+En la ficha del pedido tienes, en tres columnas: gestión (estado, pago, enlaces, tareas internas),
+datos del cliente y del pedido, y todo lo que ha enviado el cliente.
+- **Enlace de la vista previa**: si lo rellenas, es lo que abre el cliente en la etapa Revisión.
+- **Dirección de la web publicada**: es el botón «Visitar mi web» que ve el cliente al final.
+- **Exportar HTML**: descarga el diseño elegido como un único archivo `.html`, con el nombre y el color del cliente,
+  listo para editarlo y publicarlo (menú, carrito, reservas y animaciones incluidos).
+
+## 6. Herramientas que ya trae
+- **Te ayudo a elegir**: el cliente describe su negocio y el asistente recomienda tipo de web, diseño y extras (o responde 3 preguntas).
+- **Chat de dudas** en la portada y en «Trabaja con nosotros», con botón para pasar a WhatsApp.
+- **Borrador automático** del cuestionario.
+- **Tablero** en *Panel → Pedidos*: arrastra las tarjetas entre columnas (en ordenador).
 - **Exportar** los pedidos a un archivo que se abre en Excel o Google Sheets.
-- Atajo **/** para buscar en el panel y número de pendientes en el icono de la app instalada.
-- **Imagen para compartir** (`icons/og.png`): la que sale al pegar el enlace en WhatsApp o redes. Cámbiala cuando tengas tu marca.
+- **Imagen para compartir** (`icons/og.png`): cámbiala cuando tengas tu marca.
 
-## 4c. Diseños de ejemplo: fotos e iconos
-- Los 6 diseños (`js/plantillas.js`) usan **fotos reales de Pexels** (gratis, sin atribución obligatoria).
-  Cada foto es un número (por ejemplo `img: 1319462`). Para cambiarla, busca otra en pexels.com, abre la foto
-  y copia el número que sale al final de la dirección (`pexels.com/es-es/foto/...-1319462/`).
-- Si una foto no carga, se ve un degradado del color del diseño: nunca queda un hueco roto.
+## 7. Diseños de ejemplo: fotos e iconos
+- Los 6 diseños usan **fotos de Pexels** (gratis, sin atribución obligatoria). Cada foto es un número (`img: 8218487`).
+  Para cambiarla, abre otra foto en pexels.com y copia el número del final de la dirección.
+- Las fotos se piden al tamaño justo para cada pantalla y se guardan en el móvil la primera vez, así que después cargan al instante.
+- Si una foto no carga, se ve un fondo de color: nunca queda un hueco roto.
 - Para la web de un cliente, sustituye esas fotos por las suyas.
-- Todos los iconos están en `js/iconos.js`. En el HTML se usan así: `<i data-i="star"></i>`.
-  (Los mensajes de WhatsApp sí llevan algún emoji, porque ahí quedan bien.)
+- Los iconos están en `js/iconos.js`. En el HTML: `<i data-i="star"></i>`.
 
-## 4b. Vendedores y comisiones (Trabaja con nosotros)
-- El % de comisión está en `config.js → comision` (ahora **30**). La página «Trabaja con nosotros» y la calculadora usan ese número.
-- Cada trabajador tiene en *Panel → Mis ventas* su **enlace personal** (`index.html?ref=...`). Si un cliente entra por ese enlace
-  y hace un pedido en los 30 días siguientes, el pedido queda a nombre de ese vendedor.
-- La comisión pasa a «Lista para cobrar» cuando el pedido está marcado como **Pagado**.
-- En *Panel → Equipo* ves cuánto debes a cada vendedor; cuando le pagues, pulsa «Pagar» y quedan marcadas como cobradas.
-- ⚠️ Revisa las ventajas que aparecen en la página (formación en IA, cobro, etc.) y deja solo las que vayas a cumplir.
-  Consulta con una gestoría cómo deben facturar los vendedores sus comisiones.
-
-## 4c. Cómo funciona el equipo
-- Alguien rellena **Trabaja con nosotros** → te aparece en *Panel → Candidaturas*.
-- Pulsas **Aceptar** → pasa a ser **trabajador** y ya puede entrar a su panel.
-- También puedes añadir a alguien por email en *Panel → Equipo*
-  (tiene que haber iniciado sesión en la web al menos una vez).
-- Los trabajadores ven los pedidos **Disponibles**, los **cogen** y van cambiando el estado.
-  El cliente lo ve en «Mis pedidos».
-
-## 5. Publicarla gratis (GitHub Pages)
-1. Crea un repositorio en github.com y sube **todo** el contenido de la carpeta (también `js/` e `icons/`).
-2. Settings → Pages → Branch `main` → Save.
-3. Recuerda añadir ese dominio en Firebase (paso 3.5).
-
-> Importante: la web usa módulos de JavaScript, así que **no funciona abriendo el archivo
-> directamente** en el móvil; tiene que estar publicada (GitHub Pages, Netlify…).
-
-## 6. Cuando hagas cambios
-Sube la versión en `sw.js` (ahora está en `v6` → pon `v7`…) para que los móviles con la app instalada se actualicen.
-
-## 7. Cobros (lo más barato posible)
-El cliente paga desde «Mis pedidos» o al terminar el pedido. Solo aparecen las formas de pago que rellenes en `config.js → pagos`:
+## 8. Cobros (lo más barato posible)
+Solo aparecen las formas de pago que rellenes en `config.js → pagos`:
 
 | Forma | Coste | ¿Automático? |
 |---|---|---|
 | **Bizum** a tu número | Gratis | No: el cliente pulsa «Ya he pagado» y tú lo confirmas en el panel |
 | **Transferencia** | Gratis | No: igual que Bizum |
-| **Stripe** (tarjeta, Apple Pay, Google Pay y Bizum online) | 1,5 % + 0,25 € por pago con tarjeta europea; sin cuota mensual | El cobro sí; en el panel lo confirmas tú (Stripe te avisa por email con la referencia del pedido) |
-| **PayPal.Me** | 2,9 % + 0,35 € (pagos comerciales) | El importe va ya rellenado; lo confirmas tú |
+| **Stripe** (tarjeta, Apple Pay, Google Pay y Bizum online) | 1,5 % + 0,25 € por pago con tarjeta europea | El cobro sí; en el panel lo confirmas tú |
+| **PayPal.Me** | 2,9 % + 0,35 € | El importe va ya rellenado; lo confirmas tú |
 
-**Recomendación:** empieza con Bizum + transferencia (gratis). Cuando tengas más pedidos, añade Stripe.
+**Configurar Stripe:** crea un *Enlace de pago* con «Permitir que los clientes elijan el importe», redirige después del pago a
+`https://TU-WEB/index.html?pagado=1` y copia el enlace en `config.js → pagos.stripe`.
 
-**Configurar Stripe (desde el móvil):**
-1. Crea una cuenta en stripe.com y verifica tus datos (para Bizum online te piden el DNI/NIE).
-2. Ajustes → Métodos de pago → activa Tarjetas, Apple Pay, Google Pay y **Bizum**.
-3. Enlaces de pago → Crear → Producto «Señal / pago de web» → **«Permitir que los clientes elijan el importe»**.
-4. En «Después del pago» elige *Redirigir* a `https://TU-WEB/index.html?pagado=1`.
-5. Copia el enlace (`https://buy.stripe.com/...`) en `config.js → pagos.stripe`.
-La web añade sola la referencia del pedido al enlace, así sabrás qué pedido es en el email de Stripe.
+## 9. Vendedores y comisiones
+- El % de comisión está en `config.js → comision` (ahora **30**).
+- Cada trabajador tiene en *Panel → Mis ventas* su **enlace personal** (`index.html?ref=...`). Los pedidos que llegan por ese enlace en 30 días quedan a su nombre.
+- La comisión pasa a «Lista para cobrar» cuando el pedido está marcado como **Pagado**. En *Panel → Equipo* ves cuánto debes a cada vendedor.
+- Revisa las condiciones que aparecen en «Trabaja con nosotros» y deja solo las que vayas a cumplir.
+  Consulta con una gestoría cómo deben facturar los vendedores sus comisiones.
 
-> Para que el pago se marque como pagado **solo** (sin que tú lo confirmes) haría falta una Cloud Function de Firebase
-> que escuche a Stripe. Firebase pide para eso el plan de pago por uso (Blaze), que tiene una parte gratuita. Se puede añadir más adelante.
+## 10. Publicarla (GitHub Pages)
+1. Sube **todo** el contenido de la carpeta al repositorio (también `js/`, `icons/` y `supabase/`).
+2. Settings → Pages → Branch `main` → Save.
+3. Cada vez que subas cambios, sube la versión en `sw.js` (ahora `v8` → pon `v9`…).
+   La web siempre descarga los archivos nuevos; la versión sirve para limpiar lo guardado en los móviles.
 
-## 8. Opiniones y Trustpilot
-- Cuando un pedido pasa a **Entregado**, el cliente ve el botón «Valorar mi web».
-- Las opiniones llegan a *Panel → Reseñas* y **no se ven en la web hasta que las publicas**.
-- Después de opinar, a todos los clientes se les invita a dejar también su opinión en Trustpilot (si pusiste el enlace).
-  Invita a todos por igual: Trustpilot no permite pedir reseñas solo a los clientes contentos.
-- Las 3 opiniones con la etiqueta «Ejemplo» solo existen en el modo demo.
+> La web usa módulos de JavaScript: **no funciona abriendo el archivo directamente**; tiene que estar publicada.
 
-## 9. Términos y privacidad
-`terminos.html` es una **plantilla orientativa**. Rellena `config.js → legal` y revísala con un profesional antes de publicar.
-Los clientes deben aceptarla al confirmar un pedido, al crear cuenta con email y al enviar una candidatura.
+## 11. Opiniones y términos
+- Cuando la web está publicada, el cliente ve «Valorar el servicio». Las opiniones no salen en la web hasta que las apruebas en *Panel → Reseñas*.
+- `terminos.html` es una **plantilla orientativa**. Rellena `config.js → legal` y revísala con un profesional antes de publicar.

@@ -177,7 +177,7 @@ export function iniciarEfectos({ waLink } = {}) {
   saltar();
   ondas();
   seguirRaton();
-  inclinar();
+  // inclinar(); // desactivado: la inclinación 3D deformaba las tarjetas de diseños
   magnetos();
   scroll();
   focos();

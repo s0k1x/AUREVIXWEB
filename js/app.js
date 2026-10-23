@@ -7,9 +7,11 @@ import * as store from './store.js';
 import {
   $, $$, esc, euros, fecha, icono, toast, abrir, cerrar, conSesion, arrancar, waLink, refPedido,
   ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados,
-  estrellas, ocupado, cargandoHTML, spinner, etiquetas, TAREAS, progreso
+  estrellas, ocupado, cargandoHTML, spinner, etiquetas, TAREAS, progreso, PAGOS
 } from './ui.js';
 import { botonPago, abrirPago, abrirResena, animarYPagar } from './pago.js';
+import { recomendar, iniciarChat } from './asistente.js';
+import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, estadoParaEtapa, indiceEtapa, dominioTexto } from './proyecto.js';
 
 /* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor (30 días) */
 const REF = 'tm_ref';
@@ -22,6 +24,7 @@ const leerRef = () => {
 };
 
 await arrancar('inicio');
+iniciarChat();
 
 /* ==========================================================
    MINIATURAS VIVAS DE LAS PLANTILLAS
@@ -63,7 +66,7 @@ function escalaVitrina() {
 new ResizeObserver(escalaVitrina).observe($('#vitrina'));
 $('#vtChips').innerHTML = VITRINA.map((id, i) => {
   const p = plantillaPorId(id);
-  return `<button type="button" role="tab" data-vt="${i}" style="--c:${p.c.accent}"><i></i><span>${esc(p.nombre)}</span><b class="vt-prog"></b></button>`;
+  return `<button type="button" role="tab" data-vt="${i}" style="--c:${p.c.accent}"><b class="vt-prog"></b><small>${String(i + 1).padStart(2, '0')}</small><span>${esc(p.nombre)}</span><em>${esc(p.sector.split('·')[0].trim())}</em></button>`;
 }).join('');
 function mostrarVitrina(i) {
   vtIdx = (i + VITRINA.length) % VITRINA.length;
@@ -212,43 +215,71 @@ addEventListener('scroll', () => requestAnimationFrame(avanzarPasos), { passive:
 avanzarPasos();
 
 /* ==========================================================
-   TE AYUDO A ELEGIR (3 preguntas → plan recomendado)
+   TE AYUDO A ELEGIR (asistente: texto libre o 3 preguntas)
    ========================================================== */
 const recoDlg = $('#recoDlg');
 const PREG = [
-  ['necesito', '¿Qué necesitas sobre todo?', ['Que me encuentren y me contacten', 'Enseñar mis trabajos', 'Que reserven cita', 'Vender productos', 'Algo especial']],
-  ['tamano', '¿Cuánta información quieres poner?', ['Lo justo, una página', 'Bastante: servicios, galería, horarios…']],
+  ['necesito', '¿Qué necesitas principalmente?', ['Que me encuentren y me contacten', 'Mostrar mis trabajos', 'Recibir reservas de citas', 'Vender productos', 'Algo a medida']],
+  ['tamano', '¿Cuánta información vas a incluir?', ['Poca: una sola página', 'Bastante: servicios, galería, horario…']],
   ['prisa', '¿Para cuándo la necesitas?', ['Sin prisa', 'Lo antes posible']]
 ];
-$('#recoForm').innerHTML = PREG.map(([n, q, o]) => `<span class="q-label">${q}</span>${opciones(n, o, '')}`).join('');
-function recomendar() {
-  const fd = new FormData($('#recoForm'));
-  const [a, b, c] = ['necesito', 'tamano', 'prisa'].map(k => fd.get(k));
-  const res = $('#recoRes');
-  if (!a) { res.innerHTML = ''; return; }
-  let id = 'negocio', motivo = 'Tiene todo lo que un negocio local necesita: servicios, galería, horarios y mapa.';
-  if (a.startsWith('Enseñar')) { id = 'portfolio'; motivo = 'Pensada para lucir tus trabajos con una galería cuidada.'; }
-  else if (a.startsWith('Que reserven')) { id = 'reservas'; motivo = 'Tus clientes eligen día y hora y reservan solos, sin llamadas.'; }
-  else if (a.startsWith('Vender')) { id = 'tienda'; motivo = 'Catálogo, carrito y pagos sin comisiones de plataformas.'; }
-  else if (a.startsWith('Algo especial')) { id = 'medida'; motivo = 'Lo diseñamos y programamos desde cero para tu idea.'; }
-  else if (b?.startsWith('Lo justo')) { id = 'landing'; motivo = 'Una sola página directa al grano: la forma más rápida y barata de estar en internet.'; }
-  const pl = PLANES.find(p => p.id === id);
-  const urg = c === 'Lo antes posible';
-  res.innerHTML = `
+$('#recoForm').innerHTML = `
+  <p class="reco-intro">Describe tu negocio y lo que quieres conseguir con la web. ${store.iaDisponible() ? 'Nuestro asistente con IA' : 'El asistente'} te recomendará el tipo de web, el diseño y los extras.</p>
+  <div class="reco-ia">
+    <textarea id="recoTexto" rows="3" maxlength="800" placeholder="Ej.: Tengo una peluquería en Sevilla, quiero que los clientes reserven cita desde el móvil y aún no tengo dominio."></textarea>
+    <button type="button" class="btn btn-primary" id="recoIA"><span>Recomendar</span>${icono('sparkle')}</button>
+  </div>
+  <details class="reco-preg">
+    <summary>Prefiero responder 3 preguntas</summary>
+    ${PREG.map(([n, q, o]) => `<span class="q-label">${q}</span>${opciones(n, o, '')}`).join('')}
+  </details>`;
+
+function tarjetaReco(r) {
+  const pl = PLANES.find(p => p.id === r.plan);
+  const dz = r.plantilla ? plantillaPorId(r.plantilla) : null;
+  const ex = (r.extras || []).map(id => EXTRAS.find(e => e.id === id)).filter(Boolean);
+  $('#recoRes').innerHTML = `
     <div class="reco-card">
-      <small>Te recomendamos</small>
+      <small>${r.ia ? `${icono('sparkle')} Recomendación del asistente` : 'Te recomendamos'}</small>
       <div class="reco-top"><span class="pc-ic">${icono(pl.icono)}</span><div><b>${esc(pl.nombre)}</b><span>desde ${euros(pl.precio)} · ${esc(pl.entrega)}</span></div></div>
-      <p>${motivo}${urg ? ' Te marcamos la entrega urgente.' : ''}</p>
-      <button type="button" class="btn btn-primary w100" data-reco="${id}" data-urg="${urg ? 1 : ''}"><span>Empezar con esta</span>${icono('arrow')}</button>
+      <p>${esc(r.motivo)}${r.urgente ? ' Te marcamos la entrega urgente.' : ''}</p>
+      ${dz || ex.length ? `<div class="reco-extra">
+        ${dz ? `<span>${icono('landing')} Diseño <b>${esc(dz.nombre)}</b> <button type="button" class="link-btn" data-ver-dz="${dz.id}">ver</button></span>` : ''}
+        ${ex.map(e => `<span>${icono('plus')} ${esc(e.nombre)}</span>`).join('')}
+      </div>` : ''}
+      <button type="button" class="btn btn-primary w100" data-reco="${pl.id}" data-dz="${dz ? dz.id : ''}" data-urg="${r.urgente ? 1 : ''}"><span>Empezar con esta opción</span>${icono('arrow')}</button>
     </div>`;
 }
-$('#recoForm').addEventListener('change', recomendar);
-$('#abrirReco').addEventListener('click', () => { abrir(recoDlg); recomendar(); });
+function recomendarPreguntas() {
+  const fd = new FormData($('#recoForm'));
+  const [a, b, c] = ['necesito', 'tamano', 'prisa'].map(k => fd.get(k));
+  if (!a) return;
+  let plan = 'negocio', dz = 'filo', motivo = 'Para un negocio local lo más útil es una web completa con servicios, precios, galería, horario y ubicación.';
+  if (a.startsWith('Mostrar')) { plan = 'portfolio'; dz = 'lienzo'; motivo = 'El portfolio da protagonismo a tus trabajos y facilita que te contacten.'; }
+  else if (a.startsWith('Recibir')) { plan = 'reservas'; dz = 'calma'; motivo = 'Tus clientes eligen día y hora y reservan sin necesidad de llamar.'; }
+  else if (a.startsWith('Vender')) { plan = 'tienda'; dz = 'kiosko'; motivo = 'Incluye catálogo, carrito y pago online sin comisiones de marketplaces.'; }
+  else if (a.startsWith('Algo')) { plan = 'medida'; dz = ''; motivo = 'Lo diseñamos y desarrollamos a partir de tu idea, con presupuesto según el alcance.'; }
+  else if (b?.startsWith('Poca')) { plan = 'landing'; dz = 'lienzo'; motivo = 'Una página bien estructurada es suficiente para presentarte y recibir contactos, y es la opción más económica.'; }
+  tarjetaReco({ plan, plantilla: dz, extras: [], urgente: c === 'Lo antes posible', motivo, ia: false });
+}
+$('#recoForm').addEventListener('change', recomendarPreguntas);
+$('#recoIA').addEventListener('click', async e => {
+  const texto = $('#recoTexto').value.trim();
+  if (texto.length < 8) { toast('Cuéntanos un poco más sobre tu negocio', 'err'); $('#recoTexto').focus(); return; }
+  const btn = e.currentTarget;
+  ocupado(btn, true);
+  $('#recoRes').innerHTML = cargandoHTML('Analizando lo que necesitas…');
+  try { tarjetaReco(await recomendar(texto)); }
+  finally { ocupado(btn, false); }
+});
+$('#abrirReco').addEventListener('click', () => { abrir(recoDlg); setTimeout(() => $('#recoTexto').focus(), 200); });
 recoDlg.addEventListener('click', e => {
+  const v = e.target.closest('[data-ver-dz]');
+  if (v) return abrirPreview(v.dataset.verDz);
   const b = e.target.closest('[data-reco]');
   if (!b) return;
   cerrar(recoDlg);
-  abrirCompra(b.dataset.reco, '', { urgente: !!b.dataset.urg });
+  abrirCompra(b.dataset.reco, b.dataset.dz || '', { urgente: !!b.dataset.urg });
 });
 
 /* ==========================================================
@@ -372,26 +403,26 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
       <div class="info-price"><div><small>Precio desde</small><b>${euros(plan.precio)}</b></div><div><small>Entrega</small><b>${esc(plan.entrega)}</b></div></div>
       <h4 class="mini-h">Incluye</h4>
       <ul class="incl">${plan.incluye.map(i => `<li>${icono('check')}${esc(i)}</li>`).join('')}</ul>
-      <h4 class="mini-h">Cómo seguimos</h4>
+      <h4 class="mini-h">Siguientes pasos</h4>
       <ol class="flow">
-        <li><b>Respondes unas preguntas</b><span>Sobre tu negocio, el estilo y los extras. Ves el precio final al momento.</span></li>
-        <li><b>Eliges un diseño</b><span>Lo verás en vista previa con el nombre de tu negocio.</span></li>
-        <li><b>Confirmas y pagas la señal</b><span>El ${CONFIG.senal} % para empezar y el resto cuando la web esté lista.</span></li>
+        <li><b>Cuestionario</b><span>Datos del negocio, estilo y extras. El precio total se actualiza a medida que eliges.</span></li>
+        <li><b>Diseño de partida</b><span>Puedes verlo en vista previa con el nombre de tu negocio.</span></li>
+        <li><b>Confirmación</b><span>Se abona el ${CONFIG.senal} % para empezar y el resto al aprobar la web.</span></li>
       </ol>
     </div>
 
     <div class="paso" data-paso="negocio">
-      <h3 class="paso-h">Cuéntanos sobre tu negocio</h3>
+      <h3 class="paso-h">Datos del negocio</h3>
       ${campo({ id: 'fNegocio', name: 'negocio', label: 'Nombre del negocio', required: true, attrs: 'autocomplete="organization"' })}
       ${desplegable({ id: 'fSector', name: 'sector', label: 'Sector', opciones: SECTORES })}
-      <span class="q-label">¿Qué quieres conseguir con la web?</span>
+      <span class="q-label">Objetivo principal de la web</span>
       ${opciones('objetivo', OBJETIVOS, objetivo)}
       ${campo({ id: 'fTel', name: 'telefono', label: 'WhatsApp o teléfono', type: 'tel', required: true, attrs: 'inputmode="tel" autocomplete="tel"' })}
       ${campo({ id: 'fWeb', name: 'webActual', label: 'Tu web actual (opcional)', attrs: 'inputmode="url"' })}
     </div>
 
     <div class="paso" data-paso="estilo">
-      <h3 class="paso-h">¿Cómo te la imaginas?</h3>
+      <h3 class="paso-h">Estilo y contenido</h3>
       <span class="q-label">Estilo</span>
       ${opciones('estilo', ESTILOS)}
       <span class="q-label">Color principal</span>
@@ -400,10 +431,10 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
         ${COLORES.map(c => `<label class="sw" title="${c}"><input type="radio" name="color" value="${c}"><span style="--c:${c}"></span></label>`).join('')}
         <label class="sw-custom"><input type="color" id="colorPick" value="#ff4f8b" aria-label="Elegir otro color"> Otro</label>
       </div>
-      <span class="q-label">¿Tienes logo?</span>
+      <span class="q-label">Logotipo</span>
       ${opciones('logo', ['Sí, ya tengo', 'No, necesito uno', 'No hace falta'])}
-      <span class="q-label">¿Tienes textos y fotos?</span>
-      ${opciones('contenido', ['Sí, todo', 'Tengo algunos', 'No, ayudadme'], 'Tengo algunos')}
+      <span class="q-label">Textos y fotos</span>
+      ${opciones('contenido', ['Sí, todo', 'Tengo algunos', 'Necesito ayuda'], 'Tengo algunos')}
     </div>
 
     <div class="paso" data-paso="extras">
@@ -413,13 +444,13 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
           <span class="ct"><b>${esc(x.nombre)}</b><small>${esc(x.desc)}</small></span>
           <span class="pr">+${euros(x.precio)}${x.mensual ? '<small>/mes</small>' : ''}</span></label>`).join('')}
       </div>
-      <div style="margin-top:12px">${interruptor({ id: 'fUrg', name: 'urgente', titulo: 'Entrega urgente', texto: `La tienes antes · +${URGENTE * 100} % sobre el precio base` })}</div>
-      ${campo({ id: 'fCom', name: 'comentarios', label: '¿Algo más que debamos saber?', type: 'textarea', hint: 'Secciones que quieres, webs que te gustan, ideas… (opcional)' })}
+      <div style="margin-top:12px">${interruptor({ id: 'fUrg', name: 'urgente', titulo: 'Entrega urgente', texto: `Reduce el plazo de entrega · +${URGENTE * 100} % sobre el precio base` })}</div>
+      ${campo({ id: 'fCom', name: 'comentarios', label: 'Comentarios (opcional)', type: 'textarea', hint: 'Secciones que necesitas, webs de referencia, ideas…' })}
     </div>
 
     <div class="paso" data-paso="diseno">
       <h3 class="paso-h">Elige un diseño de partida</h3>
-      <p class="muted paso-sub">Te lo enseñamos con el nombre y el color de tu negocio. Toca «Ver» para verlo en grande.</p>
+      <p class="muted paso-sub">Se muestran con el nombre y el color de tu negocio. Pulsa «Ver» para abrirlos a pantalla completa.</p>
       <div class="pick-grid" id="pickGrid"></div>
     </div>
 
@@ -432,7 +463,7 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
   if (b && b.plan === plan.id && Date.now() - b.t < 7 * 864e5 && b.campos?.negocio) {
     restaurarBorrador(b);
     inicio = Math.min(b.paso || 0, PASOS.length - 2);
-    setTimeout(() => toast('Hemos recuperado lo que ya habías rellenado', 'ok'), 400);
+    setTimeout(() => toast('Hemos recuperado los datos que ya habías rellenado', 'ok'), 400);
   }
   W.paso = inicio;
   irA(inicio);
@@ -476,7 +507,7 @@ form.addEventListener('change', e => {
   if (e.target.name === 'plantilla') W.plantilla = e.target.value;
   const marcarExtra = id => { const x = form.querySelector(`input[name=extra][value=${id}]`); if (x) x.checked = true; };
   if (e.target.name === 'logo' && e.target.value === 'No, necesito uno') marcarExtra('logo');
-  if (e.target.name === 'contenido' && e.target.value === 'No, ayudadme') marcarExtra('textos');
+  if (e.target.name === 'contenido' && e.target.value === 'Necesito ayuda') marcarExtra('textos');
   actualizarTotal();
   guardarBorrador();
 });
@@ -649,12 +680,11 @@ function exito(p) {
   form.innerHTML = `
     <div class="paso on exito">
       <div class="ok-ic">${icono('check')}</div>
-      <h3>¡Pedido recibido!</h3>
-      <p class="muted">Referencia <b>${refPedido(p.id)}</b>. Te escribiremos al <b>${esc(r.telefono)}</b> en menos de 24 h.
-      Paga la señal ahora para que empecemos cuanto antes.</p>
+      <h3>Pedido recibido</h3>
+      <p class="muted">Referencia <b>${refPedido(p.id)}</b>. Te contactaremos al <b>${esc(r.telefono)}</b> en menos de 24 horas. Si abonas ahora la señal, empezamos en cuanto confirmemos el pedido. Desde «Mis proyectos» podrás elegir el dominio y enviarnos el contenido.</p>
       <div class="exito-pay">${botonPago(p)}</div>
       <a class="btn btn-wa w100" href="${waLink(msg)}" target="_blank" rel="noopener">${icono('wa')} Avisar por WhatsApp</a>
-      <button type="button" class="btn btn-ghost w100" id="verPedidos">Ver mis pedidos</button>
+      <button type="button" class="btn btn-ghost w100" id="verPedidos">Ir a mis proyectos</button>
     </div>`;
   $('#verPedidos').addEventListener('click', () => { cerrar(dlg); abrirPedidos(); });
   $('[data-pagar]', form)?.addEventListener('click', e =>
@@ -665,19 +695,18 @@ function exito(p) {
 }
 
 dlg.addEventListener('close', () => { W = null; });
-dlg.addEventListener('cancel', () => { if (W && W.paso > 0) toast('Guardamos lo que has rellenado para la próxima vez'); });
+dlg.addEventListener('cancel', () => { if (W && W.paso > 0) toast('Hemos guardado lo que has rellenado'); });
 
 /* ==========================================================
    MIS PEDIDOS
    ========================================================== */
 const pedDlg = $('#pedidosDlg');
-const FASES = ['nuevo', 'en_curso', 'revision', 'entregado'];
 let misPedidos = [];
 
 async function abrirPedidos() {
-  const u = await conSesion('Inicia sesión para ver tus pedidos.');
+  const u = await conSesion('Inicia sesión para ver tus proyectos.');
   if (!u) return;
-  $('#pedidosList').innerHTML = cargandoHTML('Cargando tus pedidos…');
+  $('#pedidosList').innerHTML = cargandoHTML('Cargando tus proyectos…');
   abrir(pedDlg);
   await pintarPedidos();
 }
@@ -687,42 +716,80 @@ async function pintarPedidos() {
   try {
     misPedidos = await store.misPedidos();
     if (!misPedidos.length) {
-      list.innerHTML = `<div class="empty"><div class="em">${icono('bag')}</div><b>Aún no tienes pedidos</b><p>Elige el tipo de web que necesitas para empezar.</p><a href="#webs" class="btn btn-primary" data-close style="margin-top:18px">Ver webs y precios</a></div>`;
+      list.innerHTML = `<div class="empty"><div class="em">${icono('bag')}</div><b>Todavía no tienes proyectos</b><p>Elige el tipo de web que necesitas para empezar.</p><a href="#webs" class="btn btn-primary" data-close style="margin-top:18px">Ver tipos de web</a></div>`;
       return;
     }
     list.innerHTML = misPedidos.map(p => {
       const est = ESTADOS[p.estado] || ESTADOS.nuevo;
-      const fase = FASES.indexOf(p.estado);
       const pl = plantillaPorId(p.plantilla);
+      const cancelado = p.estado === 'cancelado';
       return `
-      <article class="mp">
+      <article class="mp mp-proyecto">
         <div class="mp-top">
-          <div><b>${esc(p.respuestas?.negocio || p.planNombre)}</b><small>${esc(p.planNombre)} · ${pl ? 'Diseño ' + esc(pl.nombre) : 'Diseño a medida'} · ${fecha(p.createdAt)}</small></div>
-          <span class="pill ${est.cls}">${est.txt}</span>
+          <div><b>${esc(p.respuestas?.negocio || p.planNombre)}</b><small>${esc(p.planNombre)} · ${pl ? 'Diseño ' + esc(pl.nombre) : 'Diseño a medida'} · Ref. ${refPedido(p.id)} · ${fecha(p.createdAt)}</small></div>
+          <div class="mp-top-r"><b>${euros(p.total)}${p.mensual ? ` <small>+ ${euros(p.mensual)}/mes</small>` : ''}</b><span class="pill ${est.cls}">${est.txt}</span></div>
         </div>
-        ${p.estado === 'cancelado' ? '' : `<div class="track">${FASES.map((f, i) => `<div class="tk ${i <= fase ? 'on' : ''}"><i></i><span>${ESTADOS[f].txt}</span></div>`).join('')}</div>`}
-        ${p.estado === 'cancelado' ? '' : `<div class="mp-prog"><div class="mp-prog-h"><span>Progreso de tu web</span><b>${progreso(p)} %</b></div><div class="barra"><i style="--w:${progreso(p)}%"></i></div>
-          <div class="mp-tareas">${TAREAS.map(([k, t]) => `<span class="${p.estado === 'entregado' || p.tareas?.[k] ? 'ok' : ''}">${t}</span>`).join('')}</div></div>`}
-        <div class="mp-foot"><span>Ref. ${refPedido(p.id)}</span><b>${euros(p.total)}${p.mensual ? ` <small>+ ${euros(p.mensual)}/mes</small>` : ''}</b></div>
-        <div class="mp-pay">${botonPago(p)}</div>
-        ${p.asignadoNombre ? `<p class="mp-who">${icono('laptop')} Trabajando en ella: <b>${esc(p.asignadoNombre)}</b></p>` : ''}
-        ${p.estado === 'entregado' && !p.resenada ? `<button class="btn btn-ghost w100 mp-rate" data-valorar="${esc(p.id)}">${icono('star')} Valorar mi web</button>` : ''}
+        ${cancelado ? '<p class="muted">Este pedido está cancelado.</p>' : `
+        ${barraEtapas(p)}
+        <div class="mp-cuerpo">
+          <div class="mp-accion">${accionCliente(p, botonPago(p))}</div>
+          <aside class="mp-lado">
+            ${p.dominio ? `<div class="mp-dato">${icono('link')}<span>Dominio</span><b>${esc(dominioTexto(p.dominio))}</b></div>` : ''}
+            ${p.asignadoNombre ? `<div class="mp-dato">${icono('laptop')}<span>Responsable</span><b>${esc(p.asignadoNombre)}</b></div>` : ''}
+            <div class="mp-dato">${icono('euro')}<span>Pago</span><b>${esc((PAGOS[p.pagoEstado || 'pendiente'] || PAGOS.pendiente).txt)}</b></div>
+            <div class="mp-dato">${icono('chart')}<span>Avance</span><b>${Math.round(indiceEtapa(p) / (ETAPAS.length - 1) * 100)} %</b></div>
+          </aside>
+        </div>`}
       </article>`;
     }).join('');
+    etiquetas(list);
   } catch (e) {
     console.error(e);
-    list.innerHTML = `<div class="empty"><b>No se pudieron cargar</b><p>${esc(e.message)}</p></div>`;
+    list.innerHTML = `<div class="empty"><b>No se han podido cargar</b><p>${esc(e.message)}</p></div>`;
   }
 }
 
+async function guardarProyecto(p, cambios, msg, btn) {
+  if (btn) ocupado(btn, true);
+  try {
+    if (cambios.etapa) cambios.estado = estadoParaEtapa(cambios.etapa, p.estado);
+    await store.actualizarPedido(p.id, cambios);
+    toast(msg);
+    await pintarPedidos();
+  } catch (err) {
+    toast(err.message, 'err');
+    if (btn) ocupado(btn, false);
+  }
+}
+
+$('#pedidosList').addEventListener('submit', e => {
+  const form = e.target.closest('[data-form]');
+  if (!form) return;
+  e.preventDefault();
+  const p = misPedidos.find(x => x.id === form.dataset.id);
+  try {
+    const cambios = leerFormulario(form, p);
+    const msg = { dominio: 'Dominio guardado. Ahora puedes enviarnos el contenido.', contenido: 'Contenido recibido. Empezamos con el diseño.', cambios: 'Cambios enviados. Te avisaremos cuando estén hechos.' }[form.dataset.form];
+    guardarProyecto(p, cambios, msg, form.querySelector('[type=submit]'));
+  } catch (err) { toast(err.message, 'err'); }
+});
 $('#pedidosList').addEventListener('click', e => {
   const pg = e.target.closest('[data-pagar]');
   if (pg) {
     const p = misPedidos.find(x => x.id === pg.dataset.pagar);
     return animarYPagar(pg, () => abrirPago(p, pg.dataset.fase, pintarPedidos));
   }
+  const ap = e.target.closest('[data-aprobar-web]');
+  if (ap) {
+    const p = misPedidos.find(x => x.id === ap.dataset.aprobarWeb);
+    return guardarProyecto(p, aprobarWeb(p), 'Web aprobada. Solo falta el pago final para publicarla.', ap);
+  }
   const v = e.target.closest('[data-valorar]');
   if (v) abrirResena(misPedidos.find(x => x.id === v.dataset.valorar), () => pintarPedidos());
+});
+$('#pedidosList').addEventListener('input', e => {
+  if (!e.target.matches('.dom-in')) return;
+  e.target.value = e.target.value.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9-]/g, '');
 });
 
 document.addEventListener('click', e => {
@@ -739,5 +806,5 @@ if (qComprar) abrirCompra(qComprar);
 
 // Vuelta desde Stripe (?pagado=ID): recordar que avise del pago
 if (new URLSearchParams(location.search).get('pagado')) {
-  toast('¡Gracias por tu pago! Lo verás confirmado en «Mis pedidos»');
+  toast('Gracias por tu pago. Lo verás confirmado en «Mis proyectos» cuando lo comprobemos.');
 }

@@ -2,7 +2,8 @@
    Panel de propietario y de trabajadores
    ========================================================== */
 import { CONFIG, PLANES } from '../config.js';
-import { plantillaPorId } from './plantillas.js';
+import { plantillaPorId, activarPlantilla } from './plantillas.js';
+import { ETAPAS, etapaDe, barraEtapas, estadoParaEtapa, entregasCliente, urlVistaPrevia } from './proyecto.js';
 import { contar } from './efectos.js';
 import * as store from './store.js';
 import {
@@ -63,7 +64,7 @@ function sinSesion() {
 function sinPermiso() {
   cabeceraVacia('Panel', 'Zona del equipo');
   body.innerHTML = `<div class="card gate"><div class="em">${icono('briefcase')}</div><h3>Este panel es para el equipo</h3><p class="muted">Tu cuenta es de cliente. Puedes ver tus pedidos o unirte al equipo.</p>
-    <div class="gate-btns"><a class="btn btn-primary" href="index.html#mis-pedidos">Mis pedidos</a><a class="btn btn-ghost" href="trabaja.html">Trabaja con nosotros</a></div></div>`;
+    <div class="gate-btns"><a class="btn btn-primary" href="index.html#mis-pedidos">Mis proyectos</a><a class="btn btn-ghost" href="trabaja.html">Trabaja con nosotros</a></div></div>`;
 }
 
 async function cargar() {
@@ -84,7 +85,7 @@ async function cargar() {
     try { pend ? navigator.setAppBadge?.(pend) : navigator.clearAppBadge?.(); } catch {}
   } catch (e) {
     console.error(e);
-    body.innerHTML = `<div class="card gate"><div class="em">${icono('alert')}</div><h3>No se pudieron cargar los datos</h3><p class="muted">${esc(e.message)}</p><p class="muted" style="font-size:13px">Si acabas de conectar Firebase, revisa las reglas de Firestore (LEEME.md).</p></div>`;
+    body.innerHTML = `<div class="card gate"><div class="em">${icono('alert')}</div><h3>No se pudieron cargar los datos</h3><p class="muted">${esc(e.message)}</p><p class="muted" style="font-size:13px">Si acabas de conectar Supabase, comprueba que has ejecutado el archivo supabase/esquema.sql (LEEME.md).</p></div>`;
   }
 }
 $('#pnRefresh').addEventListener('click', async e => { const b = e.currentTarget; ocupado(b, true); await cargar(); ocupado(b, false); toast('Actualizado'); });
@@ -260,8 +261,9 @@ function arrastrar() {
       if (!p || p.estado === nuevo) return;
       if (U.role !== 'owner' && p.asignado !== U.uid) return toast('Solo puedes mover tus encargos', 'err');
       try {
-        await store.actualizarPedido(p.id, { estado: nuevo });
+        await store.actualizarPedido(p.id, { estado: nuevo, ...(nuevo === 'entregado' ? { etapa: 'publicada' } : {}) });
         p.estado = nuevo;
+        if (nuevo === 'entregado') p.etapa = 'publicada';
         toast(`${neg(p)} → ${ESTADOS[nuevo].txt}`, 'ok');
         pintar();
       } catch (err) { toast(err.message, 'err'); }
@@ -435,7 +437,7 @@ body.addEventListener('click', async e => {
   if (t) {
     e.stopPropagation();
     const d = t.dataset;
-    if (d.coger) return accion(t, () => coger(d.coger), '¡Encargo cogido! Ya está en «Mis encargos»');
+    if (d.coger) return accion(t, () => coger(d.coger), 'Encargo asignado. Lo tienes en «Mis encargos».');
     if (d.aceptar) {
       const c = datos.cands.find(x => x.id === d.aceptar);
       return accion(t, async () => { await store.cambiarRol(c.uid, 'worker'); await store.actualizarCandidatura(c.id, { estado: 'aceptada' }); }, `${c.nombre.split(' ')[0]} ya forma parte del equipo`);
@@ -489,74 +491,91 @@ function abrirPedido(id) {
   const tel = (r.telefono || '').replace(/\D/g, '');
   const telWa = tel.length === 9 ? '34' + tel : tel;
   const fila = (k, v) => v ? `<div class="kv"><span>${esc(k)}</span><b>${esc(v)}</b></div>` : '';
-  const prevURL = pl ? `plantilla.html?t=${pl.id}&n=${encodeURIComponent(r.negocio || '')}&c=${encodeURIComponent(r.color || '')}` : '';
+  const prevURL = urlVistaPrevia({ ...p, urlVista: '' });
   const senal = (p.total || 0) * CONFIG.senal / 100;
   const pago = p.pagoEstado || 'pendiente';
+  const et = ETAPAS.find(e => e.id === etapaDe(p));
 
   box.innerHTML = `
     <div class="od-head">
-      <div><small>${refPedido(p.id)} · ${fecha(p.createdAt)}</small><h2 id="odTitle">${esc(neg(p))}</h2></div>
-      <button class="icon-btn" data-close aria-label="Cerrar">${icono('x')}</button>
+      <div><small>${refPedido(p.id)} · ${fecha(p.createdAt)} · ${esc(p.planNombre)}</small><h2 id="odTitle">${esc(neg(p))}</h2></div>
+      <div class="od-head-r">
+        ${pl ? `<button class="btn btn-sm btn-ghost" id="odExport" title="Descarga el diseño con el nombre y color del cliente"><span>Exportar HTML</span>${icono('download')}</button>` : ''}
+        <button class="icon-btn" data-close aria-label="Cerrar">${icono('x')}</button>
+      </div>
     </div>
-    <div class="od-body">
-      <div class="od-actions">
-        <label class="fc-select"><span>Estado</span>
-          <select id="odEstado" ${puedeEditar ? '' : 'disabled'}>${Object.entries(ESTADOS).map(([k, v]) => `<option value="${k}" ${p.estado === k ? 'selected' : ''}>${v.txt}</option>`).join('')}</select></label>
-        ${esOwner
-          ? `<label class="fc-select"><span>Asignado a</span><select id="odAsig"><option value="">Sin asignar</option>${trabajadores().map(w => `<option value="${w.uid}" ${p.asignado === w.uid ? 'selected' : ''}>${esc(w.name)}</option>`).join('')}<option value="${U.uid}" ${p.asignado === U.uid ? 'selected' : ''}>Yo (${esc(U.name)})</option></select></label>`
-          : p.asignado ? `<label class="fc-select"><span>Asignado a</span><select disabled><option>${esc(p.asignadoNombre)}</option></select></label>` : `<button class="btn btn-primary" id="odCoger"><span>Coger encargo</span></button>`}
-      </div>
-
-      <div class="od-pay ${pago === 'verificando' ? 'alert' : ''}">
-        <label class="fc-select"><span>Pago</span>
-          <select id="odPago" ${puedeEditar ? '' : 'disabled'}>${Object.entries(PAGOS).map(([k, v]) => `<option value="${k}" ${pago === k ? 'selected' : ''}>${v.txt}</option>`).join('')}</select></label>
-        <p>${pago === 'verificando'
-          ? `${icono('euro')} El cliente dice que ha pagado ${p.pagoFase === 'resto' ? 'el resto' : 'la señal'} (<b>${euros(p.pagoFase === 'resto' ? p.total - senal : senal)}</b>) por <b>${METODOS[p.pagoMetodo] || p.pagoMetodo}</b> ${p.pagoAviso ? haceCuanto(p.pagoAviso) : ''}. Compruébalo y márcalo como pagado.`
-          : p.pagoMetodo ? `Último pago por ${METODOS[p.pagoMetodo] || p.pagoMetodo}.` : `Señal: ${euros(senal)} · Resto: ${euros((p.total || 0) - senal)}`}</p>
-      </div>
-
-      <div class="od-tareas">
-        <div class="od-tareas-h"><span>Tareas</span><b>${progreso(p)} %</b></div>
-        <div class="barra"><i style="--w:${progreso(p)}%"></i></div>
-        <div class="tareas">${TAREAS.map(([k, t]) => `
-          <label class="tarea ${puedeEditar ? '' : 'off'}"><input type="checkbox" data-tarea="${k}" ${p.tareas?.[k] ? 'checked' : ''} ${puedeEditar ? '' : 'disabled'}><span class="ck-mark"></span><span>${t}</span></label>`).join('')}</div>
-        <small class="muted">El cliente ve este progreso en «Mis pedidos».</small>
-      </div>
-
-      <div class="od-client">
-        ${avatar({ name: p.clienteNombre })}
-        <div><b>${esc(p.clienteNombre)}</b><small>${esc(p.clienteEmail)}${r.telefono ? ' · ' + esc(r.telefono) : ''}</small></div>
-        <div class="od-cbtn">
-          ${telWa ? `<a class="icon-btn wa" href="${waLink(`¡Hola ${p.clienteNombre.split(' ')[0]}! Te escribimos de ${CONFIG.marca} por tu web «${neg(p)}» (${refPedido(p.id)}) 🙂`, telWa)}" target="_blank" rel="noopener" aria-label="WhatsApp">${icono('wa')}</a>` : ''}
-          <a class="icon-btn" href="mailto:${esc(p.clienteEmail)}?subject=${encodeURIComponent(`Tu web ${neg(p)} ${refPedido(p.id)}`)}" aria-label="Email">${icono('mail')}</a>
+    <div class="od-etapas">
+      <div class="od-etapas-h"><span>Etapa del proyecto</span><b>${esc(et.txt)}</b>${puedeEditar ? '<small>Pulsa una etapa para cambiarla. El cliente la ve en «Mis proyectos».</small>' : ''}</div>
+      ${barraEtapas(p, { editable: puedeEditar })}
+    </div>
+    <div class="od-body od-cols">
+      <section class="od-col">
+        <h4 class="od-h">Gestión</h4>
+        <div class="od-actions">
+          <label class="fc-select"><span>Estado</span>
+            <select id="odEstado" ${puedeEditar ? '' : 'disabled'}>${Object.entries(ESTADOS).map(([k, v]) => `<option value="${k}" ${p.estado === k ? 'selected' : ''}>${v.txt}</option>`).join('')}</select></label>
+          ${esOwner
+            ? `<label class="fc-select"><span>Asignado a</span><select id="odAsig"><option value="">Sin asignar</option>${trabajadores().map(w => `<option value="${w.uid}" ${p.asignado === w.uid ? 'selected' : ''}>${esc(w.name)}</option>`).join('')}<option value="${U.uid}" ${p.asignado === U.uid ? 'selected' : ''}>Yo (${esc(U.name)})</option></select></label>`
+            : p.asignado ? `<label class="fc-select"><span>Asignado a</span><select disabled><option>${esc(p.asignadoNombre)}</option></select></label>` : `<button class="btn btn-primary" id="odCoger"><span>Coger encargo</span></button>`}
         </div>
-      </div>
+        <div class="od-pay ${pago === 'verificando' ? 'alert' : ''}">
+          <label class="fc-select"><span>Pago</span>
+            <select id="odPago" ${puedeEditar ? '' : 'disabled'}>${Object.entries(PAGOS).map(([k, v]) => `<option value="${k}" ${pago === k ? 'selected' : ''}>${v.txt}</option>`).join('')}</select></label>
+          <p>${pago === 'verificando'
+            ? `${icono('euro')} El cliente indica que ha pagado ${p.pagoFase === 'resto' ? 'el resto' : 'la señal'} (<b>${euros(p.pagoFase === 'resto' ? p.total - senal : senal)}</b>) por <b>${METODOS[p.pagoMetodo] || p.pagoMetodo}</b> ${p.pagoAviso ? haceCuanto(p.pagoAviso) : ''}. Compruébalo y márcalo como pagado.`
+            : p.pagoMetodo ? `Último pago por ${METODOS[p.pagoMetodo] || p.pagoMetodo}.` : `Señal: ${euros(senal)} · Resto: ${euros((p.total || 0) - senal)}`}</p>
+        </div>
+        <form class="od-urls" id="odUrls" novalidate>
+          ${campo({ id: 'odVista', name: 'urlVista', label: 'Enlace de la vista previa para el cliente', type: 'url', value: p.urlVista || '', attrs: puedeEditar ? '' : 'disabled' })}
+          ${campo({ id: 'odWeb', name: 'urlWeb', label: 'Dirección de la web publicada', type: 'url', value: p.urlWeb || '', attrs: puedeEditar ? '' : 'disabled' })}
+          ${puedeEditar ? `<button class="btn btn-sm btn-ghost" type="submit"><span>Guardar enlaces</span></button>` : ''}
+        </form>
+        <div class="od-tareas">
+          <div class="od-tareas-h"><span>Tareas internas</span><b>${progreso(p)} %</b></div>
+          <div class="barra"><i style="--w:${progreso(p)}%"></i></div>
+          <div class="tareas">${TAREAS.map(([k, t]) => `
+            <label class="tarea ${puedeEditar ? '' : 'off'}"><input type="checkbox" data-tarea="${k}" ${p.tareas?.[k] ? 'checked' : ''} ${puedeEditar ? '' : 'disabled'}><span class="ck-mark"></span><span>${t}</span></label>`).join('')}</div>
+        </div>
+        ${esOwner ? `<button class="btn btn-sm btn-danger" id="odDel"><span>Borrar pedido</span></button>` : ''}
+      </section>
 
-      <h4 class="od-h">Pedido</h4>
-      <div class="kvs">
-        ${p.ref ? `<div class="kv"><span>Vendido por</span><b>${esc(nombreDe(p.ref))} · ${PCT} % = ${euros(comision(p))} ${p.comisionPagada ? '(pagada)' : ''}</b></div>` : ''}
-        ${fila('Tipo de web', p.planNombre)}
-        <div class="kv"><span>Diseño</span><b>${pl ? `${esc(pl.nombre)} <a class="link-btn" href="${prevURL}" target="_blank" rel="noopener">ver ${icono('external')}</a>` : 'Desde cero'}</b></div>
-        ${fila('Precio base', euros(p.precioBase || 0))}
-        ${(p.extras || []).map(x => fila(x.nombre, '+' + euros(x.precio) + (x.mensual ? '/mes' : ''))).join('')}
-        ${p.urgente ? fila('Urgente', 'Sí') : ''}
-        <div class="kv total"><span>Total</span><b>${euros(p.total || 0)}${p.mensual ? ` + ${euros(p.mensual)}/mes` : ''}</b></div>
-        ${fila(`Señal (${CONFIG.senal} %)`, euros(senal))}
-      </div>
+      <section class="od-col">
+        <h4 class="od-h">Cliente</h4>
+        <div class="od-client">
+          ${avatar({ name: p.clienteNombre })}
+          <div><b>${esc(p.clienteNombre)}</b><small>${esc(p.clienteEmail)}${r.telefono ? ' · ' + esc(r.telefono) : ''}</small></div>
+          <div class="od-cbtn">
+            ${telWa ? `<a class="icon-btn wa" href="${waLink(`Hola ${p.clienteNombre.split(' ')[0]}, te escribimos de ${CONFIG.marca} sobre tu web «${neg(p)}» (${refPedido(p.id)}).`, telWa)}" target="_blank" rel="noopener" aria-label="WhatsApp">${icono('wa')}</a>` : ''}
+            <a class="icon-btn" href="mailto:${esc(p.clienteEmail)}?subject=${encodeURIComponent(`Tu web ${neg(p)} ${refPedido(p.id)}`)}" aria-label="Email">${icono('mail')}</a>
+          </div>
+        </div>
+        <h4 class="od-h">Pedido</h4>
+        <div class="kvs">
+          ${p.ref ? `<div class="kv"><span>Vendido por</span><b>${esc(nombreDe(p.ref))} · ${PCT} % = ${euros(comision(p))} ${p.comisionPagada ? '(pagada)' : ''}</b></div>` : ''}
+          ${fila('Tipo de web', p.planNombre)}
+          <div class="kv"><span>Diseño</span><b>${pl ? `${esc(pl.nombre)} <a class="link-btn" href="${prevURL}" target="_blank" rel="noopener">ver ${icono('external')}</a>` : 'Desde cero'}</b></div>
+          ${fila('Precio base', euros(p.precioBase || 0))}
+          ${(p.extras || []).map(x => fila(x.nombre, '+' + euros(x.precio) + (x.mensual ? '/mes' : ''))).join('')}
+          ${p.urgente ? fila('Urgente', 'Sí') : ''}
+          <div class="kv total"><span>Total</span><b>${euros(p.total || 0)}${p.mensual ? ` + ${euros(p.mensual)}/mes` : ''}</b></div>
+          ${fila(`Señal (${CONFIG.senal} %)`, euros(senal))}
+        </div>
+        <h4 class="od-h">Cuestionario</h4>
+        <div class="kvs">
+          ${fila('Sector', r.sector)}${fila('Objetivo', r.objetivo)}${fila('Web actual', r.webActual)}${fila('Estilo', r.estilo)}
+          ${r.color ? `<div class="kv"><span>Color</span><b><i class="dotc" style="background:${esc(r.color)}"></i>${esc(r.color)}</b></div>` : ''}
+          ${fila('Logotipo', r.logo)}${fila('Textos y fotos', r.contenido)}${fila('Plazo', r.plazo)}
+        </div>
+        ${r.comentarios ? `<div class="od-note">${icono('message')} ${esc(r.comentarios)}</div>` : ''}
+      </section>
 
-      <h4 class="od-h">Cuestionario</h4>
-      <div class="kvs">
-        ${fila('Sector', r.sector)}${fila('Objetivo', r.objetivo)}${fila('Web actual', r.webActual)}${fila('Estilo', r.estilo)}
-        ${r.color ? `<div class="kv"><span>Color</span><b><i class="dotc" style="background:${esc(r.color)}"></i>${esc(r.color)}</b></div>` : ''}
-        ${fila('Logo', r.logo)}${fila('Textos y fotos', r.contenido)}${fila('Plazo', r.plazo)}
-      </div>
-      ${r.comentarios ? `<div class="od-note">${icono('message')} ${esc(r.comentarios)}</div>` : ''}
-
-      <h4 class="od-h">Notas internas</h4>
-      <div class="notes">${(p.notas || []).map(n => `<div class="note"><div><b>${esc(n.autor)}</b><small>${haceCuanto(n.t)}</small></div><p>${esc(n.texto)}</p></div>`).join('') || '<p class="muted" style="font-size:14px">Sin notas todavía.</p>'}</div>
-      ${puedeEditar || !p.asignado ? `<form class="note-form" id="odNoteForm" novalidate>${campo({ id: 'odNote', label: 'Nota para el equipo', type: 'textarea' })}<button class="btn btn-sm btn-primary" type="submit"><span>Añadir nota</span></button></form>` : ''}
-
-      ${esOwner ? `<button class="btn btn-sm btn-danger" id="odDel" style="margin-top:28px"><span>Borrar pedido</span></button>` : ''}
+      <section class="od-col">
+        <h4 class="od-h">Lo que ha enviado el cliente</h4>
+        ${entregasCliente(p)}
+        <h4 class="od-h">Notas internas</h4>
+        <div class="notes">${(p.notas || []).map(n => `<div class="note"><div><b>${esc(n.autor)}</b><small>${haceCuanto(n.t)}</small></div><p>${esc(n.texto)}</p></div>`).join('') || '<p class="muted" style="font-size:14px">Sin notas todavía.</p>'}</div>
+        ${puedeEditar || !p.asignado ? `<form class="note-form" id="odNoteForm" novalidate>${campo({ id: 'odNote', label: 'Nota para el equipo', type: 'textarea' })}<button class="btn btn-sm btn-primary" type="submit"><span>Añadir nota</span></button></form>` : ''}
+      </section>
     </div>`;
   etiquetas(box);
 
@@ -566,15 +585,23 @@ function abrirPedido(id) {
       Object.assign(p, cambios);
       if (msg) toast(msg);
       pintar();
+      const y = $('.od-body', box)?.scrollTop || 0;
       abrirPedido(p.id);
+      const b = $('.od-body', box); if (b) b.scrollTop = y;
     } catch (err) { toast(err.message, 'err'); }
   };
+  $$('[data-etapa]', box).forEach(b => b.addEventListener('click', () => {
+    const id = b.dataset.etapa;
+    if (id === etapaDe(p)) return;
+    const e = ETAPAS.find(x => x.id === id);
+    guardar({ etapa: id, estado: estadoParaEtapa(id, p.estado) }, `Etapa: ${e.txt}`);
+  }));
   $$('[data-tarea]', box).forEach(c => c.addEventListener('change', () => {
     const tareas = { ...(p.tareas || {}), [c.dataset.tarea]: c.checked };
     const todas = TAREAS.every(([k]) => tareas[k]);
-    guardar({ tareas }, todas ? '¡Todo listo! Ya puedes marcarla como entregada' : 'Tarea actualizada');
+    guardar({ tareas }, todas ? 'Todas las tareas hechas. Ya puedes pasarla a «Publicada».' : 'Tarea actualizada');
   }));
-  $('#odEstado', box)?.addEventListener('change', e => guardar({ estado: e.target.value }, `Estado: ${ESTADOS[e.target.value].txt}`));
+  $('#odEstado', box)?.addEventListener('change', e => guardar({ estado: e.target.value, ...(e.target.value === 'entregado' ? { etapa: 'publicada' } : {}) }, `Estado: ${ESTADOS[e.target.value].txt}`));
   $('#odPago', box)?.addEventListener('change', e => guardar({ pagoEstado: e.target.value }, `Pago: ${PAGOS[e.target.value].txt}`));
   $('#odAsig', box)?.addEventListener('change', e => {
     const uid = e.target.value;
@@ -583,11 +610,18 @@ function abrirPedido(id) {
     if (uid && p.estado === 'nuevo') cambios.estado = 'en_curso';
     guardar(cambios, uid ? `Asignado a ${w.name}` : 'Sin asignar');
   });
+  $('#odUrls', box)?.addEventListener('submit', e => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const limpio = v => { v = String(v || '').trim(); return v && !/^https?:\/\//.test(v) ? 'https://' + v : v; };
+    guardar({ urlVista: limpio(f.get('urlVista')), urlWeb: limpio(f.get('urlWeb')) }, 'Enlaces guardados');
+  });
+  $('#odExport', box)?.addEventListener('click', e => exportarHTML(p, e.currentTarget));
   $('#odCoger', box)?.addEventListener('click', async e => {
     ocupado(e.currentTarget, true);
     await coger(p.id);
     Object.assign(p, { asignado: U.uid, asignadoNombre: U.name, estado: 'en_curso' });
-    toast('¡Encargo cogido!');
+    toast('Encargo asignado a ti');
     pintar(); abrirPedido(p.id);
   });
   $('#odNoteForm', box)?.addEventListener('submit', e => {
@@ -601,5 +635,47 @@ function abrirPedido(id) {
     try { await store.borrarPedido(p.id); cerrar(dlg); toast('Pedido borrado'); await cargar(); }
     catch (err) { toast(err.message, 'err'); }
   });
-  abrir(dlg);
+  if (!dlg.open) abrir(dlg);
 }
+
+/* ==========================================================
+   EXPORTAR EL DISEÑO COMO UN ÚNICO ARCHIVO .HTML
+   Se pinta el diseño con el nombre y color del cliente en un
+   marco oculto, se copia tal cual y se le añade el código que
+   hace funcionar menú, carrito, reservas y animaciones.
+   ========================================================== */
+async function exportarHTML(p, btn) {
+  const r = p.respuestas || {};
+  ocupado(btn, true);
+  const f = document.createElement('iframe');
+  f.style.cssText = 'position:fixed;left:-9999px;top:0;width:1280px;height:800px;opacity:0;pointer-events:none';
+  f.src = `plantilla.html?t=${encodeURIComponent(p.plantilla)}&n=${encodeURIComponent(r.negocio || '')}&c=${encodeURIComponent(r.color || '')}&x=1`;
+  document.body.appendChild(f);
+  try {
+    await new Promise((ok, mal) => { f.onload = ok; setTimeout(() => mal(new Error('El diseño ha tardado demasiado en cargar')), 15000); });
+    const doc = f.contentDocument;
+    for (let i = 0; i < 40 && !doc.querySelector('#site nav'); i++) await new Promise(ok => setTimeout(ok, 100));
+    const copia = doc.documentElement.cloneNode(true);
+    copia.querySelectorAll('script, .ribbon').forEach(x => x.remove());
+    copia.querySelector('meta[name=robots]')?.remove();
+    copia.querySelectorAll('img').forEach(img => img.classList.remove('ok'));
+    copia.classList.remove('mini', 'anim', 'sin-anim');
+    const s = doc.createElement('script');
+    s.textContent = `(${activarPlantilla.toString()})(${JSON.stringify({ check: icono('check'), plus: icono('plus') })});`;
+    copia.querySelector('body').appendChild(s);
+    const html = '<!doctype html>\n' + copia.outerHTML;
+    const nombre = (r.negocio || pl_nombre(p)).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'web';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+    a.download = `${nombre}.html`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    toast('HTML descargado. Ábrelo en el navegador para comprobarlo.');
+  } catch (err) {
+    toast(err.message, 'err');
+  } finally {
+    f.remove();
+    ocupado(btn, false);
+  }
+}
+const pl_nombre = p => plantillaPorId(p.plantilla)?.nombre || 'web';

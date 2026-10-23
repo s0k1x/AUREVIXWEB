@@ -232,3 +232,47 @@ dialog.dlg-side{justify-content:flex-end;padding:0}
   .enlace-box{justify-content:flex-start}
   .enlace-box code{max-width:100%;flex:1 1 100%}
 }
+
+/* ==========================================================
+   Ficha de pedido en horizontal (ordenador)
+   ========================================================== */
+dialog.dlg-ficha{justify-content:center;padding:24px}
+.dlg-ficha .dlg-box.side{max-width:1500px;width:100%;height:100%;max-height:min(940px,100%);border-radius:24px;border-width:1px;animation:up .35s var(--e-out)}
+dialog.dlg-ficha:not([open]) .dlg-box{transform:translateY(18px) scale(.98)}
+.od-head-r{display:flex;align-items:center;gap:8px}
+.od-head-r .btn svg{width:16px;height:16px}
+.od-etapas{padding:16px 24px 10px;border-bottom:1px solid var(--line);background:var(--card)}
+.od-etapas-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:13px}
+.od-etapas-h span{color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;font-size:12px}
+.od-etapas-h b{color:var(--accent);font-size:14px}
+.od-etapas-h small{color:var(--dim);margin-left:auto}
+.od-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:0}
+.od-col{padding:4px 24px 32px;border-left:1px solid var(--line);min-width:0}
+.od-col:first-child{border-left:0}
+.od-col > .od-h:first-child{margin-top:20px}
+.od-urls{display:grid;gap:2px;margin:6px 0 14px}
+.od-urls .fc{margin:6px 0}
+.od-urls .btn{justify-self:start}
+.ent{padding:14px 16px;border-radius:14px;border:1px solid var(--line);margin-bottom:10px}
+.ent-h{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ent-h svg{width:18px;height:18px;color:var(--accent)}
+.ent-h small{margin-left:auto;color:var(--muted);font-size:12.5px}
+.ent .kvs{margin-top:8px}
+.ent-b{padding:8px 0;border-top:1px solid var(--line)}
+.ent-b:first-of-type{border-top:0}
+.ent-b small{color:var(--muted);font-size:12px}
+.ent-b p{font-size:14.5px;white-space:pre-wrap}
+@media (max-width:1180px){
+  .od-cols{grid-template-columns:1fr 1fr}
+  .od-col:nth-child(3){grid-column:1/-1;border-left:0;border-top:1px solid var(--line)}
+}
+@media (max-width:760px){
+  dialog.dlg-ficha{padding:0}
+  .dlg-ficha .dlg-box.side{max-height:100%;border-radius:0;border-width:0}
+  .od-cols{grid-template-columns:minmax(0,1fr)}
+  .od-col{border-left:0;border-top:1px solid var(--line);padding:4px 18px 24px}
+  .od-col:first-child{border-top:0}
+  .od-etapas{padding:14px 18px 8px}
+  .od-etapas-h small{display:none}
+  .od-head-r .btn span{display:none}
+}
