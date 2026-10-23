@@ -18,6 +18,7 @@ const body = $('#pnBody');
 const tabsEl = $('#tabs');
 let U = null;
 let datos = { pedidos: [], cands: [], usuarios: [], resenas: [], tickets: [] };
+let ccoTP = ''; // dirección privada de invitaciones de Trustpilot (solo propietario)
 let tab = '';
 let filtro = { estado: 'todos', q: '', ocultar: false };
 const leerVista = () => { try { return localStorage.getItem('tm_vista'); } catch { return null; } };
@@ -90,6 +91,7 @@ async function cargar(silencioso = false) {
       store.todosLosTickets().catch(() => [])
     ]);
     datos = { pedidos, usuarios, cands, resenas, tickets };
+    if (owner) { try { ccoTP = (await store.leerAjustes('trustpilot'))?.cco || ''; } catch { ccoTP = ''; } }
     if (silencioso && body.querySelector('input:focus, textarea:focus')) { badges(); return; }
     pintar();
     // Número en el icono de la app instalada (pedidos nuevos + pagos por verificar)
@@ -801,6 +803,7 @@ function abrirPedido(id) {
           <div><b>${esc(p.clienteNombre)}</b><small>${esc(p.clienteEmail)}${r.telefono ? ' · ' + esc(r.telefono) : ''}</small></div>
           <div class="od-cbtn">
             <a class="icon-btn" href="${mailLink(`Tu web ${neg(p)} ${refPedido(p.id)}`, `Hola ${p.clienteNombre.split(' ')[0]},\n\n`, p.clienteEmail)}" aria-label="Escribir correo">${icono('mail')}</a>
+            ${ccoTP && (p.estado === 'entregado' || p.etapa === 'publicada') ? `<a class="icon-btn" href="${mailLink(`¿Qué tal tu nueva web, ${p.clienteNombre.split(' ')[0]}?`, `Hola ${p.clienteNombre.split(' ')[0]},\n\nYa tienes tu web ${neg(p)} publicada. Ha sido un placer trabajar contigo.\n\nSi estás contento con el resultado, me ayudarías mucho dejando tu opinión: recibirás un correo de Trustpilot con un enlace y te lleva un minuto.\n\nGracias,\n${CONFIG.marca}\n`, p.clienteEmail, ccoTP)}" aria-label="Pedir reseña en Trustpilot" title="Pedir reseña en Trustpilot">${icono('star')}</a>` : ''}
             <button class="icon-btn" data-copy="${esc(p.clienteEmail)}" aria-label="Copiar correo">${icono('copy')}</button>
           </div>
         </div>

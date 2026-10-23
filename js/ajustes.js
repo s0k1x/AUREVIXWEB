@@ -304,6 +304,8 @@ async function negocio() {
   const a = ajustesActuales();
   let cupones = [];
   try { cupones = (await store.leerAjustes('cupones'))?.lista || []; } catch { /* sin cupones */ }
+  let tpCco = '';
+  try { tpCco = (await store.leerAjustes('trustpilot'))?.cco || ''; } catch { /* sin dato */ }
   const pct = v => Math.round(v * 100);
   body.innerHTML = `
   <form id="fNeg" novalidate>
@@ -348,6 +350,8 @@ async function negocio() {
     ${bloque('Cupones de descuento', 'El cliente los escribe en el resumen del pedido. La lista no es visible para nadie más.', `
       <div class="cupones" id="cupones">${cupones.map(filaCupon).join('')}</div>
       <button type="button" class="btn btn-sm btn-ghost" id="addCupon">${icono('plus')}<span>Añadir cupón</span></button>`)}
+    ${bloque('Trustpilot', 'El enlace público (arriba, en Contacto) enseña tu perfil en la web. La dirección de invitaciones es privada: solo la ves tú y se usa en el botón «Pedir reseña» de cada pedido.', `
+      ${texto('tpCco', 'Dirección de invitaciones de Trustpilot (CCO)', tpCco, 'type="email" autocomplete="off" autocapitalize="off"', 'aurevixweb.es+…@invite.trustpilot.com')}`)}
     ${bloque('Asistente', 'El chat de dudas de la web (con IA si está conectado Gemini).', `
       ${interruptor({ id: 'asistActivo', titulo: 'Mostrar el asistente', checked: a.asistente.activo })}
       ${campo({ id: 'f_saludo', name: 'saludo', label: 'Mensaje de bienvenida', type: 'textarea', value: a.asistente.saludo, attrs: 'maxlength="300"' })}`)}
@@ -383,6 +387,7 @@ async function negocio() {
       hasta: $('[data-k=hasta]', c).value, activo: $('[data-k=activo]', c).checked
     })).filter(c => c.codigo);
     if (new Set(lista.map(c => c.codigo)).size !== lista.length) return toast('Hay dos cupones con el mismo código', 'err');
+    if (v('tpCco') && !/^\S+@\S+\.\S+$/.test(v('tpCco'))) return toast('Revisa la dirección de invitaciones de Trustpilot', 'err');
     await guardar({
       aviso: v('aviso') || ORIGINAL.config.aviso, anuncio: { activo: $('#anuncioActivo').checked, texto: v('anuncioTexto') },
       aceptarPedidos: $('#aceptarPedidos').checked, mensajeCerrado: v('mensajeCerrado'),
@@ -392,7 +397,7 @@ async function negocio() {
       pagos: { bizum: v('bizum'), titular: v('titular'), iban: v('iban'), stripe: v('stripe'), paypal: v('paypal').replace(/^.*paypal\.me\//i, '') },
       asistente: { activo: $('#asistActivo').checked, saludo: v('saludo') },
       planes, extras
-    }, { lista }, $('#gNeg'));
+    }, { lista }, $('#gNeg'), { cco: v('tpCco') });
   });
 }
 const filaCupon = c => `<div class="cp">
@@ -402,11 +407,12 @@ const filaCupon = c => `<div class="cp">
   <label class="aj-ck"><input type="checkbox" data-k="activo" ${c.activo !== false ? 'checked' : ''}><span class="ck-mark"></span><span>Activo</span></label>
   <button type="button" class="icon-btn sm" data-quitar-cp aria-label="Quitar cupón">${icono('trash')}</button>
 </div>`;
-async function guardar(web, cupones, btn) {
+async function guardar(web, cupones, btn, tp) {
   ocupado(btn, true);
   try {
     await guardarAjustesWeb(web);
     if (cupones) await store.guardarAjustes('cupones', cupones);
+    if (tp) await store.guardarAjustes('trustpilot', tp);
     toast('Ajustes del negocio guardados. Ya se aplican en la web.', 'ok');
   } catch (err) { toast(err.message, 'err'); }
   ocupado(btn, false);

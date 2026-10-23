@@ -28,8 +28,8 @@ export const haceCuanto = t => {
 };
 export const iniciales = n => (n || '?').trim().split(/\s+/).slice(0, 2).map(p => p[0]).join('').toUpperCase();
 /** Enlace para escribir un correo (único canal de contacto) */
-export const mailLink = (asunto = '', cuerpo = '', a = CONFIG.email) =>
-  `mailto:${a}?subject=${encodeURIComponent(asunto)}${cuerpo ? `&body=${encodeURIComponent(cuerpo)}` : ''}`;
+export const mailLink = (asunto = '', cuerpo = '', a = CONFIG.email, cco = '') =>
+  `mailto:${a}?subject=${encodeURIComponent(asunto)}${cco ? `&bcc=${encodeURIComponent(cco)}` : ''}${cuerpo ? `&body=${encodeURIComponent(cuerpo)}` : ''}`;
 export const fechaCorta = t => new Date(t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
 export const tamano = b => (b > 1048576 ? (b / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB');
 /** Descarga un texto como archivo */
@@ -334,7 +334,7 @@ function crearLogin() {
   d.innerHTML = `
     <div class="dlg-box form-container">
       <button class="dlg-x" data-close aria-label="Cerrar">${icono('x')}</button>
-      <img class="logo-img" src="icons/logo-a.png" alt="" style="width:56px;height:56px">
+      <div class="lg-marca"><img src="icons/logo-a.png" alt="" width="40" height="40">${marcaHTML()}</div>
       <p class="title" id="lgTitle">Iniciar sesión</p>
       <p class="subtitle" id="lgSub">Para guardar tu pedido y seguir su estado.</p>
       <form class="form" id="lgForm" novalidate>
@@ -444,9 +444,10 @@ export async function conSesion(subtitulo) {
    ARRANQUE COMÚN
    ========================================================== */
 function intro() {
+  if (document.getElementById('splash0')) return; // la bienvenida ya está en el HTML y se controla sola
   let vista = false;
   try { vista = sessionStorage.getItem('tm_intro') === '1'; sessionStorage.setItem('tm_intro', '1'); } catch { vista = true; }
-  if (vista || location.hash || location.search || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (vista || location.hash || location.search || matchMedia('(prefers-reduced-motion: reduce)').matches) { document.documentElement.classList.remove('intro'); return; }
   const s = document.createElement('div');
   s.className = 'splash';
   // La misma tarjeta del pie: marco que se cierra, eslogan y «Diseño web».
@@ -460,7 +461,11 @@ function intro() {
       setTimeout(() => s.querySelector('.brand-card')?.classList.add('on'), 250);
       setTimeout(fuera, 2300);
     });
-  const fuera = () => { if (s.classList.contains('out')) return; s.classList.add('out'); setTimeout(() => s.remove(), 600); };
+  const fuera = () => {
+    if (s.classList.contains('out')) return;
+    document.documentElement.classList.remove('intro');
+    s.classList.add('out'); setTimeout(() => s.remove(), 600);
+  };
   setTimeout(fuera, 4000); // por si algo falla
   s.addEventListener('click', fuera);
 }
