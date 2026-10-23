@@ -258,7 +258,7 @@ input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;bo
 .brand-card .trail{position:absolute;right:0;top:0;height:100%;width:100%;opacity:0;pointer-events:none}
 .brand-card .logo-bottom-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin-top:34px;color:var(--bc);padding-left:8px;font-size:10px;opacity:0;letter-spacing:normal;white-space:nowrap;transition:all .5s ease-in-out .5s;text-transform:uppercase}
 .brand-card:hover,.brand-card.on{border-radius:0;transform:scale(1.04)}
-.brand-card:hover .logo,.brand-card.on .logo{width:var(--w,190px);animation:bc-opacity 1s ease-in-out}
+.brand-card:hover .logo,.brand-card.on .logo{width:var(--w,204px);animation:bc-opacity 1s ease-in-out}
 .brand-card:hover .border,.brand-card.on .border{inset:15px;opacity:1;transform:rotate(0)}
 .brand-card:hover .bottom-text,.brand-card.on .bottom-text{letter-spacing:3px;opacity:1;transform:translateX(-50%)}
 .brand-card:hover .logo-bottom-text,.brand-card.on .logo-bottom-text{opacity:1;letter-spacing:6px}

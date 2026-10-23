@@ -10,11 +10,6 @@
 .splash-logo img:first-child{width:64px;height:64px;object-fit:contain}
 .splash-nombre{height:28px;width:auto}
 @media (max-width:480px){.splash-logo img:first-child{width:48px;height:48px}.splash-nombre{height:21px}}
-/* Tarjeta de marca: el nombre se ve siempre junto al logotipo (sin aparecer después) */
-.brand-card .logo,.brand-card:hover .logo,.brand-card.on .logo{width:auto;overflow:visible;animation:none;gap:12px}
-.brand-card .logo2{position:static;transform:none}
-.brand-card .trail{display:none}
-
 /* ---------- Franja de anuncio ---------- */
 .anuncio{position:relative;z-index:52;display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 48px;background:var(--accent);color:var(--ink);font-size:14px;font-weight:600;text-align:center}
 .anuncio svg{width:16px;height:16px;flex:none}
