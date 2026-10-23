@@ -5,11 +5,15 @@
    ========================================================== */
 
 /* ---------- Bienvenida: logotipo y nombre a la vez ---------- */
-.splash-logo{display:flex;align-items:center;gap:18px;opacity:0;transform:scale(.94);transition:opacity .45s var(--e-out),transform .6s var(--e-spring)}
-.splash.listo .splash-logo{opacity:1;transform:none}
-.splash-logo img:first-child{width:64px;height:64px;object-fit:contain}
-.splash-nombre{height:28px;width:auto}
-@media (max-width:480px){.splash-logo img:first-child{width:48px;height:48px}.splash-nombre{height:21px}}
+/* Bienvenida: tarjeta de marca con el logotipo y el nombre a la vez */
+.splash .splash-card{opacity:0;transform:scale(.92);transition:opacity .45s var(--e-out),transform .6s var(--e-spring),border-radius .5s ease-in-out}
+.splash.listo .splash-card{opacity:1;transform:none}
+.splash.listo .splash-card.on{transform:scale(1.04)}
+.splash-card .logo,.splash-card.on .logo{width:auto;overflow:visible;animation:none;gap:10px}
+.splash-card .logo2{position:static;transform:none}
+.splash-card .trail{display:none}
+@media (max-width:480px){.splash .splash-card{width:calc(100vw - 48px)}}
+
 /* ---------- Franja de anuncio ---------- */
 .anuncio{position:relative;z-index:52;display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 48px;background:var(--accent);color:var(--ink);font-size:14px;font-weight:600;text-align:center}
 .anuncio svg{width:16px;height:16px;flex:none}
@@ -458,3 +462,33 @@ html[data-contraste=alto]{--muted:#cfccc3;--dim:#b3b0a7;--line:rgba(255,255,255,
 html[data-contraste=alto][data-tema=claro]{--muted:#36342f;--dim:#4a4842;--line:rgba(0,0,0,.25);--line2:rgba(0,0,0,.4)}
 
 .hint svg{width:15px;height:15px;display:inline;vertical-align:-2px;margin-right:4px}
+
+/* ==========================================================
+   Móvil: todo centrado en la pantalla (nada pegado abajo)
+   ========================================================== */
+@media (max-width:640px){
+  /* Ventanas: en el centro, no como hoja que sube desde abajo */
+  dialog.dlg:not(.dlg-wiz):not(.dlg-ficha):not(.dlg-side){align-items:center;padding:16px}
+  dialog.dlg:not(.dlg-wiz):not(.dlg-ficha):not(.dlg-side) > .dlg-box{border-radius:22px;max-height:calc(100% - 32px);padding:28px 20px 22px}
+  dialog.dlg:not(.dlg-wiz):not(.dlg-prev):not(.dlg-side) > .dlg-box::before{display:none}
+  dialog.dlg.dlg-prev{padding:0}
+  dialog.dlg.dlg-prev > .dlg-box{border-radius:0;max-height:100%}
+  @keyframes up{from{transform:translateY(18px) scale(.97);opacity:0}}
+  /* Aviso de cookies centrado, con fondo oscurecido */
+  .cookies{left:50%;top:50%;bottom:auto;width:calc(100vw - 32px);max-height:calc(100dvh - 32px);overflow:auto;transform:translate(-50%,-46%);box-shadow:0 0 0 100vmax rgba(0,0,0,.55),0 30px 80px rgba(0,0,0,.6)}
+  .cookies.on{transform:translate(-50%,-50%)}
+  .ck-top{flex-direction:column;align-items:center;text-align:center}
+  .ck-btns{justify-content:center}
+  /* Textos y bloques centrados */
+  .hero-copy,.sec-head,.op-head,.faq-side,.join,.contacto-grid > :first-child{text-align:center}
+  .hero-copy .status{margin-inline:auto}
+  .hero-ctas{justify-content:center}
+  .trust{justify-content:space-around;text-align:center}
+  .op-head{justify-content:center}
+  .join{align-items:center}
+  .sec-head .lead,.hero-copy .lead{margin-inline:auto}
+  .footer-brand .brand-card{margin-inline:auto}
+  .ct-btns{flex-direction:column;align-items:stretch}
+  .ct-btns .btn{width:100%;justify-content:center}
+  .dz-filtro{justify-content:flex-start}
+}
