@@ -188,8 +188,8 @@ export function abrirResena(p, alTerminar = () => {}) {
           <div class="ok-ic">${icono('star')}</div>
           <h3>Gracias por tu valoración</h3>
           <p class="muted">La publicaremos en la web después de revisarla.</p>
-          ${CONFIG.trustpilot ? `<p class="muted" style="margin-bottom:14px">Si quieres, también puedes dejar tu opinión en Trustpilot.</p>
-          <a class="btn btn-primary w100" href="${esc(CONFIG.trustpilot)}" target="_blank" rel="noopener">${icono('star')}<span>Opinar en Trustpilot</span></a>` : ''}
+          ${CONFIG.trustpilot || CONFIG.dominio ? `<p class="muted" style="margin-bottom:14px">¿Nos ayudas un poco más? Copia tu opinión y pégala también en Trustpilot: es lo que miran otros clientes antes de decidirse.</p>
+          <a class="btn btn-primary w100" href="${esc(CONFIG.dominio ? `https://es.trustpilot.com/evaluate/${CONFIG.dominio}` : CONFIG.trustpilot)}" target="_blank" rel="noopener" data-copy="${esc(texto)}">${icono('star')}<span>Opinar también en Trustpilot</span></a>` : ''}
           <button class="btn btn-ghost w100" data-close type="button">Cerrar</button>
         </div>`;
       alTerminar(p);

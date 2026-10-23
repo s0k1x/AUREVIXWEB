@@ -36,7 +36,8 @@ function aplicar(a) {
   const num = (v, def) => (Number.isFinite(+v) && v !== '' && v !== null ? +v : def);
   const txt = (v, def) => (typeof v === 'string' ? v : def);
   CONFIG.aviso = txt(a.aviso, CONFIG.aviso);
-  if (a.anuncio) CONFIG.anuncio = { activo: !!a.anuncio.activo, texto: txt(a.anuncio.texto, '') };
+  // Los objetos se actualizan «en su sitio» (Object.assign): así los módulos que ya los tenían leídos ven los datos nuevos
+  if (a.anuncio) Object.assign(CONFIG.anuncio, { activo: !!a.anuncio.activo, texto: txt(a.anuncio.texto, '') });
   if (typeof a.aceptarPedidos === 'boolean') CONFIG.aceptarPedidos = a.aceptarPedidos;
   CONFIG.mensajeCerrado = txt(a.mensajeCerrado, CONFIG.mensajeCerrado);
   CONFIG.horario = txt(a.horario, CONFIG.horario);
@@ -45,12 +46,12 @@ function aplicar(a) {
   CONFIG.senal = Math.min(100, Math.max(0, num(a.senal, CONFIG.senal)));
   CONFIG.comision = Math.min(100, Math.max(0, num(a.comision, CONFIG.comision)));
   CONFIG.urgente = Math.min(2, Math.max(0, num(a.urgente, CONFIG.urgente)));
-  if (a.pagos) CONFIG.pagos = { ...CONFIG.pagos, ...a.pagos };
+  if (a.pagos) Object.assign(CONFIG.pagos, Object.fromEntries(['bizum', 'iban', 'titular'].filter(k => typeof a.pagos[k] === 'string').map(k => [k, a.pagos[k].trim()])));
   CONFIG.trustpilot = txt(a.trustpilot, CONFIG.trustpilot);
-  if (a.bienvenida) CONFIG.bienvenida = { activo: !!a.bienvenida.activo, codigo: txt(a.bienvenida.codigo, '').toUpperCase() || CONFIG.bienvenida.codigo, pct: Math.min(100, Math.max(1, num(a.bienvenida.pct, CONFIG.bienvenida.pct))) };
-  if (a.videos) CONFIG.videos = { precio: Math.max(0, num(a.videos.precio, CONFIG.videos.precio)), bonus: Math.max(0, num(a.videos.bonus, CONFIG.videos.bonus)), visitas: Math.max(0, num(a.videos.visitas, CONFIG.videos.visitas)), maxMes: Math.max(1, num(a.videos.maxMes, CONFIG.videos.maxMes)) };
-  if (a.redes) CONFIG.redes = { ...CONFIG.redes, ...a.redes };
-  if (a.asistente) CONFIG.asistente = { ...CONFIG.asistente, activo: a.asistente.activo !== false, saludo: txt(a.asistente.saludo, CONFIG.asistente.saludo) || CONFIG.asistente.saludo };
+  if (a.bienvenida) Object.assign(CONFIG.bienvenida, { activo: !!a.bienvenida.activo, codigo: txt(a.bienvenida.codigo, '').toUpperCase() || CONFIG.bienvenida.codigo, pct: Math.min(100, Math.max(1, num(a.bienvenida.pct, CONFIG.bienvenida.pct))) });
+  if (a.videos) Object.assign(CONFIG.videos, { precio: Math.max(0, num(a.videos.precio, CONFIG.videos.precio)), bonus: Math.max(0, num(a.videos.bonus, CONFIG.videos.bonus)), visitas: Math.max(0, num(a.videos.visitas, CONFIG.videos.visitas)), maxMes: Math.max(1, num(a.videos.maxMes, CONFIG.videos.maxMes)) });
+  if (a.redes) Object.assign(CONFIG.redes, a.redes);
+  if (a.asistente) Object.assign(CONFIG.asistente, { activo: a.asistente.activo !== false, saludo: txt(a.asistente.saludo, CONFIG.asistente.saludo) || CONFIG.asistente.saludo });
   PLANES.forEach(p => {
     const o = a.planes?.[p.id];
     if (!o) return;

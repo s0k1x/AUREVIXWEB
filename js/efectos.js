@@ -53,7 +53,8 @@ function scroll() {
       const max = document.documentElement.scrollHeight - innerHeight;
       barra.style.setProperty('--p', max > 0 ? Math.min(1, y / max) : 0);
       const menuAbierto = h?.classList.contains('open') || document.querySelector('.user-menu.open');
-      if (h && !menuAbierto) h.classList.toggle('hide', y > ultimo && y > 160);
+      // En el móvil la cabecera no se esconde: en el iPhone dejaba ver la página por detrás de la hora
+      if (h && !menuAbierto) h.classList.toggle('hide', innerWidth > 640 && y > ultimo && y > 160);
       ultimo = y;
       pend = false;
     });
