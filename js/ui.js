@@ -141,14 +141,14 @@ document.addEventListener('input', e => e.target.closest?.('.fc, .field')?.class
 
 /** Tarjeta de marca animada */
 // «AurevixWeb» con «Web» en verde, como en el logotipo
-export const marcaHTML = () => { const m = esc(CONFIG.marca); return /web$/i.test(m) ? `${m.slice(0, -3)}<em class="marca-web">${m.slice(-3)}</em>` : m; };
+export const marcaHTML = () => `<img class="wordmark" src="icons/nombre.png" alt="${esc(CONFIG.marca)}" width="190" height="19">`;
 export const tarjetaMarca = (cls = '') => `
   <div class="brand-card ${cls}" tabindex="0" aria-label="${esc(CONFIG.marca)}">
     <div class="border"></div>
     <div class="content">
       <div class="logo">
-        <div class="logo1"><img src="icons/logo-a.png" alt="" style="width:60%;height:auto"></div>
-        <div class="logo2">${esc(CONFIG.marca)}</div>
+        <div class="logo1"><img src="icons/logo-a.png" alt=""></div>
+        <div class="logo2"><img src="icons/nombre.png" alt="${esc(CONFIG.marca)}"></div>
         <span class="trail"></span>
       </div>
       <span class="logo-bottom-text">${esc(CONFIG.eslogan.split(' ').slice(0, 2).join(' '))}</span>

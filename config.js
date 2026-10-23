@@ -5,12 +5,13 @@ export const CONFIG = {
   marca: 'AurevixWeb',                       // el nombre de tu marca (cuando lo tengas)
   eslogan: 'Webs profesionales para tu negocio',
   whatsapp: '34600000000',                  // con prefijo 34, sin + ni espacios
-  email: 'hola@tudominio.com',
+  email: 'hola@tudominio.com',              // cuando el dominio esté activo y tengas buzón: 'hola@aurevixweb.es'
+  dominio: 'aurevixweb.es',                 // reservado; aún no apunta a la web (ver LEEME.md, punto 12)
   senal: 50,                                // % que se paga al empezar
   comision: 30,                             // % que se lleva el vendedor por cada web que venda
 
   // Emails que entran como PROPIETARIO (acceso total al panel)
-  propietarios: ['tuemail@gmail.com'],
+  propietarios: ['senorsevillamario@gmail.com'],
 
   /* FORMAS DE PAGO: deja en '' las que no quieras mostrar
      · bizum y transferencia: gratis, tú confirmas el pago en el panel
@@ -44,8 +45,8 @@ export const CONFIG = {
   // Los encuentras en Supabase → Project Settings → API (ver LEEME.md).
   // Mientras estén vacíos, la web funciona en MODO DEMO (datos solo en este navegador).
   supabase: {
-    url: '',                                // ej: 'https://abcdefgh.supabase.co'
-    anonKey: ''                             // la clave "anon public" (es pública, no pasa nada por ponerla aquí)
+    url: 'https://jmmwuiuhwxgwnyqectcb.supabase.co',
+    anonKey: 'sb_publishable_FxFlpmkSWOWTxMEB-e56kQ_QdcwxAEj'                             // la clave "anon public" (es pública, no pasa nada por ponerla aquí)
   },
 
   // Asistente de la web (chat de dudas y "Te ayudo a elegir")

@@ -2,12 +2,12 @@
 --  BASE DE DATOS DE LA WEB (Supabase)
 --  Cómo usarlo: Supabase → SQL Editor → New query → pega todo
 --  este archivo → Run. Solo hay que hacerlo una vez.
---  Antes, cambia tuemail@gmail.com (abajo) por tu email.
+--  Antes, cambia senorsevillamario@gmail.com (abajo) por tu email.
 -- ==========================================================
 
 -- Propietarios: acceso total al panel
 create table if not exists public.propietarios (email text primary key);
-insert into public.propietarios (email) values ('tuemail@gmail.com') on conflict do nothing;
+insert into public.propietarios (email) values ('senorsevillamario@gmail.com') on conflict do nothing;
 
 -- Perfiles de usuario (uno por cuenta)
 create table if not exists public.perfiles (

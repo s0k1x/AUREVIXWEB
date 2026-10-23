@@ -270,4 +270,6 @@ dialog.dlg::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit
 /* Logotipo AurevixWeb */
 .logo-img{width:34px;height:34px;object-fit:contain;flex:none;transition:transform .5s var(--e-spring,ease)}
 .logo:hover .logo-img{transform:rotate(-8deg) scale(1.06)}
-.marca-web{font-style:normal;color:var(--accent)}
+.wordmark{height:15px;width:auto;max-width:100%;display:block}
+.logo .wordmark{margin-top:1px}
+@media(max-width:380px){.wordmark{height:13px}}

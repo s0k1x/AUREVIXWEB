@@ -139,3 +139,19 @@ Solo aparecen las formas de pago que rellenes en `config.js → pagos`:
 ## 11. Opiniones y términos
 - Cuando la web está publicada, el cliente ve «Valorar el servicio». Las opiniones no salen en la web hasta que las apruebas en *Panel → Reseñas*.
 - `terminos.html` es una **plantilla orientativa**. Rellena `config.js → legal` y revísala con un profesional antes de publicar.
+
+## 12. Poner tu dominio (aurevixweb.es) — preparado, para más adelante
+La web no necesita cambios de código: se adapta sola a la dirección en la que esté publicada.
+Cuando quieras activarlo, en este orden (si cambias el orden, la web puede dejar de abrir):
+
+1. **DNS del dominio** (en tu proveedor, apartado de zona DNS). Para GitHub Pages:
+   - 4 registros **A** en `@`: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+   - 1 registro **CNAME** en `www` → `s0k1x.github.io`
+   Espera entre unos minutos y unas horas.
+2. **GitHub → Settings → Pages → Custom domain**: escribe `aurevixweb.es`, guarda y marca **Enforce HTTPS** cuando aparezca.
+   (GitHub crea el archivo `CNAME` solo; no lo añadas a mano antes.)
+3. **Supabase → Authentication → URL Configuration**: cambia *Site URL* a `https://aurevixweb.es` y añade en *Redirect URLs* `https://aurevixweb.es/**` (deja también la de github.io).
+4. **Google Cloud → tu cliente OAuth → Orígenes autorizados de JavaScript**: añade `https://aurevixweb.es`.
+   (El URI de redireccionamiento sigue siendo el de Supabase; no cambia.)
+5. En `config.js` cambia `email` por tu correo del dominio y sube `VERSION` en `sw.js`.
+6. En `index.html` pon la imagen para compartir con dirección completa: `https://aurevixweb.es/icons/og.png`.
