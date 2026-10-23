@@ -18,7 +18,11 @@ export const catalogo = () => ({
   marca: CONFIG.marca, senal: CONFIG.senal, urgente: CONFIG.urgente, email: CONFIG.email, contacto: 'Solo por correo electrónico o desde el formulario de contacto de la web. No hay WhatsApp ni teléfono.', horario: CONFIG.horario, respuesta: CONFIG.respuesta, aceptaPedidos: CONFIG.aceptarPedidos,
   planes: planesActivos().map(({ id, nombre, precio, entrega, desc, incluye, plantillas }) => ({ id, nombre, precio, entrega, desc, incluye, plantillas })),
   extras: extrasActivos().map(({ id, nombre, precio, mensual, desc }) => ({ id, nombre, precio, mensual: !!mensual, desc })),
-  plantillas: PLANTILLAS.map(({ id, nombre, sector, desc }) => ({ id, nombre, sector, desc }))
+  plantillas: PLANTILLAS.map(({ id, nombre, sector, desc }) => ({ id, nombre, sector, desc })),
+  notas: [
+    CONFIG.bienvenida?.activo ? `Descuento de bienvenida: ${CONFIG.bienvenida.pct} % en la primera web de cada cliente con el código ${CONFIG.bienvenida.codigo}; se aplica al revisar el pedido.` : 'Ahora mismo no hay descuento de bienvenida.',
+    `Trabaja con nosotros: comerciales con un ${CONFIG.comision} % de comisión por web vendida, y creadores de vídeo con ${CONFIG.videos?.precio ?? 15} € por vídeo aprobado (+${CONFIG.videos?.bonus ?? 25} € si supera ${CONFIG.videos?.visitas ?? 10000} visualizaciones en 14 días, máximo ${CONFIG.videos?.maxMes ?? 12} vídeos pagados al mes).`
+  ]
 });
 
 const sinTildes = t => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -83,7 +87,9 @@ function respuestaLocal(texto) {
   if (tiene('whatsapp', 'telefono', 'llamar', 'contacto', 'contactar', 'correo', 'email', 'hablar con')) return `Atendemos por correo en ${CONFIG.email} y desde el formulario de contacto de la web. Si ya eres cliente, escríbenos en la pestaña «Mensajes» de tu proyecto. ${CONFIG.respuesta}.`;
   if (tiene('archivo', 'foto', 'logo', 'subir', 'enviar contenido')) return 'Desde «Mis proyectos» puedes subir fotos, logotipos y documentos en la pestaña «Archivos» de tu proyecto.';
   if (tiene('factura', 'recibo', 'justificante')) return 'En «Mis proyectos», pestaña «Pagos», puedes descargar el recibo de cada pago. Si necesitas factura a nombre de tu empresa, añade tus datos fiscales en «Ajustes → Facturación».';
-  if (tiene('trabaj', 'comercial', 'empleo', 'vacante', 'comision')) return `Buscamos comerciales con un ${CONFIG.comision} % de comisión por cada web vendida. Tienes las condiciones y el formulario en la página «Trabaja con nosotros».`;
+  if (tiene('video', 'tiktok', 'creador', 'contenido', 'influencer')) return `Pagamos ${CONFIG.videos?.precio ?? 15} € por cada vídeo aprobado sobre nuestras webs (+${CONFIG.videos?.bonus ?? 25} € si supera las ${(CONFIG.videos?.visitas ?? 10000).toLocaleString('es-ES')} visualizaciones), y además el ${CONFIG.comision} % si alguien compra desde tu enlace. Tienes las condiciones en «Trabaja con nosotros».`;
+  if (tiene('descuento', 'cupon', 'oferta', 'primera')) return CONFIG.bienvenida?.activo ? `En tu primera web tienes un ${CONFIG.bienvenida.pct} % de descuento con el código ${CONFIG.bienvenida.codigo}. Lo aplicas al revisar el pedido, antes de confirmar.` : 'Si tienes un código de descuento, lo puedes aplicar al revisar tu pedido, antes de confirmar.';
+  if (tiene('trabaj', 'comercial', 'empleo', 'vacante', 'comision')) return `Buscamos comerciales con un ${CONFIG.comision} % de comisión por cada web vendida, y creadores de vídeo con pago fijo por vídeo. Tienes las condiciones y el formulario en la página «Trabaja con nosotros».`;
   if (tiene('precio', 'cuesta', 'cuanto vale', 'tarifa', 'presupuesto', 'barato', 'caro')) return `Los precios de partida son: ${desde}. En el cuestionario puedes añadir extras y ves el total antes de confirmar.`;
   if (tiene('tarda', 'plazo', 'cuando', 'dias', 'entrega', 'rapido', 'urgente')) return `Los plazos van de ${PLANES[0].entrega} para una landing page a ${plan('tienda')?.entrega || '2 semanas'} para una tienda online. Si tienes prisa, la entrega urgente añade un ${Math.round(CONFIG.urgente * 100)} % al precio base.`;
   if (tiene('pago', 'pagar', 'bizum', 'transferencia', 'tarjeta', 'paypal', 'senal')) return `Se abona el ${CONFIG.senal} % al empezar y el resto cuando apruebas la web. Puedes pagar por Bizum, transferencia u otros métodos que aparecen al finalizar el pedido.`;

@@ -17,7 +17,7 @@ await arrancar('panel');
 const body = $('#pnBody');
 const tabsEl = $('#tabs');
 let U = null;
-let datos = { pedidos: [], cands: [], usuarios: [], resenas: [], tickets: [] };
+let datos = { pedidos: [], cands: [], usuarios: [], resenas: [], tickets: [], videos: [] };
 let ccoTP = ''; // dirección privada de invitaciones de Trustpilot (solo propietario)
 let tab = '';
 let filtro = { estado: 'todos', q: '', ocultar: false };
@@ -44,8 +44,8 @@ store.alCambiarUsuario(async u => {
   $('#pnHello').innerHTML = `Hola, ${esc(u.name.split(' ')[0])} <span class="saludo">${icono('hand')}</span>`;
   $('#pnRefresh').hidden = false;
   const tabs = u.role === 'owner'
-    ? [['resumen', 'Resumen', 'chart'], ['pedidos', 'Pedidos', 'bag'], ['clientes', 'Clientes', 'users'], ['soporte', 'Soporte', 'help'], ['agenda', 'Agenda', 'calendar'], ['actividad', 'Actividad', 'history'], ['candidaturas', 'Candidaturas', 'briefcase'], ['resenas', 'Reseñas', 'star'], ['equipo', 'Equipo', 'award']]
-    : [['mios', 'Mis encargos', 'laptop'], ['agenda', 'Agenda', 'calendar'], ['disponibles', 'Disponibles', 'inbox'], ['soporte', 'Soporte', 'help'], ['ventas', 'Mis ventas', 'euro'], ['ranking', 'Ranking', 'trophy'], ['historial', 'Historial', 'folder']];
+    ? [['resumen', 'Resumen', 'chart'], ['pedidos', 'Pedidos', 'bag'], ['clientes', 'Clientes', 'users'], ['soporte', 'Soporte', 'help'], ['agenda', 'Agenda', 'calendar'], ['actividad', 'Actividad', 'history'], ['candidaturas', 'Candidaturas', 'briefcase'], ['videos', 'Vídeos', 'video'], ['resenas', 'Reseñas', 'star'], ['equipo', 'Equipo', 'award']]
+    : [['mios', 'Mis encargos', 'laptop'], ['agenda', 'Agenda', 'calendar'], ['disponibles', 'Disponibles', 'inbox'], ['soporte', 'Soporte', 'help'], ['ventas', 'Mis ventas', 'euro'], ['videos', 'Mis vídeos', 'video'], ['ranking', 'Ranking', 'trophy'], ['historial', 'Historial', 'folder']];
   const pedida = location.hash.slice(1);
   const pedidoHash = pedida.startsWith('pedido-') ? pedida.slice(7) : '';
   tab = tabs.some(t => t[0] === pedida) ? pedida : pedidoHash ? (u.role === 'owner' ? 'pedidos' : 'mios') : tabs[0][0];
@@ -90,7 +90,10 @@ async function cargar(silencioso = false) {
       owner ? store.todasLasResenas() : [],
       store.todosLosTickets().catch(() => [])
     ]);
-    datos = { pedidos, usuarios, cands, resenas, tickets };
+    // Los vídeos van aparte: si la tabla aún no existe (falta ejecutar el SQL), el panel sigue funcionando
+    let videos = [];
+    try { videos = owner ? await store.todosLosVideos() : await store.misVideos(); } catch (e) { console.warn('Vídeos no disponibles', e.message); }
+    datos = { pedidos, usuarios, cands, resenas, tickets, videos };
     if (owner) { try { ccoTP = (await store.leerAjustes('trustpilot'))?.cco || ''; } catch { ccoTP = ''; } }
     if (silencioso && body.querySelector('input:focus, textarea:focus')) { badges(); return; }
     pintar();
@@ -123,7 +126,8 @@ function badges() {
     agenda: datos.pedidos.filter(p => (U.role === 'owner' || p.asignado === U.uid) && (diasRestantes(p) ?? 1) < 0).length,
     ventas: U.role === 'worker' ? porPagar(U.uid).length : 0,
     equipo: U.role === 'owner' ? trabajadores().filter(w => porPagar(w.uid).length).length : 0,
-    disponibles: datos.pedidos.filter(p => !p.asignado && p.estado === 'nuevo').length
+    disponibles: datos.pedidos.filter(p => !p.asignado && p.estado === 'nuevo').length,
+    videos: U.role === 'owner' ? datos.videos.filter(v => v.estado === 'pendiente').length : 0
   };
   $$('[data-badge]').forEach(b => { const v = n[b.dataset.badge]; b.textContent = v || ''; b.hidden = !v; });
   $$('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
@@ -131,7 +135,7 @@ function badges() {
 
 function pintar() {
   badges();
-  const vistas = { resumen, pedidos: vistaPedidos, candidaturas, resenas, equipo, ventas, mios, disponibles, historial, clientes, soporte, agenda, actividad, ranking };
+  const vistas = { resumen, pedidos: vistaPedidos, candidaturas, resenas, equipo, ventas, mios, disponibles, historial, clientes, soporte, agenda, actividad, ranking, videos: U.role === 'owner' ? videosOwner : misVideos };
   (vistas[tab] || resumen)();
   etiquetas(body);
   contar(body);
@@ -370,6 +374,137 @@ function candidaturas() {
     </article>`;
   }).join('')}</div>` : vacio('inbox', 'Sin candidaturas', 'Cuando alguien rellene «Trabaja con nosotros» aparecerá aquí.');
 }
+
+/* ==========================================================
+   VÍDEOS DE LOS CREADORES (pago fijo por vídeo)
+   ========================================================== */
+const VID = () => CONFIG.videos || { precio: 15, bonus: 25, visitas: 10000, maxMes: 12 };
+const EST_VID = { pendiente: ['Por revisar', 'p-pend'], aprobado: ['Por cobrar', 'p-new'], pagado: ['Pagado', 'p-done'], rechazado: ['No aprobado', 'p-off'] };
+const importeVideo = v => (v.estado === 'aprobado' || v.estado === 'pagado') ? (+v.importe || VID().precio) + (v.bonus ? (+v.importeBonus || VID().bonus) : 0) : 0;
+const vidEsteMes = t => { const d = new Date(t), h = new Date(); return d.getMonth() === h.getMonth() && d.getFullYear() === h.getFullYear(); };
+const vidMes = (lista, uid) => lista.filter(v => (!uid || v.uid === uid) && vidEsteMes(v.createdAt) && v.estado !== 'rechazado');
+const redDe = url => /tiktok/i.test(url) ? 'TikTok' : /instagram/i.test(url) ? 'Instagram' : /youtu/i.test(url) ? 'YouTube' : /facebook|fb\.watch/i.test(url) ? 'Facebook' : 'Otra red';
+const enlaceSeguro = url => /^https?:\/\//i.test(url || '') ? url : '';
+const filaVideo = (v, owner) => {
+  const [txt, cls] = EST_VID[v.estado] || ['—', ''];
+  const url = enlaceSeguro(v.url);
+  return `<article class="vid card">
+    <div class="vid-h">
+      <span class="vid-ic">${icono('play')}</span>
+      <div class="vid-t"><b>${owner ? esc(v.autor || 'Creador') + ' · ' : ''}${esc(v.red || redDe(v.url))}</b><small>${haceCuanto(v.createdAt)}${v.visitas ? ` · ${(+v.visitas).toLocaleString('es-ES')} visualizaciones` : ''}</small></div>
+      <span class="pill ${cls}">${txt}</span>
+    </div>
+    ${v.nota ? `<p class="vid-nota">${esc(v.nota)}</p>` : ''}
+    <div class="vid-f">
+      ${url ? `<a class="btn btn-sm btn-ghost" href="${esc(url)}" target="_blank" rel="noopener">${icono('external')}<span>Ver vídeo</span></a>` : ''}
+      ${importeVideo(v) ? `<b class="vid-imp">${euros(importeVideo(v))}${v.bonus ? ' <small>con bonus</small>' : ''}</b>` : ''}
+      ${owner && v.estado === 'pendiente' ? `<button class="btn btn-sm btn-primary" data-vid="aprobar" data-id="${v.id}">${icono('check')}<span>Aprobar ${euros(VID().precio)}</span></button><button class="btn btn-sm btn-ghost" data-vid="rechazar" data-id="${v.id}"><span>Rechazar</span></button>` : ''}
+      ${owner && v.estado === 'aprobado' ? `<button class="btn btn-sm btn-ghost" data-vid="bonus" data-id="${v.id}">${icono('flame')}<span>${v.bonus ? 'Quitar bonus' : `Bonus +${euros(VID().bonus)}`}</span></button><button class="btn btn-sm btn-primary" data-vid="pagar" data-id="${v.id}">${icono('euro')}<span>Marcar pagado</span></button>` : ''}
+      ${(owner || v.estado === 'pendiente') ? `<button class="icon-btn sm" data-vid="borrar" data-id="${v.id}" aria-label="Borrar vídeo">${icono('trash')}</button>` : ''}
+    </div>
+  </article>`;
+};
+
+/* Creador: enviar vídeos y ver lo que cobra */
+function misVideos() {
+  const C = VID(), V = datos.videos;
+  const mes = vidMes(V).length;
+  const porCobrar = V.filter(v => v.estado === 'aprobado').reduce((a, v) => a + importeVideo(v), 0);
+  const cobrado = V.filter(v => v.estado === 'pagado').reduce((a, v) => a + importeVideo(v), 0);
+  const enlace = new URL(`index.html?ref=${encodeURIComponent(U.uid)}`, location.href).href;
+  const ideas = [
+    ['Antes y después', `Enseña la web antigua (o la ficha de Google) de un negocio y cómo quedaría con un diseño de ${CONFIG.marca}.`],
+    ['Web en 30 segundos', 'Graba la pantalla recorriendo uno de nuestros diseños de ejemplo con el nombre de un negocio real de tu zona.'],
+    ['¿Cuánto cuesta una web?', `Explica los precios cerrados (desde ${euros(Math.min(...PLANES.map(p => p.precio)))}) y qué incluye cada tipo de web.`],
+    ['Errores de una web', '3 fallos que hacen perder clientes (no se ve bien en el móvil, sin botón de contacto, tarda en cargar) y cómo los solucionamos.']
+  ];
+  body.innerHTML = `
+    <div class="card vid-info">
+      <span class="vid-big">${icono('video')}</span>
+      <div><h3>Cobras ${euros(C.precio)} por cada vídeo aprobado</h3>
+      <p class="muted">Y <b>+${euros(C.bonus)}</b> si supera las <b>${C.visitas.toLocaleString('es-ES')} visualizaciones</b> en 14 días. Hasta ${C.maxMes} vídeos pagados al mes. Si alguien compra desde tu enlace, además te llevas el ${PCT} %.</p></div>
+    </div>
+    <div class="kpis k4">
+      <div class="kpi"><small>Este mes</small><b>${mes} / ${C.maxMes}</b><span>vídeos enviados</span></div>
+      <div class="kpi"><small>Por revisar</small><b>${V.filter(v => v.estado === 'pendiente').length}</b><span>esperando aprobación</span></div>
+      <div class="kpi"><small>Por cobrar</small><b>${euros(porCobrar)}</b><span>vídeos aprobados</span></div>
+      <div class="kpi"><small>Ya cobrado</small><b>${euros(cobrado)}</b><span>en total</span></div>
+    </div>
+    <form class="card vid-form" id="vidForm" novalidate>
+      <div class="card-h"><h3>Enviar un vídeo publicado</h3></div>
+      ${campo({ id: 'vUrl', name: 'url', label: 'Enlace del vídeo', type: 'url', required: true, attrs: 'inputmode="url" autocapitalize="off" placeholder="https://www.tiktok.com/@tu_usuario/video/…"' })}
+      ${campo({ id: 'vVisitas', name: 'visitas', label: 'Visualizaciones ahora (opcional)', type: 'number', attrs: 'min="0" inputmode="numeric"' })}
+      ${campo({ id: 'vNota', name: 'nota', label: 'Nota para nosotros (opcional)', type: 'textarea', attrs: 'maxlength="300"' })}
+      <p class="muted vid-req">${icono('check')} Vídeo propio de 20 a 60 segundos, publicado en tu cuenta, que nombre a ${CONFIG.marca} y con tu enlace en la bio o en la descripción.</p>
+      <button class="btn btn-primary" type="submit" id="vidSend" ${mes >= C.maxMes ? 'disabled' : ''}>${icono('send')}<span>${mes >= C.maxMes ? 'Ya has llegado al máximo de este mes' : 'Enviar para revisar'}</span></button>
+    </form>
+    <div class="vid-lista">${V.map(v => filaVideo(v, false)).join('') || vacio('video', 'Aún no has enviado vídeos', 'Publica tu primer vídeo y pega aquí el enlace para que lo revisemos.')}</div>
+    <div class="card kit">
+      <div class="card-h"><h3>Ideas de vídeos que funcionan</h3><span class="muted" style="font-size:13px">Pon tu enlace en la bio</span></div>
+      <div class="enlace-box"><code>${esc(enlace)}</code><button class="btn btn-sm btn-primary" data-copy="${esc(enlace)}"><span>Copiar enlace</span></button></div>
+      <div class="kit-grid">${ideas.map(([t, txt]) => `<div class="kit-it"><b>${t}</b><p>${esc(txt)}</p></div>`).join('')}</div>
+    </div>`;
+  etiquetas(body);
+  $('#vidForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const url = $('#vUrl').value.trim();
+    if (!/^https?:\/\/\S+\.\S+/i.test(url)) { $('#vUrl').closest('.fc').classList.add('error'); return toast('Pega el enlace completo del vídeo (empieza por https://)', 'err'); }
+    if (datos.videos.some(v => v.url === url)) return toast('Ese vídeo ya lo habías enviado', 'err');
+    const btn = $('#vidSend'); ocupado(btn, true);
+    try {
+      const v = await store.enviarVideo({ url, red: redDe(url), visitas: Math.max(0, +$('#vVisitas').value || 0), nota: $('#vNota').value.trim() });
+      datos.videos = [v, ...datos.videos];
+      toast('Vídeo enviado. Te avisamos cuando lo revisemos.', 'ok');
+      misVideos();
+    } catch (err) { toast(err.message, 'err'); ocupado(btn, false); }
+  });
+}
+
+/* Propietario: revisar, aprobar y pagar */
+let fVid = 'pendiente';
+function videosOwner() {
+  const C = VID(), V = datos.videos;
+  const lista = fVid === 'todos' ? V : V.filter(v => v.estado === fVid);
+  const porPagar = V.filter(v => v.estado === 'aprobado');
+  const porCreador = Object.values(porPagar.reduce((m, v) => { (m[v.uid] ||= { uid: v.uid, autor: v.autor, n: 0, total: 0 }); m[v.uid].n++; m[v.uid].total += importeVideo(v); return m; }, {}));
+  const pagadoMes = V.filter(v => v.estado === 'pagado' && vidEsteMes(v.pagadoEn || v.createdAt)).reduce((a, v) => a + importeVideo(v), 0);
+  body.innerHTML = `
+    <div class="kpis k4">
+      <div class="kpi"><small>Por revisar</small><b>${V.filter(v => v.estado === 'pendiente').length}</b><span>vídeos nuevos</span></div>
+      <div class="kpi"><small>Por pagar</small><b>${euros(porPagar.reduce((a, v) => a + importeVideo(v), 0))}</b><span>${porPagar.length} vídeos aprobados</span></div>
+      <div class="kpi"><small>Pagado este mes</small><b>${euros(pagadoMes)}</b><span>en vídeos</span></div>
+      <div class="kpi"><small>Tarifa</small><b>${euros(C.precio)}</b><span>+${euros(C.bonus)} si pasa de ${C.visitas.toLocaleString('es-ES')} vis.</span></div>
+    </div>
+    ${porCreador.length ? `<div class="card vid-pagos"><div class="card-h"><h3>Por pagar a cada creador</h3></div>${porCreador.map(c => `
+      <div class="vid-pago"><span>${avatar({ name: c.autor || '?' })}<b>${esc(c.autor || 'Creador')}</b><small>${c.n} vídeo${c.n === 1 ? '' : 's'}</small></span>
+      <b>${euros(c.total)}</b><button class="btn btn-sm btn-ghost" data-cobro="${c.uid}">${icono('bank')}<span>Datos de cobro</span></button><button class="btn btn-sm btn-primary" data-vid="pagartodo" data-id="${c.uid}">${icono('euro')}<span>Pagar todo</span></button></div>`).join('')}</div>` : ''}
+    <div class="seg vid-seg" role="tablist">${[['pendiente', 'Por revisar'], ['aprobado', 'Por pagar'], ['pagado', 'Pagados'], ['rechazado', 'Rechazados'], ['todos', 'Todos']].map(([k, t]) => `<button type="button" data-fvid="${k}" class="${fVid === k ? 'on' : ''}">${t}</button>`).join('')}</div>
+    <div class="vid-lista">${lista.map(v => filaVideo(v, true)).join('') || vacio('video', fVid === 'pendiente' ? 'No hay vídeos por revisar' : 'Nada por aquí', 'Los creadores envían sus vídeos desde su panel, en «Mis vídeos».')}</div>`;
+}
+
+body.addEventListener('click', async e => {
+  const f = e.target.closest('[data-fvid]');
+  if (f) { fVid = f.dataset.fvid; return videosOwner(); }
+  const b = e.target.closest('[data-vid]');
+  if (!b) return;
+  const { vid: acc, id } = b.dataset, C = VID();
+  const v = datos.videos.find(x => x.id === id);
+  const hecho = async (fn, msg) => { ocupado(b, true); try { await fn(); toast(msg, 'ok'); await cargar(true); pintar(); } catch (err) { toast(err.message, 'err'); ocupado(b, false); } };
+  if (acc === 'aprobar') {
+    if (vidMes(datos.videos, v.uid).filter(x => x.estado === 'aprobado' || x.estado === 'pagado').length >= C.maxMes && !confirm(`${v.autor} ya tiene ${C.maxMes} vídeos aprobados este mes. ¿Aprobar igualmente?`)) return;
+    return hecho(() => store.actualizarVideo(id, { estado: 'aprobado', importe: C.precio, aprobadoEn: Date.now() }), `Vídeo aprobado: ${euros(C.precio)} por pagar`);
+  }
+  if (acc === 'rechazar') return hecho(() => store.actualizarVideo(id, { estado: 'rechazado' }), 'Vídeo rechazado');
+  if (acc === 'bonus') return hecho(() => store.actualizarVideo(id, { bonus: !v.bonus, importeBonus: C.bonus }), v.bonus ? 'Bonus quitado' : `Bonus de ${euros(C.bonus)} añadido`);
+  if (acc === 'pagar') return hecho(() => store.actualizarVideo(id, { estado: 'pagado', pagadoEn: Date.now() }), 'Vídeo marcado como pagado');
+  if (acc === 'pagartodo') {
+    const vs = datos.videos.filter(x => x.uid === id && x.estado === 'aprobado');
+    const total = vs.reduce((a, x) => a + importeVideo(x), 0);
+    if (!confirm(`¿Marcar como pagados ${vs.length} vídeos de ${vs[0]?.autor || 'este creador'} (${euros(total)})?`)) return;
+    return hecho(() => Promise.all(vs.map(x => store.actualizarVideo(x.id, { estado: 'pagado', pagadoEn: Date.now() }))), `${euros(total)} marcados como pagados`);
+  }
+  if (acc === 'borrar') { if (!confirm('¿Borrar este vídeo?')) return; return hecho(() => store.borrarVideo(id), 'Vídeo borrado'); }
+});
 
 /* ---------- PROPIETARIO: Reseñas ---------- */
 function resenas() {

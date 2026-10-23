@@ -15,6 +15,7 @@ import { botonPago, abrirPago, abrirResena, animarYPagar } from './pago.js';
 import { recomendar, iniciarChat } from './asistente.js';
 import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, estadoParaEtapa, indiceEtapa, dominioTexto, fechaEntrega, plazoTexto, plazoClase, conHistorial, lineaTiempoHTML } from './proyecto.js';
 import { importeSenal, importeResto } from './pago.js';
+import { confeti } from './efectos.js';
 
 /* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor (30 días) */
 const REF = 'tm_ref';
@@ -122,6 +123,15 @@ $('#heroAviso span').textContent = CONFIG.aviso;
 if (!CONFIG.aceptarPedidos) $('#heroAviso').classList.add('cerrado');
 
 const textoComprar = () => (CONFIG.aceptarPedidos ? 'Comprar' : 'Lista de espera');
+/* Descuento de bienvenida (primera web) */
+const bvActivo = () => !!(CONFIG.bienvenida?.activo && CONFIG.bienvenida.codigo && CONFIG.aceptarPedidos);
+const bienvenidaOK = () => bvActivo() && !W?.sinBienvenida;
+if (bvActivo()) {
+  $('#planes').insertAdjacentHTML('beforebegin', `<div class="bv-banda reveal">
+    <span class="bv-ic">${icono('gift')}</span>
+    <div><b>−${CONFIG.bienvenida.pct} % en tu primera web</b><span>Usa el código <button type="button" class="bv-cod" data-copy="${esc(CONFIG.bienvenida.codigo)}" aria-label="Copiar código ${esc(CONFIG.bienvenida.codigo)}">${esc(CONFIG.bienvenida.codigo)} ${icono('copy')}</button> al revisar tu pedido.</span></div>
+  </div>`);
+}
 $('#planes').innerHTML = planesActivos().map(p => `
   <article class="plan-card reveal ${p.popular ? 'popular' : ''}">
     ${p.popular ? '<span class="tag">El más pedido</span>' : ''}
@@ -129,9 +139,18 @@ $('#planes').innerHTML = planesActivos().map(p => `
     <h3>${esc(p.nombre)}</h3>
     <p class="pc-desc">${esc(p.desc)}</p>
     <div class="pc-price"><small>desde</small> ${euros(p.precio)}</div>
+    ${bvActivo() ? `<p class="pc-bv">${icono('gift')} ${euros(Math.round(p.precio * (100 - CONFIG.bienvenida.pct)) / 100)} en tu primera web</p>` : ''}
     <ul>${p.incluye.slice(0, 4).map(i => `<li>${icono('check')}${esc(i)}</li>`).join('')}</ul>
     <button class="btn ${p.popular ? 'btn-dark' : 'btn-ghost btn-fill'} w100" data-comprar="${p.id}"><span>${textoComprar()}</span>${icono('arrow')}</button>
   </article>`).join('');
+
+/* Datos de la portada al día con los precios y la señal de Ajustes */
+{
+  const minimo = Math.min(...planesActivos().map(p => p.precio));
+  const t = $$('.trust .num');
+  if (t[0] && isFinite(minimo)) { t[0].dataset.count = minimo; t[0].textContent = minimo; }
+  if (t[1]) { t[1].dataset.count = CONFIG.senal; t[1].textContent = CONFIG.senal; }
+}
 
 /* ---------- Comparativa de planes ---------- */
 $('#verComparar').addEventListener('click', e => {
@@ -390,6 +409,21 @@ let W = null;
 const BORRADOR = 'tm_borrador';
 const leerBorrador = () => { try { return JSON.parse(localStorage.getItem(BORRADOR) || 'null'); } catch { return null; } };
 const borrarBorrador = () => { try { localStorage.removeItem(BORRADOR); } catch {} };
+/* «Tienes un pedido a medias»: aviso en la portada para continuar donde lo dejó */
+function avisoBorrador() {
+  $('.medias')?.remove();
+  const b = leerBorrador();
+  const plan = b && planesActivos().find(p => p.id === b.plan);
+  if (!plan || Date.now() - b.t > 7 * 864e5 || !b.campos?.negocio || !CONFIG.aceptarPedidos) return;
+  const div = document.createElement('div');
+  div.className = 'medias';
+  div.innerHTML = `<span class="medias-ic">${icono('pen')}</span><span class="medias-t"><b>Tienes un pedido a medias</b><small>${esc(plan.nombre)} · ${esc(b.campos.negocio)}</small></span>
+    <button type="button" class="btn btn-sm btn-primary" data-comprar="${plan.id}"><span>Continuar</span></button>
+    <button type="button" class="icon-btn sm" id="mediasX" aria-label="Descartar el pedido a medias">${icono('x')}</button>`;
+  $('.hero-ctas')?.after(div);
+  $('#mediasX').addEventListener('click', () => { borrarBorrador(); div.remove(); toast('Pedido a medias descartado'); });
+}
+avisoBorrador();
 let tGuardar;
 function guardarBorrador() {
   clearTimeout(tGuardar);
@@ -667,7 +701,7 @@ function pintarResumen() {
       <div class="cupon">
         ${W.cupon
           ? `<p class="cupon-ok">${icono('tag')} Cupón <b>${esc(W.cupon.codigo)}</b> aplicado <button type="button" class="link-btn" id="cuponQuitar">Quitar</button></p>`
-          : `<details><summary>${icono('tag')} ¿Tienes un código de descuento?</summary><div class="cupon-fila"><input id="cuponIn" maxlength="30" placeholder="CÓDIGO" autocomplete="off" aria-label="Código de descuento"><button type="button" class="btn btn-sm btn-ghost" id="cuponOk">Aplicar</button></div></details>`}
+          : `${bienvenidaOK() ? `<button type="button" class="cupon-bv" id="cuponBv">${icono('gift')}<span><b>¿Es tu primera web? −${CONFIG.bienvenida.pct} %</b><small>Aplica el código ${esc(CONFIG.bienvenida.codigo)}</small></span><i>Aplicar</i></button>` : ''}<details><summary>${icono('tag')} ¿Tienes un código de descuento?</summary><div class="cupon-fila"><input id="cuponIn" maxlength="30" placeholder="CÓDIGO" autocomplete="off" aria-label="Código de descuento"><button type="button" class="btn btn-sm btn-ghost" id="cuponOk">Aplicar</button></div></details>`}
       </div>
       <div class="rs-row"><span>Entrega prevista</span><b>${esc(W.plan.entrega)}${d.urgente ? ' (urgente: antes)' : ''}</b></div>
       ${d.mensual ? `<div class="rs-row"><span>Cuota mensual</span><b>${euros(d.mensual)}/mes</b></div>` : ''}
@@ -683,8 +717,18 @@ function pintarResumen() {
     try {
       const c = await store.comprobarCupon(codigo);
       if (!c) { toast('Ese código no existe o ha caducado', 'err'); ocupado(e.currentTarget, false); return; }
-      W.cupon = { codigo: c.codigo.toUpperCase(), pct: Math.min(100, Math.max(0, +c.pct || 0)) };
+      W.cupon = { codigo: c.codigo.toUpperCase(), pct: Math.min(100, Math.max(0, +c.pct || 0)), primera: !!c.primera };
       toast(`Descuento del ${W.cupon.pct} % aplicado`, 'ok');
+      pintarResumen(); actualizarTotal();
+    } catch (err) { toast(err.message, 'err'); ocupado(e.currentTarget, false); }
+  });
+  $('#cuponBv')?.addEventListener('click', async e => {
+    ocupado(e.currentTarget, true);
+    try {
+      const c = await store.comprobarCupon(CONFIG.bienvenida.codigo);
+      if (!c) { toast('El descuento de bienvenida es solo para tu primera web', 'err'); W.sinBienvenida = true; pintarResumen(); return; }
+      W.cupon = { codigo: c.codigo.toUpperCase(), pct: Math.min(100, Math.max(0, +c.pct || 0)), primera: true };
+      toast(`¡Bienvenida! −${W.cupon.pct} % aplicado`, 'ok');
       pintarResumen(); actualizarTotal();
     } catch (err) { toast(err.message, 'err'); ocupado(e.currentTarget, false); }
   });
@@ -697,6 +741,16 @@ async function confirmarPedido() {
   const btn = $('#wizNext');
   const u = await conSesion('Inicia sesión para confirmar tu pedido y seguir su estado.');
   if (!u || !W) return;
+  // El descuento de bienvenida solo vale si es su primera web
+  if (W.cupon?.primera) {
+    let repetido = false;
+    try { repetido = await store.tienePedidos(); } catch { /* si falla, lo revisa el propietario */ }
+    if (repetido) {
+      W.cupon = null; W.sinBienvenida = true;
+      pintarResumen(); actualizarTotal();
+      return toast('El descuento de bienvenida es solo para la primera web. Hemos actualizado el total.', 'err');
+    }
+  }
   ocupado(btn, true);
   const d = datos();
   try {
@@ -718,6 +772,8 @@ async function confirmarPedido() {
 function exito(p) {
   const r = p.respuestas;
   borrarBorrador();
+  $('.medias')?.remove();
+  setTimeout(confeti, 250);
   clearTimeout(tGuardar);
   $('#wizDots').innerHTML = '';
   $('#wizFoot').hidden = true;

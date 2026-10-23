@@ -320,6 +320,44 @@ export async function actualizarCandidatura(id, cambios) {
   await cambiar('candidaturas', id, cambios);
 }
 
+/* ---------- Vídeos de los creadores (pago fijo por vídeo) ---------- */
+export async function enviarVideo(datos) {
+  const u = necesitaUsuario();
+  const v = { ...datos, uid: u.uid, autor: u.name, email: u.email, estado: 'pendiente', bonus: false, createdAt: Date.now() };
+  if (modoDemo) {
+    v.id = nuevoId();
+    local.set('videos', [v, ...local.get('videos', [])]);
+    uidsPropietariosDemo().forEach(o => avisoDemo(o, `Vídeo nuevo de ${u.name} para revisar`, '', 'video'));
+    return v;
+  }
+  return insertar('videos', v);
+}
+export async function misVideos() {
+  const u = necesitaUsuario();
+  if (modoDemo) return recientes(local.get('videos', []).filter(v => v.uid === u.uid));
+  return leer('videos', q => q.eq('uid', u.uid));
+}
+export async function todosLosVideos() {
+  necesitaUsuario();
+  if (modoDemo) return recientes(local.get('videos', []));
+  return leer('videos');
+}
+export async function actualizarVideo(id, cambios) {
+  necesitaUsuario();
+  if (modoDemo) {
+    const antes = local.get('videos', []).find(v => v.id === id);
+    local.set('videos', local.get('videos', []).map(v => (v.id === id ? { ...v, ...cambios } : v)));
+    if (antes && cambios.estado && cambios.estado !== antes.estado) avisoDemo(antes.uid, `Tu vídeo ha pasado a «${cambios.estado}»`, '', 'video');
+    return;
+  }
+  await cambiar('videos', id, cambios);
+}
+export async function borrarVideo(id) {
+  necesitaUsuario();
+  if (modoDemo) { local.set('videos', local.get('videos', []).filter(v => v.id !== id)); return; }
+  await borrar('videos', id);
+}
+
 /* ---------- Usuarios y equipo ---------- */
 export async function listarUsuarios() {
   necesitaUsuario();
@@ -473,13 +511,22 @@ export async function guardarAjustes(clave, datos) {
   if (modoDemo) { const a = local.get('ajustes', {}); a[clave] = datos; local.set('ajustes', a); return; }
   comprobar(await sb.from('ajustes').upsert({ clave, datos, actualizado: new Date().toISOString() }));
 }
+/** ¿El usuario ya tiene algún pedido (sin contar los cancelados)? Sin sesión: no */
+export async function tienePedidos() {
+  if (!usuario) return false;
+  return (await misPedidos()).some(p => p.estado !== 'cancelado');
+}
 /** Devuelve el cupón si existe y está activo (sin enseñar la lista de cupones) */
 export async function comprobarCupon(codigo) {
   codigo = String(codigo || '').trim().toUpperCase();
   if (!codigo) return null;
   if (modoDemo) {
     const hoy = new Date().toISOString().slice(0, 10);
-    return (local.get('ajustes', {}).cupones?.lista || []).find(c => c.codigo.toUpperCase() === codigo && c.activo !== false && (!c.hasta || c.hasta >= hoy)) || null;
+    const c = (local.get('ajustes', {}).cupones?.lista || []).find(c => c.codigo.toUpperCase() === codigo && c.activo !== false && (!c.hasta || c.hasta >= hoy));
+    if (c) return c;
+    const b = CONFIG.bienvenida;
+    if (b?.activo && b.codigo && b.codigo.toUpperCase() === codigo && !(await tienePedidos())) return { codigo: b.codigo, pct: b.pct, primera: true };
+    return null;
   }
   const { data, error } = await sb.rpc('cupon', { codigo });
   if (error) throw new Error(traducirError(error));

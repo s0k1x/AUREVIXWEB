@@ -165,8 +165,62 @@ export function apariciones(raiz = document) {
   });
 }
 
+/* Confeti de celebración (pedido enviado). Ligero: un canvas que se borra solo */
+export function confeti() {
+  if (reducido()) return;
+  const c = document.createElement('canvas');
+  c.className = 'confeti';
+  c.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(c);
+  const dpr = Math.min(2, devicePixelRatio || 1);
+  const W = c.width = innerWidth * dpr, H = c.height = innerHeight * dpr;
+  const x = c.getContext('2d');
+  const colores = ['#c8f560', '#ffffff', '#9fd23a', '#ffd166', '#7cc4ff'];
+  const piezas = Array.from({ length: 120 }, () => ({
+    x: W / 2 + (Math.random() - .5) * W * .3, y: H * .45,
+    vx: (Math.random() - .5) * 16 * dpr, vy: (-Math.random() * 14 - 6) * dpr,
+    r: (4 + Math.random() * 5) * dpr, a: Math.random() * 6, va: (Math.random() - .5) * .3,
+    col: colores[(Math.random() * colores.length) | 0], forma: Math.random() > .5
+  }));
+  const t0 = performance.now();
+  const paso = t => {
+    const k = (t - t0) / 2600;
+    x.clearRect(0, 0, W, H);
+    piezas.forEach(p => {
+      p.vy += .42 * dpr; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.a += p.va;
+      x.save(); x.globalAlpha = Math.max(0, 1 - k); x.translate(p.x, p.y); x.rotate(p.a); x.fillStyle = p.col;
+      p.forma ? x.fillRect(-p.r, -p.r / 2, p.r * 2, p.r) : (x.beginPath(), x.arc(0, 0, p.r / 1.6, 0, 7), x.fill());
+      x.restore();
+    });
+    k < 1 ? requestAnimationFrame(paso) : c.remove();
+  };
+  requestAnimationFrame(paso);
+}
+
+/* Botón «volver arriba» con anillo de progreso (aparece en páginas largas) */
+function arriba() {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'arriba';
+  b.setAttribute('aria-label', 'Volver arriba');
+  b.innerHTML = '<svg class="arriba-anillo" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="20"/><circle class="p" cx="22" cy="22" r="20"/></svg><svg class="arriba-f" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>';
+  document.body.appendChild(b);
+  b.addEventListener('click', () => scrollTo({ top: 0, behavior: reducido() ? 'auto' : 'smooth' }));
+  let pend = false;
+  const act = () => {
+    pend = false;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? Math.min(1, scrollY / max) : 0;
+    b.style.setProperty('--p', p);
+    b.classList.toggle('on', scrollY > innerHeight * 1.5 && max > innerHeight * 2);
+  };
+  addEventListener('scroll', () => { if (!pend) { pend = true; requestAnimationFrame(act); } }, { passive: true });
+  act();
+}
+
 export function iniciarEfectos() {
   saltar();
+  arriba();
   ondas();
   seguirRaton();
   // inclinar(); // desactivado: la inclinación 3D deformaba las tarjetas de diseños

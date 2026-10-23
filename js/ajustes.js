@@ -347,6 +347,16 @@ async function negocio() {
       <div class="row-2">${texto('bizum', 'Bizum (teléfono)', a.pagos.bizum, 'type="tel"')}${texto('titular', 'Titular de la cuenta', a.pagos.titular)}</div>
       ${texto('iban', 'IBAN', a.pagos.iban, 'autocapitalize="characters"')}
       <div class="row-2">${texto('stripe', 'Enlace de pago de Stripe', a.pagos.stripe, 'type="url"', 'https://buy.stripe.com/…')}${texto('paypal', 'Usuario de PayPal.Me', a.pagos.paypal, '', 'Solo el usuario, sin paypal.me/')}</div>`)}
+    ${bloque('Descuento de bienvenida', 'Se anuncia en la web y solo vale en la primera web de cada cliente (se comprueba al confirmar el pedido).', `
+      ${interruptor({ id: 'bvActivo', titulo: 'Ofrecer descuento en la primera compra', checked: a.bienvenida.activo })}
+      <div class="row-2">${texto('bvCodigo', 'Código', a.bienvenida.codigo, 'maxlength="30" autocapitalize="characters"')}<label class="aj-num"><span>Descuento (%)</span><input type="number" min="1" max="100" name="bvPct" value="${a.bienvenida.pct}"></label></div>`)}
+    ${bloque('Creadores de vídeo', 'Pago fijo por cada vídeo aprobado y publicado. Se muestra en «Trabaja con nosotros» y en el panel de cada creador.', `
+      <div class="aj-nums">
+        <label class="aj-num"><span>Pago por vídeo (€)</span><input type="number" min="0" step="1" name="vPrecio" value="${a.videos.precio}"></label>
+        <label class="aj-num"><span>Bonus por alcance (€)</span><input type="number" min="0" step="1" name="vBonus" value="${a.videos.bonus}"></label>
+        <label class="aj-num"><span>Visualizaciones para el bonus</span><input type="number" min="0" step="500" name="vVisitas" value="${a.videos.visitas}"></label>
+        <label class="aj-num"><span>Vídeos pagados al mes (máx.)</span><input type="number" min="1" max="100" name="vMax" value="${a.videos.maxMes}"></label>
+      </div>`)}
     ${bloque('Cupones de descuento', 'El cliente los escribe en el resumen del pedido. La lista no es visible para nadie más.', `
       <div class="cupones" id="cupones">${cupones.map(filaCupon).join('')}</div>
       <button type="button" class="btn btn-sm btn-ghost" id="addCupon">${icono('plus')}<span>Añadir cupón</span></button>`)}
@@ -365,7 +375,7 @@ async function negocio() {
     const o = ORIGINAL.config;
     await guardar({
       aviso: o.aviso, anuncio: o.anuncio, aceptarPedidos: o.aceptarPedidos, mensajeCerrado: o.mensajeCerrado, horario: o.horario, respuesta: o.respuesta, email: o.email,
-      senal: o.senal, comision: o.comision, urgente: o.urgente, pagos: o.pagos, trustpilot: o.trustpilot, redes: o.redes, asistente: { activo: o.asistente.activo, saludo: o.asistente.saludo },
+      senal: o.senal, comision: o.comision, urgente: o.urgente, pagos: o.pagos, trustpilot: o.trustpilot, bienvenida: o.bienvenida, videos: o.videos, redes: o.redes, asistente: { activo: o.asistente.activo, saludo: o.asistente.saludo },
       planes: Object.fromEntries(ORIGINAL.planes.map(p => [p.id, { precio: p.precio, entrega: p.entrega, dias: p.dias, activo: true, popular: !!p.popular }])),
       extras: Object.fromEntries(ORIGINAL.extras.map(x => [x.id, { precio: x.precio, activo: true }]))
     }, null, $('#resetNeg'));
@@ -393,6 +403,8 @@ async function negocio() {
       aceptarPedidos: $('#aceptarPedidos').checked, mensajeCerrado: v('mensajeCerrado'),
       email: v('email') || CONFIG.email, horario: v('horario'), respuesta: v('respuesta'),
       redes: { instagram: v('instagram'), tiktok: v('tiktok'), linkedin: v('linkedin') }, trustpilot: v('trustpilot'),
+      bienvenida: { activo: $('#bvActivo').checked, codigo: v('bvCodigo').toUpperCase().replace(/[^A-Z0-9_-]/g, '') || ORIGINAL.config.bienvenida.codigo, pct: Math.min(100, Math.max(1, +v('bvPct') || 10)) },
+      videos: { precio: Math.max(0, +v('vPrecio') || 0), bonus: Math.max(0, +v('vBonus') || 0), visitas: Math.max(0, +v('vVisitas') || 0), maxMes: Math.max(1, +v('vMax') || 1) },
       senal: +v('senal'), urgente: (+v('urgente')) / 100, comision: +v('comision'),
       pagos: { bizum: v('bizum'), titular: v('titular'), iban: v('iban'), stripe: v('stripe'), paypal: v('paypal').replace(/^.*paypal\.me\//i, '') },
       asistente: { activo: $('#asistActivo').checked, saludo: v('saludo') },

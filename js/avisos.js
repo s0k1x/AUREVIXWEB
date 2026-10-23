@@ -17,7 +17,7 @@ const hace = t => {
   const d = Math.round(h / 24);
   return d === 1 ? 'ayer' : `hace ${d} días`;
 };
-const ICONOS = { pedido: 'bag', etapa: 'chart', pago: 'euro', mensaje: 'message', revision: 'eye', cliente: 'user', soporte: 'mail', info: 'bulb' };
+const ICONOS = { pedido: 'bag', etapa: 'chart', pago: 'euro', mensaje: 'message', revision: 'eye', cliente: 'user', soporte: 'mail', video: 'video', info: 'bulb' };
 
 let lista = [];
 let dejar = () => {};
@@ -25,6 +25,7 @@ let dejar = () => {};
 /** Dónde lleva cada aviso */
 export function enlaceAviso(a, u = store.usuarioActual()) {
   const equipo = u && u.role !== 'client';
+  if (a.tipo === 'video') return 'panel.html#videos';
   if (a.tipo === 'soporte') return equipo ? 'panel.html#soporte' : 'index.html#soporte';
   if (a.pedido) return equipo ? `panel.html#pedido-${a.pedido}` : `index.html#proyecto-${a.pedido}`;
   return equipo ? 'panel.html' : 'index.html#mis-pedidos';
