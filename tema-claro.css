@@ -1,0 +1,172 @@
+/* --- style.css --- */
+html[data-tema=claro] .btn-primary:hover{background:#5c9a10}
+html[data-tema=claro] .btn-ghost{background:rgba(20,20,26,0.027)}
+html[data-tema=claro] .icon-btn{background:rgba(20,20,26,0.027)}
+html[data-tema=claro] .demo-banner{background:#f7ecc4;color:#5a4a10}
+html[data-tema=claro] .demo-banner .link-btn{color:#7a5a00}
+html[data-tema=claro] .header.scrolled,html[data-tema=claro] .header.open{background:rgba(246,245,240,.85)}
+html[data-tema=claro] .avatar{background:linear-gradient(135deg,var(--accent),#4f850c)}
+html[data-tema=claro] .user-btn{background:rgba(20,20,26,0.036)}
+html[data-tema=claro] .user-btn:hover{border-color:rgba(79,133,12,.5);background:rgba(79,133,12,.06)}
+html[data-tema=claro] .user-btn .avatar{box-shadow:0 0 0 2px var(--bg),0 0 0 3px rgba(79,133,12,.45)}
+html[data-tema=claro] .user-menu{box-shadow:0 24px 60px rgba(0,0,0,.14)}
+html[data-tema=claro] .user-menu a:hover,html[data-tema=claro] .user-menu button:hover{background:rgba(20,20,26,0.045)}
+html[data-tema=claro] .role-tag{background:rgba(20,20,26,0.063)}
+html[data-tema=claro] .field input::placeholder,html[data-tema=claro] .field textarea::placeholder{color:#9a978e}
+html[data-tema=claro] .check-card{background:rgba(20,20,26,0.018)}
+html[data-tema=claro] .check-card:has(input:checked){border-color:rgba(79,133,12,.45)}
+html[data-tema=claro] .pill{background:rgba(20,20,26,0.063)}
+html[data-tema=claro] .p-new{background:rgba(79,133,12,.13)}
+html[data-tema=claro] .dlg-x{background:rgba(20,20,26,0.054)}
+html[data-tema=claro] .social{background:rgba(20,20,26,0.036)}
+html[data-tema=claro] .demo-box{background:#fbf3d6;color:#5a4a10}
+html[data-tema=claro] .demo-box p{color:#6b5a20}
+@media (max-width:900px){
+  html[data-tema=claro] .nav{background:rgba(246,245,240,.97)}
+}
+html[data-tema=claro] .empty .em,html[data-tema=claro] .gate .em,html[data-tema=claro] .estado-cand .big{border:1px solid rgba(79,133,12,.25);box-shadow:0 10px 30px -12px rgba(79,133,12,.4)}
+html[data-tema=claro] .vj > span{border:1px solid rgba(79,133,12,.2)}
+/* --- componentes.css --- */
+html[data-tema=claro] .btn-primary{box-shadow:0 0 22px rgba(79,133,12,.32)}
+html[data-tema=claro] .btn-primary:hover{box-shadow:0 0 5px var(--accent),0 0 25px var(--accent),0 0 50px rgba(79,133,12,.55),0 0 100px rgba(79,133,12,.3)}
+html[data-tema=claro] .opt > span{background:rgba(20,20,26,0.036);color:rgba(20,20,26,0.648);box-shadow:rgba(0,0,0,.25) 0 2px 1px 0 inset,rgba(20,20,26,0.072) 0 1px 1px 0}
+html[data-tema=claro] .opt > span:hover{background:#e6e4dc;color:#16161b;box-shadow:rgba(0,0,0,.3) 0 -4px 1px 0 inset,rgba(20,20,26,0.09) 0 -1px 1px 0,rgba(0,0,0,.2) 0 2px 4px 1px}
+html[data-tema=claro] .opt input:checked + span{background:#d8eeac;color:#24400a;box-shadow:rgba(0,0,0,.3) 0 -4px 1px 0 inset,rgba(20,20,26,0.153) 0 -1px 1px 0,rgba(0,0,0,.2) 0 2px 4px 1px}
+html[data-tema=claro] .opt input:checked + span:hover{background:#cde79a}
+html[data-tema=claro] .slider{background:#d3d1c8}
+html[data-tema=claro] .switch-row{background:rgba(20,20,26,0.018)}
+html[data-tema=claro] .gl-checkbox__box{background:rgba(20,20,26,0.045);border:1px solid rgba(20,20,26,0.126)}
+html[data-tema=claro] .gl-checkbox__box::before{background:radial-gradient(circle at center,rgba(79,133,12,.35) 0%,transparent 70%)}
+html[data-tema=claro] .gl-checkbox:hover .gl-checkbox__box{border-color:rgba(79,133,12,.35)}
+html[data-tema=claro] .gl-checkbox__input:checked ~ .gl-checkbox__box{background:linear-gradient(135deg,#4f850c,#60f0b8);box-shadow:0 0 0 3px rgba(79,133,12,.15),0 4px 14px rgba(79,133,12,.3)}
+html[data-tema=claro] .gl-checkbox__label{color:rgba(20,20,26,0.495)}
+html[data-tema=claro] .gl-checkbox:hover .gl-checkbox__label{color:rgba(20,20,26,0.72)}
+html[data-tema=claro] .gl-checkbox__input:checked ~ .gl-checkbox__label{color:rgba(20,20,26,0.81)}
+html[data-tema=claro] .dot-spinner__dot::before{box-shadow:0 0 20px rgba(79,133,12,.25)}
+html[data-tema=claro] .search-group .input::placeholder{color:#6f6c64}
+html[data-tema=claro] .search-group .input:hover{box-shadow:0 0 0 2.5px #d9d7cf,0 0 25px -15px #000}
+html[data-tema=claro] .search-icon{fill:#6f6c64}
+html[data-tema=claro] .rating > label{color:#c9c6bc}
+html[data-tema=claro] .pm{background:rgba(20,20,26,0.018)}
+html[data-tema=claro] .pm:hover{background:rgba(20,20,26,0.045)}
+html[data-tema=claro] .pm-ic{background:rgba(20,20,26,0.054)}
+html[data-tema=claro] .pm:has(input:checked) .pm-tx b{color:#2e4f0a}
+html[data-tema=claro] .flip-card-front,html[data-tema=claro] .flip-card-back{box-shadow:rgba(0,0,0,.4) 0 2px 2px,rgba(0,0,0,.3) 0 7px 13px -3px,rgba(20,20,26,0.054) 0 -1px 0 inset}
+html[data-tema=claro] .flip-card-front{background:radial-gradient(circle at 85% 0%,rgba(79,133,12,.35),transparent 55%),linear-gradient(135deg,#ffffff,#0f0f13)}
+html[data-tema=claro] .flip-card-back{background:#f4f3ee}
+html[data-tema=claro] .fcd-nfc{color:rgba(20,20,26,0.63)}
+html[data-tema=claro] .fcd-secure{color:rgba(20,20,26,0.54)}
+html[data-tema=claro] .pay-cta .pc-card-line{background:#6aa61c}
+html[data-tema=claro] .pay-cta .pc-euro{color:#d8eeac}
+html[data-tema=claro] .brand-card{--bg:#ffffff}
+html[data-tema=claro] .bg-stripes{background:linear-gradient(135deg,#f6f5f0 25%,#ebe9e2 25%,#ebe9e2 50%,#f6f5f0 50%,#f6f5f0 75%,#ebe9e2 75%,#ebe9e2)}
+html[data-tema=claro] .bg-bands{background:repeating-linear-gradient(135deg,#f1f0ea 0px,#f1f0ea 60px,#f1f0ea99 70px,#f4f3ee 130px)}
+html[data-tema=claro] .splash{background:repeating-linear-gradient(135deg,#f1f0ea 0px,#f1f0ea 60px,#ffffff 70px,#f4f3ee 130px)}
+html[data-tema=claro] .splash .brand-card{background:#ffffff;box-shadow:0 30px 80px rgba(0,0,0,.14)}
+html[data-tema=claro] .mp-dato{background:rgba(20,20,26,0.027)}
+html[data-tema=claro] .chat-fab{box-shadow:0 16px 40px -10px rgba(79,133,12,.55),0 6px 18px rgba(0,0,0,.35)}
+html[data-tema=claro] .chat-fab-ic,html[data-tema=claro] .chat-fab-x{background:rgba(246,245,240,.12)}
+html[data-tema=claro] .chat-panel{box-shadow:0 40px 90px -20px rgba(0,0,0,.14)}
+html[data-tema=claro] .chat-h{background:linear-gradient(180deg,rgba(79,133,12,.08),transparent)}
+html[data-tema=claro] .chat-rapidas button{background:rgba(20,20,26,0.027)}
+html[data-tema=claro] .reco-extra span{background:rgba(20,20,26,0.036)}
+/* --- animaciones.css --- */
+@media (hover:hover){
+  html[data-tema=claro] .btn-fill:hover{box-shadow:0 10px 30px -8px rgba(79,133,12,.5)}
+}
+@media (hover:hover){
+  html[data-tema=claro] .icon-btn:hover,html[data-tema=claro] .dlg-x:hover{background:rgba(20,20,26,0.072)}
+}
+html[data-tema=claro] .foco::before{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(79,133,12,.10),transparent 45%)}
+html[data-tema=claro] .plan-card.popular.foco::before{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(20,20,26,0.315),transparent 45%)}
+@media (hover:hover){
+  html[data-tema=claro] .plan-card:hover,html[data-tema=claro] .op-card:hover,html[data-tema=claro] .puesto:hover{box-shadow:0 24px 50px -24px rgba(0,0,0,.14)}
+  html[data-tema=claro] .dz:hover{box-shadow:0 30px 60px -28px rgba(0,0,0,.14)}
+}
+html[data-tema=claro] .toast.ok .t-ic{background:#d8eeac;color:#2e4f0a}
+/* --- inicio.css --- */
+html[data-tema=claro] .hero::before{background:radial-gradient(circle,rgba(79,133,12,.15),transparent 65%)}
+html[data-tema=claro] .status{background:rgba(20,20,26,0.027)}
+html[data-tema=claro] .popular .pc-ic{background:rgba(246,245,240,.1)}
+html[data-tema=claro] .popular .pc-time,html[data-tema=claro] .popular .pc-desc,html[data-tema=claro] .popular .pc-price small{color:rgba(20,20,26,.65)}
+html[data-tema=claro] .step::before{-webkit-text-stroke:1.2px rgba(20,20,26,0.27)}
+html[data-tema=claro] .faq details[open]{border-color:rgba(79,133,12,.3)}
+html[data-tema=claro] .prev-stage{background:radial-gradient(circle at 50% 0,#efede6,#09090b 70%)}
+html[data-tema=claro] .prev-frame.movil{border:8px solid #ffffff;box-shadow:0 30px 80px rgba(0,0,0,.14)}
+/* --- panel.css --- */
+html[data-tema=claro] .kpis .kpi:first-child small,html[data-tema=claro] .kpis .kpi:first-child span{color:rgba(20,20,26,.6)}
+html[data-tema=claro] .row:hover,html[data-tema=claro] .row:focus-visible{background:rgba(20,20,26,0.0225)}
+html[data-tema=claro] .od-note{color:#3c5c12}
+html[data-tema=claro] .barra i{background:linear-gradient(90deg,#6aa61c,var(--accent))}
+html[data-tema=claro] .col{background:rgba(20,20,26,0.018)}
+html[data-tema=claro] .kcard:hover{box-shadow:0 14px 30px -16px rgba(0,0,0,.14)}
+html[data-tema=claro] .tarea:hover{background:rgba(20,20,26,0.036)}
+html[data-tema=claro] .enlace{background:linear-gradient(100deg,rgba(79,133,12,.10),transparent 60%),var(--card);border-color:rgba(79,133,12,.3)}
+/* --- trabaja.css --- */
+html[data-tema=claro] .pct{box-shadow:0 10px 40px -10px rgba(79,133,12,.6)}
+html[data-tema=claro] .t-stats div{background:rgba(20,20,26,0.027)}
+html[data-tema=claro] .t-stats div:first-child span{color:rgba(20,20,26,.65)}
+html[data-tema=claro] .perfil li{color:#36342f}
+html[data-tema=claro] .rango input::-webkit-slider-thumb{box-shadow:0 0 0 1px var(--accent),0 6px 20px rgba(79,133,12,.4)}
+html[data-tema=claro] .calc-res div:first-child{border-color:rgba(79,133,12,.35)}
+html[data-tema=claro] .faq details[open]{border-color:rgba(79,133,12,.3)}
+/* --- funciones.css --- */
+html[data-tema=claro] .av-menu{box-shadow:0 24px 60px rgba(0,0,0,.14)}
+html[data-tema=claro] .av:hover{background:rgba(20,20,26,0.045)}
+html[data-tema=claro] .av-ic{background:rgba(20,20,26,0.045)}
+html[data-tema=claro] .cookies{box-shadow:0 30px 80px rgba(0,0,0,.14)}
+html[data-tema=claro] .cd{background:rgba(20,20,26,0.018)}
+html[data-tema=claro] .mp-resumen > div{background:rgba(20,20,26,0.018)}
+html[data-tema=claro] .mp-resumen .turno{border-color:rgba(79,133,12,.4)}
+html[data-tema=claro] .pg-ic{background:rgba(20,20,26,0.045)}
+html[data-tema=claro] .tl-list.act li:hover{background:rgba(20,20,26,0.027)}
+html[data-tema=claro] .hilo-rapidas button{background:rgba(20,20,26,0.027)}
+html[data-tema=claro] .tk-m.yo{border-color:rgba(79,133,12,.25)}
+html[data-tema=claro] .hoy-it{background:rgba(20,20,26,0.018)}
+html[data-tema=claro] .ag-g h3 span{background:rgba(20,20,26,0.054)}
+html[data-tema=claro] .ag-it:hover{background:rgba(20,20,26,0.036)}
+html[data-tema=claro] .aj-nav a:hover,html[data-tema=claro] .aj-salir:hover{background:rgba(20,20,26,0.036)}
+html[data-tema=claro] .aj-nota.demo{background:#fbf3d6;color:#5a4a10}
+html[data-tema=claro] .aj-op > span{background:rgba(20,20,26,0.018)}
+html[data-tema=claro][data-contraste=alto]{--muted:#36342f;--line:rgba(20,20,26,0.198);--line2:rgba(20,20,26,0.306)}
+/* ==========================================================
+   TEMA CLARO (Ajustes → Apariencia)
+   La primera parte define los colores; el resto adapta los
+   colores fijos del tema oscuro (generado a partir de los CSS).
+   © AurevixWeb. Todos los derechos reservados.
+   ========================================================== */
+html[data-tema=claro]{
+  --bg:#f6f5f0; --bg2:#efede6; --card:#ffffff; --card2:#ffffff; --field:#f2f1eb;
+  --line:rgba(20,20,26,.1); --line2:rgba(20,20,26,.18);
+  --text:#16161b; --muted:#5d5b55; --dim:#7a776f;
+  --accent:#4f850c; --accent-soft:rgba(79,133,12,.11); --ink:#0c0c0e;
+  --ok:#15803d; --warn:#b45309; --info:#1d4ed8; --danger:#c62828; --violet:#6d28d9;
+  color-scheme:light;
+}
+html[data-tema=claro] body::after{opacity:.025;mix-blend-mode:multiply}
+html[data-tema=claro] .btn-primary,html[data-tema=claro] .msg.yo,html[data-tema=claro] .hm.yo .hm-b,html[data-tema=claro] .chat-send,html[data-tema=claro] .chat-av,html[data-tema=claro] .arch-ic,html[data-tema=claro] .compara .si,html[data-tema=claro] .anuncio{color:#fff}
+html[data-tema=claro] .btn-dark{background:#16161b;color:#c8f560}
+html[data-tema=claro] .kpis .kpi:first-child{color:#fff}
+html[data-tema=claro] .kpis .kpi:first-child small,html[data-tema=claro] .kpis .kpi:first-child span{color:rgba(255,255,255,.78)}
+html[data-tema=claro] .etapas .hecha .et-ic,html[data-tema=claro] .pg-fila.ok .pg-ic,html[data-tema=claro] .pm:has(input:checked) .pm-ic{color:#fff}
+html[data-tema=claro] .wordmark,html[data-tema=claro] .brand-card .logo2 img,html[data-tema=claro] .splash-nombre{content:url(icons/nombre-oscuro.png)}
+html[data-tema=claro] .toast{background:#16161b;color:#fff}
+html[data-tema=claro] .header.scrolled,html[data-tema=claro] .header.open{border-color:var(--line)}
+html[data-tema=claro] .user-menu,html[data-tema=claro] .av-menu,html[data-tema=claro] .cookies,html[data-tema=claro] .chat-panel{box-shadow:0 24px 60px rgba(20,20,26,.16)}
+html[data-tema=claro] dialog.dlg::backdrop{background:rgba(20,20,26,.45)}
+html[data-tema=claro] .dlg-box{box-shadow:0 30px 80px rgba(20,20,26,.18)}
+html[data-tema=claro] .splash{background:repeating-linear-gradient(135deg,#f3f2ec 0px,#f3f2ec 60px,#ecebe4 70px,#e8e6de 130px)}
+html[data-tema=claro] .aj-fijo{background:rgba(255,255,255,.92)}
+html[data-tema=claro] .od-fecha input,html[data-tema=claro] .cp label input[type=date]{color-scheme:light}
+html[data-tema=claro] .fc input,html[data-tema=claro] .fc textarea{color:var(--text)}
+html[data-tema=claro] .fc-select option{background:#fff;color:#16161b}
+html[data-tema=claro] .gl-checkbox__label{color:var(--muted)}
+html[data-tema=claro] .gl-checkbox__input:checked ~ .gl-checkbox__label{color:var(--text)}
+html[data-tema=claro] .opt > span{color:var(--text)}
+html[data-tema=claro] .rating > label{color:#d6d3ca}
+html[data-tema=claro] .stars::before{color:#d6d3ca}
+html[data-tema=claro] .tk-m.yo{border-color:rgba(79,133,12,.25)}
+html[data-tema=claro] .chat-h small i{box-shadow:0 0 0 3px rgba(21,128,61,.2)}
+html[data-tema=claro] .compara thead small{color:var(--muted)}
+html[data-tema=claro] .bg-stripes{opacity:.5}
+html[data-tema=claro] .hero-bg{opacity:.45}

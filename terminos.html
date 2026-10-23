@@ -1,4 +1,6 @@
 <!doctype html>
+<!-- © AurevixWeb. Todos los derechos reservados. Prohibida la copia, reproducción o reutilización
+     total o parcial de este diseño y de su código sin autorización escrita. Ver LICENSE. -->
 <html lang="es">
 <head>
   <meta charset="utf-8">
@@ -6,6 +8,10 @@
   <title>Términos y privacidad · AurevixWeb</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0c0c0e">
+  <meta name="copyright" content="© AurevixWeb. Todos los derechos reservados.">
+  <script>try{var a=JSON.parse(localStorage.getItem('tm_apariencia')||'{}'),d=document.documentElement;if(a.tema==='claro'||(a.tema==='sistema'&&matchMedia('(prefers-color-scheme: light)').matches))d.dataset.tema='claro';if(a.texto&&a.texto!=='normal')d.dataset.texto=a.texto;if(a.movimiento==='reducido')d.dataset.movimiento='reducido';if(a.contraste)d.dataset.contraste='alto'}catch(e){}</script>
+  <link rel="preload" as="image" href="icons/logo-a.png">
+  <link rel="preload" as="image" href="icons/nombre.png">
   <link rel="icon" type="image/png" href="icons/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,6 +19,8 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="componentes.css">
   <link rel="stylesheet" href="animaciones.css">
+  <link rel="stylesheet" href="funciones.css">
+  <link rel="stylesheet" href="tema-claro.css">
   <style>
     .legal{max-width:calc(820px + 2 * var(--gutter));padding-top:50px;padding-bottom:80px}
     .legal h1{font-size:clamp(36px,6vw,54px);font-weight:800;margin:14px 0 10px}
@@ -24,6 +32,10 @@
     .legal ul{padding-left:20px;display:grid;gap:6px}
     .legal .box{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line);margin:16px 0}
     .legal b{color:var(--text)}
+    .legal table{width:100%;border-collapse:collapse;font-size:14.5px;margin:12px 0}
+    .legal th,.legal td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);color:#cfccc3;vertical-align:top}
+    .legal th{color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.06em}
+    html[data-tema=claro] .legal p,html[data-tema=claro] .legal li,html[data-tema=claro] .legal td{color:#36342f}
   </style>
 </head>
 <body>
@@ -32,7 +44,7 @@
     <span class="eyebrow">Legal</span>
     <h1>Términos y privacidad</h1>
     <p class="upd">Última actualización: <span id="upd"></span></p>
-    <nav><a class="btn btn-sm btn-ghost" href="#terminos">Términos</a><a class="btn btn-sm btn-ghost" href="#privacidad">Privacidad</a></nav>
+    <nav><a class="btn btn-sm btn-ghost" href="#terminos">Términos</a><a class="btn btn-sm btn-ghost" href="#propiedad">Propiedad intelectual</a><a class="btn btn-sm btn-ghost" href="#privacidad">Privacidad</a><a class="btn btn-sm btn-ghost" href="#cookies">Cookies</a></nav>
 
     <div class="box" id="titular"></div>
 
@@ -48,17 +60,31 @@
       <li>El trabajo comienza cuando se confirma la recepción de la señal.</li>
     </ul>
     <h3>4. Plazos y revisiones</h3>
-    <p>Los plazos indicados son orientativos y empiezan a contar desde que se recibe la señal y el contenido necesario (textos, fotos, logo). Cada plan incluye las revisiones razonables para ajustar el diseño acordado.</p>
+    <p>El plazo de entrega va de una semana a un mes según el tipo de web, y se indica en cada plan y en «Mis proyectos». Los plazos empiezan a contar desde que se recibe la señal y el contenido necesario (textos, fotos, logotipo) y pueden ampliarse si el contenido llega tarde o se piden cambios importantes. Cada plan incluye las revisiones razonables para ajustar el diseño acordado.</p>
+    <h3>4 bis. Comunicaciones</h3>
+    <p>Atendemos exclusivamente por escrito: por correo electrónico a <b data-email></b>, mediante el formulario de contacto o desde la sección «Mis proyectos» de tu cuenta (mensajes y soporte). Las comunicaciones hechas por estos canales tienen plena validez a efectos del pedido.</p>
     <h3>5. Contenido del cliente</h3>
     <p>Eres responsable de tener derechos sobre los textos, imágenes y marcas que nos facilites. Los diseños de partida son una base que adaptamos a tu negocio.</p>
-    <h3>6. Propiedad</h3>
-    <p>Una vez abonado el total, la web entregada es tuya. Podemos mostrarla en nuestro portfolio salvo que nos indiques lo contrario.</p>
+    <h3>6. Propiedad de la web entregada</h3>
+    <p>Una vez abonado el total, te cedemos el derecho de uso de la web entregada para tu negocio, sin límite de tiempo. El dominio y el contenido que nos facilitas son tuyos. Los diseños de partida, plantillas, componentes y el código base siguen siendo propiedad de AurevixWeb (ver «Propiedad intelectual»): no se pueden revender, sublicenciar ni reutilizar para otras webs sin autorización escrita. Podemos mostrar tu web en nuestro portfolio salvo que nos indiques lo contrario.</p>
     <h3>7. Cancelación</h3>
     <p>Puedes cancelar el pedido antes de que empecemos a trabajar y te devolveremos la señal. Si ya hemos empezado, la señal cubre el trabajo realizado hasta ese momento.</p>
     <h3>8. Mantenimiento</h3>
     <p>El mantenimiento mensual, si lo contratas, se puede cancelar en cualquier momento avisando con 15 días de antelación.</p>
     <h3>9. Opiniones</h3>
     <p>Las opiniones que publiques deben reflejar tu experiencia real. Las revisamos antes de mostrarlas y podemos no publicar las que contengan datos personales, insultos o spam.</p>
+
+    <h2 id="propiedad">Propiedad intelectual y licencia</h2>
+    <p><b>© AurevixWeb. Todos los derechos reservados.</b></p>
+    <p>Esta web y todos sus elementos —diseño, aspecto visual, estructura, textos, logotipos, marca «AurevixWeb», iconos, ilustraciones, imágenes propias, diseños de partida, plantillas, animaciones y código fuente (HTML, CSS y JavaScript)— son propiedad exclusiva de AurevixWeb o de sus licenciantes y están protegidos por el Real Decreto Legislativo 1/1996 (Ley de Propiedad Intelectual), la Ley 17/2001 de Marcas y los tratados internacionales aplicables.</p>
+    <ul>
+      <li>Queda <b>prohibida</b> la reproducción, distribución, comunicación pública, transformación, copia, descarga para su reutilización, extracción, ingeniería inversa o cualquier otra forma de explotación, total o parcial, de esta web o de sus elementos, por cualquier medio, sin la <b>autorización previa y por escrito</b> de AurevixWeb.</li>
+      <li>No se concede ninguna licencia ni derecho sobre la web por el mero hecho de visitarla. Solo puedes verla para tu uso personal y para contratar nuestros servicios.</li>
+      <li>Queda prohibido copiar o imitar los diseños de partida para crear webs propias o de terceros, así como usar la marca o el logotipo de AurevixWeb sin permiso.</li>
+      <li>Queda prohibido el uso de robots, scrapers u otras herramientas automáticas para extraer contenido o datos de la web, incluido su uso para entrenar sistemas de inteligencia artificial.</li>
+      <li>Las fotografías de los diseños de ejemplo proceden de bancos de imágenes con licencia libre y pertenecen a sus autores.</li>
+    </ul>
+    <p>El incumplimiento de estas condiciones podrá dar lugar a las acciones civiles y penales que correspondan. Para solicitar una autorización, escribe a <b data-email></b>.</p>
 
     <h2 id="privacidad">Política de privacidad</h2>
     <h3>Responsable</h3>
@@ -67,6 +93,9 @@
     <ul>
       <li><b>Cuenta</b> (nombre, email y foto si entras con Google): para identificarte y que puedas seguir tus pedidos.</li>
       <li><b>Pedidos</b> (respuestas del cuestionario, teléfono): para preparar tu presupuesto, hacer tu web y contactarte.</li>
+      <li><b>Mensajes, archivos y consultas</b> (lo que escribes y subes en «Mis proyectos», en soporte o en el formulario de contacto): para hacer tu web y atenderte.</li>
+      <li><b>Datos de facturación y de cobro</b> (razón social, NIF, dirección, IBAN de los vendedores): para emitir recibos y pagar comisiones. Solo los ve el propietario.</li>
+      <li><b>Avisos</b>: para informarte de cambios en tus proyectos.</li>
       <li><b>Candidaturas</b> (nombre, teléfono, experiencia, enlaces): para el proceso de selección.</li>
       <li><b>Opiniones</b>: para publicarlas en la web con tu nombre si las aprobamos.</li>
     </ul>
@@ -75,11 +104,22 @@
     <h3>Conservación</h3>
     <p>Mientras dure la relación y durante los plazos legales que correspondan. Las candidaturas no seleccionadas se conservan un máximo de 12 meses.</p>
     <h3>Con quién se comparten</h3>
-    <p>Usamos proveedores que tratan datos por nuestra cuenta: Supabase (alojamiento de cuentas y datos), Google (asistente con inteligencia artificial Gemini, solo con los mensajes que escribes en el chat) y, si pagas con ellos, Stripe o PayPal. No vendemos tus datos.</p>
+    <p>Usamos proveedores que tratan datos por nuestra cuenta: Supabase (alojamiento de cuentas, datos y archivos), Google (inicio de sesión con Google y asistente con inteligencia artificial Gemini, solo con los mensajes que escribes en el chat), GitHub Pages (alojamiento de la web) y, si pagas con ellos, Stripe o PayPal. Las fuentes tipográficas se cargan desde Google Fonts y las imágenes de los diseños de ejemplo desde Pexels. No vendemos tus datos.</p>
     <h3>Tus derechos</h3>
-    <p>Puedes pedir acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <b data-email></b>. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
-    <h3>Almacenamiento en tu dispositivo</h3>
-    <p>La web guarda en tu navegador lo necesario para mantener tu sesión y funcionar sin conexión. No usamos cookies de publicidad.</p>
+    <p>Puedes pedir acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <b data-email></b>. Desde <a href="ajustes.html#privacidad">Ajustes → Privacidad</a> puedes descargar una copia de tus datos y solicitar la eliminación de tu cuenta. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+
+    <h2 id="cookies">Política de cookies</h2>
+    <p>Usamos cookies y tecnologías parecidas (almacenamiento local del navegador) solo para que la web funcione y, si lo aceptas, para recordar tus preferencias. <b>No usamos cookies de publicidad, de seguimiento ni de estadísticas.</b></p>
+    <table>
+      <thead><tr><th>Tipo</th><th>Para qué</th><th>Duración</th></tr></thead>
+      <tbody>
+        <tr><td><b>Necesarias</b></td><td>Mantener tu sesión iniciada (Supabase), la seguridad del inicio de sesión, tu elección sobre cookies y el funcionamiento sin conexión (caché de la app).</td><td>Hasta que cierres sesión o borres los datos del navegador</td></tr>
+        <tr><td><b>Preferencias</b></td><td>Tema claro u oscuro, tamaño de letra, borrador del cuestionario de compra, vista del panel y copia de los ajustes de la web para cargar más rápido.</td><td>Hasta que las borres o cambies tu elección</td></tr>
+        <tr><td><b>Estadísticas</b></td><td>No se usan.</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p>Puedes cambiar tu elección en cualquier momento desde el enlace «Cookies» del pie de página o en <a href="ajustes.html#privacidad">Ajustes → Privacidad y cookies</a>. También puedes borrarlas desde la configuración de tu navegador. Los servicios externos que cargan recursos (Google Fonts, Pexels) pueden recibir tu dirección IP al descargar fuentes e imágenes.</p>
+    <p><button class="btn btn-sm btn-ghost" data-cookies>Configurar cookies</button></p>
 
     <div class="box"><p style="margin:0;font-size:14px">Aviso: este texto es una plantilla orientativa. Revísalo con un profesional antes de publicar la web.</p></div>
   </main>
@@ -90,10 +130,10 @@
     import { $, $$, esc, arrancar } from './js/ui.js';
     const L = CONFIG.legal || {};
     $('#titular').innerHTML = `<p style="margin:0"><b>Titular:</b> ${esc(L.titular)} · <b>NIF:</b> ${esc(L.nif)} · <b>Domicilio:</b> ${esc(L.domicilio)} · <b>Email:</b> ${esc(L.email)}</p>`;
-    $$('[data-senal]').forEach(e => (e.textContent = CONFIG.senal + ' %'));
-    $$('[data-email]').forEach(e => (e.textContent = L.email));
     $('#upd').textContent = new Date(document.lastModified).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
     await arrancar('terminos');
+    $$('[data-senal]').forEach(e => (e.textContent = CONFIG.senal + ' %'));
+    $$('[data-email]').forEach(e => (e.textContent = CONFIG.email || L.email));
   </script>
 </body>
 </html>

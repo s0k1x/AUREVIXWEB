@@ -1,33 +1,44 @@
 /* ==========================================================
-   CONFIGURACIÓN: cambia aquí y se actualiza toda la web
+   CONFIGURACIÓN: valores iniciales de la web
+   Con Supabase conectado, casi todo esto se cambia sin tocar
+   código desde «Ajustes → Negocio» (solo el propietario).
+   © AurevixWeb. Todos los derechos reservados.
    ========================================================== */
 export const CONFIG = {
-  marca: 'AurevixWeb',                       // el nombre de tu marca (cuando lo tengas)
+  marca: 'AurevixWeb',
   eslogan: 'Webs profesionales para tu negocio',
-  whatsapp: '34600000000',                  // con prefijo 34, sin + ni espacios
-  email: 'hola@tudominio.com',              // cuando el dominio esté activo y tengas buzón: 'hola@aurevixweb.es'
+  email: 'aurevixweb@gmail.com',           // único canal de contacto (no hay WhatsApp)
   dominio: 'aurevixweb.es',                 // reservado; aún no apunta a la web (ver LEEME.md, punto 12)
+  aviso: 'Plazas abiertas para nuevos proyectos este mes', // texto de la píldora de la portada
+  anuncio: { activo: false, texto: '' },    // franja de aviso arriba del todo
+  aceptarPedidos: true,                     // si es false, los botones de compra pasan a «Lista de espera»
+  mensajeCerrado: 'Ahora mismo tenemos la agenda completa. Déjanos tus datos y te escribimos en cuanto haya hueco.',
+  horario: 'Lunes a viernes, de 9:00 a 18:00',
+  respuesta: 'Respondemos en menos de 24 horas laborables',
   senal: 50,                                // % que se paga al empezar
   comision: 30,                             // % que se lleva el vendedor por cada web que venda
+  urgente: 0.25,                            // +25 % sobre el precio base si lo quieren urgente
 
   // Emails que entran como PROPIETARIO (acceso total al panel)
-  propietarios: ['senorsevillamario@gmail.com'],
+  propietarios: ['aurevixweb@gmail.com'],
 
   /* FORMAS DE PAGO: deja en '' las que no quieras mostrar
      · bizum y transferencia: gratis, tú confirmas el pago en el panel
-     · stripe: enlace de pago de Stripe (tarjeta, Apple/Google Pay y Bizum online).
-       Crea el enlace con "el cliente elige el importe" (ver LEEME.md)
+     · stripe: enlace de pago de Stripe (tarjeta, Apple/Google Pay y Bizum online)
      · paypal: tu usuario de PayPal.Me (el importe se rellena solo) */
   pagos: {
     bizum: '600 000 000',
     iban: 'ES00 0000 0000 0000 0000 0000',
     titular: 'Tu nombre y apellidos',
-    stripe: '',                             // ej: 'https://buy.stripe.com/xxxxxx'
-    paypal: ''                              // ej: 'tuusuario'  (paypal.me/tuusuario)
+    stripe: '',
+    paypal: ''
   },
 
   // Enlace a tu página de Trustpilot (déjalo en '' hasta que la tengas)
   trustpilot: '',
+
+  // Redes sociales de la marca (déjalas en '' si no las tienes)
+  redes: { instagram: '', tiktok: '', linkedin: '' },
 
   // Inicio de sesión con GitHub además de Google (actívalo también en Supabase)
   loginGithub: false,
@@ -37,64 +48,77 @@ export const CONFIG = {
     titular: 'Tu nombre y apellidos',
     nif: '00000000X',
     domicilio: 'Tu ciudad, España',
-    email: 'hola@tudominio.com'
+    email: 'aurevixweb@gmail.com'
   },
 
-  // SUPABASE: pega aquí los datos de tu proyecto para activar el login real
-  // (Google / email), guardar pedidos en la nube y el asistente con IA (Gemini).
-  // Los encuentras en Supabase → Project Settings → API (ver LEEME.md).
-  // Mientras estén vacíos, la web funciona en MODO DEMO (datos solo en este navegador).
+  // SUPABASE: login real, base de datos, archivos y asistente con IA (Gemini)
   supabase: {
     url: 'https://jmmwuiuhwxgwnyqectcb.supabase.co',
-    anonKey: 'sb_publishable_FxFlpmkSWOWTxMEB-e56kQ_QdcwxAEj'                             // la clave "anon public" (es pública, no pasa nada por ponerla aquí)
+    anonKey: 'sb_publishable_FxFlpmkSWOWTxMEB-e56kQ_QdcwxAEj' // clave pública: no pasa nada por ponerla aquí
   },
 
   // Asistente de la web (chat de dudas y "Te ayudo a elegir")
   asistente: {
     activo: true,
     nombre: 'Asistente',
-    saludo: 'Hola, soy el asistente de la web. Puedo ayudarte con precios, plazos, tipos de web o cómo funciona el proceso. ¿Qué necesitas?'
+    saludo: 'Hola, soy el asistente de AurevixWeb. Puedo ayudarte con precios, plazos, tipos de web o cómo funciona el proceso. ¿Qué necesitas?'
   }
 };
 
-/* ---------- Tipos de web y precios ---------- */
+/* ---------- Tipos de web y precios ----------
+   entrega: lo que ve el cliente · dias: plazo máximo para calcular la fecha de entrega */
 export const PLANES = [
   {
-    id: 'landing', nombre: 'Landing page', precio: 149, entrega: '3–5 días', icono: 'landing',
+    id: 'landing', nombre: 'Landing page', precio: 149, entrega: '1 semana', dias: 7, icono: 'landing',
     desc: 'Una página con varias secciones para presentar un servicio o un negocio y recibir contactos.',
-    incluye: ['1 página con varias secciones', 'Adaptada a móvil', 'Botón de WhatsApp y formulario', 'Publicación incluida'],
+    incluye: ['1 página con varias secciones', 'Adaptada a móvil', 'Formulario de contacto', 'Publicación incluida'],
     plantillas: ['lienzo', 'filo']
   },
   {
-    id: 'portfolio', nombre: 'Portfolio', precio: 199, entrega: '4–6 días', icono: 'portfolio',
+    id: 'portfolio', nombre: 'Portfolio', precio: 199, entrega: '1–2 semanas', dias: 14, icono: 'portfolio',
     desc: 'Para fotógrafos, diseñadores, artistas y profesionales que necesitan mostrar sus trabajos.',
     incluye: ['Galería de trabajos', 'Sobre mí y servicios', 'Formulario de contacto', 'Adaptada a móvil'],
     plantillas: ['lienzo']
   },
   {
-    id: 'negocio', nombre: 'Web de negocio', precio: 349, entrega: '1 semana', icono: 'negocio', popular: true,
+    id: 'negocio', nombre: 'Web de negocio', precio: 349, entrega: '2 semanas', dias: 14, icono: 'negocio', popular: true,
     desc: 'Web completa para un negocio local: servicios y precios, galería, horario, ubicación y contacto.',
     incluye: ['Hasta 5 secciones o páginas', 'Galería, horarios y mapa', 'Instalable como app (PWA)', 'SEO básico para Google', '1 mes de cambios gratis'],
     plantillas: ['filo', 'brasa', 'calma', 'pulso']
   },
   {
-    id: 'reservas', nombre: 'Web con reservas', precio: 490, entrega: '10 días', icono: 'reservas',
+    id: 'reservas', nombre: 'Web con reservas', precio: 490, entrega: '2–3 semanas', dias: 21, icono: 'reservas',
     desc: 'Incluye reserva de citas online. Pensada para peluquerías, centros de estética, clínicas y consultas.',
     incluye: ['Todo lo de Web de negocio', 'Sistema de citas online', 'Aviso de cada reserva', 'Panel para ver las citas'],
     plantillas: ['calma', 'filo', 'pulso']
   },
   {
-    id: 'tienda', nombre: 'Tienda online', precio: 690, entrega: '2 semanas', icono: 'tienda',
+    id: 'tienda', nombre: 'Tienda online', precio: 690, entrega: '3–4 semanas', dias: 30, icono: 'tienda',
     desc: 'Catálogo, carrito y pago online para vender tus productos sin pagar comisiones a marketplaces.',
-    incluye: ['Catálogo y carrito', 'Pago con tarjeta, Bizum o WhatsApp', 'Panel para gestionar productos', 'Hasta 50 productos'],
+    incluye: ['Catálogo y carrito', 'Pago con tarjeta o Bizum', 'Panel para gestionar productos', 'Hasta 50 productos'],
     plantillas: ['kiosko', 'brasa']
   },
   {
-    id: 'medida', nombre: 'A medida', precio: 990, entrega: 'Según proyecto', icono: 'medida',
+    id: 'medida', nombre: 'A medida', precio: 990, entrega: 'Desde 1 mes', dias: 30, icono: 'medida',
     desc: 'Proyectos con funciones específicas: áreas de clientes, aplicaciones web, integraciones. Presupuesto según alcance.',
     incluye: ['Análisis de tu idea', 'Diseño 100% personalizado', 'Funciones a medida', 'Soporte prioritario'],
     plantillas: []
   }
+];
+
+/* ---------- Comparativa de planes (tabla «Compara») ---------- */
+export const COMPARATIVA = [
+  ['Diseño adaptado a tu marca', ['landing', 'portfolio', 'negocio', 'reservas', 'tienda', 'medida']],
+  ['Adaptada a móvil', ['landing', 'portfolio', 'negocio', 'reservas', 'tienda', 'medida']],
+  ['Formulario de contacto', ['landing', 'portfolio', 'negocio', 'reservas', 'tienda', 'medida']],
+  ['Varias páginas o secciones', ['portfolio', 'negocio', 'reservas', 'tienda', 'medida']],
+  ['Galería de trabajos o fotos', ['portfolio', 'negocio', 'reservas', 'tienda', 'medida']],
+  ['Horario y mapa', ['negocio', 'reservas', 'tienda', 'medida']],
+  ['Instalable como app (PWA)', ['negocio', 'reservas', 'tienda', 'medida']],
+  ['SEO básico para Google', ['negocio', 'reservas', 'tienda', 'medida']],
+  ['Reserva de citas online', ['reservas', 'medida']],
+  ['Catálogo, carrito y pago', ['tienda', 'medida']],
+  ['Funciones a medida', ['medida']]
 ];
 
 /* ---------- Extras del cuestionario ---------- */
@@ -106,5 +130,3 @@ export const EXTRAS = [
   { id: 'seo', nombre: 'SEO avanzado', precio: 120, desc: 'Google Business + posicionamiento local' },
   { id: 'mantenimiento', nombre: 'Mantenimiento mensual', precio: 15, mensual: true, desc: 'Actualizaciones, cambios menores y copias de seguridad' }
 ];
-
-export const URGENTE = 0.25; // +25% sobre el precio base si lo quieren urgente

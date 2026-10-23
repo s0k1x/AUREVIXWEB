@@ -1,0 +1,47 @@
+<!doctype html>
+<!-- © AurevixWeb. Todos los derechos reservados. Prohibida la copia, reproducción o reutilización
+     total o parcial de este diseño y de su código sin autorización escrita. Ver LICENSE. -->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ajustes · AurevixWeb</title>
+  <meta name="robots" content="noindex">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0c0c0e">
+  <meta name="copyright" content="© AurevixWeb. Todos los derechos reservados.">
+  <script>try{var a=JSON.parse(localStorage.getItem('tm_apariencia')||'{}'),d=document.documentElement;if(a.tema==='claro'||(a.tema==='sistema'&&matchMedia('(prefers-color-scheme: light)').matches))d.dataset.tema='claro';if(a.texto&&a.texto!=='normal')d.dataset.texto=a.texto;if(a.movimiento==='reducido')d.dataset.movimiento='reducido';if(a.contraste)d.dataset.contraste='alto'}catch(e){}</script>
+  <link rel="preload" as="image" href="icons/logo-a.png">
+  <link rel="preload" as="image" href="icons/nombre.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="componentes.css">
+  <link rel="stylesheet" href="animaciones.css">
+  <link rel="stylesheet" href="panel.css">
+  <link rel="stylesheet" href="funciones.css">
+  <link rel="stylesheet" href="tema-claro.css">
+</head>
+<body class="panel-body">
+  <header id="header"></header>
+
+  <main class="wrap pn aj">
+    <div class="pn-head">
+      <div>
+        <span class="eyebrow">Tu cuenta</span>
+        <h1>Ajustes</h1>
+      </div>
+    </div>
+    <div class="aj-grid">
+      <nav class="aj-nav" id="ajNav" aria-label="Secciones de ajustes"></nav>
+      <div class="aj-body" id="ajBody"><div class="skeleton"></div></div>
+    </div>
+  </main>
+
+  <footer id="footer"></footer>
+  <script type="module" src="js/ajustes.js"></script>
+</body>
+</html>

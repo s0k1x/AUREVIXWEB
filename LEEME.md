@@ -1,4 +1,6 @@
-# Web de servicios + PWA (AurevixWeb)
+# AurevixWeb · web de servicios + PWA
+
+© AurevixWeb. Todos los derechos reservados. Ver `LICENSE` (no es código abierto).
 
 ## Qué hay dentro
 | Archivo | Para qué sirve |
@@ -6,9 +8,14 @@
 | `index.html` | Portada: tipos de web y precios, diseños, cómo trabajamos, compra con cuestionario y «Mis proyectos» |
 | `plantilla.html` | Pinta los 6 diseños de ejemplo (con el nombre y color del cliente) |
 | `trabaja.html` | Página «Trabaja con nosotros» con formulario de candidatura |
-| `panel.html` | Panel de **propietario** (pedidos, candidaturas, equipo) y de **trabajador** (encargos y ventas) |
+| `panel.html` | Panel de **propietario** (resumen, pedidos, clientes, soporte, agenda, actividad, candidaturas, reseñas, equipo) y de **trabajador** (encargos, agenda, disponibles, soporte, ventas, ranking) |
+| `ajustes.html` | Ajustes de cada usuario (perfil, cuenta, facturación, cobros, avisos, apariencia, privacidad) y del **negocio** para el propietario |
+| `js/colabora.js` | Mensajes, archivos y recibos de cada proyecto |
+| `js/sitio.js` | Aplica los ajustes del negocio (precios, plazos, pagos, avisos) |
+| `js/cookies.js`, `js/apariencia.js`, `js/avisos.js` | Aviso de cookies, tema claro/oscuro y campana de avisos |
+| `LICENSE` | Licencia: todos los derechos reservados |
 | `terminos.html` | Términos y condiciones + política de privacidad (se rellena con `config.js → legal`) |
-| `config.js` | **Todo lo que se cambia**: marca, WhatsApp, pagos, datos legales, precios, extras, Supabase y asistente |
+| `config.js` | Valores iniciales: marca, correo, pagos, datos legales, precios, extras, Supabase y asistente |
 | `js/proyecto.js` | Etapas del proyecto (dominio, contenido, diseño, revisión, pago final, publicada) |
 | `js/asistente.js` | Chat de dudas y «Te ayudo a elegir» |
 | `js/plantillas.js` | Textos, colores y fotos de los 6 diseños (puedes añadir más) |
@@ -19,13 +26,13 @@
 
 ## 1. Cambia tus datos
 Abre `config.js` y cambia:
-- `marca` → el nombre cuando lo tengas (se cambia solo en toda la web)
-- `whatsapp`, `email`
+- `email` → único canal de contacto (no hay WhatsApp)
 - `pagos` → tu Bizum, IBAN y titular (ver punto 8)
 - `legal` → tu nombre, NIF y domicilio para la página de términos
 - `trustpilot` → el enlace a tu página de Trustpilot cuando la crees
-- `propietarios` → **tu email** (el que tendrá acceso total)
-- Precios y extras en `PLANES` y `EXTRAS`
+- `propietarios` → `aurevixweb@gmail.com` (acceso total)
+
+Con Supabase conectado, **casi todo se cambia sin tocar código** desde *Ajustes → Negocio* (ver punto 13).
 
 El nombre también aparece en `manifest.json` (`name` y `short_name`): cámbialo ahí a mano.
 
@@ -38,8 +45,10 @@ respuestas automáticas (sin IA). En «Entrar» tienes botones para probar como 
 Todo se puede hacer desde el móvil en **supabase.com**:
 
 1. **New project** → nombre → contraseña de la base de datos (guárdala) → región **Europe (Frankfurt o Irlanda)**.
-2. **SQL Editor → New query**. Abre `supabase/esquema.sql`, cambia `tuemail@gmail.com` por tu email,
-   pega todo y pulsa **Run**. Crea las tablas y los permisos.
+2. **SQL Editor → New query**. Abre `supabase/esquema.sql`, pega todo y pulsa **Run**.
+   Crea las tablas, los permisos, los avisos automáticos, el tiempo real y la carpeta de archivos.
+   **Se puede volver a ejecutar** cuando subas una versión nueva: no borra datos.
+   El propietario es `aurevixweb@gmail.com` (el SQL deja solo ese correo como propietario).
 3. **Project Settings → API**: copia **Project URL** y la clave **anon public** en `config.js`:
    ```js
    supabase: {
@@ -78,7 +87,7 @@ En *Panel → Pedidos* abre un pedido: arriba tienes la barra de etapas. Pulsa u
 |---|---|
 | Pedido recibido | Ve su pedido y puede pagar la señal |
 | Dominio | Elige un dominio nuevo (nombre + .com/.es…) o indica el que ya tiene |
-| Contenido | Envía textos, horario, redes y enlaces a fotos y logotipo (o lo manda por WhatsApp) |
+| Contenido | Envía textos, horario y redes, y sube fotos y logotipo en «Archivos» |
 | Diseño | Espera; puede ver el diseño de partida |
 | Revisión | Abre la vista previa, la **aprueba** o **pide cambios** |
 | Pago final | Paga el resto |
@@ -94,7 +103,7 @@ datos del cliente y del pedido, y todo lo que ha enviado el cliente.
 
 ## 6. Herramientas que ya trae
 - **Te ayudo a elegir**: el cliente describe su negocio y el asistente recomienda tipo de web, diseño y extras (o responde 3 preguntas).
-- **Chat de dudas** en la portada y en «Trabaja con nosotros», con botón para pasar a WhatsApp.
+- **Chat de dudas** en la portada y en «Trabaja con nosotros», con enlace para escribir por correo.
 - **Borrador automático** del cuestionario.
 - **Tablero** en *Panel → Pedidos*: arrastra las tarjetas entre columnas (en ordenador).
 - **Exportar** los pedidos a un archivo que se abre en Excel o Google Sheets.
@@ -131,7 +140,7 @@ Solo aparecen las formas de pago que rellenes en `config.js → pagos`:
 ## 10. Publicarla (GitHub Pages)
 1. Sube **todo** el contenido de la carpeta al repositorio (también `js/`, `icons/` y `supabase/`).
 2. Settings → Pages → Branch `main` → Save.
-3. Cada vez que subas cambios, sube la versión en `sw.js` (ahora `v9` → pon `v10`…).
+3. Cada vez que subas cambios, sube la versión en `sw.js` (ahora `v13` → pon `v14`…).
    La web siempre descarga los archivos nuevos; la versión sirve para limpiar lo guardado en los móviles.
 
 > La web usa módulos de JavaScript: **no funciona abriendo el archivo directamente**; tiene que estar publicada.
@@ -155,3 +164,32 @@ Cuando quieras activarlo, en este orden (si cambias el orden, la web puede dejar
    (El URI de redireccionamiento sigue siendo el de Supabase; no cambia.)
 5. En `config.js` cambia `email` por tu correo del dominio y sube `VERSION` en `sw.js`.
 6. En `index.html` pon la imagen para compartir con dirección completa: `https://aurevixweb.es/icons/og.png`.
+
+## 13. Funciones (versión 13)
+**Clientes**
+- *Mis proyectos* con pestañas: **Estado** (lo que le toca hacer), **Mensajes** con el equipo, **Archivos** (sube fotos, logotipo y documentos), **Pagos** (recibos imprimibles) e **Historial**.
+- Fecha prevista de entrega y aviso si se retrasa. Puede pedir la cancelación mientras no haya pagado.
+- **Ayuda y soporte**: consultas con respuesta del equipo dentro de la web.
+- **Campana de avisos** (y notificaciones del navegador si las activa en Ajustes).
+- **Cupones de descuento** en el resumen del pedido, **comparador de planes** y **buscador** en las preguntas frecuentes.
+- Formulario de **contacto** (también sin cuenta) y **lista de espera** si cierras la agenda.
+
+**Trabajadores**
+- Encargos ordenados por fecha de entrega, **Agenda**, mensajes y archivos de cada proyecto con **respuestas rápidas**.
+- **Soporte** compartido, **Ranking** de ventas, **objetivo mensual**, **código QR** y **kit de ventas** con textos listos para copiar.
+- En Ajustes: disponibilidad y datos de cobro (solo los ve el propietario).
+
+**Propietario**
+- Resumen con ingresos por mes, retrasos, consultas sin responder y una lista **«Para hoy»**.
+- **Clientes** (gasto total, pendiente, exportar), **Soporte**, **Agenda**, **Actividad** y gestión de cancelaciones.
+- En la ficha del pedido: fecha de entrega editable, mensajes, archivos, historial, notas internas y recibo.
+- **Ajustes → Negocio**: texto de la píldora de la portada, franja de aviso, aceptar o no pedidos, contacto y horario, **precios, plazos y días de cada plan**, extras, señal, recargo urgente, comisión, formas de pago, **cupones** y asistente. Se aplican al momento a todos los visitantes.
+
+**Todos**
+- *Ajustes*: perfil con foto, cambiar correo y contraseña, cerrar sesión en todos los dispositivos, facturación, avisos, **tema claro u oscuro**, tamaño de letra, reducir animaciones, más contraste, descargar tus datos y pedir la baja.
+- **Aviso de cookies** (solo necesarias y preferencias; no hay cookies de publicidad ni de estadísticas).
+
+## 14. Licencia
+El archivo `LICENSE`, el pie de la web y la sección «Propiedad intelectual» de `terminos.html` dejan claro que **todo es tuyo y está prohibido copiarlo**.
+Aunque el repositorio de GitHub sea público para usar GitHub Pages, eso no da permiso a nadie para reutilizarlo.
+Si quieres más protección, puedes hacer el repositorio **privado** (GitHub Pages en repos privados necesita un plan de pago) o publicar desde otro servicio.

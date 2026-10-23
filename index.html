@@ -1,12 +1,19 @@
 <!doctype html>
+<!-- © AurevixWeb. Todos los derechos reservados. Prohibida la copia, reproducción o reutilización
+     total o parcial de este diseño y de su código sin autorización escrita. Ver LICENSE. -->
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>AurevixWeb · Diseño de páginas web</title>
-  <meta name="description" content="Diseño de páginas web para negocios y profesionales: landing pages, webs de negocio, reservas y tiendas online, a precio cerrado y con entrega en días.">
+  <meta name="description" content="Diseño de páginas web para negocios y profesionales: landing pages, webs de negocio, reservas y tiendas online, a precio cerrado y con entrega de una semana a un mes.">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0c0c0e">
+  <meta name="copyright" content="© AurevixWeb. Todos los derechos reservados.">
+  <meta name="author" content="AurevixWeb">
+  <script>try{var a=JSON.parse(localStorage.getItem('tm_apariencia')||'{}'),d=document.documentElement;if(a.tema==='claro'||(a.tema==='sistema'&&matchMedia('(prefers-color-scheme: light)').matches))d.dataset.tema='claro';if(a.texto&&a.texto!=='normal')d.dataset.texto=a.texto;if(a.movimiento==='reducido')d.dataset.movimiento='reducido';if(a.contraste)d.dataset.contraste='alto'}catch(e){}</script>
+  <link rel="preload" as="image" href="icons/logo-a.png">
+  <link rel="preload" as="image" href="icons/nombre.png">
   <link rel="icon" type="image/png" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,6 +33,8 @@
   <link rel="stylesheet" href="componentes.css">
   <link rel="stylesheet" href="animaciones.css">
   <link rel="stylesheet" href="inicio.css">
+  <link rel="stylesheet" href="funciones.css">
+  <link rel="stylesheet" href="tema-claro.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"AurevixWeb","description":"Diseño de páginas web para negocios: landing pages, webs de negocio, reservas y tiendas online.","areaServed":"ES","priceRange":"149€ - 990€"}</script>
 </head>
 <body>
@@ -37,16 +46,16 @@
       <div class="hero-bg bg-stripes" aria-hidden="true"></div>
       <div class="wrap hero-grid">
         <div class="hero-copy">
-          <span class="status"><i class="dot"></i> Aceptando nuevos proyectos</span>
+          <span class="status" id="heroAviso"><i class="dot"></i> <span>Plazas abiertas para nuevos proyectos este mes</span></span>
           <h1>Páginas web para negocios, <span class="scribble">a precio cerrado<svg width="300" height="30" viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true"><path d="M3 21c40-9 92-15 150-13 50 2 96 7 144 4-38 4-84 9-131 9"/></svg></span></h1>
-          <p class="lead">Diseñamos y publicamos la web de tu negocio en un plazo de 3 a 14 días. Eliges un diseño de partida, lo adaptamos a tu marca y sigues cada etapa desde <b>tu cuenta</b>.</p>
+          <p class="lead">Diseñamos y publicamos la web de tu negocio en un plazo de una semana a un mes, según el tipo de web. Eliges un diseño de partida, lo adaptamos a tu marca y sigues cada etapa desde <b>tu cuenta</b>.</p>
           <div class="hero-ctas">
             <a href="#webs" class="btn btn-primary" data-magnet>Ver webs y precios <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             <a href="#disenos" class="btn btn-ghost">Ver diseños</a>
           </div>
           <div class="trust">
             <div><b>Desde <em class="num" data-count="149">149</em> €</b><span>precio cerrado</span></div>
-            <div><b>3–14 días</b><span>plazo de entrega</span></div>
+            <div><b>1–4 semanas</b><span>plazo de entrega</span></div>
             <div><b><em class="num" data-count="50">50</em> %</b><span>al inicio, resto a la entrega</span></div>
           </div>
         </div>
@@ -68,7 +77,7 @@
 
     <!-- ===== CINTAS CRUZADAS ===== -->
     <div class="cintas" aria-hidden="true">
-      <div class="cinta cinta-b"><div class="cinta-track"><span>Diseño personalizado</span><span>Adaptada a móvil</span><span>Entrega en días</span><span>Sin permanencia</span><span>Soporte directo</span><span>El dominio es tuyo</span><span>Diseño personalizado</span><span>Adaptada a móvil</span><span>Entrega en días</span><span>Sin permanencia</span><span>Soporte directo</span><span>El dominio es tuyo</span></div></div>
+      <div class="cinta cinta-b"><div class="cinta-track"><span>Diseño personalizado</span><span>Adaptada a móvil</span><span>Entrega en 1–4 semanas</span><span>Sin permanencia</span><span>Soporte por correo</span><span>El dominio es tuyo</span><span>Diseño personalizado</span><span>Adaptada a móvil</span><span>Entrega en 1–4 semanas</span><span>Sin permanencia</span><span>Soporte por correo</span><span>El dominio es tuyo</span></div></div>
       <div class="cinta"><div class="cinta-track"><span>Barberías</span><span>Restaurantes</span><span>Tiendas</span><span>Clínicas</span><span>Gimnasios</span><span>Academias</span><span>Fotógrafos</span><span>Estética</span><span>Barberías</span><span>Restaurantes</span><span>Tiendas</span><span>Clínicas</span><span>Gimnasios</span><span>Academias</span><span>Fotógrafos</span><span>Estética</span></div></div>
     </div>
 
@@ -86,6 +95,10 @@
           <button class="btn btn-ghost btn-fill" id="abrirReco"><span>Ayúdame a elegir</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
         </div>
         <div class="planes" id="planes"></div>
+        <div class="comparar reveal">
+          <button class="btn btn-ghost btn-fill" id="verComparar" aria-expanded="false" aria-controls="comparaTabla"><span>Comparar todos los planes</span></button>
+          <div class="compara-wrap" id="comparaTabla" hidden></div>
+        </div>
       </div>
     </section>
 
@@ -152,17 +165,40 @@
       <div class="wrap faq-grid">
         <div class="sec-head reveal faq-side">
           <span class="eyebrow"><b>06</b>Dudas</span><h2>Preguntas frecuentes</h2>
-          <p class="lead">Si tienes otra duda, pregunta a nuestro asistente o escríbenos por WhatsApp. Respondemos en horario laboral el mismo día.</p>
-          <a class="btn btn-ghost btn-fill" data-wa-link href="#" target="_blank" rel="noopener"><span>Preguntar por WhatsApp</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <p class="lead">Si tienes otra duda, pregunta a nuestro asistente o escríbenos desde el formulario de contacto. Respondemos en menos de 24 horas laborables.</p>
+          <a class="btn btn-ghost btn-fill" href="#contacto"><span>Escribirnos</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </div>
         <div class="faq reveal">
+          <label class="faq-buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="faqQ" placeholder="Buscar en las preguntas…" aria-label="Buscar en las preguntas frecuentes"></label>
+          <p class="faq-nada" id="faqNada" hidden>No hay ninguna pregunta con esas palabras. <a href="#contacto">Pregúntanos directamente</a>.</p>
           <details><summary>¿El precio es el final?</summary><p>Es el precio de partida del tipo de web. En el cuestionario puedes añadir extras (dominio, logotipo, redacción de textos…) y ves el total exacto antes de confirmar. No hay costes ocultos.</p></details>
-          <details><summary>¿Cómo se paga?</summary><p>Se abona el 50 % al empezar y el resto cuando la web está terminada y la has aprobado. Puedes pagar por Bizum, transferencia o los métodos que aparecen al finalizar el pedido.</p></details>
+          <details><summary>¿Cómo se paga?</summary><p>Se abona el 50 % al empezar y el resto cuando la web está terminada y la has aprobado. Puedes pagar por Bizum, transferencia o los métodos que aparecen al finalizar el pedido. Desde «Mis proyectos» puedes descargar el recibo de cada pago.</p></details>
+          <details><summary>¿Cuánto tarda en estar lista?</summary><p>Entre una semana y un mes, según el tipo de web: una landing page suele estar en una semana y una tienda online o un proyecto a medida, en tres o cuatro semanas. En «Mis proyectos» ves la fecha prevista de entrega.</p></details>
+          <details><summary>¿Cómo os envío las fotos y el logotipo?</summary><p>Desde «Mis proyectos», en la pestaña «Archivos» de tu proyecto, puedes subir fotos, logotipos y documentos directamente. También puedes escribirnos en la pestaña «Mensajes».</p></details>
+          <details><summary>¿Cómo os contacto?</summary><p>Por correo a aurevixweb@gmail.com, desde el formulario de contacto de esta página o, si ya eres cliente, desde la pestaña «Mensajes» de tu proyecto. Atendemos por escrito para que todo quede registrado y no se pierda nada.</p></details>
+          <details><summary>¿Quién es el propietario de la web?</summary><p>El dominio y el contenido que nos facilitas son tuyos. El diseño y el código se te ceden para el uso en tu negocio una vez pagado el proyecto, según los términos y condiciones.</p></details>
           <details><summary>¿Puedo cambiar el diseño que elija?</summary><p>Sí. El diseño es una base: adaptamos colores, tipografía, textos, fotos y secciones a tu negocio.</p></details>
           <details><summary>¿Cómo sé en qué punto está mi web?</summary><p>En tu cuenta, en «Mis proyectos», ves la etapa en la que está la web y lo que necesitamos de ti en cada momento: elegir el dominio, enviar el contenido o revisar la vista previa.</p></details>
           <details><summary>¿Necesito tener dominio y alojamiento?</summary><p>No. Si no tienes, añade el extra «Dominio + alojamiento» y nos encargamos de registrarlo a tu nombre. Si ya tienes dominio, nos indicas cuál y lo conectamos.</p></details>
           <details><summary>¿Y si después quiero hacer cambios?</summary><p>Antes de publicar se incluyen las revisiones necesarias. Después puedes contratar el mantenimiento mensual o solicitar cambios puntuales.</p></details>
         </div>
+      </div>
+    </section>
+
+    <!-- ===== CONTACTO ===== -->
+    <section id="contacto">
+      <div class="wrap contacto-grid">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>07</b>Contacto</span>
+          <h2>Cuéntanos tu proyecto</h2>
+          <p class="lead">Escríbenos y te respondemos por correo. Si ya eres cliente, también puedes hablar con el equipo desde «Mis proyectos».</p>
+          <div class="contacto-datos">
+            <a class="cd" id="ctMail" href="mailto:aurevixweb@gmail.com"><span></span><div><small>Correo</small><b>aurevixweb@gmail.com</b></div></a>
+            <div class="cd" id="ctHorario"><span></span><div><small>Horario</small><b>Lunes a viernes, de 9:00 a 18:00</b></div></div>
+            <div class="cd" id="ctResp"><span></span><div><small>Tiempo de respuesta</small><b>Menos de 24 horas laborables</b></div></div>
+          </div>
+        </div>
+        <form class="card contacto-form reveal" id="contactoForm" novalidate></form>
       </div>
     </section>
   </main>
@@ -211,6 +247,15 @@
         <button class="icon-btn" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       </div>
       <div class="prev-stage" id="prevStage"><div class="prev-frame" id="prevFrame"><iframe id="prevIframe" title="Vista previa del diseño"></iframe></div></div>
+    </div>
+  </dialog>
+
+  <!-- ===== AYUDA Y SOPORTE ===== -->
+  <dialog class="dlg" id="soporteDlg" aria-labelledby="sopTitle">
+    <div class="dlg-box">
+      <button class="dlg-x" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <h2 class="dlg-h" id="sopTitle">Ayuda y soporte</h2>
+      <div id="soporteBody"></div>
     </div>
   </dialog>
 

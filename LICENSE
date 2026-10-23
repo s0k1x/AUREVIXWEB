@@ -1,21 +1,46 @@
-MIT License
+LICENCIA DE USO — TODOS LOS DERECHOS RESERVADOS
 
-Copyright (c) 2026 s0k1x
+Copyright © 2026 AurevixWeb (aurevixweb@gmail.com). Todos los derechos reservados.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Este software, su código fuente (HTML, CSS, JavaScript, SQL y cualquier otro
+archivo de este repositorio), su diseño visual, sus textos, la marca y el
+logotipo «AurevixWeb», los diseños de partida y plantillas, los iconos y
+el resto de elementos que lo componen (en adelante, «la Obra») son propiedad
+exclusiva de AurevixWeb y están protegidos por el Real Decreto Legislativo
+1/1996, de 12 de abril (Ley de Propiedad Intelectual), la Ley 17/2001 de
+Marcas y los tratados internacionales sobre propiedad intelectual.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. NO SE CONCEDE NINGUNA LICENCIA. El hecho de que la Obra sea accesible
+   públicamente (por ejemplo, en GitHub o en GitHub Pages) NO otorga ningún
+   derecho de uso, copia, modificación o distribución. Esta Obra NO es
+   software libre ni de código abierto.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. QUEDA EXPRESAMENTE PROHIBIDO, sin autorización previa y por escrito del
+   titular:
+   a) copiar, reproducir, descargar para reutilizar o clonar la Obra, en todo
+      o en parte;
+   b) modificar, traducir, adaptar o crear obras derivadas a partir de ella;
+   c) distribuir, publicar, vender, alquilar, sublicenciar o ceder la Obra o
+      cualquier parte de ella;
+   d) usar los diseños de partida, plantillas, componentes o el código para
+      crear webs propias o de terceros;
+   e) usar la marca, el nombre o el logotipo «AurevixWeb»;
+   f) extraer contenido o datos mediante robots, scrapers u otras
+      herramientas automáticas, incluido su uso para entrenar sistemas de
+      inteligencia artificial;
+   g) eliminar o alterar este aviso o cualquier otro aviso de derechos.
+
+3. CLIENTES. Los clientes que contratan una web reciben, una vez pagado el
+   proyecto, un derecho de uso no exclusivo sobre la web entregada para su
+   propio negocio, en los términos publicados en terminos.html. Ese derecho
+   no se extiende al resto de la Obra.
+
+4. COMPONENTES DE TERCEROS. Las fotografías de los diseños de ejemplo
+   (Pexels), las fuentes tipográficas (Google Fonts) y las librerías externas
+   (supabase-js, qrcode-generator) pertenecen a sus autores y se usan según
+   sus propias licencias.
+
+5. El incumplimiento de esta licencia podrá dar lugar a las acciones civiles
+   y penales que correspondan, incluida la reclamación de daños y perjuicios.
+
+Para solicitar una autorización: aurevixweb@gmail.com

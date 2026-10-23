@@ -1,13 +1,13 @@
 /* ==========================================================
    Service worker: la web funciona sin conexión
-   Cada vez que subas cambios, sube VERSION (v8 → v9…)
+   Cada vez que subas cambios, sube VERSION (v13 → v14…)
    - Archivos de la web: siempre la versión más nueva de internet
      (si no hay conexión, la copia guardada). Así nunca se mezclan
      archivos viejos con nuevos.
    - Fotos de los diseños: se guardan la primera vez y después
      salen al instante.
    ========================================================== */
-const VERSION = 'v11';
+const VERSION = 'v13';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
@@ -15,7 +15,8 @@ const ARCHIVOS = [
   './', 'index.html', 'trabaja.html', 'panel.html', 'plantilla.html', 'terminos.html', 'offline.html',
   'style.css', 'componentes.css', 'animaciones.css', 'inicio.css', 'panel.css', 'trabaja.css', 'config.js',
   'js/app.js', 'js/ui.js', 'js/store.js', 'js/plantillas.js', 'js/panel.js', 'js/pago.js', 'js/efectos.js',
-  'js/iconos.js', 'js/asistente.js', 'js/proyecto.js',
+  'js/iconos.js', 'js/asistente.js', 'js/proyecto.js', 'js/sitio.js', 'js/cookies.js', 'js/apariencia.js', 'js/avisos.js', 'js/colabora.js', 'js/ajustes.js',
+  'ajustes.html', 'funciones.css', 'tema-claro.css', 'icons/nombre-oscuro.png',
   'manifest.json', 'icons/logo-a.png', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
 ];
 
