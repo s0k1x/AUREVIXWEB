@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0c0c0e">
   <meta name="copyright" content="© AurevixWeb. Todos los derechos reservados.">
-  <script>try{var a=JSON.parse(localStorage.getItem('tm_apariencia')||'{}'),d=document.documentElement;if(a.tema==='claro'||(a.tema==='sistema'&&matchMedia('(prefers-color-scheme: light)').matches))d.dataset.tema='claro';if(a.texto&&a.texto!=='normal')d.dataset.texto=a.texto;if(a.movimiento==='reducido')d.dataset.movimiento='reducido';if(a.contraste)d.dataset.contraste='alto'}catch(e){}</script>
+  <script>try{var a=JSON.parse(localStorage.getItem('tm_apariencia')||'{}'),d=document.documentElement;if(a.tema==='claro'||(a.tema==='sistema'&&matchMedia('(prefers-color-scheme: light)').matches))d.dataset.tema='claro';if(a.texto&&a.texto!=='normal')d.dataset.texto=a.texto;if(a.movimiento==='reducido')d.dataset.movimiento='reducido';if(a.contraste)d.dataset.contraste='alto'}catch(e){}try{if(sessionStorage.getItem('tm_intro')!=='1'&&!location.hash&&!location.search&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('intro');setTimeout(function(){document.documentElement.classList.remove('intro')},5000)}}catch(e){}</script>
   <link rel="preload" as="image" href="icons/logo-a.png">
   <link rel="preload" as="image" href="icons/nombre.png">
   <link rel="icon" type="image/png" href="icons/icon-192.png">
@@ -26,6 +26,8 @@
   <link rel="stylesheet" href="tema-claro.css">
 </head>
 <body class="panel-body">
+<div class="splash listo" id="splash0" aria-hidden="true"><div class="brand-card splash-card"><div class="border"></div><div class="content"><div class="logo"><div class="logo1"><img src="icons/logo-a.png" alt=""></div><div class="logo2"><img src="icons/nombre.png" alt="AurevixWeb"></div></div><span class="logo-bottom-text">Webs profesionales</span></div><span class="bottom-text">Diseño web</span></div></div>
+<script>(function(){var s=document.getElementById('splash0'),h=document.documentElement;if(!s)return;if(!h.classList.contains('intro')){s.remove();return}try{sessionStorage.setItem('tm_intro','1')}catch(e){}s.classList.add('vivo');var c=s.querySelector('.brand-card');setTimeout(function(){c&&c.classList.add('on')},200);var t0=Date.now(),done=false;function fin(){if(done)return;done=true;h.classList.remove('intro');s.classList.add('out');setTimeout(function(){s.remove()},600)}function tick(){var e=Date.now()-t0;if(e>=2300&&(document.readyState==='complete'||e>=4500))fin();else setTimeout(tick,100)}tick();s.addEventListener('click',fin)})();</script>
   <header id="header"></header>
 
   <main class="wrap pn aj">

@@ -492,3 +492,16 @@ html[data-contraste=alto][data-tema=claro]{--muted:#36342f;--dim:#4a4842;--line:
   .ct-btns .btn{width:100%;justify-content:center}
   .dz-filtro{justify-content:flex-start}
 }
+
+/* Mientras suena la bienvenida, la página queda oculta (no se ve antes de la tarjeta) */
+html.intro{background:#0c0c0e}
+html.intro body>*:not(.splash){visibility:hidden}
+
+/* Bienvenida estática: sale en el primer fotograma, antes de que cargue nada más */
+#splash0:not(.vivo){display:none}
+#splash0.vivo{display:grid}
+.splash.listo .splash-card{opacity:1;transform:none}
+/* Marca en la ventana de inicio de sesión */
+.lg-marca{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px auto 18px}
+.lg-marca img:first-child{width:40px;height:40px;object-fit:contain}
+.lg-marca .wordmark{height:17px;width:auto}
