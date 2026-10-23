@@ -34,14 +34,11 @@ export const CONFIG = {
 
   /* FORMAS DE PAGO: deja en '' las que no quieras mostrar
      · bizum y transferencia: gratis, tú confirmas el pago en el panel
-     · stripe: enlace de pago de Stripe (tarjeta, Apple/Google Pay y Bizum online)
-     · paypal: tu usuario de PayPal.Me (el importe se rellena solo) */
+     (Lo normal es cambiarlos desde Ajustes → Negocio → «Cobros y comisiones») */
   pagos: {
     bizum: '600 000 000',
     iban: 'ES00 0000 0000 0000 0000 0000',
-    titular: 'Tu nombre y apellidos',
-    stripe: '',
-    paypal: ''
+    titular: 'Tu nombre y apellidos'
   },
 
   // Enlace a tu página de Trustpilot (déjalo en '' hasta que la tengas)
@@ -105,7 +102,7 @@ export const PLANES = [
   {
     id: 'tienda', nombre: 'Tienda online', precio: 690, entrega: '3–4 semanas', dias: 30, icono: 'tienda',
     desc: 'Catálogo, carrito y pago online para vender tus productos sin pagar comisiones a marketplaces.',
-    incluye: ['Catálogo y carrito', 'Pago con tarjeta o Bizum', 'Panel para gestionar productos', 'Hasta 50 productos'],
+    incluye: ['Catálogo y carrito', 'Pago con Bizum o transferencia', 'Panel para gestionar productos', 'Hasta 50 productos'],
     plantillas: ['kiosko', 'brasa']
   },
   {

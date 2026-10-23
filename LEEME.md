@@ -124,11 +124,9 @@ Solo aparecen las formas de pago que rellenes en `config.js → pagos`:
 |---|---|---|
 | **Bizum** a tu número | Gratis | No: el cliente pulsa «Ya he pagado» y tú lo confirmas en el panel |
 | **Transferencia** | Gratis | No: igual que Bizum |
-| **Stripe** (tarjeta, Apple Pay, Google Pay y Bizum online) | 1,5 % + 0,25 € por pago con tarjeta europea | El cobro sí; en el panel lo confirmas tú |
-| **PayPal.Me** | 2,9 % + 0,35 € | El importe va ya rellenado; lo confirmas tú |
 
-**Configurar Stripe:** crea un *Enlace de pago* con «Permitir que los clientes elijan el importe», redirige después del pago a
-`https://TU-WEB/index.html?pagado=1` y copia el enlace en `config.js → pagos.stripe`.
+Stripe y PayPal se han quitado de la web (v22). Los datos de cobro se cambian desde
+**Ajustes → Negocio → «Cobros y comisiones»** (solo el propietario): Bizum, titular e IBAN.
 
 ## 9. Vendedores y comisiones
 - El % de comisión está en `config.js → comision` (ahora **30**).
