@@ -482,6 +482,12 @@ function intro() {
   s.addEventListener('click', fuera);
 }
 
+/* Las franjas (aviso, modo demo) van DEBAJO de la cabecera: la cabecera es lo único que toca la zona de la hora del iPhone */
+function colocarFranja(b) {
+  const h = document.querySelector('header.header, #header, .header');
+  if (h && h.parentNode) h.after(b); else document.body.prepend(b);
+}
+
 /* Franja de anuncio (la activa el propietario en Ajustes) */
 function pintarAnuncio() {
   $('.anuncio')?.remove();
@@ -493,7 +499,7 @@ function pintarAnuncio() {
   b.className = 'anuncio';
   b.innerHTML = `${icono('megaphone')}<span>${esc(CONFIG.anuncio.texto)}</span><button class="anuncio-x" aria-label="Cerrar aviso">${icono('x')}</button>`;
   b.querySelector('button').addEventListener('click', () => { b.remove(); try { sessionStorage.setItem('tm_anuncio', CONFIG.anuncio.texto); } catch { /* nada */ } });
-  document.body.prepend(b);
+  colocarFranja(b);
 }
 
 let ultimoFallo = 0;
@@ -519,7 +525,7 @@ export async function arrancar(pagina) {
     const b = document.createElement('div');
     b.className = 'demo-banner';
     b.innerHTML = `${icono('flask')} <b>Modo demo</b> · los datos se guardan solo en este dispositivo. <button class="link-btn" data-login>Probar paneles</button>`;
-    document.body.prepend(b);
+    colocarFranja(b);
   }
   etiquetas();
   pintarIconos();
