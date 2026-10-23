@@ -219,3 +219,10 @@ No hace falta ejecutar ningún SQL nuevo.
   cambios, mensajes del cliente y notas internas, y Gemini escribe un prompt completo para crear su web. Copiar o descargar en .txt.
   Solo lo puede pedir el equipo. Si la IA no responde, se genera igualmente una versión ordenada sin IA.
 - Stripe y PayPal quitados (v22): solo Bizum y transferencia. Los datos se cambian en Ajustes → Negocio → «Cobros y comisiones».
+
+## 17. Versión 24
+- **Pagos:** el Bizum, el IBAN y el titular de *Ajustes → Negocio* ya salen al pagar (antes se quedaban los de ejemplo de config.js).
+- **Vídeos (panel):** el filtro «Por revisar · Por pagar · Pagados…» ya no monta los textos.
+- **iPhone:** en el móvil la cabecera es opaca y ya no se esconde al bajar, así la zona de la hora no enseña la página por detrás.
+- **Formas de pago:** el subtítulo se ve siempre; la tarjeta ya no pisa el número con el importe.
+- **Reseñas:** son las de tu web (Supabase), no las de Trustpilot. Al publicar una, el cliente ve un botón para opinar también en Trustpilot (se le copia su texto).

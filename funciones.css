@@ -766,3 +766,28 @@ html.intro body>*:not(.splash){visibility:hidden}
 .mp-btns .btn{flex:1 1 auto}
 .mp-nota{font-size:12.5px;margin-top:10px}
 html[data-tema=claro] .od-ia{border-color:rgba(79,133,12,.35);background:linear-gradient(135deg,rgba(79,133,12,.1),rgba(79,133,12,.02))}
+
+/* v24 · Filtro de vídeos: los textos ya no se montan unos encima de otros (heredaba el ancho de 38 px de .seg) */
+.vid-seg button{width:auto;height:auto;display:block;min-width:0}
+@media (max-width:640px){
+  .vid-seg{flex-wrap:wrap;overflow:visible}
+  .vid-seg button{flex:1 1 auto;padding:9px 10px;font-size:13.5px;text-align:center}
+}
+/* v24 · Formas de pago: el subtítulo se ve siempre (antes solo en la elegida y dejaba hueco) */
+.pm-tx small{transform:none;opacity:.75;white-space:normal}
+.pm:has(input:checked) .pm-tx small{opacity:1}
+/* v24 · Tarjeta del pago: el número y el importe ya no se pisan */
+.fcd-num{top:84px;font-size:14px;letter-spacing:.1em;white-space:nowrap}
+.fcd-amount{line-height:1.15}
+.fcd-amount small{font-size:9px;margin-bottom:2px}
+.fcd-amount b{font-size:17px;white-space:nowrap}
+
+/* v24 · iPhone: la zona de la hora siempre limpia.
+   La cabecera es opaca y no se esconde en el móvil; Safari toma su color para la barra de estado. */
+html{background:var(--bg)}
+@media (max-width:640px){
+  .header,.header.scrolled{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;border-color:var(--line)}
+  .header.hide{transform:none}
+  .progreso{display:none}
+}
+@media (max-width:640px){html[data-tema=claro] body .header,html[data-tema=claro] body .header.scrolled{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none}}
