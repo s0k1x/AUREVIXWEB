@@ -19,6 +19,16 @@ export const CONFIG = {
   comision: 30,                             // % que se lleva el vendedor por cada web que venda
   urgente: 0.25,                            // +25 % sobre el precio base si lo quieren urgente
 
+  // Descuento de bienvenida: solo vale en la PRIMERA web de cada cliente
+  bienvenida: { activo: true, codigo: 'BIENVENIDA10', pct: 10 },
+
+  /* CREADORES DE VÍDEO: pago fijo por cada vídeo aprobado y publicado
+     · precio: lo que cobra por vídeo
+     · bonus: extra si el vídeo supera «visitas» visualizaciones en 14 días
+     · maxMes: vídeos pagados como máximo al mes por persona
+     Además cobran la comisión normal si alguien compra desde su enlace. */
+  videos: { precio: 15, bonus: 25, visitas: 10000, maxMes: 12 },
+
   // Emails que entran como PROPIETARIO (acceso total al panel)
   propietarios: ['aurevixweb@gmail.com'],
 

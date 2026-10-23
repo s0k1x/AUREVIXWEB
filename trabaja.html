@@ -38,17 +38,18 @@
         <div>
           <span class="eyebrow">Trabaja con nosotros</span>
           <h1>Comercial de páginas web con un <span class="pct"><em class="num" data-count="30">30</em> %</span> de comisión.</h1>
-          <p class="lead">Buscamos personas con experiencia en <b>inteligencia artificial</b>, <b>redes sociales</b> o <b>ventas</b> para presentar nuestras webs a negocios. Nosotros diseñamos y entregamos cada proyecto; tú captas al cliente y cobras tu comisión.</p>
+          <p class="lead">Buscamos personas con experiencia en <b>inteligencia artificial</b>, <b>redes sociales</b> o <b>ventas</b> para presentar nuestras webs a negocios. Nosotros diseñamos y entregamos cada proyecto; tú captas al cliente y cobras tu comisión. ¿Lo tuyo son los vídeos? También <b>pagamos por cada vídeo</b> que publiques.</p>
           <div class="t-ctas">
             <a href="#candidatura" class="btn btn-primary" data-magnet><span>Enviar candidatura</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             <a href="#calculadora" class="btn btn-ghost">Calcular comisiones</a>
+            <a href="#videos" class="btn btn-ghost"><span>Pago por vídeo</span></a>
           </div>
         </div>
         <div class="t-stats">
           <div><b><em class="num" data-count="30">30</em> %</b><span>de comisión por web vendida</span></div>
           <div><b><em class="num" data-count="0">0</em> €</b><span>de inversión inicial</span></div>
           <div><b>100 %</b><span>en remoto, horario libre</span></div>
-          <div><b>0</b><span>conocimientos técnicos necesarios</span></div>
+          <div><b><em class="num" data-count="15" id="statVideo">15</em> €</b><span>por cada vídeo aprobado</span></div>
         </div>
       </div>
     </section>
@@ -119,15 +120,56 @@
       </div>
     </section>
 
-    <!-- ===== VENTAJAS ===== -->
-    <section class="alt">
+
+    <!-- ===== CREADORES DE VÍDEO ===== -->
+    <section class="alt" id="videos">
       <div class="wrap">
         <div class="sec-head reveal">
-          <span class="eyebrow"><b>03</b>Condiciones</span>
+          <span class="eyebrow"><b>03</b>Creadores de vídeo</span>
+          <h2>Te pagamos por cada vídeo</h2>
+          <p class="lead">Si creas contenido para TikTok, Instagram o YouTube, puedes cobrar un precio fijo por cada vídeo que publiques sobre nuestras webs, vendas o no. Y si alguien compra desde tu enlace, además te llevas tu comisión.</p>
+        </div>
+        <div class="vp-grid">
+          <div class="vp-cards">
+            <div class="vp reveal"><span class="vp-n" data-v="precio">15 €</span><b>Por vídeo aprobado</b><p>Vídeo propio de 20 a 60 segundos, publicado en tu cuenta, que nombre a AurevixWeb.</p></div>
+            <div class="vp reveal"><span class="vp-n" data-v="bonus">+25 €</span><b>Bonus por alcance</b><p>Si el vídeo supera las <span data-v="visitas">10.000</span> visualizaciones en sus primeros 14 días.</p></div>
+            <div class="vp reveal"><span class="vp-n"><span data-comision></span> %</span><b>Y comisión por venta</b><p>Pon tu enlace en la bio: cada web que se venda desde ahí es tuya.</p></div>
+          </div>
+          <div class="calc card reveal vp-calc">
+            <div class="rango">
+              <div class="rango-h"><span>Vídeos al mes</span><b id="vcN">8</b></div>
+              <input type="range" id="vcRange" min="1" max="12" value="8" aria-label="Vídeos al mes">
+            </div>
+            <div class="rango">
+              <div class="rango-h"><span>De ellos, con bonus</span><b id="vcB">2</b></div>
+              <input type="range" id="vcBonus" min="0" max="8" value="2" aria-label="Vídeos con bonus">
+            </div>
+            <div class="calc-res">
+              <div><small>Al mes</small><b id="vcMes">0 €</b></div>
+              <div><small>Al año</small><b id="vcAno">0 €</b></div>
+            </div>
+            <p class="calc-nota">Sin contar las comisiones por ventas. Hasta <span data-v="maxMes">12</span> vídeos pagados al mes; cada vídeo se revisa antes de aprobarlo.</p>
+          </div>
+        </div>
+        <ul class="vp-reglas reveal">
+          <li><i data-i="check"></i>Te enviamos ideas y diseños de ejemplo para grabar</li>
+          <li><i data-i="check"></i>Envías el enlace desde tu panel y te avisamos al revisarlo</li>
+          <li><i data-i="check"></i>Cobras a final de mes por Bizum o transferencia</li>
+          <li><i data-i="check"></i>Sin exclusividad: sigues con tu contenido de siempre</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== VENTAJAS ===== -->
+    <section>
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>04</b>Condiciones</span>
           <h2>Qué te ofrecemos</h2>
         </div>
         <div class="ventajas">
           <div class="vj reveal"><span><i data-i="euro"></i></span><b><span data-comision></span> % de cada venta</b><p>Sin límite de ventas ni objetivos mínimos.</p></div>
+          <div class="vj reveal"><span><i data-i="video"></i></span><b>Pago por vídeo</b><p><span data-v="precio">15 €</span> por cada vídeo aprobado, aunque no venda.</p></div>
           <div class="vj reveal"><span><i data-i="link"></i></span><b>Tu enlace de ventas</b><p>Los pedidos que llegan a través de tu enlace se asignan a tu nombre de forma automática.</p></div>
           <div class="vj reveal"><span><i data-i="chart"></i></span><b>Panel de ventas</b><p>Consulta tus ventas y el estado de cada comisión en cualquier momento.</p></div>
           <div class="vj reveal"><span><i data-i="tool"></i></span><b>Material de venta</b><p>Catálogo con precios cerrados, diseños de ejemplo y vista previa con el nombre del cliente.</p></div>
@@ -140,11 +182,11 @@
     </section>
 
     <!-- ===== CÓMO EMPIEZAS + FORMULARIO ===== -->
-    <section id="candidatura">
+    <section class="alt" id="candidatura">
       <div class="wrap t-grid">
         <div>
           <div class="sec-head reveal">
-            <span class="eyebrow"><b>04</b>Proceso</span>
+            <span class="eyebrow"><b>05</b>Proceso</span>
             <h2>Cómo empezar</h2>
           </div>
           <ol class="t-pasos">
@@ -156,6 +198,7 @@
           <div class="faq t-faq reveal">
             <details><summary>¿Necesito saber programar o diseñar?</summary><p>No. Nosotros diseñamos y desarrollamos las webs. Tu función es captar clientes, presentarles las opciones y acompañarles hasta que hagan el pedido.</p></details>
             <details><summary>¿Cuándo cobro mi comisión?</summary><p>Cuando el cliente ha completado el pago de su web. En tu panel ves qué comisiones están pendientes y cuáles están disponibles.</p></details>
+            <details><summary>¿Cómo funciona el pago por vídeo?</summary><p>Publicas el vídeo en tu cuenta y pegas el enlace en tu panel («Mis vídeos»). Lo revisamos y, si cumple las condiciones, queda aprobado y lo cobras a final de mes. Si supera las visualizaciones del bonus, te sumamos el extra.</p></details>
             <details><summary>¿Hay un mínimo de ventas?</summary><p>No. No hay objetivos mínimos.</p></details>
             <details><summary>¿Qué tipo de relación es?</summary><p>Es una colaboración independiente. Al incorporarte te explicamos cómo se facturan las comisiones.</p></details>
           </div>
@@ -191,9 +234,9 @@
     $('#candCampos').innerHTML = `
       ${campo({ id: 'cNombre', name: 'nombre', label: 'Nombre y apellidos', required: true, attrs: 'autocomplete="name"' })}
       ${campo({ id: 'cTel', name: 'telefono', label: 'Teléfono', type: 'tel', required: true, attrs: 'inputmode="tel" autocomplete="tel"' })}
-      ${desplegable({ id: 'cPuesto', name: 'puesto', label: 'Área en la que tienes más experiencia', opciones: ['Ventas', 'Redes sociales', 'Inteligencia artificial', 'Un poco de todo'] })}
+      ${desplegable({ id: 'cPuesto', name: 'puesto', label: 'Área en la que tienes más experiencia', opciones: ['Ventas', 'Redes sociales', 'Creación de vídeos', 'Inteligencia artificial', 'Un poco de todo'] })}
       <span class="q-label">¿Qué sabes usar? <span class="muted" style="font-weight:400">(marca todo lo que quieras)</span></span>
-      ${opciones('habilidades', ['ChatGPT / Claude', 'Imágenes con IA', 'Canva', 'Instagram', 'TikTok', 'Vender en persona', 'Vender por mensajes'], [], 'checkbox')}
+      ${opciones('habilidades', ['ChatGPT / Claude', 'Imágenes con IA', 'Canva', 'Edición de vídeo (CapCut…)', 'Instagram', 'TikTok', 'YouTube', 'Vender en persona', 'Vender por mensajes'], [], 'checkbox')}
       <span class="q-label">Experiencia vendiendo o en redes</span>
       ${opciones('experiencia', ['Ninguna, pero tengo ganas', 'Algo', 'Bastante'])}
       ${campo({ id: 'cPort', name: 'portfolio', label: 'Tus redes o algo que hayas hecho', hint: 'Opcional: tu Instagram, TikTok o un enlace' })}
@@ -203,6 +246,33 @@
     await arrancar('trabaja');
     iniciarChat();
     etiquetas();
+
+    /* ---------- Pago por vídeo (valores de Ajustes → Negocio) ---------- */
+    const VC = CONFIG.videos || { precio: 15, bonus: 25, visitas: 10000, maxMes: 12 };
+    const fmt = n => n.toLocaleString('es-ES');
+    $$('[data-v=precio]').forEach(e => (e.textContent = euros(VC.precio)));
+    $$('[data-v=bonus]').forEach(e => (e.textContent = '+' + euros(VC.bonus)));
+    $$('[data-v=visitas]').forEach(e => (e.textContent = fmt(VC.visitas)));
+    $$('[data-v=maxMes]').forEach(e => (e.textContent = VC.maxMes));
+    $$('[data-comision]').forEach(e => (e.textContent = PCT));
+    const sv = $('#statVideo'); if (sv) { sv.dataset.count = VC.precio; sv.textContent = VC.precio; }
+    $('#vcRange').max = VC.maxMes;
+    if (+$('#vcRange').value > VC.maxMes) $('#vcRange').value = VC.maxMes;
+    function calcVideos() {
+      const n = +$('#vcRange').value;
+      $('#vcBonus').max = n;
+      if (+$('#vcBonus').value > n) $('#vcBonus').value = n;
+      const b = +$('#vcBonus').value;
+      const mes = n * VC.precio + b * VC.bonus;
+      $('#vcN').textContent = n; $('#vcB').textContent = b;
+      $('#vcRange').style.setProperty('--p', `${VC.maxMes > 1 ? (n - 1) / (VC.maxMes - 1) * 100 : 100}%`);
+      $('#vcBonus').style.setProperty('--p', `${n ? b / n * 100 : 0}%`);
+      const pon = (el, v) => { const t = $(el); const nuevo = euros(v); if (t.textContent !== nuevo) { t.textContent = nuevo; t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump'); } };
+      pon('#vcMes', mes); pon('#vcAno', mes * 12);
+    }
+    $('#vcRange').addEventListener('input', calcVideos);
+    $('#vcBonus').addEventListener('input', calcVideos);
+    calcVideos();
 
     /* ---------- Calculadora de ganancias ---------- */
     const tipos = PLANES.filter(p => p.id !== 'medida');
