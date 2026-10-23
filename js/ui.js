@@ -83,7 +83,18 @@ export const avatar = (u, cls = '') =>
 /** Cargando de puntos */
 export const spinner = (cls = '') =>
   `<div class="dot-spinner ${cls}" role="status" aria-label="Cargando">${'<div class="dot-spinner__dot"></div>'.repeat(8)}</div>`;
-export const cargandoHTML = (texto = 'Cargando…') => `<div class="loading-box">${spinner()}<span>${esc(texto)}</span></div>`;
+export const cargandoHTML = (texto = 'Cargando…') => `<div class="loading-box">${spinner()}<span>${esc(texto)}</span><small class="lb-lento">Está tardando un poco más de lo normal…</small></div>`;
+/** Línea de datos separados por «·» que nunca deja un punto suelto al final o al principio de una línea */
+export const metaHTML = partes => `<span class="meta"><span class="meta-in">${partes.filter(Boolean).map(t => `<span>${esc(t)}</span>`).join('')}</span></span>`;
+/** Aviso de error con botón «Reintentar» (el botón lleva data-reintentar) */
+export const errorCargaHTML = (msg, titulo = 'No se ha podido cargar') =>
+  `<div class="empty carga-error" role="alert"><div class="em">${icono('alert')}</div><b>${esc(titulo)}</b><p>${esc(msg || 'Algo ha fallado.')}</p><button type="button" class="btn btn-sm btn-primary" data-reintentar>${icono('refresh')}<span>Reintentar</span></button></div>`;
+/** Pinta el error en una caja y llama a «volver» al pulsar Reintentar */
+export function errorCarga(caja, e, volver, titulo) {
+  console.error(e);
+  caja.innerHTML = errorCargaHTML(e?.message, titulo);
+  caja.querySelector('[data-reintentar]')?.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); volver(); }, { once: true });
+}
 
 /** Pone un botón en modo "cargando" */
 export function ocupado(btn, si) {
@@ -186,7 +197,8 @@ export function toast(texto, tipo = '') {
   void t.offsetWidth;
   t.className = `toast show ${tipo}`;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+  // Los errores se quedan más tiempo para que dé tiempo a leerlos
+  toastTimer = setTimeout(() => t.classList.remove('show'), tipo === 'err' ? 6500 : 3200);
 }
 
 export async function copiar(texto) {
@@ -484,8 +496,17 @@ function pintarAnuncio() {
   document.body.prepend(b);
 }
 
+let ultimoFallo = 0;
 export async function arrancar(pagina) {
   document.documentElement.classList.add('js');
+  // Red de seguridad: si algo falla sin control, se avisa (sin repetir el aviso en bucle)
+  addEventListener('unhandledrejection', e => {
+    const m = e.reason?.message || '';
+    console.error('Error sin controlar:', e.reason);
+    if (!m || /abort|load failed|import|fetch dynamically/i.test(m) || Date.now() - ultimoFallo < 8000) return;
+    ultimoFallo = Date.now();
+    toast(m.length < 140 ? m : 'Algo ha fallado. Inténtalo de nuevo.', 'err');
+  });
   aplicarApariencia();
   aplicarCache();
   intro();

@@ -8,9 +8,10 @@ import { contar } from './efectos.js';
 import * as store from './store.js';
 import {
   $, $$, esc, euros, fecha, fechaCorta, haceCuanto, icono, avatar, toast, abrir, cerrar, arrancar, pedirLogin, mailLink, refPedido,
-  ESTADOS, PAGOS, METODOS, cargandoHTML, ocupado, campo, estrellas, etiquetas, TAREAS, progreso, copiar, descargar
+  ESTADOS, PAGOS, METODOS, cargandoHTML, errorCargaHTML, metaHTML, ocupado, campo, estrellas, etiquetas, TAREAS, progreso, copiar, descargar
 } from './ui.js';
 import { montarHilo, montarArchivos, abrirRecibo } from './colabora.js';
+import { abrirMegaPrompt } from './megaprompt.js';
 
 await arrancar('panel');
 
@@ -41,10 +42,10 @@ store.alCambiarUsuario(async u => {
   if (!u) return sinSesion();
   if (u.role === 'client') return sinPermiso();
   $('#pnRole').textContent = u.role === 'owner' ? 'Panel de propietario' : 'Panel de trabajador';
-  $('#pnHello').innerHTML = `Hola, ${esc(u.name.split(' ')[0])} <span class="saludo">${icono('hand')}</span>`;
+  $('#pnHello').innerHTML = `Hola, <span class="nw">${esc(u.name.split(' ')[0])}&nbsp;<span class="saludo">${icono('hand')}</span></span>`;
   $('#pnRefresh').hidden = false;
   const tabs = u.role === 'owner'
-    ? [['resumen', 'Resumen', 'chart'], ['pedidos', 'Pedidos', 'bag'], ['clientes', 'Clientes', 'users'], ['soporte', 'Soporte', 'help'], ['agenda', 'Agenda', 'calendar'], ['actividad', 'Actividad', 'history'], ['candidaturas', 'Candidaturas', 'briefcase'], ['videos', 'Vídeos', 'video'], ['resenas', 'Reseñas', 'star'], ['equipo', 'Equipo', 'award']]
+    ? [['resumen', 'Resumen', 'chart'], ['pedidos', 'Pedidos', 'bag'], ['clientes', 'Clientes', 'users'], ['soporte', 'Soporte', 'help'], ['agenda', 'Agenda', 'calendar'], ['actividad', 'Actividad', 'history'], ['candidaturas', 'Candidatos', 'briefcase'], ['videos', 'Vídeos', 'video'], ['resenas', 'Reseñas', 'star'], ['equipo', 'Equipo', 'award']]
     : [['mios', 'Mis encargos', 'laptop'], ['agenda', 'Agenda', 'calendar'], ['disponibles', 'Disponibles', 'inbox'], ['soporte', 'Soporte', 'help'], ['ventas', 'Mis ventas', 'euro'], ['videos', 'Mis vídeos', 'video'], ['ranking', 'Ranking', 'trophy'], ['historial', 'Historial', 'folder']];
   const pedida = location.hash.slice(1);
   const pedidoHash = pedida.startsWith('pedido-') ? pedida.slice(7) : '';
@@ -61,6 +62,12 @@ addEventListener('hashchange', () => {
   else if ($(`[data-tab="${h}"]`)) irTab(h);
 });
 document.addEventListener('aviso', () => { if (!dlg.open) cargar(true); });
+// Al volver a la web tras un rato en otra app, se actualizan los datos sin tocar lo que estés escribiendo
+let ocultoDesde = 0;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { ocultoDesde = Date.now(); return; }
+  if (U && U.role !== 'client' && ocultoDesde && Date.now() - ocultoDesde > 60000 && !dlg.open) cargar(true);
+});
 
 function cabeceraVacia(rol, hola) {
   $('#pnRole').textContent = rol;
@@ -103,7 +110,9 @@ async function cargar(silencioso = false) {
     try { pend ? navigator.setAppBadge?.(pend) : navigator.clearAppBadge?.(); } catch {}
   } catch (e) {
     console.error(e);
-    body.innerHTML = `<div class="card gate"><div class="em">${icono('alert')}</div><h3>No se pudieron cargar los datos</h3><p class="muted">${esc(e.message)}</p><p class="muted" style="font-size:13px">Si acabas de conectar Supabase, comprueba que has ejecutado el archivo supabase/esquema.sql (LEEME.md).</p></div>`;
+    if (silencioso && datos) return; // en las recargas automáticas no se borra lo que ya se ve
+    body.innerHTML = `<div class="card">${errorCargaHTML(e.message, 'No se pudieron cargar los datos')}</div>`;
+    body.querySelector('[data-reintentar]')?.addEventListener('click', () => cargar(), { once: true });
   }
 }
 $('#pnRefresh').addEventListener('click', async e => { const b = e.currentTarget; ocupado(b, true); await cargar(); ocupado(b, false); toast('Actualizado'); });
@@ -268,7 +277,7 @@ function vistaPedidos() {
         <button type="button" class="btn btn-sm btn-ghost" id="csv" title="Descargar en Excel (CSV)">${icono('copy')}<span>Exportar</span></button>
       </div>
     </div>
-    <div class="opts filters">${Object.entries(FILTROS).map(([k, t]) => `<label class="opt"><input type="radio" name="flt" value="${k}" ${filtro.estado === k ? 'checked' : ''}><span><i>${t} · ${base.filter(p => pasaFiltro(p, k)).length}</i></span></label>`).join('')}</div>
+    <div class="opts filters">${Object.entries(FILTROS).map(([k, t]) => { const n = base.filter(p => pasaFiltro(p, k)).length; return `<label class="opt ${!n && k !== 'todos' && filtro.estado !== k ? 'cero' : ''}"><input type="radio" name="flt" value="${k}" ${filtro.estado === k ? 'checked' : ''}><span><i>${t} · ${n}</i></span></label>`; }).join('')}</div>
     ${vista === 'tablero' ? tablero(lista) : `<div class="rows card flush">${lista.map(p => filaPedido(p)).join('') || vacio('search', 'No hay pedidos aquí')}</div>`}`;
   $$('[data-vista]').forEach(b => b.addEventListener('click', () => {
     vista = b.dataset.vista;
@@ -883,7 +892,7 @@ function abrirPedido(id) {
 
   box.innerHTML = `
     <div class="od-head">
-      <div><small>${refPedido(p.id)} · ${fecha(p.createdAt)} · ${esc(p.planNombre)}</small><h2 id="odTitle">${esc(neg(p))}</h2></div>
+      <div class="od-head-t">${metaHTML([refPedido(p.id), fecha(p.createdAt)])}<h2 id="odTitle">${esc(neg(p))}</h2>${metaHTML([p.planNombre, pl ? 'Diseño ' + pl.nombre : 'Diseño a medida'])}</div>
       <div class="od-head-r">
         <button class="btn btn-sm btn-ghost" id="odRecibo" title="Resumen imprimible del pedido"><span>Recibo</span>${icono('printer')}</button>
         ${pl ? `<button class="btn btn-sm btn-ghost" id="odExport" title="Descarga el diseño con el nombre y color del cliente"><span>Exportar HTML</span>${icono('download')}</button>` : ''}
@@ -913,10 +922,15 @@ function abrirPedido(id) {
         <div class="od-pay ${pago === 'verificando' ? 'alert' : ''}">
           <label class="fc-select"><span>Pago</span>
             <select id="odPago" ${puedeEditar ? '' : 'disabled'}>${Object.entries(PAGOS).map(([k, v]) => `<option value="${k}" ${pago === k ? 'selected' : ''}>${v.txt}</option>`).join('')}</select></label>
-          <p>${pago === 'verificando'
-            ? `${icono('euro')} El cliente indica que ha pagado ${p.pagoFase === 'resto' ? 'el resto' : 'la señal'} (<b>${euros(p.pagoFase === 'resto' ? p.total - senal : senal)}</b>) por <b>${METODOS[p.pagoMetodo] || p.pagoMetodo}</b> ${p.pagoAviso ? haceCuanto(p.pagoAviso) : ''}. Compruébalo y márcalo como pagado.`
+          <p class="od-pay-info">${pago === 'verificando'
+            ? `${icono('euro')}<span>El cliente indica que ha pagado ${p.pagoFase === 'resto' ? 'el resto' : 'la señal'} (<b class="nw">${euros(p.pagoFase === 'resto' ? p.total - senal : senal)}</b>) por <b>${METODOS[p.pagoMetodo] || p.pagoMetodo}</b> ${p.pagoAviso ? haceCuanto(p.pagoAviso) : ''}. Compruébalo en tu banco y márcalo como <b>Pagado</b> (o «Señal pagada»).</span>`
             : p.pagoMetodo ? `Último pago por ${METODOS[p.pagoMetodo] || p.pagoMetodo}.` : `Señal: ${euros(senal)} · Resto: ${euros((p.total || 0) - senal)}`}</p>
         </div>
+        <button type="button" class="od-ia" id="odPrompt">
+          <span class="od-ia-ic">${icono('sparkle')}</span>
+          <span><b>Mega prompt con IA</b><small>Todo lo que ha pedido el cliente, listo para crear su web</small></span>
+          ${icono('arrow')}
+        </button>
         <form class="od-urls" id="odUrls" novalidate>
           ${campo({ id: 'odVista', name: 'urlVista', label: 'Enlace de la vista previa para el cliente', type: 'url', value: p.urlVista || '', attrs: puedeEditar ? '' : 'disabled' })}
           ${campo({ id: 'odWeb', name: 'urlWeb', label: 'Dirección de la web publicada', type: 'url', value: p.urlWeb || '', attrs: puedeEditar ? '' : 'disabled' })}
@@ -992,17 +1006,32 @@ function abrirPedido(id) {
   verPest(odPest);
   history.replaceState(null, '', '#pedido-' + p.id);
 
+  let ocupadoOd = false;
   const guardar = async (cambios, msg, hito = '') => {
+    if (ocupadoOd) return toast('Espera un momento, se está guardando el cambio anterior');
+    ocupadoOd = true;
+    box.classList.add('od-guardando');
+    const y = $('.od-body', box)?.scrollTop || 0;
+    let ok = false;
     try {
       if (hito) cambios = conHistorial(p, cambios, hito, U.name);
       await store.actualizarPedido(p.id, cambios);
       Object.assign(p, cambios);
-      if (msg) toast(msg);
+      ok = true;
+      if (msg) toast(msg, 'ok');
       pintar();
-      const y = $('.od-body', box)?.scrollTop || 0;
-      abrirPedido(p.id);
-      const b = $('.od-body', box); if (b) b.scrollTop = y;
-    } catch (err) { toast(err.message, 'err'); }
+    } catch (err) {
+      toast(`No se ha guardado: ${err.message}`, 'err');
+    } finally {
+      ocupadoOd = false;
+      box.classList.remove('od-guardando');
+      // Se vuelve a pintar siempre: si falló, los desplegables vuelven a su valor real
+      if (dlg.open) {
+        abrirPedido(p.id);
+        const b = $('.od-body', box); if (b) b.scrollTop = y;
+      }
+    }
+    return ok;
   };
   $$('[data-etapa]', box).forEach(b => b.addEventListener('click', () => {
     const id = b.dataset.etapa;
@@ -1042,12 +1071,16 @@ function abrirPedido(id) {
     guardar({ urlVista: limpio(f.get('urlVista')), urlWeb: limpio(f.get('urlWeb')) }, 'Enlaces guardados', 'Enlaces actualizados');
   });
   $('#odExport', box)?.addEventListener('click', e => exportarHTML(p, e.currentTarget));
+  $('#odPrompt', box)?.addEventListener('click', () => abrirMegaPrompt(p));
   $('#odCoger', box)?.addEventListener('click', async e => {
-    ocupado(e.currentTarget, true);
-    await coger(p.id);
-    Object.assign(p, { asignado: U.uid, asignadoNombre: U.name, estado: 'en_curso' });
-    toast('Encargo asignado a ti');
-    pintar(); abrirPedido(p.id);
+    const b = e.currentTarget;
+    ocupado(b, true);
+    try {
+      await coger(p.id);
+      Object.assign(p, { asignado: U.uid, asignadoNombre: U.name, estado: 'en_curso' });
+      toast('Encargo asignado a ti', 'ok');
+      pintar(); abrirPedido(p.id);
+    } catch (err) { toast(err.message, 'err'); ocupado(b, false); }
   });
   $('#odNoteForm', box)?.addEventListener('submit', e => {
     e.preventDefault();

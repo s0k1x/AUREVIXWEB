@@ -8,7 +8,7 @@ const conRaton = () => matchMedia('(hover: hover)').matches;
 function ondas() {
   document.addEventListener('pointerdown', e => {
     const b = e.target.closest('.btn, .social, .icon-btn');
-    if (!b || b.disabled || reducido()) return;
+    if (!b || b.disabled || reducido() || b.classList.contains('av-btn')) return; // la campana no lleva onda (su número sobresale)
     const r = b.getBoundingClientRect();
     const d = Math.max(r.width, r.height) * 2.2;
     const s = document.createElement('span');

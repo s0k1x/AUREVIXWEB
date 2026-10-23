@@ -7,7 +7,7 @@ import * as store from './store.js';
 import {
   $, $$, esc, euros, fecha, icono, toast, abrir, cerrar, conSesion, arrancar, mailLink, refPedido,
   ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados,
-  estrellas, ocupado, cargandoHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
+  estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
 } from './ui.js';
 import { planesActivos, extrasActivos } from './sitio.js';
 import { montarHilo, montarArchivos, abrirRecibo } from './colabora.js';
@@ -454,7 +454,7 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
   if (!plan) return;
   // Agenda completa: en vez del cuestionario, lista de espera
   if (!CONFIG.aceptarPedidos) return irAContacto('espera', `Lista de espera: ${plan.nombre}`);
-  W = { plan, paso: 0, max: 0, plantilla: plantillaInicial || plan.plantillas[0] || 'cero', colorCustom: '' };
+  W = { plan, paso: 0, max: 0, plantilla: plantillaInicial || plan.plantillas[0] || 'cero', colorCustom: '', clave: Date.now().toString(36) + Math.random().toString(36).slice(2, 8) };
   const objetivo = plan.id === 'reservas' ? 'Reservas / citas' : plan.id === 'tienda' ? 'Vender online' : OBJETIVOS[0];
 
   form.innerHTML = `
@@ -757,7 +757,7 @@ async function confirmarPedido() {
     const pedido = await store.crearPedido({
       plan: W.plan.id, planNombre: W.plan.nombre, precioBase: W.plan.precio,
       extras: d.extras, urgente: d.urgente, total: d.total, mensual: d.mensual,
-      plantilla: W.plantilla, respuestas: d.respuestas, aceptaTerminos: Date.now(),
+      plantilla: W.plantilla, respuestas: d.respuestas, aceptaTerminos: Date.now(), clave: W.clave,
       ...(W.cupon ? { cupon: W.cupon.codigo, descuento: d.descuento, precioSinDescuento: d.bruto } : {}),
       ref: leerRef() && leerRef() !== u.uid ? leerRef() : ''
     });
@@ -843,8 +843,8 @@ function tarjetaProyecto(p) {
   return `
   <article class="mp mp-proyecto ${abiertoAqui ? 'abierto' : ''}" data-proy="${p.id}">
     <button type="button" class="mp-top mp-toggle" data-toggle="${p.id}" aria-expanded="${abiertoAqui}">
-      <div><b>${esc(p.respuestas?.negocio || p.planNombre)}</b><small>${esc(p.planNombre)} · ${pl ? 'Diseño ' + esc(pl.nombre) : 'Diseño a medida'} · Ref. ${refPedido(p.id)} · ${fecha(p.createdAt)}</small></div>
-      <div class="mp-top-r"><b>${euros(p.total)}${p.mensual ? ` <small>+ ${euros(p.mensual)}/mes</small>` : ''}</b>
+      <div><b>${esc(p.respuestas?.negocio || p.planNombre)}</b>${metaHTML([p.planNombre, pl ? 'Diseño ' + pl.nombre : 'Diseño a medida', 'Ref. ' + refPedido(p.id), fecha(p.createdAt)])}</div>
+      <div class="mp-top-r"><b class="mp-precio"><span>${euros(p.total)}</span>${p.mensual ? `<small>+ ${euros(p.mensual)}/mes</small>` : ''}</b>
         <span class="mp-pills"><span class="pill ${est.cls}">${est.txt}</span>${plazo ? `<span class="pill plazo ${plazoClase(p)}">${icono('clock')} ${plazo}</span>` : ''}</span></div>
       <span class="mp-chev">${icono('down')}</span>
     </button>
@@ -907,8 +907,7 @@ async function pintarPedidos() {
     etiquetas(list);
     montarPestana();
   } catch (e) {
-    console.error(e);
-    list.innerHTML = `<div class="empty"><b>No se han podido cargar</b><p>${esc(e.message)}</p></div>`;
+    errorCarga(list, e, () => { list.innerHTML = cargandoHTML('Cargando tus proyectos…'); pintarPedidos(); }, 'No se han podido cargar tus proyectos');
   }
 }
 
@@ -1010,7 +1009,7 @@ async function pintarSoporte() {
   box.innerHTML = cargandoHTML('Cargando tus consultas…');
   let L = [], P = [];
   try { [L, P] = await Promise.all([store.misTickets(), store.misPedidos().catch(() => [])]); }
-  catch (e) { box.innerHTML = `<p class="muted">${esc(e.message)}</p>`; return; }
+  catch (e) { errorCarga(box, e, pintarSoporte, 'No se han podido cargar tus consultas'); return; }
   box.innerHTML = `
     <form class="sop-form" id="sopForm" novalidate>
       <p class="muted">Cuéntanos qué necesitas. ${esc(CONFIG.respuesta)} y te avisamos aquí y en la campana.</p>

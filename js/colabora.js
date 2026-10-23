@@ -6,7 +6,7 @@
    ========================================================== */
 import { CONFIG } from '../config.js';
 import * as store from './store.js';
-import { $, $$, esc, euros, fecha, haceCuanto, icono, toast, ocupado, tamano, refPedido, avatar, PAGOS, METODOS } from './ui.js';
+import { $, $$, esc, euros, fecha, haceCuanto, icono, toast, ocupado, tamano, refPedido, avatar, PAGOS, METODOS, errorCarga } from './ui.js';
 
 /* ==========================================================
    MENSAJES
@@ -51,7 +51,11 @@ export function montarHilo(caja, p, { equipo = false } = {}) {
       : `<div class="hilo-vacio">${icono('message')}<b>Aún no hay mensajes</b><small>${equipo ? 'Escribe al cliente para ponerle al día.' : 'Escríbenos cualquier duda sobre tu web. Te contestamos aquí mismo.'}</small></div>`;
     msgs.scrollTop = msgs.scrollHeight;
   };
-  store.mensajesDe(p.id).then(L => { lista = L; pintar(); }).catch(e => { msgs.innerHTML = `<div class="hilo-vacio"><b>No se han podido cargar</b><small>${esc(e.message)}</small></div>`; });
+  const cargarMsgs = () => {
+    msgs.innerHTML = `<div class="hilo-carga">${icono('message')} Cargando mensajes…</div>`;
+    store.mensajesDe(p.id).then(L => { lista = L; pintar(); }).catch(e => errorCarga(msgs, e, cargarMsgs, 'No se han podido cargar los mensajes'));
+  };
+  cargarMsgs();
   const dejar = store.escucharMensajes(p.id, m => {
     if (lista.some(x => x.id === m.id)) return;
     lista.push(m); pintar();
@@ -110,7 +114,7 @@ export function montarArchivos(caja, p, { equipo = false } = {}) {
   async function pintar() {
     let L = [];
     try { L = await store.listarArchivos(p.id); }
-    catch (e) { lista.innerHTML = `<p class="muted">${esc(e.message)}</p>`; return; }
+    catch (e) { errorCarga(lista, e, () => { lista.innerHTML = `<div class="hilo-carga">${icono('folder')} Cargando archivos…</div>`; pintar(); }, 'No se han podido cargar los archivos'); return; }
     if (!L.length) {
       lista.innerHTML = `<div class="hilo-vacio">${icono('image')}<b>No hay archivos todavía</b><small>${equipo ? 'Cuando el cliente suba archivos aparecerán aquí.' : 'Sube aquí las fotos de tu negocio, tu logotipo o cualquier documento que necesitemos.'}</small></div>`;
       return;

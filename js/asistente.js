@@ -149,6 +149,8 @@ export function iniciarChat() {
   };
   const abrirChat = si => {
     nodo.classList.toggle('abierto', si);
+    // En el móvil el chat ocupa toda la pantalla: la página de debajo no se mueve
+    document.documentElement.classList.toggle('chat-abierto', si);
     fab.setAttribute('aria-expanded', si);
     panel.setAttribute('aria-hidden', !si);
     if (si) { pintar(); setTimeout(() => input.focus({ preventScroll: true }), 250); }

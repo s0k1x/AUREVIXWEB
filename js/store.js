@@ -116,6 +116,44 @@ function entrarLocal({ name, email, role = 'client' }) {
 // Cliente de Supabase (versión fija para que nada cambie sin avisar)
 const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.100.1/+esm';
 
+/* ---------- Conexión a prueba de cuelgues ----------
+   1) Ninguna petición puede quedarse esperando para siempre: si el servidor
+      no contesta a tiempo, se corta y la web enseña «Reintentar».
+   2) El candado de la sesión (evita que dos pestañas renueven la sesión a la vez)
+      no puede bloquear la web: si no se consigue en 4 s, se sigue sin él.
+      En iPhone, al volver de otra app, a veces se quedaba pillado. */
+const LENTO = 'La conexión va lenta y no ha respondido. Comprueba tu internet y pulsa «Reintentar».';
+const SIN_RED = 'No hay conexión a internet. Cuando vuelva, pulsa «Reintentar».';
+export function limite(promesa, ms = 20000) {
+  let t;
+  return Promise.race([
+    Promise.resolve(promesa).finally(() => clearTimeout(t)),
+    new Promise((_, mal) => { t = setTimeout(() => mal(new Error(navigator.onLine === false ? SIN_RED : LENTO)), ms); })
+  ]);
+}
+function fetchConLimite(url, opciones = {}) {
+  const grande = opciones.body instanceof Blob || opciones.body instanceof FormData || opciones.body instanceof ArrayBuffer;
+  const ctrl = new AbortController();
+  const ia = String(url).includes('/functions/v1/'); // la IA tarda más en redactar
+  const t = setTimeout(() => ctrl.abort(), grande ? 180000 : ia ? 75000 : 20000); // subir archivos puede tardar más
+  opciones.signal?.addEventListener?.('abort', () => ctrl.abort());
+  return fetch(url, { ...opciones, signal: ctrl.signal })
+    .catch(e => { throw e?.name === 'AbortError' && !opciones.signal?.aborted ? new Error(navigator.onLine === false ? SIN_RED : LENTO) : e; })
+    .finally(() => clearTimeout(t));
+}
+async function candado(nombre, _espera, fn) {
+  if (!navigator.locks?.request) return fn();
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 4000);
+  let dentro = false;
+  try {
+    return await navigator.locks.request(nombre, { mode: 'exclusive', signal: ctrl.signal }, async () => { dentro = true; clearTimeout(t); return await fn(); });
+  } catch (e) {
+    if (!dentro) return fn(); // no se consiguió el candado a tiempo: seguimos igualmente
+    throw e;
+  } finally { clearTimeout(t); }
+}
+
 export async function iniciar() {
   if (modoDemo) {
     sembrarDemo();
@@ -125,22 +163,33 @@ export async function iniciar() {
     resolverListo(usuario);
     return;
   }
-  const { createClient } = await import(SUPABASE_JS);
-  sb = createClient(CONFIG.supabase.url, CONFIG.supabase.anonKey, {
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' }
-  });
-  const { data } = await sb.auth.getSession();
-  const u = data.session ? await sincronizar(data.session.user) : null;
+  let u = null, fallo = null;
+  try {
+    const { createClient } = await limite(import(SUPABASE_JS), 15000);
+    sb = createClient(CONFIG.supabase.url, CONFIG.supabase.anonKey, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce', lock: candado },
+      global: { fetch: fetchConLimite }
+    });
+    const { data } = await limite(sb.auth.getSession(), 15000);
+    u = data.session ? await sincronizar(data.session.user) : null;
+  } catch (e) { fallo = e; }
+  // Pase lo que pase, la web sigue: si falla, se entra como «sin sesión» y se avisa
   listo = true;
   emitir(u);
   resolverListo(u);
-  sb.auth.onAuthStateChange(async (evento, sesion) => {
-    if (evento === 'INITIAL_SESSION') return;
-    if (evento === 'SIGNED_OUT' || !sesion) return emitir(null);
-    if (evento === 'SIGNED_IN' || evento === 'USER_UPDATED') emitir(await sincronizar(sesion.user));
-  });
+  if (sb) {
+    // IMPORTANTE: este aviso NO puede esperar a Supabase dentro (bloquearía todas las consultas).
+    // Por eso el trabajo se hace un instante después, fuera del aviso.
+    sb.auth.onAuthStateChange((evento, sesion) => {
+      if (evento === 'INITIAL_SESSION' || evento === 'TOKEN_REFRESHED') return;
+      if (evento === 'SIGNED_OUT' || !sesion) { setTimeout(() => emitir(null), 0); return; }
+      if (evento === 'SIGNED_IN' && usuario?.uid === sesion.user.id) return; // misma persona (pasa al volver a la pestaña)
+      if (evento === 'SIGNED_IN' || evento === 'USER_UPDATED') setTimeout(async () => emitir(await sincronizar(sesion.user)), 0);
+    });
+  }
   // Al volver del login de Google/GitHub se limpia la dirección
   if (/[?&]code=/.test(location.search)) history.replaceState(null, '', location.pathname + location.hash);
+  if (fallo) throw fallo;
 }
 
 // Perfil del usuario (tabla perfiles). Se crea solo al registrarse (ver supabase/esquema.sql).
@@ -148,11 +197,11 @@ async function sincronizar(su) {
   const meta = su.user_metadata || {};
   let perfil = null;
   try {
-    const { data } = await sb.from('perfiles').select('*').eq('id', su.id).maybeSingle();
+    const { data } = await limite(sb.from('perfiles').select('*').eq('id', su.id).maybeSingle(), 12000);
     perfil = data;
     if (!perfil) {
       const nuevo = { id: su.id, name: meta.full_name || meta.name || nombrePendiente || su.email.split('@')[0], email: su.email, photo: meta.avatar_url || '', role: 'client' };
-      const r = await sb.from('perfiles').insert(nuevo).select().single();
+      const r = await limite(sb.from('perfiles').insert(nuevo).select().single(), 12000);
       perfil = r.data || nuevo;
     }
   } catch (e) { console.warn(e); }
@@ -226,21 +275,23 @@ export async function cerrarSesion() {
 const recientes = arr => arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 const deFila = f => ({ ...(f.datos || {}), id: f.id, uid: f.uid });
 const comprobar = ({ data, error }) => { if (error) throw new Error(traducirError(error)); return data; };
+// Las lecturas se reintentan una vez solas si fallan por la conexión
 async function leer(tabla, filtro) {
-  let q = sb.from(tabla).select('id, uid, datos');
-  if (filtro) q = filtro(q);
-  return recientes(comprobar(await q).map(deFila));
+  const consulta = () => { let q = sb.from(tabla).select('id, uid, datos'); return limite(filtro ? filtro(q) : q, 12000); };
+  let r;
+  try { r = await consulta(); } catch { r = await consulta(); }
+  return recientes(comprobar(r).map(deFila));
 }
 async function insertar(tabla, doc) {
   const { uid, ...datos } = doc;
-  const f = comprobar(await sb.from(tabla).insert({ uid, datos }).select('id, uid, datos').single());
+  const f = comprobar(await limite(sb.from(tabla).insert({ uid, datos }).select('id, uid, datos').single()));
   return deFila(f);
 }
 async function cambiar(tabla, id, cambios) {
-  const actual = comprobar(await sb.from(tabla).select('datos').eq('id', id).single());
-  comprobar(await sb.from(tabla).update({ datos: { ...actual.datos, ...cambios } }).eq('id', id));
+  const actual = comprobar(await limite(sb.from(tabla).select('datos').eq('id', id).single()));
+  comprobar(await limite(sb.from(tabla).update({ datos: { ...actual.datos, ...cambios } }).eq('id', id)));
 }
-const borrar = async (tabla, id) => comprobar(await sb.from(tabla).delete().eq('id', id));
+const borrar = async (tabla, id) => comprobar(await limite(sb.from(tabla).delete().eq('id', id)));
 
 /* ---------- Pedidos ---------- */
 export async function crearPedido(datos) {
@@ -255,7 +306,19 @@ export async function crearPedido(datos) {
     uidsPropietariosDemo().forEach(o => avisoDemo(o, `Nuevo pedido: ${p.respuestas?.negocio || p.planNombre}`, p.id, 'pedido'));
     return p;
   }
-  return insertar('pedidos', p);
+  try {
+    return await insertar('pedidos', p);
+  } catch (e) {
+    // Si la conexión se cortó justo al enviar, puede que el pedido sí se guardara:
+    // se busca por su clave única para no crear un pedido repetido.
+    if (p.clave) {
+      try {
+        const ya = await leer('pedidos', q => q.eq('uid', u.uid).eq('datos->>clave', p.clave));
+        if (ya[0]) return ya[0];
+      } catch { /* sin conexión: se muestra el error original */ }
+    }
+    throw e;
+  }
 }
 
 export async function misPedidos() {
@@ -362,7 +425,7 @@ export async function borrarVideo(id) {
 export async function listarUsuarios() {
   necesitaUsuario();
   if (modoDemo) return Object.values(local.get('users', {})).map(u => ({ ...u, role: rolDe(u.email, u.role) }));
-  const filas = comprobar(await sb.from('perfiles').select('*'));
+  const filas = comprobar(await limite(sb.from('perfiles').select('*')));
   return filas.map(u => ({ uid: u.id, name: u.name, email: u.email, photo: u.photo, datos: u.datos || {}, createdAt: Date.parse(u.created_at), role: rolDe(u.email, u.role) }));
 }
 
@@ -373,7 +436,7 @@ export async function cambiarRol(uid, role) {
     if (users[uid]) { users[uid].role = role; local.set('users', users); }
     return;
   }
-  comprobar(await sb.from('perfiles').update({ role }).eq('id', uid));
+  comprobar(await limite(sb.from('perfiles').update({ role }).eq('id', uid)));
 }
 
 /* ---------- Pagos ----------
@@ -429,7 +492,7 @@ export async function borrarResena(id) {
 export const iaDisponible = () => !modoDemo;
 export async function preguntarIA(cuerpo) {
   if (modoDemo) throw new Error('demo');
-  const { data, error } = await sb.functions.invoke('asistente', { body: cuerpo });
+  const { data, error } = await limite(sb.functions.invoke('asistente', { body: cuerpo }), cuerpo?.modo === 'prompt' ? 80000 : 40000);
   if (error) throw new Error('El asistente no está disponible ahora mismo');
   return data;
 }
@@ -448,7 +511,7 @@ export async function guardarPerfil({ name, photo, datos } = {}) {
     if (users[u.uid]) Object.assign(users[u.uid], nuevo);
     local.set('users', users);
   } else {
-    comprobar(await sb.from('perfiles').update(nuevo).eq('id', u.uid));
+    comprobar(await limite(sb.from('perfiles').update(nuevo).eq('id', u.uid)));
   }
   emitir({ ...u, ...nuevo });
   return usuario;
@@ -459,7 +522,7 @@ export async function leerPrivado(uid) {
   const u = necesitaUsuario();
   const id = uid || u.uid;
   if (modoDemo) return local.get('privado', {})[id] || {};
-  const { data } = await sb.from('privado').select('datos').eq('id', id).maybeSingle();
+  const { data } = await limite(sb.from('privado').select('datos').eq('id', id).maybeSingle());
   return data?.datos || {};
 }
 export async function guardarPrivado(cambios) {
@@ -467,7 +530,7 @@ export async function guardarPrivado(cambios) {
   const actual = await leerPrivado();
   const datos = { ...actual, ...cambios };
   if (modoDemo) { const t = local.get('privado', {}); t[u.uid] = datos; local.set('privado', t); return datos; }
-  comprobar(await sb.from('privado').upsert({ id: u.uid, datos, actualizado: new Date().toISOString() }));
+  comprobar(await limite(sb.from('privado').upsert({ id: u.uid, datos, actualizado: new Date().toISOString() })));
   return datos;
 }
 
@@ -502,14 +565,14 @@ export async function exportarMisDatos() {
    ========================================================== */
 export async function leerAjustes(clave) {
   if (modoDemo) return local.get('ajustes', {})[clave] || null;
-  const { data, error } = await sb.from('ajustes').select('datos').eq('clave', clave).maybeSingle();
+  const { data, error } = await limite(sb.from('ajustes').select('datos').eq('clave', clave).maybeSingle());
   if (error) throw new Error(traducirError(error));
   return data?.datos || null;
 }
 export async function guardarAjustes(clave, datos) {
   necesitaUsuario();
   if (modoDemo) { const a = local.get('ajustes', {}); a[clave] = datos; local.set('ajustes', a); return; }
-  comprobar(await sb.from('ajustes').upsert({ clave, datos, actualizado: new Date().toISOString() }));
+  comprobar(await limite(sb.from('ajustes').upsert({ clave, datos, actualizado: new Date().toISOString() })));
 }
 /** ¿El usuario ya tiene algún pedido (sin contar los cancelados)? Sin sesión: no */
 export async function tienePedidos() {
@@ -528,7 +591,7 @@ export async function comprobarCupon(codigo) {
     if (b?.activo && b.codigo && b.codigo.toUpperCase() === codigo && !(await tienePedidos())) return { codigo: b.codigo, pct: b.pct, primera: true };
     return null;
   }
-  const { data, error } = await sb.rpc('cupon', { codigo });
+  const { data, error } = await limite(sb.rpc('cupon', { codigo }));
   if (error) throw new Error(traducirError(error));
   return data || null;
 }
@@ -540,7 +603,7 @@ const mensajeDe = f => ({ ...(f.datos || {}), id: f.id, uid: f.uid, pedido: f.pe
 export async function mensajesDe(pedidoId) {
   necesitaUsuario();
   if (modoDemo) return local.get('mensajes', []).filter(m => m.pedido === pedidoId).sort((a, b) => a.createdAt - b.createdAt);
-  const filas = comprobar(await sb.from('mensajes').select('id, uid, pedido, datos, created_at').eq('pedido', pedidoId).order('created_at'));
+  const filas = comprobar(await limite(sb.from('mensajes').select('id, uid, pedido, datos, created_at').eq('pedido', pedidoId).order('created_at')));
   return filas.map(mensajeDe);
 }
 export async function enviarMensaje(pedidoId, texto, extra = {}) {
@@ -556,7 +619,7 @@ export async function enviarMensaje(pedidoId, texto, extra = {}) {
     }
     return m;
   }
-  const f = comprobar(await sb.from('mensajes').insert({ uid: u.uid, pedido: pedidoId, datos }).select('id, uid, pedido, datos, created_at').single());
+  const f = comprobar(await limite(sb.from('mensajes').insert({ uid: u.uid, pedido: pedidoId, datos }).select('id, uid, pedido, datos, created_at').single()));
   return mensajeDe(f);
 }
 /** Escucha mensajes nuevos de un pedido en tiempo real. Devuelve la función para dejar de escuchar. */
@@ -580,7 +643,7 @@ export async function crearTicket({ tipo = 'duda', asunto, mensaje, pedido = '',
     uidsPropietariosDemo().forEach(o => avisoDemo(o, `Nueva consulta: ${asunto}`, '', 'soporte'));
     return c;
   }
-  const { error } = await sb.from('tickets').insert({ uid: u?.uid || null, datos: t });
+  const { error } = await limite(sb.from('tickets').insert({ uid: u?.uid || null, datos: t }));
   if (error) throw new Error(traducirError(error));
   return t;
 }
@@ -621,19 +684,19 @@ export async function misAvisos() {
   const u = usuario;
   if (!u) return [];
   if (modoDemo) return local.get('avisos', []).filter(a => a.uid === u.uid).sort((a, b) => b.t - a.t).slice(0, 50);
-  const { data, error } = await sb.from('avisos').select('id, datos, leido, created_at').eq('uid', u.uid).order('created_at', { ascending: false }).limit(50);
+  const { data, error } = await limite(sb.from('avisos').select('id, datos, leido, created_at').eq('uid', u.uid).order('created_at', { ascending: false }).limit(50));
   if (error) throw new Error(traducirError(error));
   return data.map(avisoDeFila);
 }
 export async function marcarAvisosLeidos() {
   const u = necesitaUsuario();
   if (modoDemo) { local.set('avisos', local.get('avisos', []).map(a => (a.uid === u.uid ? { ...a, leido: true } : a))); return; }
-  await sb.from('avisos').update({ leido: true }).eq('uid', u.uid).eq('leido', false);
+  await limite(sb.from('avisos').update({ leido: true }).eq('uid', u.uid).eq('leido', false));
 }
 export async function borrarAvisos() {
   const u = necesitaUsuario();
   if (modoDemo) { local.set('avisos', local.get('avisos', []).filter(a => a.uid !== u.uid)); return; }
-  await sb.from('avisos').delete().eq('uid', u.uid);
+  await limite(sb.from('avisos').delete().eq('uid', u.uid));
 }
 export function escucharAvisos(cb) {
   const u = usuario;
@@ -657,7 +720,7 @@ export function escucharAvisos(cb) {
 export async function crearAviso(uid, texto, pedido = '', tipo = 'info') {
   if (!uid) return;
   if (modoDemo) return avisoDemo(uid, texto, pedido, tipo);
-  await sb.from('avisos').insert({ uid, datos: { texto, pedido, tipo, t: Date.now() } });
+  await limite(sb.from('avisos').insert({ uid, datos: { texto, pedido, tipo, t: Date.now() } }));
 }
 
 /* Avisos del modo demo (en Supabase los crea la base de datos) */
@@ -690,7 +753,7 @@ const limpiarNombre = n => n.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[
 export async function listarArchivos(pedidoId) {
   necesitaUsuario();
   if (modoDemo) return local.get('archivos', []).filter(a => a.pedido === pedidoId).sort((a, b) => b.t - a.t);
-  const { data, error } = await sb.storage.from('archivos').list(pedidoId, { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
+  const { data, error } = await limite(sb.storage.from('archivos').list(pedidoId, { limit: 200, sortBy: { column: 'created_at', order: 'desc' } }));
   if (error) throw new Error(traducirError(error));
   return data.filter(f => f.id).map(f => ({ ruta: `${pedidoId}/${f.name}`, nombre: f.name.replace(/^\d+_/, ''), tam: f.metadata?.size || 0, tipo: f.metadata?.mimetype || '', t: Date.parse(f.created_at) }));
 }
@@ -711,13 +774,13 @@ export async function subirArchivo(pedidoId, archivo) {
 }
 export async function urlArchivo(a) {
   if (modoDemo) return a.url;
-  const { data, error } = await sb.storage.from('archivos').createSignedUrl(a.ruta, 3600);
+  const { data, error } = await limite(sb.storage.from('archivos').createSignedUrl(a.ruta, 3600));
   if (error) throw new Error(traducirError(error));
   return data.signedUrl;
 }
 export async function borrarArchivo(a) {
   necesitaUsuario();
   if (modoDemo) { local.set('archivos', local.get('archivos', []).filter(x => x.ruta !== a.ruta)); return; }
-  const { error } = await sb.storage.from('archivos').remove([a.ruta]);
+  const { error } = await limite(sb.storage.from('archivos').remove([a.ruta]));
   if (error) throw new Error(traducirError(error));
 }

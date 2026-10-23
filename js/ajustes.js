@@ -135,8 +135,8 @@ async function cuenta() {
   });
   $('#salirTodo').addEventListener('click', async () => {
     if (!confirm('¿Cerrar la sesión en todos tus dispositivos, también en este?')) return;
-    await store.cerrarSesionTodas();
-    location.href = 'index.html';
+    try { await store.cerrarSesionTodas(); location.href = 'index.html'; }
+    catch (err) { toast(err.message, 'err'); }
   });
 }
 
@@ -325,18 +325,18 @@ async function negocio() {
       <div class="aj-tabla"><div class="aj-tr aj-th"><span>Plan</span><span>Activo</span><span>Precio (€)</span><span>Plazo</span><span>Días</span><span>Destacado</span></div>
       ${PLANES.map(p => { const o = a.planes[p.id]; return `<div class="aj-tr" data-plan="${p.id}">
         <span><b>${esc(p.nombre)}</b><small>Original: ${euros(ORIGINAL.planes.find(x => x.id === p.id).precio)}</small></span>
-        <label class="aj-ck"><input type="checkbox" data-k="activo" ${o.activo ? 'checked' : ''}><span class="ck-mark"></span></label>
-        <input type="number" min="0" step="1" data-k="precio" value="${o.precio}" aria-label="Precio de ${esc(p.nombre)}">
-        <input type="text" maxlength="30" data-k="entrega" value="${esc(o.entrega)}" aria-label="Plazo de ${esc(p.nombre)}">
-        <input type="number" min="1" max="365" data-k="dias" value="${o.dias}" aria-label="Días de ${esc(p.nombre)}">
-        <label class="aj-ck"><input type="radio" name="popular" value="${p.id}" ${o.popular ? 'checked' : ''}><span class="ck-mark redondo"></span></label>
+        <label class="aj-ck c-act"><input type="checkbox" data-k="activo" ${o.activo ? 'checked' : ''}><span class="ck-mark"></span><small class="aj-cel-t">Activo</small></label>
+        <label class="aj-cel c-pre"><small class="aj-cel-t">Precio (€)</small><input type="number" min="0" step="1" inputmode="numeric" data-k="precio" value="${o.precio}" aria-label="Precio de ${esc(p.nombre)}"></label>
+        <label class="aj-cel c-pla"><small class="aj-cel-t">Plazo que ve el cliente</small><input type="text" maxlength="30" data-k="entrega" value="${esc(o.entrega)}" aria-label="Plazo de ${esc(p.nombre)}"></label>
+        <label class="aj-cel c-dia"><small class="aj-cel-t">Días máx.</small><input type="number" min="1" max="365" inputmode="numeric" data-k="dias" value="${o.dias}" aria-label="Días de ${esc(p.nombre)}"></label>
+        <label class="aj-ck c-des"><input type="radio" name="popular" value="${p.id}" ${o.popular ? 'checked' : ''}><span class="ck-mark redondo"></span><small class="aj-cel-t">Destacado</small></label>
       </div>`; }).join('')}</div>`)}
     ${bloque('Extras', 'Opciones que el cliente puede añadir en el cuestionario.', `
       <div class="aj-tabla extras"><div class="aj-tr aj-th"><span>Extra</span><span>Activo</span><span>Precio (€)</span></div>
       ${EXTRAS.map(x => { const o = a.extras[x.id]; return `<div class="aj-tr" data-extra="${x.id}">
         <span><b>${esc(x.nombre)}</b><small>${x.mensual ? 'Cuota mensual' : 'Pago único'}</small></span>
-        <label class="aj-ck"><input type="checkbox" data-k="activo" ${o.activo ? 'checked' : ''}><span class="ck-mark"></span></label>
-        <input type="number" min="0" step="1" data-k="precio" value="${o.precio}" aria-label="Precio de ${esc(x.nombre)}">
+        <label class="aj-ck c-act"><input type="checkbox" data-k="activo" ${o.activo ? 'checked' : ''}><span class="ck-mark"></span><small class="aj-cel-t">Activo</small></label>
+        <label class="aj-cel c-pre"><small class="aj-cel-t">Precio (€)</small><input type="number" min="0" step="1" inputmode="numeric" data-k="precio" value="${o.precio}" aria-label="Precio de ${esc(x.nombre)}"></label>
       </div>`; }).join('')}</div>`)}
     ${bloque('Cobros y comisiones', 'Formas de pago que ven los clientes. Deja en blanco las que no uses.', `
       <div class="aj-nums">
@@ -364,7 +364,7 @@ async function negocio() {
     ${bloque('Asistente', 'El chat de dudas de la web (con IA si está conectado Gemini).', `
       ${interruptor({ id: 'asistActivo', titulo: 'Mostrar el asistente', checked: a.asistente.activo })}
       ${campo({ id: 'f_saludo', name: 'saludo', label: 'Mensaje de bienvenida', type: 'textarea', value: a.asistente.saludo, attrs: 'maxlength="300"' })}`)}
-    <div class="aj-fijo"><button type="button" class="btn btn-ghost" id="resetNeg">Restablecer valores originales</button><button class="btn btn-primary" type="submit" id="gNeg"><span>Guardar ajustes del negocio</span></button></div>
+    <div class="aj-fijo"><button type="button" class="btn btn-ghost" id="resetNeg" title="Restablecer valores originales" aria-label="Restablecer valores originales">${icono('undo')}<span>Restablecer</span></button><button class="btn btn-primary" type="submit" id="gNeg">${icono('check')}<span>Guardar cambios</span></button></div>
   </form>`;
   $('#addCupon').addEventListener('click', () => { $('#cupones').insertAdjacentHTML('beforeend', filaCupon({ codigo: '', pct: 10, hasta: '', activo: true })); $('#cupones .cp:last-child input').focus(); });
   $('#cupones').addEventListener('click', e => { if (e.target.closest('[data-quitar-cp]')) e.target.closest('.cp').remove(); });
@@ -418,15 +418,26 @@ const filaCupon = c => `<div class="cp">
   <label class="aj-ck"><input type="checkbox" data-k="activo" ${c.activo !== false ? 'checked' : ''}><span class="ck-mark"></span><span>Activo</span></label>
   <button type="button" class="icon-btn sm" data-quitar-cp aria-label="Quitar cupón">${icono('trash')}</button>
 </div>`;
+let guardando = false;
 async function guardar(web, cupones, btn, tp) {
+  if (guardando) return; // evita guardar dos veces si se pulsa rápido
+  guardando = true;
   ocupado(btn, true);
   try {
-    await guardarAjustesWeb(web);
-    if (cupones) await store.guardarAjustes('cupones', cupones);
-    if (tp) await store.guardarAjustes('trustpilot', tp);
-    toast('Ajustes del negocio guardados. Ya se aplican en la web.', 'ok');
-  } catch (err) { toast(err.message, 'err'); }
-  ocupado(btn, false);
+    // Se guardan las tres partes a la vez (más rápido) y se avisa si alguna falla
+    const r = await Promise.allSettled([
+      guardarAjustesWeb(web),
+      cupones ? store.guardarAjustes('cupones', cupones) : null,
+      tp ? store.guardarAjustes('trustpilot', tp) : null
+    ]);
+    const fallos = r.filter(x => x.status === 'rejected');
+    if (!fallos.length) toast('Ajustes guardados. Ya se aplican en la web.', 'ok');
+    else if (r[0].status === 'rejected') toast(`No se han guardado los cambios: ${fallos[0].reason?.message || 'error de conexión'}. Pulsa Guardar otra vez.`, 'err');
+    else toast(`Casi todo guardado, pero falló una parte (${fallos[0].reason?.message || 'error de conexión'}). Pulsa Guardar otra vez.`, 'err');
+  } finally {
+    guardando = false;
+    ocupado(btn, false);
+  }
 }
 
 /* Arranque (al final: así todas las funciones ya están definidas) */
