@@ -296,7 +296,10 @@ function pintarSesion(u) {
   const panel = u.role === 'owner' ? 'Panel de propietario' : u.role === 'worker' ? 'Panel de trabajador' : '';
   slot.innerHTML = `
     <div class="user-wrap">
-      <button class="user-btn" id="userBtn" aria-haspopup="true" aria-label="Mi cuenta">${avatar(u)}</button>
+      <button class="user-btn" id="userBtn" aria-haspopup="true" aria-label="Mi cuenta">
+        ${avatar(u)}<span class="ub-txt"><b>${esc(u.name.split(' ')[0])}</b><small>${ROLES[u.role]}</small></span>
+        <svg class="ub-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
       <div class="user-menu" role="menu">
         <div class="um-head">${avatar(u, 'lg')}<div><b>${esc(u.name)}</b><small>${esc(u.email)}</small><span class="role-tag r-${u.role}">${ROLES[u.role]}</span></div></div>
         ${panel ? `<a href="panel.html" role="menuitem">${icono('panel')} ${panel}</a>` : ''}
@@ -307,7 +310,8 @@ function pintarSesion(u) {
     </div>`;
   $('#userBtn').addEventListener('click', e => {
     e.stopPropagation();
-    $('.user-menu').classList.toggle('open');
+    const abierto = $('.user-menu').classList.toggle('open');
+    $('#userBtn').classList.toggle('open', abierto);
     $('#header').classList.remove('open');
   });
 }

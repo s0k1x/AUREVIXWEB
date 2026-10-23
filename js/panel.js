@@ -24,6 +24,12 @@ let vista = leerVista() || (innerWidth >= 1100 ? 'tablero' : 'lista');
 const neg = p => p.respuestas?.negocio || p.planNombre;
 const trabajadores = () => datos.usuarios.filter(u => u.role === 'worker');
 const activo = p => !['entregado', 'cancelado'].includes(p.estado);
+const PCT = CONFIG.comision ?? 30;
+const comision = p => Math.round((p.total || 0) * PCT) / 100;
+const ventasDe = uid => datos.pedidos.filter(p => p.ref === uid && p.estado !== 'cancelado');
+const estadoComision = p => p.comisionPagada ? ['Cobrada', 'p-done'] : p.pagoEstado === 'pagado' ? ['Lista para cobrar', 'p-new'] : ['Cliente aún no ha pagado', 'p-pend'];
+const porPagar = uid => ventasDe(uid).filter(p => p.pagoEstado === 'pagado' && !p.comisionPagada);
+const nombreDe = uid => datos.usuarios.find(u => u.uid === uid)?.name || 'Vendedor';
 const vacio = (em, t, d = '') => `<div class="empty"><div class="em">${em}</div><b>${t}</b><p>${d}</p></div>`;
 
 /* ---------- Arranque según el rol ---------- */
@@ -36,7 +42,7 @@ store.alCambiarUsuario(async u => {
   $('#pnRefresh').hidden = false;
   const tabs = u.role === 'owner'
     ? [['resumen', 'Resumen'], ['pedidos', 'Pedidos'], ['candidaturas', 'Candidaturas'], ['resenas', 'Reseñas'], ['equipo', 'Equipo']]
-    : [['mios', 'Mis encargos'], ['disponibles', 'Disponibles'], ['historial', 'Historial']];
+    : [['ventas', 'Mis ventas'], ['mios', 'Mis encargos'], ['disponibles', 'Disponibles'], ['historial', 'Historial']];
   const pedida = location.hash.slice(1);
   tab = tabs.some(t => t[0] === pedida) ? pedida : tabs[0][0];
   tabsEl.innerHTML = tabs.map(([id, t]) => `<button role="tab" data-tab="${id}"><span>${t}</span><i class="badge" data-badge="${id}"></i></button>`).join('');
@@ -96,6 +102,8 @@ function badges() {
     candidaturas: datos.cands.filter(c => c.estado === 'pendiente').length,
     resenas: datos.resenas.filter(r => !r.aprobada).length,
     mios: datos.pedidos.filter(p => p.asignado === U.uid && activo(p)).length,
+    ventas: U.role === 'worker' ? porPagar(U.uid).length : 0,
+    equipo: U.role === 'owner' ? trabajadores().filter(w => porPagar(w.uid).length).length : 0,
     disponibles: datos.pedidos.filter(p => !p.asignado && p.estado === 'nuevo').length
   };
   $$('[data-badge]').forEach(b => { const v = n[b.dataset.badge]; b.textContent = v || ''; b.hidden = !v; });
@@ -104,7 +112,7 @@ function badges() {
 
 function pintar() {
   badges();
-  const vistas = { resumen, pedidos: vistaPedidos, candidaturas, resenas, equipo, mios, disponibles, historial };
+  const vistas = { resumen, pedidos: vistaPedidos, candidaturas, resenas, equipo, ventas, mios, disponibles, historial };
   (vistas[tab] || resumen)();
   etiquetas(body);
   contar(body);
@@ -153,7 +161,7 @@ function resumen() {
       ${kpi('Cobrado', euros(cobrado), `de ${euros(volumen)} en pedidos`)}
       ${kpi('Mensualidades', euros(mensual) + '<small>/mes</small>', 'mantenimiento')}
       ${kpi('Valoración', pub.length ? media.toFixed(1).replace('.', ',') + ' ★' : '—', `${pub.length} publicadas`, 'resenas')}
-      ${kpi('Equipo', trabajadores().length, `${datos.cands.filter(c => c.estado === 'pendiente').length} candidaturas nuevas`, 'equipo')}
+      ${kpi('Comisiones por pagar', euros(trabajadores().reduce((s, w) => s + porPagar(w.uid).reduce((a, p) => a + comision(p), 0), 0)), `${trabajadores().length} vendedores · ${datos.cands.filter(c => c.estado === 'pendiente').length} candidaturas`, 'equipo')}
     </div>
     <div class="cols">
       <div class="card">
@@ -290,6 +298,7 @@ function candidaturas() {
     <article class="card cand">
       <div class="cand-h">${avatar({ name: c.nombre })}<div><b>${esc(c.nombre)}</b><small>${esc(c.puesto)} · ${esc(c.experiencia)}</small></div><span class="pill ${est[1]}">${est[0]}</span></div>
       <p class="cand-msg">“${esc(c.mensaje)}”</p>
+      ${c.habilidades?.length ? `<div class="chips-mini">${c.habilidades.map(h => `<span>${esc(h)}</span>`).join('')}</div>` : ''}
       <div class="cand-meta">
         <span>✉️ ${esc(c.email)}</span><span>📞 ${esc(c.telefono)}</span>
         ${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">🔗 ${esc(c.portfolio)}</a>` : ''}
@@ -334,8 +343,12 @@ function equipo() {
       <div class="card-h"><h3>Equipo</h3><span class="muted" style="font-size:14px">${ws.length} trabajador${ws.length === 1 ? '' : 'es'}</span></div>
       <div class="team">
         ${owners.map(u => `<div class="tm">${avatar(u)}<div><b>${esc(u.name)}</b><small>${esc(u.email)}</small></div><span class="role-tag r-owner">Propietario</span></div>`).join('')}
-        ${ws.map(u => `<div class="tm">${avatar(u)}<div><b>${esc(u.name)}</b><small>${esc(u.email)} · ${activos(u.uid)} activos · ${hechos(u.uid)} entregados</small></div>
-          <button class="btn btn-sm btn-danger" data-quitar="${u.uid}"><span>Quitar</span></button></div>`).join('')}
+        ${ws.map(u => {
+          const v = ventasDe(u.uid), pp = porPagar(u.uid), deuda = pp.reduce((a, p) => a + comision(p), 0);
+          return `<div class="tm">${avatar(u)}<div><b>${esc(u.name)}</b><small>${esc(u.email)} · ${v.length} venta${v.length === 1 ? '' : 's'} · ${activos(u.uid)} encargos activos</small></div>
+          ${deuda ? `<button class="btn btn-sm btn-primary" data-pagar-com="${u.uid}" title="Marca como pagadas sus comisiones listas"><span>Pagar ${euros(deuda)}</span></button>` : `<span class="role-tag">${euros(v.reduce((a, p) => a + comision(p), 0))} generados</span>`}
+          <button class="btn btn-sm btn-danger" data-quitar="${u.uid}"><span>Quitar</span></button></div>`;
+        }).join('')}
         ${ws.length ? '' : '<p class="muted" style="padding:14px 0;font-size:14.5px">Aún no hay trabajadores.</p>'}
       </div>
     </div>
@@ -352,6 +365,40 @@ function equipo() {
     if (u.role !== 'client') return toast('Esa persona ya está en el equipo');
     await accion(e.submitter, () => store.cambiarRol(u.uid, 'worker'), `${u.name} añadido al equipo 🎉`);
   });
+}
+
+/* ---------- TRABAJADOR: Mis ventas (enlace propio + comisiones) ---------- */
+function ventas() {
+  const V = ventasDe(U.uid);
+  const enlace = new URL(`index.html?ref=${encodeURIComponent(U.uid)}`, location.href).href;
+  const generado = V.reduce((a, p) => a + (p.total || 0), 0);
+  const listas = V.filter(p => p.pagoEstado === 'pagado' && !p.comisionPagada).reduce((a, p) => a + comision(p), 0);
+  const cobradas = V.filter(p => p.comisionPagada).reduce((a, p) => a + comision(p), 0);
+  const pendientes = V.filter(p => p.pagoEstado !== 'pagado').reduce((a, p) => a + comision(p), 0);
+  const msg = `¡Hola! Hago páginas web para negocios con ${CONFIG.marca}. Mira los diseños y pide la tuya aquí 👉 ${enlace}`;
+  body.innerHTML = `
+    <div class="enlace card">
+      <div><span class="eyebrow">Tu enlace de ventas</span><p>Compártelo: cada pedido que entre por aquí es tuyo y te llevas el <b>${PCT} %</b>.</p></div>
+      <div class="enlace-box"><code>${esc(enlace)}</code>
+        <button class="btn btn-sm btn-primary" data-copy="${esc(enlace)}"><span>Copiar</span></button>
+        <a class="btn btn-sm btn-wa" href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${icono('wa')}<span>Compartir</span></a></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><small>Ventas</small><b><em class="num" data-count="${V.length}">${V.length}</em></b><span>pedidos con tu enlace</span></div>
+      <div class="kpi"><small>Has generado</small><b>${euros(generado)}</b><span>en webs vendidas</span></div>
+      <div class="kpi"><small>Lista para cobrar</small><b>${euros(listas)}</b><span>el cliente ya ha pagado</span></div>
+      <div class="kpi"><small>Pendiente</small><b>${euros(pendientes)}</b><span>esperando el pago del cliente</span></div>
+      <div class="kpi"><small>Ya cobrado</small><b>${euros(cobradas)}</b><span>pagado por nosotros</span></div>
+      <div class="kpi"><small>Tu comisión</small><b>${PCT} %</b><span>de cada web</span></div>
+    </div>
+    <div class="card flush rows">${V.map(p => {
+      const [txt, cls] = estadoComision(p);
+      return `<article class="row" data-open="${p.id}" tabindex="0" role="button">
+        <div class="row-main"><div class="row-t"><b>${esc(neg(p))}</b><span class="pill ${cls}">${txt}</span></div>
+          <small>${esc(p.planNombre)} · ${euros(p.total)} · ${haceCuanto(p.createdAt)}</small></div>
+        <div class="row-side"><b class="row-price com">+${euros(comision(p))}</b></div>
+      </article>`;
+    }).join('') || vacio('🔗', 'Aún no tienes ventas', 'Comparte tu enlace en redes o por WhatsApp para conseguir la primera.')}</div>`;
 }
 
 /* ---------- TRABAJADOR ---------- */
@@ -384,7 +431,7 @@ async function accion(btn, fn, ok) {
 const coger = id => store.actualizarPedido(id, { asignado: U.uid, asignadoNombre: U.name, estado: 'en_curso' });
 
 body.addEventListener('click', async e => {
-  const t = e.target.closest('[data-coger],[data-aceptar],[data-rechazar],[data-quitar],[data-aprobar],[data-ocultar],[data-borrar-r]');
+  const t = e.target.closest('[data-coger],[data-aceptar],[data-rechazar],[data-quitar],[data-aprobar],[data-ocultar],[data-borrar-r],[data-pagar-com]');
   if (t) {
     e.stopPropagation();
     const d = t.dataset;
@@ -398,6 +445,12 @@ body.addEventListener('click', async e => {
       const u = datos.usuarios.find(x => x.uid === d.quitar);
       if (!confirm(`¿Quitar a ${u.name} del equipo? Ya no podrá entrar al panel.`)) return;
       return accion(t, () => store.cambiarRol(u.uid, 'client'), `${u.name} ya no está en el equipo`);
+    }
+    if (d.pagarCom) {
+      const pp = porPagar(d.pagarCom);
+      const total = pp.reduce((a, p) => a + comision(p), 0);
+      if (!confirm(`¿Has pagado ${euros(total)} de comisiones a ${nombreDe(d.pagarCom)}? Se marcarán como cobradas.`)) return;
+      return accion(t, () => Promise.all(pp.map(p => store.actualizarPedido(p.id, { comisionPagada: Date.now() }))), 'Comisiones marcadas como pagadas 💶');
     }
     if (d.aprobar) return accion(t, () => store.actualizarResena(d.aprobar, { aprobada: true }), 'Reseña publicada en la web ⭐');
     if (d.ocultar) return accion(t, () => store.actualizarResena(d.ocultar, { aprobada: false }), 'Reseña ocultada');
@@ -481,6 +534,7 @@ function abrirPedido(id) {
 
       <h4 class="od-h">Pedido</h4>
       <div class="kvs">
+        ${p.ref ? `<div class="kv"><span>Vendido por</span><b>${esc(nombreDe(p.ref))} · ${PCT} % = ${euros(comision(p))} ${p.comisionPagada ? '(pagada)' : ''}</b></div>` : ''}
         ${fila('Tipo de web', p.planNombre)}
         <div class="kv"><span>Diseño</span><b>${pl ? `${esc(pl.nombre)} <a class="link-btn" href="${prevURL}" target="_blank" rel="noopener">ver ↗</a>` : 'Desde cero'}</b></div>
         ${fila('Precio base', euros(p.precioBase || 0))}

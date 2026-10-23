@@ -7,6 +7,7 @@ export const CONFIG = {
   whatsapp: '34600000000',                  // con prefijo 34, sin + ni espacios
   email: 'hola@tudominio.com',
   senal: 50,                                // % que se paga al empezar
+  comision: 30,                             // % que se lleva el vendedor por cada web que venda
 
   // Emails que entran como PROPIETARIO (acceso total al panel)
   propietarios: ['tuemail@gmail.com'],

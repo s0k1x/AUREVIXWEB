@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Trabaja con nosotros · TuMarca</title>
-  <meta name="description" content="Únete al equipo: buscamos diseñadores, programadores, comerciales y gestores de redes.">
+  <meta name="description" content="Vende webs con inteligencia artificial y redes sociales y llévate el 30 % de cada venta. Remoto, sin horarios y sin inversión.">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0c0c0e">
   <link rel="icon" type="image/png" href="icons/icon-192.png">
@@ -15,101 +15,210 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="componentes.css">
   <link rel="stylesheet" href="animaciones.css">
-  <style>
-    .t-hero{padding:70px 0 40px}
-    .t-hero h1{font-size:clamp(42px,7vw,72px);font-weight:800;margin:18px 0 18px;max-width:820px}
-    .t-hero h1 em{font-style:normal;color:var(--accent)}
-    .t-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:start;padding-bottom:90px}
-    .puestos{display:grid;gap:12px}
-    .puesto{display:flex;gap:16px;align-items:flex-start;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
-    .puesto .em{width:46px;height:46px;border-radius:13px;background:var(--accent-soft);display:grid;place-items:center;font-size:22px;flex:none}
-    .puesto b{display:block;font-size:17px;font-family:var(--fd)}
-    .puesto p{color:var(--muted);font-size:14.5px}
-    .perks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
-    .perks div{padding:16px;border-radius:14px;border:1px dashed var(--line2);font-size:14.5px}
-    .perks b{display:block;font-size:15px;margin-bottom:2px}
-    .perks span{color:var(--muted);font-size:13.5px}
-    .h-sub{font-size:22px;margin:0 0 16px}
-    .form-card{position:sticky;top:90px}
-    .form-card h2{font-size:28px;margin:0 0 6px}
-    .form-card > p{color:var(--muted);margin-bottom:6px;font-size:15px}
-    .cand-terms{margin:22px 0 20px}
-    .estado-cand{text-align:center;padding:16px 0}
-    .estado-cand .big{font-size:46px;margin-bottom:8px}
-    .estado-cand h3{font-size:24px;margin-bottom:8px}
-    .estado-cand p{color:var(--muted);margin-bottom:16px}
-    @media (min-width:1400px){.t-grid{gap:80px}.t-hero{padding:90px 0 50px}.t-hero h1{font-size:clamp(72px,5.4vw,104px);max-width:1100px}}
-    @media (max-width:900px){.t-grid{grid-template-columns:1fr}.form-card{position:static}}
-    @media (max-width:560px){.t-hero{padding:40px 0 20px}.perks{grid-template-columns:1fr}}
-  </style>
+  <link rel="stylesheet" href="trabaja.css">
 </head>
 <body>
   <header id="header"></header>
 
-  <main class="wrap">
-    <div class="t-hero">
-      <span class="eyebrow">Trabaja con nosotros</span>
-      <h1>Crea webs bonitas <em>con nosotros.</em></h1>
-      <p class="lead">Estamos creciendo y buscamos gente con ganas de aprender y de hacer las cosas bien. Trabajo en remoto, proyectos reales y buen ambiente.</p>
-    </div>
-
-    <div class="t-grid">
-      <div>
-        <h3 class="h-sub">Buscamos</h3>
-        <div class="puestos">
-          <div class="puesto"><span class="em">🎨</span><div><b>Diseño web / UI</b><p>Creas diseños que enamoran y piensas primero en el móvil.</p></div></div>
-          <div class="puesto"><span class="em">💻</span><div><b>Programación web</b><p>HTML, CSS y JavaScript. Si sabes algo de backend, mejor.</p></div></div>
-          <div class="puesto"><span class="em">🤝</span><div><b>Ventas / comercial</b><p>Hablas con negocios de tu zona y les ayudas a tener su web.</p></div></div>
-          <div class="puesto"><span class="em">📱</span><div><b>Redes sociales</b><p>Contenido para Instagram y TikTok que atrae clientes.</p></div></div>
+  <main>
+    <!-- ===== PORTADA ===== -->
+    <section class="t-hero">
+      <div class="hero-bg bg-stripes" aria-hidden="true"></div>
+      <div class="wrap t-hero-grid">
+        <div>
+          <span class="eyebrow">Trabaja con nosotros</span>
+          <h1>Vende webs con IA y llévate el <span class="pct"><em class="num" data-count="30">30</em> %</span> de cada venta.</h1>
+          <p class="lead">Buscamos gente que sepa usar la <b>inteligencia artificial</b>, mueva las <b>redes sociales</b> y no le dé miedo <b>vender</b>. Las webs las hacemos nosotros: tú encuentras los clientes y te llevas tu parte.</p>
+          <div class="t-ctas">
+            <a href="#candidatura" class="btn btn-primary" data-magnet><span>Quiero unirme</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a href="#calculadora" class="btn btn-ghost">¿Cuánto puedo ganar?</a>
+          </div>
         </div>
-        <div class="perks">
-          <div><b>🏠 100 % remoto</b><span>Trabaja desde donde quieras.</span></div>
-          <div><b>⏰ Horario flexible</b><span>Tú organizas tu tiempo.</span></div>
-          <div><b>💶 Pago por proyecto</b><span>Cobras por cada web entregada.</span></div>
-          <div><b>🚀 Aprende</b><span>Proyectos reales desde el día 1.</span></div>
+        <div class="t-stats">
+          <div><b><em class="num" data-count="30">30</em> %</b><span>de cada web que vendas</span></div>
+          <div><b><em class="num" data-count="0">0</em> €</b><span>para empezar, sin cuotas</span></div>
+          <div><b>100 %</b><span>remoto y sin horarios</span></div>
+          <div><b>Sin</b><span>saber programar</span></div>
         </div>
       </div>
+    </section>
 
-      <div class="card form-card" id="formCard">
-        <h2>Envía tu candidatura</h2>
-        <p>Te responderemos en menos de una semana.</p>
-        <form id="candForm" novalidate>
-          <div id="candCampos"></div>
-          <button class="btn btn-primary w100" type="submit" id="cSend"><span>Enviar candidatura</span></button>
-          <p class="muted" style="font-size:13px;text-align:center;margin-top:12px">Te pediremos iniciar sesión para que puedas ver el estado de tu candidatura.</p>
-        </form>
+    <!-- ===== LO QUE BUSCAMOS ===== -->
+    <section class="alt">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>01</b>Lo que buscamos</span>
+          <h2>Tres cosas. Si dominas una, ya nos interesas.</h2>
+        </div>
+        <div class="perfiles">
+          <article class="perfil reveal" style="--c:#b98cff">
+            <span class="pf-ic">🧠</span>
+            <h3>Inteligencia artificial</h3>
+            <ul>
+              <li>Usas ChatGPT, Claude u otras IA a diario</li>
+              <li>Sabes pedirle buenos textos, imágenes e ideas</li>
+              <li>Preparas propuestas y contenido en minutos</li>
+            </ul>
+          </article>
+          <article class="perfil reveal" style="--c:#ff5a8a">
+            <span class="pf-ic">📱</span>
+            <h3>Redes sociales</h3>
+            <ul>
+              <li>Creas contenido para Instagram y TikTok</li>
+              <li>Sabes captar clientes con reels y publicaciones</li>
+              <li>Entiendes qué funciona y por qué</li>
+            </ul>
+          </article>
+          <article class="perfil reveal" style="--c:#c8f560">
+            <span class="pf-ic">🤝</span>
+            <h3>Ventas</h3>
+            <ul>
+              <li>Hablas con negocios sin miedo: en persona, WhatsApp o redes</li>
+              <li>Escuchas lo que necesitan y les enseñas la web que encaja</li>
+              <li>Haces seguimiento hasta cerrar la venta</li>
+            </ul>
+          </article>
+        </div>
+        <p class="nota reveal">💡 No hace falta saber programar ni diseñar. Las webs las creamos nosotros; tú consigues los clientes.</p>
       </div>
-    </div>
+    </section>
+
+    <!-- ===== CALCULADORA ===== -->
+    <section id="calculadora">
+      <div class="wrap calc-grid">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>02</b>Tus ganancias</span>
+          <h2>¿Cuánto puedes ganar?</h2>
+          <p class="lead">Mueve los controles. Te llevas el <b data-comision></b> % de lo que paga el cliente por cada web que vendas, sin límite.</p>
+          <div class="calc-ej" id="calcEj"></div>
+        </div>
+        <div class="calc card reveal">
+          <span class="q-label">¿Qué webs venderías sobre todo?</span>
+          <div id="calcTipo"></div>
+          <div class="rango">
+            <div class="rango-h"><span>Ventas al mes</span><b id="calcN">4</b></div>
+            <input type="range" id="calcRange" min="1" max="20" value="4" aria-label="Ventas al mes">
+            <div class="rango-m"><span>1</span><span>10</span><span>20</span></div>
+          </div>
+          <div class="calc-res">
+            <div><small>Al mes</small><b id="calcMes">0 €</b></div>
+            <div><small>Al año</small><b id="calcAno">0 €</b></div>
+          </div>
+          <p class="calc-nota">Ejemplo orientativo: lo que ganes depende de tus ventas. La comisión se calcula sobre el precio que paga el cliente por la web.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== VENTAJAS ===== -->
+    <section class="alt">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>03</b>Por qué con nosotros</span>
+          <h2>Todo a tu favor para vender.</h2>
+        </div>
+        <div class="ventajas">
+          <div class="vj reveal"><span>💶</span><b><span data-comision></span> % de cada venta</b><p>Sin techo: cuantas más webs vendas, más ganas.</p></div>
+          <div class="vj reveal"><span>🔗</span><b>Tu enlace de ventas</b><p>Cada pedido que entra por tu enlace queda a tu nombre automáticamente.</p></div>
+          <div class="vj reveal"><span>📊</span><b>Tu propio panel</b><p>Ves tus ventas y tu comisión en tiempo real, sin preguntar a nadie.</p></div>
+          <div class="vj reveal"><span>🧰</span><b>Todo listo para vender</b><p>Catálogo, 6 diseños, precios cerrados y vista previa con el nombre del cliente.</p></div>
+          <div class="vj reveal"><span>🧠</span><b>Aprendes IA aplicada</b><p>Te enseñamos cómo usamos la IA para vender, crear contenido y cerrar más rápido.</p></div>
+          <div class="vj reveal"><span>🏠</span><b>Remoto y sin horarios</b><p>Trabaja desde donde quieras y cuando quieras.</p></div>
+          <div class="vj reveal"><span>🚫</span><b>Sin inversión</b><p>Empezar no te cuesta nada: ni cuotas, ni material, ni compras mínimas.</p></div>
+          <div class="vj reveal"><span>🌱</span><b>Sin experiencia previa</b><p>Si tienes ganas y sabes moverte en redes, te ayudamos a empezar.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CÓMO EMPIEZAS + FORMULARIO ===== -->
+    <section id="candidatura">
+      <div class="wrap t-grid">
+        <div>
+          <div class="sec-head reveal">
+            <span class="eyebrow"><b>04</b>Cómo empiezas</span>
+            <h2>En 4 pasos estás vendiendo.</h2>
+          </div>
+          <ol class="t-pasos">
+            <li class="reveal"><b>Envías tu candidatura</b><span>Te respondemos en menos de una semana.</span></li>
+            <li class="reveal"><b>Te damos acceso</b><span>Entras a tu panel con tu enlace de ventas personal.</span></li>
+            <li class="reveal"><b>Compartes y vendes</b><span>Redes, WhatsApp o en persona. El cliente pide su web desde tu enlace.</span></li>
+            <li class="reveal"><b>Cobras tu <span data-comision></span> %</b><span>Cuando el cliente paga, tu comisión queda lista para cobrar.</span></li>
+          </ol>
+          <div class="faq t-faq reveal">
+            <details><summary>¿Necesito saber programar o diseñar?</summary><p>No. Nosotros creamos las webs. Tu trabajo es encontrar clientes, enseñarles los diseños y acompañarles hasta que hagan el pedido.</p></details>
+            <details><summary>¿Cuándo cobro mi comisión?</summary><p>Cuando el cliente ha pagado su web. En tu panel verás qué comisiones están pendientes y cuáles listas para cobrar.</p></details>
+            <details><summary>¿Hay un mínimo de ventas?</summary><p>No. Vendes a tu ritmo, sin objetivos obligatorios.</p></details>
+            <details><summary>¿Qué tipo de relación es?</summary><p>Colaboras de forma independiente. Al entrar te explicamos cómo funciona la facturación de tus comisiones.</p></details>
+          </div>
+        </div>
+
+        <div class="card form-card" id="formCard">
+          <h2>Envía tu candidatura</h2>
+          <p>Te responderemos en menos de una semana.</p>
+          <form id="candForm" novalidate>
+            <div id="candCampos"></div>
+            <button class="btn btn-primary w100" type="submit" id="cSend"><span>Enviar candidatura</span></button>
+            <p class="muted" style="font-size:13px;text-align:center;margin-top:12px">Te pediremos iniciar sesión para que puedas ver el estado de tu candidatura.</p>
+          </form>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer id="footer"></footer>
 
   <script type="module">
+    import { CONFIG, PLANES } from './config.js';
     import * as store from './js/store.js';
-    import { $, $$, esc, toast, arrancar, conSesion, fecha, campo, desplegable, opciones, aceptarTerminos, terminosAceptados, ocupado, etiquetas } from './js/ui.js';
+    import { $, $$, esc, euros, toast, arrancar, conSesion, fecha, campo, desplegable, opciones, aceptarTerminos, terminosAceptados, ocupado, etiquetas } from './js/ui.js';
 
-    // Campos del formulario (componentes del kit)
+    const PCT = CONFIG.comision ?? 30;
+    $$('[data-comision]').forEach(e => (e.textContent = PCT));
+    $$('.pct .num').forEach(e => { e.dataset.count = PCT; e.textContent = PCT; });
+    $$('.t-stats .num').forEach((e, i) => { if (i === 0) { e.dataset.count = PCT; e.textContent = PCT; } });
+
+    // Campos del formulario
     $('#candCampos').innerHTML = `
       ${campo({ id: 'cNombre', name: 'nombre', label: 'Nombre y apellidos', required: true, attrs: 'autocomplete="name"' })}
       ${campo({ id: 'cTel', name: 'telefono', label: 'Teléfono', type: 'tel', required: true, attrs: 'inputmode="tel" autocomplete="tel"' })}
-      ${desplegable({ id: 'cPuesto', name: 'puesto', label: 'Puesto', opciones: ['Diseño web / UI', 'Programación web', 'Ventas / comercial', 'Redes sociales', 'Otro'] })}
-      <span class="q-label">Experiencia</span>
-      ${opciones('experiencia', ['Menos de 1 año', '1–3 años', 'Más de 3 años'])}
-      ${campo({ id: 'cPort', name: 'portfolio', label: 'Portfolio, GitHub o Instagram', hint: 'Opcional: un enlace a tus trabajos' })}
-      ${campo({ id: 'cMsg', name: 'mensaje', label: '¿Por qué quieres unirte?', type: 'textarea', required: true })}
+      ${desplegable({ id: 'cPuesto', name: 'puesto', label: '¿En qué destacas más?', opciones: ['Ventas', 'Redes sociales', 'Inteligencia artificial', 'Un poco de todo'] })}
+      <span class="q-label">¿Qué sabes usar? <span class="muted" style="font-weight:400">(marca todo lo que quieras)</span></span>
+      ${opciones('habilidades', ['ChatGPT / Claude', 'Imágenes con IA', 'Canva', 'Instagram', 'TikTok', 'Vender en persona', 'Vender por WhatsApp'], [], 'checkbox')}
+      <span class="q-label">Experiencia vendiendo o en redes</span>
+      ${opciones('experiencia', ['Ninguna, pero tengo ganas', 'Algo', 'Bastante'])}
+      ${campo({ id: 'cPort', name: 'portfolio', label: 'Tus redes o algo que hayas hecho', hint: 'Opcional: tu Instagram, TikTok o un enlace' })}
+      ${campo({ id: 'cMsg', name: 'mensaje', label: '¿Por qué venderías bien?', type: 'textarea', required: true })}
       <div class="cand-terms">${aceptarTerminos('cTerms', 'Acepto la <a href="terminos.html#privacidad" target="_blank">política de privacidad</a> y que guardéis mis datos para este proceso')}</div>`;
 
     await arrancar('trabaja');
     etiquetas();
 
+    /* ---------- Calculadora de ganancias ---------- */
+    const tipos = PLANES.filter(p => p.id !== 'medida');
+    $('#calcTipo').innerHTML = opciones('calcTipo', tipos.map(p => `${p.nombre} · ${p.precio} €`), tipos.find(p => p.popular) ? `${tipos.find(p => p.popular).nombre} · ${tipos.find(p => p.popular).precio} €` : '');
+    $('#calcEj').innerHTML = tipos.map(p => `<div><span>${esc(p.nombre)}</span><b>${euros(p.precio * PCT / 100)}</b></div>`).join('') + '<small>lo que ganas por cada venta</small>';
+    function calcular() {
+      const sel = $('input[name=calcTipo]:checked')?.value || '';
+      const plan = tipos.find(p => sel.startsWith(p.nombre)) || tipos[0];
+      const n = +$('#calcRange').value;
+      const mes = plan.precio * PCT / 100 * n;
+      $('#calcN').textContent = n;
+      $('#calcRange').style.setProperty('--p', `${(n - 1) / 19 * 100}%`);
+      const pon = (el, v) => { const t = $(el); const nuevo = euros(v); if (t.textContent !== nuevo) { t.textContent = nuevo; t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump'); } };
+      pon('#calcMes', mes); pon('#calcAno', mes * 12);
+    }
+    $('#calcTipo').addEventListener('change', calcular);
+    $('#calcRange').addEventListener('input', calcular);
+    calcular();
+
+    /* ---------- Formulario de candidatura ---------- */
     const card = $('#formCard');
     const formHTML = card.innerHTML;
 
     function mostrarEstado(c) {
       const t = {
         pendiente: ['📬', 'Candidatura recibida', 'La estamos revisando. Te avisaremos muy pronto.'],
-        aceptada: ['🎉', '¡Bienvenido al equipo!', 'Ya tienes acceso al panel de trabajador.'],
-        rechazada: ['🙏', 'Gracias por tu interés', 'Esta vez no ha podido ser, pero guardamos tu candidatura para futuros proyectos.']
+        aceptada: ['🎉', '¡Bienvenido al equipo!', 'Ya tienes tu panel y tu enlace de ventas.'],
+        rechazada: ['🙏', 'Gracias por tu interés', 'Esta vez no ha podido ser, pero guardamos tu candidatura para más adelante.']
       }[c.estado] || ['📬', 'Candidatura recibida', ''];
       card.innerHTML = `<div class="estado-cand"><div class="big">${t[0]}</div><h3>${t[1]}</h3><p>${t[2]}</p>
         <p style="font-size:14px">${esc(c.puesto)} · enviada el ${fecha(c.createdAt)}</p>
@@ -123,7 +232,7 @@
       if (enviando) return;
       if (!u) return ponerFormulario();
       if (u.role === 'worker' || u.role === 'owner') {
-        card.innerHTML = `<div class="estado-cand"><div class="big">💼</div><h3>Ya formas parte del equipo</h3><p>Entra en tu panel para ver tus encargos.</p><a class="btn btn-primary" href="panel.html">Ir a mi panel</a></div>`;
+        card.innerHTML = `<div class="estado-cand"><div class="big">💼</div><h3>Ya formas parte del equipo</h3><p>En tu panel tienes tu enlace de ventas y tus comisiones.</p><a class="btn btn-primary" href="panel.html">Ir a mi panel</a></div>`;
         return;
       }
       try {
@@ -148,7 +257,9 @@
         });
         if (!ok) return toast('Revisa los campos marcados', 'err');
         if (!terminosAceptados('cTerms')) return;
-        const datos = Object.fromEntries(new FormData(form));
+        const fd = new FormData(form);
+        const datos = Object.fromEntries(fd);
+        const habilidades = fd.getAll('habilidades');
         enviando = true;
         const u = await conSesion('Inicia sesión para enviar tu candidatura y ver su estado.');
         if (!u) { enviando = false; return; }
@@ -157,10 +268,10 @@
           const previa = await store.miCandidatura();
           if (previa) { enviando = false; toast('Ya habías enviado una candidatura'); return mostrarEstado(previa); }
           const c = await store.enviarCandidatura({
-            nombre: datos.nombre.trim(), telefono: datos.telefono.trim(), puesto: datos.puesto,
+            nombre: datos.nombre.trim(), telefono: datos.telefono.trim(), puesto: datos.puesto, habilidades,
             experiencia: datos.experiencia, portfolio: (datos.portfolio || '').trim(), mensaje: datos.mensaje.trim()
           });
-          toast('¡Candidatura enviada! 🎉');
+          toast('¡Candidatura enviada! 🎉', 'ok');
           mostrarEstado(c);
         } catch (err) {
           toast(err.message || 'No se pudo enviar', 'err');

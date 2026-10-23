@@ -49,13 +49,23 @@
             <div><b><em class="num" data-count="50">50</em> %</b><span>al empezar, resto al final</span></div>
           </div>
         </div>
-        <div class="hero-art" aria-hidden="true">
-          <div id="heroArt"></div>
-          <svg class="sello" viewBox="0 0 120 120" aria-hidden="true">
-            <defs><path id="circ" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"/></defs>
-            <text><textPath href="#circ" textLength="286" lengthAdjust="spacing">DISEÑO WEB · A TU MEDIDA · DISEÑO WEB · A TU MEDIDA · </textPath></text>
-          </svg>
-          <span class="nota-mano">tócalos, son reales ↓</span>
+        <div class="hero-art">
+          <div class="vitrina" id="vitrina" role="button" tabindex="0" aria-label="Ver este diseño en grande">
+            <div class="laptop">
+              <div class="lt-screen">
+                <div class="lt-bar"><i></i><i></i><i></i><span class="lt-url" id="vtUrl">barberiafilo.com</span></div>
+                <div class="lt-view" id="vtPc"></div>
+              </div>
+              <div class="lt-base"></div>
+            </div>
+            <div class="movil"><div class="mv-notch"></div><div class="mv-view" id="vtMv"></div></div>
+            <div class="sello" aria-hidden="true">
+              <svg viewBox="0 0 120 120"><defs><path id="circ" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0"/></defs>
+                <text><textPath href="#circ" textLength="274" lengthAdjust="spacing">HECHO A TU MEDIDA · HECHO A TU MEDIDA · </textPath></text></svg>
+              <span class="sello-c">✦</span>
+            </div>
+          </div>
+          <div class="vt-chips" id="vtChips" role="tablist" aria-label="Diseños de ejemplo"></div>
         </div>
       </div>
     </section>
@@ -133,8 +143,8 @@
         <div class="join reveal">
           <div>
             <span class="eyebrow"><b>05</b>Equipo</span>
-            <h2>¿Diseñas o programas? Trabaja con nosotros.</h2>
-            <p>Buscamos personas con ganas de crear webs bonitas. Trabajo en remoto y proyectos reales desde el primer día.</p>
+            <h2>¿Sabes de IA, redes o ventas? Llévate el 30 % de cada web.</h2>
+            <p>Tú consigues los clientes y nosotros hacemos las webs. Remoto, sin horarios y sin invertir nada.</p>
           </div>
           <a href="trabaja.html" class="btn btn-dark" data-magnet>Trabaja con nosotros <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </div>

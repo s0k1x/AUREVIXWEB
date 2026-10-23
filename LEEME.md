@@ -70,7 +70,16 @@ y tú los ves en el panel desde cualquier dispositivo.
 - Atajo **/** para buscar en el panel y número de pendientes en el icono de la app instalada.
 - **Imagen para compartir** (`icons/og.png`): la que sale al pegar el enlace en WhatsApp o redes. Cámbiala cuando tengas tu marca.
 
-## 4b. Cómo funciona el equipo
+## 4b. Vendedores y comisiones (Trabaja con nosotros)
+- El % de comisión está en `config.js → comision` (ahora **30**). La página «Trabaja con nosotros» y la calculadora usan ese número.
+- Cada trabajador tiene en *Panel → Mis ventas* su **enlace personal** (`index.html?ref=...`). Si un cliente entra por ese enlace
+  y hace un pedido en los 30 días siguientes, el pedido queda a nombre de ese vendedor.
+- La comisión pasa a «Lista para cobrar» cuando el pedido está marcado como **Pagado**.
+- En *Panel → Equipo* ves cuánto debes a cada vendedor; cuando le pagues, pulsa «Pagar» y quedan marcadas como cobradas.
+- ⚠️ Revisa las ventajas que aparecen en la página (formación en IA, cobro, etc.) y deja solo las que vayas a cumplir.
+  Consulta con una gestoría cómo deben facturar los vendedores sus comisiones.
+
+## 4c. Cómo funciona el equipo
 - Alguien rellena **Trabaja con nosotros** → te aparece en *Panel → Candidaturas*.
 - Pulsas **Aceptar** → pasa a ser **trabajador** y ya puede entrar a su panel.
 - También puedes añadir a alguien por email en *Panel → Equipo*
@@ -87,7 +96,7 @@ y tú los ves en el panel desde cualquier dispositivo.
 > directamente** en el móvil; tiene que estar publicada (GitHub Pages, Netlify…).
 
 ## 6. Cuando hagas cambios
-Sube la versión en `sw.js` (ahora está en `v5` → pon `v6`…) para que los móviles con la app instalada se actualicen.
+Sube la versión en `sw.js` (ahora está en `v6` → pon `v7`…) para que los móviles con la app instalada se actualicen.
 
 ## 7. Cobros (lo más barato posible)
 El cliente paga desde «Mis pedidos» o al terminar el pedido. Solo aparecen las formas de pago que rellenes en `config.js → pagos`:

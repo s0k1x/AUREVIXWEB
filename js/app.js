@@ -11,6 +11,16 @@ import {
 } from './ui.js';
 import { botonPago, abrirPago, abrirResena, animarYPagar } from './pago.js';
 
+/* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor (30 días) */
+const REF = 'tm_ref';
+(() => {
+  const r = new URLSearchParams(location.search).get('ref');
+  if (r && /^[\w-]{3,64}$/.test(r)) { try { localStorage.setItem(REF, JSON.stringify({ uid: r, t: Date.now() })); } catch {} }
+})();
+const leerRef = () => {
+  try { const r = JSON.parse(localStorage.getItem(REF) || 'null'); return r && Date.now() - r.t < 30 * 864e5 ? r.uid : ''; } catch { return ''; }
+};
+
 await arrancar('inicio');
 
 /* ==========================================================
@@ -31,12 +41,62 @@ document.addEventListener('load', e => {
   if (e.target.tagName === 'IFRAME' && e.target.getAttribute('src')) e.target.parentElement?.querySelector('.thumb-load')?.remove();
 }, true);
 
-// Portada: abanico de 3 diseños (se cargan después de la página para que abra más rápido)
-$('#heroArt').innerHTML = ['brasa', 'filo', 'calma'].map((id, i) =>
-  `<div class="fan f${i}"><div class="thumb"><div class="thumb-load">${spinner()}</div><iframe data-src="${urlPlantilla(id)}" tabindex="-1" aria-hidden="true" title=""></iframe></div></div>`).join('');
-vigilarMiniaturas($('#heroArt'));
-const cargarPortada = () => setTimeout(() => $$('#heroArt iframe[data-src]').forEach(f => (f.src = f.dataset.src)), 250);
-document.readyState === 'complete' ? cargarPortada() : addEventListener('load', cargarPortada);
+/* ==========================================================
+   VITRINA DE LA PORTADA: portátil + móvil que van cambiando de diseño
+   ========================================================== */
+const VITRINA = ['filo', 'calma', 'brasa', 'kiosko', 'pulso', 'lienzo'];
+const DURA = 5200;
+let vtIdx = 0, vtTimer = null, vtPausa = false;
+const capas = el => {
+  el.innerHTML = '<iframe tabindex="-1" aria-hidden="true" title=""></iframe><iframe tabindex="-1" aria-hidden="true" title=""></iframe>';
+  return [...el.querySelectorAll('iframe')];
+};
+const vt = { pc: capas($('#vtPc')), mv: capas($('#vtMv')), activa: 0 };
+function escalaVitrina() {
+  const pc = $('#vtPc'), mv = $('#vtMv');
+  pc.style.setProperty('--s', pc.clientWidth / 1280);
+  mv.style.setProperty('--s', mv.clientWidth / 390);
+  pc.style.setProperty('--d', `${-(2400 * pc.clientWidth / 1280 - pc.clientHeight)}px`);
+  mv.style.setProperty('--d', `${-(2600 * mv.clientWidth / 390 - mv.clientHeight)}px`);
+}
+new ResizeObserver(escalaVitrina).observe($('#vitrina'));
+$('#vtChips').innerHTML = VITRINA.map((id, i) => {
+  const p = plantillaPorId(id);
+  return `<button type="button" role="tab" data-vt="${i}" style="--c:${p.c.accent}"><i></i><span>${esc(p.nombre)}</span><b class="vt-prog"></b></button>`;
+}).join('');
+function mostrarVitrina(i) {
+  vtIdx = (i + VITRINA.length) % VITRINA.length;
+  const id = VITRINA[vtIdx], p = plantillaPorId(id);
+  const old = vt.activa, sig = 1 - old;
+  ['pc', 'mv'].forEach(k => {
+    const f = vt[k][sig], o = vt[k][old];
+    f.classList.remove('on', 'rec');
+    f.onload = () => requestAnimationFrame(() => {
+      f.classList.add('on');
+      o.classList.remove('on', 'rec');
+      setTimeout(() => f.classList.add('rec'), 700);
+    });
+    f.src = urlPlantilla(id);
+  });
+  vt.activa = sig;
+  $('#vtUrl').textContent = p.dominio;
+  $$('#vtChips [data-vt]').forEach((b, k) => {
+    b.classList.toggle('on', k === vtIdx);
+    b.setAttribute('aria-selected', k === vtIdx);
+    const pr = b.querySelector('.vt-prog'); pr.style.animation = 'none'; void pr.offsetWidth; pr.style.animation = '';
+  });
+  $('#vitrina').style.setProperty('--vt', p.c.accent);
+  clearTimeout(vtTimer);
+  if (!vtPausa && !matchMedia('(prefers-reduced-motion: reduce)').matches) vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA);
+}
+$('#vtChips').addEventListener('click', e => { const b = e.target.closest('[data-vt]'); if (b) mostrarVitrina(+b.dataset.vt); });
+$('#vitrina').addEventListener('pointerenter', () => { vtPausa = true; clearTimeout(vtTimer); $('.hero-art').classList.add('pausa'); });
+$('#vitrina').addEventListener('pointerleave', () => { vtPausa = false; $('.hero-art').classList.remove('pausa'); mostrarVitrina(vtIdx + 1); });
+const abrirVitrina = () => abrirPreview(VITRINA[vtIdx]);
+$('#vitrina').addEventListener('click', abrirVitrina);
+$('#vitrina').addEventListener('keydown', e => { if (e.key === 'Enter') abrirVitrina(); });
+const arrancarVitrina = () => setTimeout(() => { escalaVitrina(); mostrarVitrina(0); }, 200);
+document.readyState === 'complete' ? arrancarVitrina() : addEventListener('load', arrancarVitrina);
 
 /* ==========================================================
    PLANES
@@ -68,15 +128,31 @@ $('#dzFiltro').addEventListener('change', e => {
   });
 });
 $('#disenosGrid').innerHTML = PLANTILLAS.map(p => `
-  <article class="dz reveal" data-ver="${p.id}" data-grupo="${GRUPO[p.id] || 'local'}" tabindex="0" role="button" aria-label="Ver diseño ${esc(p.nombre)}">
-    ${miniatura(p.id)}
+  <article class="dz reveal" data-ver="${p.id}" data-grupo="${GRUPO[p.id] || 'local'}" tabindex="0" role="button" aria-label="Ver diseño ${esc(p.nombre)}" style="--c:${p.c.accent}">
+    <div class="dz-win">
+      <div class="dz-bar"><i></i><i></i><i></i><span>${esc(p.dominio)}</span></div>
+      <div class="dz-view"><div class="thumb-load">${spinner()}</div><iframe src="${urlPlantilla(p.id)}" loading="lazy" tabindex="-1" aria-hidden="true" title=""></iframe></div>
+      <span class="dz-scroll" aria-hidden="true">↕ recorre la web</span>
+    </div>
     <div class="dz-info">
       <div><b>${esc(p.nombre)}</b><small>${esc(p.sector)}</small></div>
-      <span class="dz-dot" style="background:${p.c.accent}"></span>
+      <div class="dz-pal" title="Colores del diseño">${[p.c.bg, p.c.accent, p.c.text].map(c => `<i style="background:${c}"></i>`).join('')}</div>
     </div>
     <p>${esc(p.desc)}</p>
+    <div class="dz-cta"><span>Ver en vivo</span>${icono('arrow')}</div>
   </article>`).join('');
-vigilarMiniaturas($('#disenosGrid'));
+// Escala de cada ventana y distancia que recorre al hacer "scroll" automático
+const roDz = new ResizeObserver(es => es.forEach(({ target: v }) => {
+  const s = v.clientWidth / 1280;
+  v.style.setProperty('--s', s);
+  v.style.setProperty('--d', `${-(2600 * s - v.clientHeight)}px`);
+}));
+$$('#disenosGrid .dz-view').forEach(v => roDz.observe(v));
+// En el móvil (sin ratón) la web se recorre sola cuando la tarjeta está en el centro de la pantalla
+if (!matchMedia('(hover: hover)').matches) {
+  const ioDz = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('recorre', e.isIntersecting)), { rootMargin: '-35% 0px -35% 0px' });
+  $$('#disenosGrid .dz').forEach(c => ioDz.observe(c));
+}
 
 /* ==========================================================
    OPINIONES
@@ -534,7 +610,8 @@ async function confirmarPedido() {
     const pedido = await store.crearPedido({
       plan: W.plan.id, planNombre: W.plan.nombre, precioBase: W.plan.precio,
       extras: d.extras, urgente: d.urgente, total: d.total, mensual: d.mensual,
-      plantilla: W.plantilla, respuestas: d.respuestas, aceptaTerminos: Date.now()
+      plantilla: W.plantilla, respuestas: d.respuestas, aceptaTerminos: Date.now(),
+      ref: leerRef() && leerRef() !== u.uid ? leerRef() : ''
     });
     exito(pedido);
   } catch (e) {

@@ -6,7 +6,7 @@
 
 export const PLANTILLAS = [
   {
-    id: 'filo', nombre: 'Filo', sector: 'Barbería · Peluquería', desc: 'Oscuro y elegante, con lista de precios y reservas.',
+    id: 'filo', dominio: 'barberiafilo.com', nombre: 'Filo', sector: 'Barbería · Peluquería', desc: 'Oscuro y elegante, con lista de precios y reservas.',
     marca: 'Barbería Filo',
     fuentes: { d: 'Oswald', b: 'Work Sans', url: 'family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600' },
     c: { bg: '#0f0d0b', surface: '#1a1612', text: '#f1e9dc', muted: '#a8998a', accent: '#c9a24a' },
@@ -21,7 +21,7 @@ export const PLANTILLAS = [
     ]
   },
   {
-    id: 'brasa', nombre: 'Brasa', sector: 'Restaurante · Bar', desc: 'Cálido y cercano, con carta digital y reservas.',
+    id: 'brasa', dominio: 'brasayco.es', nombre: 'Brasa', sector: 'Restaurante · Bar', desc: 'Cálido y cercano, con carta digital y reservas.',
     marca: 'Brasa & Co.',
     fuentes: { d: 'Fraunces', b: 'Inter', url: 'family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600' },
     c: { bg: '#f6efe4', surface: '#fffaf2', text: '#2a1d14', muted: '#7a6656', accent: '#c4532d' },
@@ -40,7 +40,7 @@ export const PLANTILLAS = [
     ]
   },
   {
-    id: 'kiosko', nombre: 'Kiosko', sector: 'Tienda online', desc: 'Limpio y moderno, con catálogo y carrito.',
+    id: 'kiosko', dominio: 'kiosko.shop', nombre: 'Kiosko', sector: 'Tienda online', desc: 'Limpio y moderno, con catálogo y carrito.',
     marca: 'Kiosko',
     fuentes: { d: 'Space Grotesk', b: 'Inter', url: 'family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600' },
     c: { bg: '#f7f7f5', surface: '#ffffff', text: '#111111', muted: '#6b6b6b', accent: '#2f5bff' },
@@ -54,7 +54,7 @@ export const PLANTILLAS = [
     ]
   },
   {
-    id: 'lienzo', nombre: 'Lienzo', sector: 'Portfolio · Profesional', desc: 'Minimalista, tipografía grande y trabajos destacados.',
+    id: 'lienzo', dominio: 'estudiolienzo.com', nombre: 'Lienzo', sector: 'Portfolio · Profesional', desc: 'Minimalista, tipografía grande y trabajos destacados.',
     marca: 'Estudio Lienzo',
     fuentes: { d: 'Instrument Serif', b: 'Inter', url: 'family=Instrument+Serif&family=Inter:wght@400;500;600' },
     c: { bg: '#f1efe9', surface: '#e8e5dd', text: '#161616', muted: '#6e6a62', accent: '#e4572e' },
@@ -68,7 +68,7 @@ export const PLANTILLAS = [
     ]
   },
   {
-    id: 'calma', nombre: 'Calma', sector: 'Estética · Salud · Bienestar', desc: 'Suave y relajante, con reserva de citas.',
+    id: 'calma', dominio: 'calmaestetica.es', nombre: 'Calma', sector: 'Estética · Salud · Bienestar', desc: 'Suave y relajante, con reserva de citas.',
     marca: 'Calma Estética',
     fuentes: { d: 'Playfair Display', b: 'DM Sans', url: 'family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500;600' },
     c: { bg: '#f3f5f0', surface: '#ffffff', text: '#23302a', muted: '#6b7a71', accent: '#6f8f72' },
@@ -82,7 +82,7 @@ export const PLANTILLAS = [
     ]
   },
   {
-    id: 'pulso', nombre: 'Pulso', sector: 'Gimnasio · Deporte', desc: 'Enérgico y potente, con clases y tarifas.',
+    id: 'pulso', dominio: 'pulsogym.es', nombre: 'Pulso', sector: 'Gimnasio · Deporte', desc: 'Enérgico y potente, con clases y tarifas.',
     marca: 'Pulso Gym',
     fuentes: { d: 'Anton', b: 'Inter', url: 'family=Anton&family=Inter:wght@400;500;600;700' },
     c: { bg: '#0b0b0b', surface: '#171717', text: '#ffffff', muted: '#9a9a9a', accent: '#ff5a1f' },

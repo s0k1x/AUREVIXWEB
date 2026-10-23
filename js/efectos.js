@@ -162,6 +162,17 @@ function saltar() {
   document.body.prepend(a);
 }
 
+/* Apariciones al hacer scroll en cualquier página (.reveal) */
+const ioRev = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('in'); ioRev.unobserve(e.target); }
+}), { threshold: .1, rootMargin: '0px 0px -30px 0px' });
+export function apariciones(raiz = document) {
+  raiz.querySelectorAll('.reveal:not(.in)').forEach((el, i) => {
+    if (!el.style.transitionDelay) el.style.transitionDelay = `${(i % 3) * 70}ms`;
+    ioRev.observe(el);
+  });
+}
+
 export function iniciarEfectos({ waLink } = {}) {
   saltar();
   ondas();
@@ -173,5 +184,6 @@ export function iniciarEfectos({ waLink } = {}) {
   contar();
   partirTitulos();
   deslizarParaCerrar();
+  apariciones();
   if (waLink) botonWhatsapp(waLink);
 }

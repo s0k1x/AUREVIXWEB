@@ -49,7 +49,7 @@ const local = {
 };
 
 function sembrarDemo() {
-  if (local.get('sembrado_v2')) return;
+  if (local.get('sembrado_v3')) return;
   const ahora = Date.now(), dia = 864e5;
   const users = {
     u_trab: { uid: 'u_trab', name: 'Laura Ruiz', email: 'trabajador@demo.com', photo: '', role: 'worker', createdAt: ahora - 30 * dia },
@@ -59,14 +59,16 @@ function sembrarDemo() {
   };
   const base = { notas: [], mensual: 0 };
   const orders = [
-    { ...base, id: 'o1', uid: 'u_ana', clienteNombre: 'Ana Torres', clienteEmail: 'ana@ejemplo.com', plan: 'reservas', planNombre: 'Web con reservas', precioBase: 490, extras: [{ id: 'dominio', nombre: 'Dominio + alojamiento (1er año)', precio: 60 }], urgente: false, total: 550, plantilla: 'calma', respuestas: { negocio: 'Estética Ana', sector: 'Belleza y estética', objetivo: 'Reservas / citas', telefono: '600 111 222', estilo: 'Elegante', color: '#6f8f72', logo: 'Sí, ya tengo', contenido: 'Tengo algunos', comentarios: 'Me gustaría que se vieran bien los precios de los tratamientos.' }, estado: 'en_curso', pagoEstado: 'senal', pagoMetodo: 'bizum', asignado: 'u_trab', asignadoNombre: 'Laura Ruiz', createdAt: ahora - 5 * dia },
+    { ...base, id: 'o1', uid: 'u_ana', clienteNombre: 'Ana Torres', clienteEmail: 'ana@ejemplo.com', plan: 'reservas', planNombre: 'Web con reservas', precioBase: 490, extras: [{ id: 'dominio', nombre: 'Dominio + alojamiento (1er año)', precio: 60 }], urgente: false, total: 550, ref: 'u_trab', plantilla: 'calma', respuestas: { negocio: 'Estética Ana', sector: 'Belleza y estética', objetivo: 'Reservas / citas', telefono: '600 111 222', estilo: 'Elegante', color: '#6f8f72', logo: 'Sí, ya tengo', contenido: 'Tengo algunos', comentarios: 'Me gustaría que se vieran bien los precios de los tratamientos.' }, estado: 'en_curso', pagoEstado: 'senal', pagoMetodo: 'bizum', asignado: 'u_trab', asignadoNombre: 'Laura Ruiz', createdAt: ahora - 5 * dia },
     { ...base, id: 'o2', uid: 'u_pepe', clienteNombre: 'Pepe Gómez', clienteEmail: 'pepe@ejemplo.com', plan: 'negocio', planNombre: 'Web de negocio', precioBase: 349, extras: [{ id: 'logo', nombre: 'Diseño de logo', precio: 80 }], urgente: false, total: 429, mensual: 15, plantilla: 'filo', respuestas: { negocio: 'Barbería Pepe', sector: 'Peluquería / barbería', objetivo: 'Que me contacten', telefono: '600 333 444', estilo: 'Oscuro', color: '#c9a24a', logo: 'No, necesito uno', contenido: 'No, ayudadme', comentarios: '' }, estado: 'nuevo', pagoEstado: 'verificando', pagoMetodo: 'transferencia', pagoFase: 'senal', pagoAviso: ahora - 2 * 36e5, asignado: '', asignadoNombre: '', createdAt: ahora - 3 * dia },
-    { ...base, id: 'o3', uid: 'u_carla', clienteNombre: 'Carla Díaz', clienteEmail: 'carla@ejemplo.com', plan: 'tienda', planNombre: 'Tienda online', precioBase: 690, extras: [], urgente: true, total: 862.5, plantilla: 'kiosko', respuestas: { negocio: 'Carla Handmade', sector: 'Tienda / comercio', objetivo: 'Vender online', telefono: '600 555 666', estilo: 'Moderno', color: '#2f5bff', logo: 'Sí, ya tengo', contenido: 'Sí, todo', comentarios: 'Vendo bisutería hecha a mano, unos 30 productos.' }, estado: 'nuevo', pagoEstado: 'pendiente', asignado: '', asignadoNombre: '', createdAt: ahora - dia }
+    { ...base, id: 'o3', uid: 'u_carla', clienteNombre: 'Carla Díaz', clienteEmail: 'carla@ejemplo.com', plan: 'tienda', planNombre: 'Tienda online', precioBase: 690, extras: [], urgente: true, total: 862.5, ref: 'u_trab', plantilla: 'kiosko', respuestas: { negocio: 'Carla Handmade', sector: 'Tienda / comercio', objetivo: 'Vender online', telefono: '600 555 666', estilo: 'Moderno', color: '#2f5bff', logo: 'Sí, ya tengo', contenido: 'Sí, todo', comentarios: 'Vendo bisutería hecha a mano, unos 30 productos.' }, estado: 'nuevo', pagoEstado: 'pendiente', asignado: '', asignadoNombre: '', createdAt: ahora - dia }
+    ,{ ...base, id: 'o4', uid: 'u_marta', clienteNombre: 'Marta Gil', clienteEmail: 'marta@ejemplo.com', plan: 'landing', planNombre: 'Landing page', precioBase: 149, extras: [{ id: 'dominio', nombre: 'Dominio + alojamiento (1er año)', precio: 60 }], urgente: false, total: 209, ref: 'u_trab', plantilla: 'lienzo', respuestas: { negocio: 'Marta Fotografía', sector: 'Profesional / freelance', objetivo: 'Darme a conocer', telefono: '600 777 888', estilo: 'Minimalista', color: '', logo: 'Sí, ya tengo', contenido: 'Sí, todo', comentarios: '' }, tareas: { diseno: true, contenido: true, desarrollo: true, revision: true, publicacion: true }, estado: 'entregado', pagoEstado: 'pagado', pagoMetodo: 'bizum', asignado: 'u_trab', asignadoNombre: 'Laura Ruiz', createdAt: ahora - 12 * dia }
   ];
   const apps = [
-    { id: 'a1', uid: 'u_cand1', nombre: 'Marcos Vidal', email: 'marcos@ejemplo.com', telefono: '611 222 333', puesto: 'Programación web', experiencia: '1–3 años', portfolio: 'github.com/marcosv', mensaje: 'Me encanta el frontend y tengo varios proyectos con JavaScript.', estado: 'pendiente', createdAt: ahora - 2 * dia },
-    { id: 'a2', uid: 'u_cand2', nombre: 'Sara León', email: 'sara@ejemplo.com', telefono: '622 444 555', puesto: 'Diseño web / UI', experiencia: 'Menos de 1 año', portfolio: 'behance.net/saraleon', mensaje: 'Acabo de terminar el grado de diseño y busco mi primer proyecto.', estado: 'pendiente', createdAt: ahora - 6 * 36e5 }
+    { id: 'a1', uid: 'u_cand1', nombre: 'Marcos Vidal', email: 'marcos@ejemplo.com', telefono: '611 222 333', puesto: 'Ventas', habilidades: ['ChatGPT / Claude', 'Vender en persona', 'Vender por WhatsApp'], experiencia: 'Bastante', portfolio: 'instagram.com/marcosv', mensaje: 'Llevo 2 años vendiendo seguros y conozco a muchos negocios del barrio.', estado: 'pendiente', createdAt: ahora - 2 * dia },
+    { id: 'a2', uid: 'u_cand2', nombre: 'Sara León', email: 'sara@ejemplo.com', telefono: '622 444 555', puesto: 'Redes sociales', habilidades: ['TikTok', 'Instagram', 'Imágenes con IA', 'Canva'], experiencia: 'Algo', portfolio: 'tiktok.com/@saraleon', mensaje: 'Tengo 12.000 seguidores en TikTok y sé crear contenido que engancha.', estado: 'pendiente', createdAt: ahora - 6 * 36e5 }
   ];
+  users.u_marta = { uid: 'u_marta', name: 'Marta Gil', email: 'marta@ejemplo.com', photo: '', role: 'client', createdAt: ahora - 12 * dia };
   users.u_cand1 = { uid: 'u_cand1', name: 'Marcos Vidal', email: 'marcos@ejemplo.com', photo: '', role: 'client', createdAt: ahora - 2 * dia };
   users.u_cand2 = { uid: 'u_cand2', name: 'Sara León', email: 'sara@ejemplo.com', photo: '', role: 'client', createdAt: ahora - dia };
   local.set('users', users);
@@ -79,7 +81,7 @@ function sembrarDemo() {
     { id: 'r4', uid: 'u_pepe', nombre: 'Pepe Gómez', estrellas: 5, texto: 'Todo perfecto, repetiría.', plan: 'Web de negocio', aprobada: false, demo: true, createdAt: ahora - 3 * 36e5 }
   ];
   local.set('resenas', resenas);
-  local.set('sembrado_v2', true);
+  local.set('sembrado_v3', true);
 }
 
 function usuarioLocal(uid) {
