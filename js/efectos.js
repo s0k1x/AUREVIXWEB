@@ -1,7 +1,7 @@
 /* ==========================================================
    Efectos y microanimaciones (todo opcional y ligero)
    ========================================================== */
-const reducido = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reducido = () => document.documentElement.dataset.movimiento === 'reducido' || matchMedia('(prefers-reduced-motion: reduce)').matches;
 const conRaton = () => matchMedia('(hover: hover)').matches;
 
 /* Onda al pulsar botones (también funciona con el dedo) */
@@ -76,14 +76,6 @@ export function contar(raiz = document) {
     requestAnimationFrame(paso);
   }), { threshold: .5 });
   raiz.querySelectorAll('[data-count]').forEach(el => io.observe(el));
-}
-
-/* Botón flotante de WhatsApp: aparece tras unos segundos */
-function botonWhatsapp(link) {
-  const b = document.querySelector('[data-wa-fab]');
-  if (!b) return;
-  b.href = link;
-  setTimeout(() => b.classList.add('show'), 2200);
 }
 
 /* Inclinación 3D de las miniaturas de diseños al mover el ratón */
@@ -173,7 +165,7 @@ export function apariciones(raiz = document) {
   });
 }
 
-export function iniciarEfectos({ waLink } = {}) {
+export function iniciarEfectos() {
   saltar();
   ondas();
   seguirRaton();
@@ -185,5 +177,4 @@ export function iniciarEfectos({ waLink } = {}) {
   partirTitulos();
   deslizarParaCerrar();
   apariciones();
-  if (waLink) botonWhatsapp(waLink);
 }

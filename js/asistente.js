@@ -5,18 +5,19 @@
    Con Supabase conectado responde Gemini (función "asistente").
    En modo demo responde con reglas sencillas a partir de config.js.
    ========================================================== */
-import { CONFIG, PLANES, EXTRAS, URGENTE } from '../config.js';
+import { CONFIG, PLANES, EXTRAS } from '../config.js';
 import { PLANTILLAS } from './plantillas.js';
 import * as store from './store.js';
-import { esc, icono, euros, waLink } from './ui.js';
+import { esc, icono, euros, mailLink } from './ui.js';
+import { planesActivos, extrasActivos } from './sitio.js';
 
 const ajuste = CONFIG.asistente || { activo: true, nombre: 'Asistente', saludo: '' };
 
 /** Datos que se envían a la IA para que responda con información real */
 export const catalogo = () => ({
-  marca: CONFIG.marca, senal: CONFIG.senal, urgente: URGENTE, whatsapp: CONFIG.whatsapp, email: CONFIG.email,
-  planes: PLANES.map(({ id, nombre, precio, entrega, desc, incluye, plantillas }) => ({ id, nombre, precio, entrega, desc, incluye, plantillas })),
-  extras: EXTRAS.map(({ id, nombre, precio, mensual, desc }) => ({ id, nombre, precio, mensual: !!mensual, desc })),
+  marca: CONFIG.marca, senal: CONFIG.senal, urgente: CONFIG.urgente, email: CONFIG.email, contacto: 'Solo por correo electrónico o desde el formulario de contacto de la web. No hay WhatsApp ni teléfono.', horario: CONFIG.horario, respuesta: CONFIG.respuesta, aceptaPedidos: CONFIG.aceptarPedidos,
+  planes: planesActivos().map(({ id, nombre, precio, entrega, desc, incluye, plantillas }) => ({ id, nombre, precio, entrega, desc, incluye, plantillas })),
+  extras: extrasActivos().map(({ id, nombre, precio, mensual, desc }) => ({ id, nombre, precio, mensual: !!mensual, desc })),
   plantillas: PLANTILLAS.map(({ id, nombre, sector, desc }) => ({ id, nombre, sector, desc }))
 });
 
@@ -79,9 +80,12 @@ function respuestaLocal(texto) {
   const t = sinTildes(texto);
   const tiene = (...p) => p.some(x => t.includes(x));
   const desde = PLANES.map(p => `${p.nombre}: desde ${euros(p.precio)}`).join('; ');
+  if (tiene('whatsapp', 'telefono', 'llamar', 'contacto', 'contactar', 'correo', 'email', 'hablar con')) return `Atendemos por correo en ${CONFIG.email} y desde el formulario de contacto de la web. Si ya eres cliente, escríbenos en la pestaña «Mensajes» de tu proyecto. ${CONFIG.respuesta}.`;
+  if (tiene('archivo', 'foto', 'logo', 'subir', 'enviar contenido')) return 'Desde «Mis proyectos» puedes subir fotos, logotipos y documentos en la pestaña «Archivos» de tu proyecto.';
+  if (tiene('factura', 'recibo', 'justificante')) return 'En «Mis proyectos», pestaña «Pagos», puedes descargar el recibo de cada pago. Si necesitas factura a nombre de tu empresa, añade tus datos fiscales en «Ajustes → Facturación».';
   if (tiene('trabaj', 'comercial', 'empleo', 'vacante', 'comision')) return `Buscamos comerciales con un ${CONFIG.comision} % de comisión por cada web vendida. Tienes las condiciones y el formulario en la página «Trabaja con nosotros».`;
   if (tiene('precio', 'cuesta', 'cuanto vale', 'tarifa', 'presupuesto', 'barato', 'caro')) return `Los precios de partida son: ${desde}. En el cuestionario puedes añadir extras y ves el total antes de confirmar.`;
-  if (tiene('tarda', 'plazo', 'cuando', 'dias', 'entrega', 'rapido', 'urgente')) return `Los plazos van de ${PLANES[0].entrega} para una landing page a ${plan('tienda')?.entrega || '2 semanas'} para una tienda online. Si tienes prisa, la entrega urgente añade un ${Math.round(URGENTE * 100)} % al precio base.`;
+  if (tiene('tarda', 'plazo', 'cuando', 'dias', 'entrega', 'rapido', 'urgente')) return `Los plazos van de ${PLANES[0].entrega} para una landing page a ${plan('tienda')?.entrega || '2 semanas'} para una tienda online. Si tienes prisa, la entrega urgente añade un ${Math.round(CONFIG.urgente * 100)} % al precio base.`;
   if (tiene('pago', 'pagar', 'bizum', 'transferencia', 'tarjeta', 'paypal', 'senal')) return `Se abona el ${CONFIG.senal} % al empezar y el resto cuando apruebas la web. Puedes pagar por Bizum, transferencia u otros métodos que aparecen al finalizar el pedido.`;
   if (tiene('dominio', 'hosting', 'alojamiento', '.com', '.es')) return `Si no tienes dominio, añade el extra «Dominio + alojamiento» (${euros(EXTRAS.find(e => e.id === 'dominio')?.precio || 60)} el primer año) y lo registramos a tu nombre. Si ya tienes uno, lo indicas en «Mis proyectos» y lo conectamos.`;
   if (tiene('cambio', 'modific', 'mantenimiento', 'actualiz')) return `Antes de publicar se incluyen las revisiones necesarias. Después puedes contratar el mantenimiento mensual (${euros(EXTRAS.find(e => e.id === 'mantenimiento')?.precio || 15)}/mes) o pedir cambios puntuales.`;
@@ -93,7 +97,7 @@ function respuestaLocal(texto) {
   if (tiene('gracias')) return 'De nada. Si quieres empezar, elige el tipo de web en la sección de precios. Estoy aquí si te surge otra duda.';
   const r = recomendarLocal(texto);
   if (r.plan !== 'negocio' || r.plantilla !== 'filo') return `Por lo que cuentas, te encajaría ${plan(r.plan).nombre} (desde ${euros(plan(r.plan).precio)}). ${r.motivo}`;
-  return 'Puedo ayudarte con precios, plazos, pagos y tipos de web. Para algo más concreto, escríbenos por WhatsApp y te atiende una persona del equipo.';
+  return 'Puedo ayudarte con precios, plazos, pagos y tipos de web. Para algo más concreto, escríbenos a ' + CONFIG.email + ' o desde el formulario de contacto y te atiende una persona del equipo.';
 }
 
 /* ---------- Chat ---------- */
@@ -103,7 +107,7 @@ const guardar = h => { try { sessionStorage.setItem(CLAVE, JSON.stringify(h.slic
 const RAPIDAS = ['¿Cuánto cuesta una web?', '¿Cuánto tardáis?', '¿Cómo se paga?', '¿Qué web me conviene?'];
 
 export function iniciarChat() {
-  if (!ajuste.activo || document.getElementById('chat')) return;
+  if (!(CONFIG.asistente || ajuste).activo || document.getElementById('chat')) return;
   let hilo = leer();
   const ia = store.iaDisponible();
   const nodo = document.createElement('div');
@@ -125,7 +129,7 @@ export function iniciarChat() {
         <input id="chatIn" maxlength="600" placeholder="Escribe tu pregunta" aria-label="Tu pregunta">
         <button class="chat-send" aria-label="Enviar">${icono('arrow')}</button>
       </form>
-      <a class="chat-wa" href="${waLink('Hola, tengo una duda sobre una web.')}" target="_blank" rel="noopener">${icono('wa')} Hablar con una persona por WhatsApp</a>
+      <a class="chat-wa" href="${mailLink('Duda sobre una web')}">${icono('mail')} Escribir a una persona del equipo</a>
     </section>`;
   document.body.appendChild(nodo);
 
@@ -133,7 +137,7 @@ export function iniciarChat() {
   const msgs = nodo.querySelector('#chatMsgs'), input = nodo.querySelector('#chatIn'), rapidas = nodo.querySelector('#chatRapidas');
   const burbuja = (m, nuevo = false) => `<div class="msg ${m.rol === 'user' ? 'yo' : 'el'} ${nuevo ? 'nuevo' : ''}">${esc(m.texto).replace(/\n/g, '<br>')}</div>`;
   const pintar = () => {
-    msgs.innerHTML = burbuja({ rol: 'model', texto: ajuste.saludo || 'Hola, ¿en qué puedo ayudarte?' }) + hilo.map(m => burbuja(m)).join('');
+    msgs.innerHTML = burbuja({ rol: 'model', texto: CONFIG.asistente?.saludo || ajuste.saludo || 'Hola, ¿en qué puedo ayudarte?' }) + hilo.map(m => burbuja(m)).join('');
     rapidas.hidden = hilo.length > 0;
     msgs.scrollTop = msgs.scrollHeight;
   };

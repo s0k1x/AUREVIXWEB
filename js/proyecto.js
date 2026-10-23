@@ -5,8 +5,8 @@
    cuando le toca, elige el dominio, envía el contenido, revisa
    la vista previa y paga el resto.
    ========================================================== */
-import { CONFIG } from '../config.js';
-import { esc, icono, campo, euros, fecha, haceCuanto, waLink, refPedido } from './ui.js';
+import { CONFIG, PLANES } from '../config.js';
+import { esc, icono, campo, euros, fecha, haceCuanto, mailLink, refPedido } from './ui.js';
 import { plantillaPorId } from './plantillas.js';
 
 export const ETAPAS = [
@@ -92,11 +92,12 @@ export function accionCliente(p, botonPagoHTML) {
       ${campo({ id: `serv-${id}`, name: 'servicios', label: 'Servicios y precios', type: 'textarea', value: c.servicios || '' })}
       ${campo({ id: `hor-${id}`, name: 'horario', label: 'Horario y dirección', type: 'textarea', value: c.horario || '' })}
       ${campo({ id: `redes-${id}`, name: 'redes', label: 'Redes sociales', hint: 'Instagram, Facebook, TikTok…', value: c.redes || '' })}
-      ${campo({ id: `fotos-${id}`, name: 'fotos', label: 'Enlace a tus fotos', type: 'url', hint: 'Google Drive, WeTransfer, Dropbox…', value: c.fotos || '' })}
+      ${campo({ id: `fotos-${id}`, name: 'fotos', label: 'Enlace a tus fotos (opcional)', type: 'url', hint: 'También puedes subirlas en la pestaña «Archivos»', value: c.fotos || '' })}
       ${campo({ id: `logo-${id}`, name: 'logo', label: 'Enlace al logotipo', type: 'url', hint: 'Si ya tienes uno', value: c.logo || '' })}
       <div class="ac-btns">
         <button class="btn btn-primary" type="submit"><span>Enviar contenido</span>${icono('arrow')}</button>
-        <a class="btn btn-ghost" href="${waLink(`Hola, os envío el contenido de mi web «${r.negocio || p.planNombre}» (${refPedido(p.id)}).`)}" target="_blank" rel="noopener"><span>Prefiero enviarlo por WhatsApp</span></a>
+        <button class="btn btn-ghost" type="button" data-ir-pestana="archivos"><span>Subir fotos y logotipo</span>${icono('upload')}</button>
+        <a class="btn btn-ghost" href="${mailLink(`Contenido de mi web ${refPedido(p.id)}`, `Hola, os envío el contenido de mi web «${r.negocio || p.planNombre}» (${refPedido(p.id)}).`)}"><span>Enviarlo por correo</span></a>
       </div>
     </form>`;
   }
@@ -134,6 +135,7 @@ export function accionCliente(p, botonPagoHTML) {
   const pl = plantillaPorId(p.plantilla);
   return `${cab}<div class="ac-form">
     ${et === 'recibido' ? `<div class="mp-pay">${botonPagoHTML}</div>` : ''}
+    ${et === 'recibido' && (p.pagoEstado || 'pendiente') === 'pendiente' ? (p.cancelacion ? `<p class="ac-nota">${icono('clock')} Has pedido cancelar este pedido. Te confirmaremos la cancelación por correo.</p>` : `<button type="button" class="link-btn ac-cancel" data-cancelar="${id}">Solicitar la cancelación del pedido</button>`) : ''}
     ${et === 'diseno' && pl ? `<a class="btn btn-ghost" href="${esc(urlVistaPrevia(p))}" target="_blank" rel="noopener"><span>Ver el diseño de partida (${esc(pl.nombre)})</span>${icono('external')}</a>` : ''}
   </div>`;
 }
@@ -185,3 +187,46 @@ export function entregasCliente(p) {
 export { urlVistaPrevia, dominioTexto };
 export const importePendiente = p => (p.total || 0) * (100 - CONFIG.senal) / 100;
 export const totalTexto = p => euros(p.total || 0);
+
+/* ---------- Fecha de entrega ---------- */
+const DIA = 864e5;
+/** Fecha prevista de entrega: la que fija el equipo o la calculada con el plazo del plan */
+export function fechaEntrega(p) {
+  if (p.fechaEntrega) return p.fechaEntrega;
+  const pl = PLANES.find(x => x.id === p.plan);
+  const dias = Math.round((pl?.dias || 30) * (p.urgente ? 0.6 : 1));
+  return (p.createdAt || Date.now()) + dias * DIA;
+}
+/** Días que faltan (negativo = retrasado). null si ya está terminado o cancelado. */
+export function diasRestantes(p) {
+  if (['entregado', 'cancelado'].includes(p.estado) || etapaDe(p) === 'publicada') return null;
+  return Math.ceil((fechaEntrega(p) - Date.now()) / DIA);
+}
+export function plazoTexto(p) {
+  const d = diasRestantes(p);
+  if (d === null) return '';
+  if (d < 0) return `Retrasado ${-d} día${d === -1 ? '' : 's'}`;
+  if (d === 0) return 'Se entrega hoy';
+  return `Faltan ${d} día${d === 1 ? '' : 's'}`;
+}
+export const plazoClase = p => { const d = diasRestantes(p); return d === null ? '' : d < 0 ? 'tarde' : d <= 3 ? 'pronto' : ''; };
+
+/* ---------- Historial de cada proyecto ---------- */
+/** Añade una línea al historial del pedido dentro de los cambios que se van a guardar */
+export function conHistorial(p, cambios, texto, autor = '') {
+  const h = [...(p.historial || []), { t: Date.now(), texto, autor }].slice(-80);
+  return { ...cambios, historial: h };
+}
+/** Historial completo: lo guardado más los hitos que se deducen de las fechas */
+export function lineaTiempo(p) {
+  const L = [{ t: p.createdAt, texto: 'Pedido realizado', autor: p.clienteNombre }];
+  if (p.dominio?.t) L.push({ t: p.dominio.t, texto: `Dominio elegido: ${dominioTexto(p.dominio)}`, autor: p.clienteNombre });
+  if (p.contenido?.t) L.push({ t: p.contenido.t, texto: 'Contenido enviado', autor: p.clienteNombre });
+  if (p.pagoAviso) L.push({ t: p.pagoAviso, texto: 'Aviso de pago enviado', autor: p.clienteNombre });
+  (p.revision?.comentarios || []).forEach(c => L.push({ t: c.t, texto: 'Cambios solicitados', autor: p.clienteNombre }));
+  if (p.revision?.estado === 'aprobada' && p.revision.t) L.push({ t: p.revision.t, texto: 'Web aprobada', autor: p.clienteNombre });
+  (p.historial || []).forEach(h => L.push(h));
+  const vistos = new Set();
+  return L.filter(x => x.t && !vistos.has(x.t + x.texto) && vistos.add(x.t + x.texto)).sort((a, b) => b.t - a.t);
+}
+export const lineaTiempoHTML = p => `<ol class="tl-list">${lineaTiempo(p).map(h => `<li><span class="tl-dot"></span><div><b>${esc(h.texto)}</b><small>${fecha(h.t)} · ${haceCuanto(h.t)}${h.autor ? ' · ' + esc(h.autor) : ''}</small></div></li>`).join('')}</ol>`;

@@ -4,7 +4,7 @@
 import { CONFIG } from '../config.js';
 import * as store from './store.js';
 import { etapaDe } from './proyecto.js';
-import { $, $$, esc, euros, icono, abrir, cerrar, toast, ocupado, campo, selectorEstrellas, waLink, refPedido, PAGOS, METODOS } from './ui.js';
+import { $, $$, esc, euros, icono, abrir, cerrar, toast, ocupado, campo, selectorEstrellas, mailLink, refPedido, PAGOS, METODOS } from './ui.js';
 
 const P = CONFIG.pagos || {};
 
@@ -141,13 +141,14 @@ export function abrirPago(p, fase = faseDePago(p), alTerminar = () => {}) {
     try {
       const cambios = await store.avisarPago(p.id, { metodo, fase });
       Object.assign(p, cambios);
-      const msg = `¡Hola! Acabo de pagar ${fase === 'senal' ? 'la señal' : 'el resto'} (${euros(imp)}) por ${METODOS[metodo]} del pedido ${ref} 🙌`;
+      const msg = `Hola, acabo de pagar ${fase === 'senal' ? 'la señal' : 'el resto'} (${euros(imp)}) por ${METODOS[metodo]} del pedido ${ref}. Adjunto el justificante.`;
       body.innerHTML = `
         <div class="exito">
           <div class="ok-ic">${icono('check')}</div>
           <h3>Aviso de pago recibido</h3>
           <p class="muted">Hemos recibido tu aviso de pago de <b>${euros(imp)}</b> por ${METODOS[metodo]}. Lo comprobaremos y verás la confirmación en «Mis proyectos».</p>
-          <a class="btn btn-wa w100" href="${waLink(msg)}" target="_blank" rel="noopener">${icono('wa')} Enviar justificante</a>
+          <a class="btn btn-ghost w100" href="${mailLink(`Justificante de pago ${ref}`, msg)}">${icono('mail')} Enviar justificante por correo</a>
+          <p class="muted" style="font-size:13px;margin:-4px 0 12px">También puedes subir la captura del pago en la pestaña «Archivos» de tu proyecto.</p>
           <button class="btn btn-ghost w100" data-close type="button">Cerrar</button>
         </div>`;
       alTerminar(p);

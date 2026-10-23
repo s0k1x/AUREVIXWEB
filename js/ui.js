@@ -4,7 +4,11 @@
 import { CONFIG } from '../config.js';
 import * as store from './store.js';
 import { iniciarEfectos } from './efectos.js';
-import { icono, pintarIconos, SVG_WA } from './iconos.js';
+import { icono, pintarIconos } from './iconos.js';
+import { aplicarCache, cargarAjustesWeb } from './sitio.js';
+import { iniciarCookies } from './cookies.js';
+import { aplicarApariencia, guardarApariencia } from './apariencia.js';
+import { campanaHTML, iniciarAvisos } from './avisos.js';
 export { icono, pintarIconos };
 
 /* ---------- Utilidades ---------- */
@@ -23,8 +27,19 @@ export const haceCuanto = t => {
   return d === 1 ? 'ayer' : `hace ${d} días`;
 };
 export const iniciales = n => (n || '?').trim().split(/\s+/).slice(0, 2).map(p => p[0]).join('').toUpperCase();
-export const waLink = (texto = '', numero = CONFIG.whatsapp) =>
-  `https://wa.me/${String(numero).replace(/\D/g, '')}${texto ? `?text=${encodeURIComponent(texto)}` : ''}`;
+/** Enlace para escribir un correo (único canal de contacto) */
+export const mailLink = (asunto = '', cuerpo = '', a = CONFIG.email) =>
+  `mailto:${a}?subject=${encodeURIComponent(asunto)}${cuerpo ? `&body=${encodeURIComponent(cuerpo)}` : ''}`;
+export const fechaCorta = t => new Date(t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+export const tamano = b => (b > 1048576 ? (b / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB');
+/** Descarga un texto como archivo */
+export function descargar(nombre, contenido, tipo = 'text/plain') {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(contenido instanceof Blob ? contenido : new Blob([contenido], { type: tipo }));
+  a.download = nombre;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
 export const refPedido = id => '#' + String(id).slice(-6).toUpperCase();
 
 export const ESTADOS = {
@@ -149,19 +164,12 @@ export const tarjetaMarca = (cls = '') => `
       <div class="logo">
         <div class="logo1"><img src="icons/logo-a.png" alt=""></div>
         <div class="logo2"><img src="icons/nombre.png" alt="${esc(CONFIG.marca)}"></div>
-        <span class="trail"></span>
       </div>
       <span class="logo-bottom-text">${esc(CONFIG.eslogan.split(' ').slice(0, 2).join(' '))}</span>
     </div>
     <span class="bottom-text">Diseño web</span>
   </div>`;
 
-function prepararMarcas(raiz = document) {
-  $$('.brand-card', raiz).forEach(c => {
-    const l2 = $('.logo2', c);
-    if (l2) c.style.setProperty('--w', Math.min(46 + l2.scrollWidth + 4, c.clientWidth - 60) + 'px');
-  });
-}
 
 /* ---------- Avisos ---------- */
 let toastTimer;
@@ -218,6 +226,7 @@ export function pintarCabecera(activa = '') {
         <a href="${ir('#webs')}">Webs y precios</a>
         <a href="${ir('#disenos')}">Diseños</a>
         <a href="${ir('#opiniones')}">Opiniones</a>
+        <a href="${ir('#contacto')}">Contacto</a>
         <a href="trabaja.html" class="${activa === 'trabaja' ? 'act' : ''}">Trabaja con nosotros</a>
       </nav>
       <div class="head-right">
@@ -253,11 +262,16 @@ export function pintarPie() {
         <a href="index.html#disenos">Diseños</a>
         <a href="index.html#opiniones">Opiniones</a>
         <a href="trabaja.html">Trabaja con nosotros</a>
+        <a href="index.html#contacto">Contacto</a>
+        <a href="${mailLink('Consulta desde la web')}">${esc(CONFIG.email)}</a>
         <a href="terminos.html">Términos y privacidad</a>
-        <a href="${waLink('¡Hola! Vengo de vuestra web 🙂')}" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="terminos.html#propiedad">Licencia y derechos</a>
+        <a href="#" data-cookies>Cookies</a>
+        <a href="ajustes.html">Ajustes</a>
+        ${Object.entries(CONFIG.redes || {}).filter(([, v]) => v).map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener" aria-label="${k}">${icono(k === 'linkedin' ? 'briefcase' : k)}</a>`).join('')}
         <button class="link-btn" data-install hidden>${icono('download')} Instalar app</button>
       </div>
-      <p>© ${new Date().getFullYear()} ${esc(CONFIG.marca)}</p>
+      <p class="copy">© ${new Date().getFullYear()} ${esc(CONFIG.marca)}. Todos los derechos reservados.<small>El diseño, los textos, el código, los logotipos y las imágenes de esta web están protegidos por la Ley de Propiedad Intelectual. Queda prohibida su reproducción, distribución o transformación, total o parcial, sin autorización escrita.</small></p>
     </div>`;
 }
 
@@ -270,6 +284,7 @@ function pintarSesion(u) {
   }
   const panel = u.role === 'owner' ? 'Panel de propietario' : u.role === 'worker' ? 'Panel de trabajador' : '';
   slot.innerHTML = `
+    ${campanaHTML()}
     <div class="user-wrap">
       <button class="user-btn" id="userBtn" aria-haspopup="true" aria-label="Mi cuenta">
         ${avatar(u)}<span class="ub-txt"><b>${esc(u.name.split(' ')[0])}</b><small>${ROLES[u.role]}</small></span>
@@ -279,7 +294,9 @@ function pintarSesion(u) {
         <div class="um-head">${avatar(u, 'lg')}<div><b>${esc(u.name)}</b><small>${esc(u.email)}</small><span class="role-tag r-${u.role}">${ROLES[u.role]}</span></div></div>
         ${panel ? `<a href="panel.html" role="menuitem">${icono('panel')} ${panel}</a>` : ''}
         <a href="index.html#mis-pedidos" role="menuitem" data-mis-pedidos>${icono("bag")} Mis proyectos</a>
-        <a href="trabaja.html" role="menuitem">${icono('briefcase')} Trabaja con nosotros</a>
+        <a href="index.html#soporte" role="menuitem" data-soporte>${icono('help')} Ayuda y soporte</a>
+        <a href="ajustes.html" role="menuitem">${icono('gear')} Ajustes</a>
+        ${u.role === 'client' ? `<a href="trabaja.html" role="menuitem">${icono('briefcase')} Trabaja con nosotros</a>` : ''}
         <button role="menuitem" data-logout>${icono('logout')} Cerrar sesión</button>
       </div>
     </div>`;
@@ -288,7 +305,11 @@ function pintarSesion(u) {
     const abierto = $('.user-menu').classList.toggle('open');
     $('#userBtn').classList.toggle('open', abierto);
     $('#header').classList.remove('open');
+    $('#avMenu')?.classList.remove('open');
   });
+  iniciarAvisos();
+  // La apariencia elegida viaja con la cuenta entre dispositivos
+  if (u.datos?.apariencia) guardarApariencia(u.datos.apariencia);
 }
 document.addEventListener('click', e => {
   if (!e.target.closest('.user-wrap')) $('.user-menu')?.classList.remove('open');
@@ -428,21 +449,41 @@ function intro() {
   if (vista || location.hash || location.search || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const s = document.createElement('div');
   s.className = 'splash';
-  s.innerHTML = tarjetaMarca();
+  s.innerHTML = `<div class="splash-logo"><img src="icons/logo-a.png" alt="" width="64" height="64"><img class="splash-nombre" src="icons/nombre.png" alt="${esc(CONFIG.marca)}"></div>`;
   document.body.appendChild(s);
-  prepararMarcas(s);
-  requestAnimationFrame(() => setTimeout(() => $('.brand-card', s).classList.add('on'), 80));
+  // El logotipo y el nombre aparecen a la vez: se espera a que estén las dos imágenes
+  const imgs = [...s.querySelectorAll('img')];
+  Promise.race([Promise.all(imgs.map(i => (i.decode ? i.decode() : Promise.resolve()).catch(() => {}))), new Promise(r => setTimeout(r, 700))])
+    .then(() => s.classList.add('listo'));
   const fuera = () => { s.classList.add('out'); setTimeout(() => s.remove(), 600); };
-  setTimeout(fuera, 1350);
+  setTimeout(fuera, 1500);
   s.addEventListener('click', fuera);
+}
+
+/* Franja de anuncio (la activa el propietario en Ajustes) */
+function pintarAnuncio() {
+  $('.anuncio')?.remove();
+  if (!CONFIG.anuncio?.activo || !CONFIG.anuncio.texto) return;
+  let cerrado = '';
+  try { cerrado = sessionStorage.getItem('tm_anuncio'); } catch { /* nada */ }
+  if (cerrado === CONFIG.anuncio.texto) return;
+  const b = document.createElement('div');
+  b.className = 'anuncio';
+  b.innerHTML = `${icono('megaphone')}<span>${esc(CONFIG.anuncio.texto)}</span><button class="anuncio-x" aria-label="Cerrar aviso">${icono('x')}</button>`;
+  b.querySelector('button').addEventListener('click', () => { b.remove(); try { sessionStorage.setItem('tm_anuncio', CONFIG.anuncio.texto); } catch { /* nada */ } });
+  document.body.prepend(b);
 }
 
 export async function arrancar(pagina) {
   document.documentElement.classList.add('js');
+  aplicarApariencia();
+  aplicarCache();
   intro();
   pintarCabecera(pagina);
   pintarPie();
-  iniciarEfectos({ waLink: waLink('¡Hola! Tengo una duda sobre una web 🙂') });
+  iniciarEfectos();
+  iniciarCookies();
+  console.info('%c© AurevixWeb', 'font:700 14px sans-serif;color:#9fd23a', '— Todos los derechos reservados. Prohibida la copia o reutilización del diseño y del código sin autorización.');
   if (store.modoDemo) {
     const b = document.createElement('div');
     b.className = 'demo-banner';
@@ -452,16 +493,21 @@ export async function arrancar(pagina) {
   etiquetas();
   pintarIconos();
   // Las tarjetas de marca se animan al verse en pantalla (en móvil no hay "hover")
-  prepararMarcas();
-  addEventListener('resize', () => prepararMarcas());
   const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('on', e.isIntersecting)), { threshold: .6 });
-  $$('.brand-card.in-view').forEach(c => io.observe(c));
+  const vigilarMarcas = () => $$('.brand-card.in-view').forEach(c => io.observe(c));
+  vigilarMarcas();
 
   try { await store.iniciar(); }
   catch (e) { console.error(e); toast('No se pudo conectar con el servidor', 'err'); }
+  // Precios, avisos y formas de pago que ha cambiado el propietario (máx. 2,5 s de espera)
+  await Promise.race([cargarAjustesWeb(), new Promise(r => setTimeout(r, 2500))]);
+  pintarAnuncio();
+  pintarPie();
+  vigilarMarcas();
 
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-    addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    const registrar = () => navigator.serviceWorker.register('sw.js').catch(() => {});
+    document.readyState === 'complete' ? registrar() : addEventListener('load', registrar);
   }
   instalarPWA();
 }

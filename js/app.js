@@ -1,17 +1,20 @@
 /* ==========================================================
    Página de inicio: planes, diseños, opiniones, compra y mis pedidos
    ========================================================== */
-import { CONFIG, PLANES, EXTRAS, URGENTE } from '../config.js';
+import { CONFIG, PLANES, EXTRAS, COMPARATIVA } from '../config.js';
 import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from './store.js';
 import {
-  $, $$, esc, euros, fecha, icono, toast, abrir, cerrar, conSesion, arrancar, waLink, refPedido,
+  $, $$, esc, euros, fecha, icono, toast, abrir, cerrar, conSesion, arrancar, mailLink, refPedido,
   ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados,
-  estrellas, ocupado, cargandoHTML, spinner, etiquetas, TAREAS, progreso, PAGOS
+  estrellas, ocupado, cargandoHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
 } from './ui.js';
+import { planesActivos, extrasActivos } from './sitio.js';
+import { montarHilo, montarArchivos, abrirRecibo } from './colabora.js';
 import { botonPago, abrirPago, abrirResena, animarYPagar } from './pago.js';
 import { recomendar, iniciarChat } from './asistente.js';
-import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, estadoParaEtapa, indiceEtapa, dominioTexto } from './proyecto.js';
+import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, estadoParaEtapa, indiceEtapa, dominioTexto, fechaEntrega, plazoTexto, plazoClase, conHistorial, lineaTiempoHTML } from './proyecto.js';
+import { importeSenal, importeResto } from './pago.js';
 
 /* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor (30 días) */
 const REF = 'tm_ref';
@@ -114,7 +117,12 @@ document.readyState === 'complete' ? arrancarVitrina() : addEventListener('load'
 /* ==========================================================
    PLANES
    ========================================================== */
-$('#planes').innerHTML = PLANES.map(p => `
+/* Píldora de la portada (la cambia el propietario en Ajustes) */
+$('#heroAviso span').textContent = CONFIG.aviso;
+if (!CONFIG.aceptarPedidos) $('#heroAviso').classList.add('cerrado');
+
+const textoComprar = () => (CONFIG.aceptarPedidos ? 'Comprar' : 'Lista de espera');
+$('#planes').innerHTML = planesActivos().map(p => `
   <article class="plan-card reveal ${p.popular ? 'popular' : ''}">
     ${p.popular ? '<span class="tag">El más pedido</span>' : ''}
     <div class="pc-top"><span class="pc-ic">${icono(p.icono)}</span><span class="pc-time">${icono('clock')} ${esc(p.entrega)}</span></div>
@@ -122,8 +130,27 @@ $('#planes').innerHTML = PLANES.map(p => `
     <p class="pc-desc">${esc(p.desc)}</p>
     <div class="pc-price"><small>desde</small> ${euros(p.precio)}</div>
     <ul>${p.incluye.slice(0, 4).map(i => `<li>${icono('check')}${esc(i)}</li>`).join('')}</ul>
-    <button class="btn ${p.popular ? 'btn-dark' : 'btn-ghost btn-fill'} w100" data-comprar="${p.id}"><span>Comprar</span>${icono('arrow')}</button>
+    <button class="btn ${p.popular ? 'btn-dark' : 'btn-ghost btn-fill'} w100" data-comprar="${p.id}"><span>${textoComprar()}</span>${icono('arrow')}</button>
   </article>`).join('');
+
+/* ---------- Comparativa de planes ---------- */
+$('#verComparar').addEventListener('click', e => {
+  const b = e.currentTarget, t = $('#comparaTabla');
+  if (!t.innerHTML) {
+    const P = planesActivos();
+    t.innerHTML = `<div class="compara-scroll"><table class="compara">
+      <thead><tr><th></th>${P.map(p => `<th class="${p.popular ? 'pop' : ''}"><span class="pc-ic">${icono(p.icono)}</span><b>${esc(p.nombre)}</b><small>desde ${euros(p.precio)}</small></th>`).join('')}</tr></thead>
+      <tbody>
+        <tr><td>Plazo de entrega</td>${P.map(p => `<td class="${p.popular ? 'pop' : ''}">${esc(p.entrega)}</td>`).join('')}</tr>
+        ${COMPARATIVA.map(([txt, ids]) => `<tr><td>${esc(txt)}</td>${P.map(p => `<td class="${p.popular ? 'pop' : ''}">${ids.includes(p.id) ? `<span class="si">${icono('check')}</span>` : '<span class="no">—</span>'}</td>`).join('')}</tr>`).join('')}
+        <tr class="cta"><td></td>${P.map(p => `<td class="${p.popular ? 'pop' : ''}"><button class="btn btn-sm ${p.popular ? 'btn-primary' : 'btn-ghost'}" data-comprar="${p.id}">${textoComprar()}</button></td>`).join('')}</tr>
+      </tbody></table></div>`;
+  }
+  t.hidden = !t.hidden;
+  b.setAttribute('aria-expanded', String(!t.hidden));
+  b.querySelector('span').textContent = t.hidden ? 'Comparar todos los planes' : 'Ocultar la comparativa';
+  if (!t.hidden) t.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+});
 
 /* ==========================================================
    GALERÍA DE DISEÑOS
@@ -391,6 +418,8 @@ function restaurarBorrador(b) {
 function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
   const plan = PLANES.find(p => p.id === planId);
   if (!plan) return;
+  // Agenda completa: en vez del cuestionario, lista de espera
+  if (!CONFIG.aceptarPedidos) return irAContacto('espera', `Lista de espera: ${plan.nombre}`);
   W = { plan, paso: 0, max: 0, plantilla: plantillaInicial || plan.plantillas[0] || 'cero', colorCustom: '' };
   const objetivo = plan.id === 'reservas' ? 'Reservas / citas' : plan.id === 'tienda' ? 'Vender online' : OBJETIVOS[0];
 
@@ -417,7 +446,7 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
       ${desplegable({ id: 'fSector', name: 'sector', label: 'Sector', opciones: SECTORES })}
       <span class="q-label">Objetivo principal de la web</span>
       ${opciones('objetivo', OBJETIVOS, objetivo)}
-      ${campo({ id: 'fTel', name: 'telefono', label: 'WhatsApp o teléfono', type: 'tel', required: true, attrs: 'inputmode="tel" autocomplete="tel"' })}
+      ${campo({ id: 'fTel', name: 'telefono', label: 'Teléfono de contacto', type: 'tel', required: true, hint: 'Solo lo usamos si hay algún problema con tu pedido', attrs: 'inputmode="tel" autocomplete="tel"' })}
       ${campo({ id: 'fWeb', name: 'webActual', label: 'Tu web actual (opcional)', attrs: 'inputmode="url"' })}
     </div>
 
@@ -439,12 +468,12 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
 
     <div class="paso" data-paso="extras">
       <h3 class="paso-h">Extras <span class="muted">(opcional)</span></h3>
-      <div class="checks">${EXTRAS.map(x => `
+      <div class="checks">${extrasActivos().map(x => `
         <label class="check-card"><input type="checkbox" name="extra" value="${x.id}"><span class="ck-mark"></span>
           <span class="ct"><b>${esc(x.nombre)}</b><small>${esc(x.desc)}</small></span>
           <span class="pr">+${euros(x.precio)}${x.mensual ? '<small>/mes</small>' : ''}</span></label>`).join('')}
       </div>
-      <div style="margin-top:12px">${interruptor({ id: 'fUrg', name: 'urgente', titulo: 'Entrega urgente', texto: `Reduce el plazo de entrega · +${URGENTE * 100} % sobre el precio base` })}</div>
+      <div style="margin-top:12px">${interruptor({ id: 'fUrg', name: 'urgente', titulo: 'Entrega urgente', texto: `Reduce el plazo de entrega en torno a un 40 % · +${Math.round(CONFIG.urgente * 100)} % sobre el precio base` })}</div>
       ${campo({ id: 'fCom', name: 'comentarios', label: 'Comentarios (opcional)', type: 'textarea', hint: 'Secciones que necesitas, webs de referencia, ideas…' })}
     </div>
 
@@ -477,9 +506,11 @@ function datos() {
   const extras = EXTRAS.filter(x => extrasIds.includes(x.id));
   const urgente = !!$('#fUrg', form)?.checked;
   const base = W.plan.precio;
-  const recargo = urgente ? base * URGENTE : 0;
+  const recargo = urgente ? base * CONFIG.urgente : 0;
   const unico = extras.filter(x => !x.mensual).reduce((s, x) => s + x.precio, 0);
   const mensual = extras.filter(x => x.mensual).reduce((s, x) => s + x.precio, 0);
+  const bruto = base + recargo + unico;
+  const descuento = W.cupon ? Math.round(bruto * W.cupon.pct) / 100 : 0;
   const txt = k => (fd.get(k) || '').toString().trim();
   return {
     respuestas: {
@@ -488,7 +519,7 @@ function datos() {
       logo: txt('logo'), contenido: txt('contenido'), plazo: urgente ? 'Urgente' : 'Normal', comentarios: txt('comentarios')
     },
     extras: extras.map(({ id, nombre, precio, mensual }) => ({ id, nombre, precio, mensual: !!mensual })),
-    urgente, recargo, total: base + recargo + unico, mensual
+    urgente, recargo, total: Math.round((bruto - descuento) * 100) / 100, mensual, descuento, bruto
   };
 }
 
@@ -631,13 +662,34 @@ function pintarResumen() {
       <div class="rs-row"><span>${esc(p.nombre)}</span><b>${euros(p.precio)}</b></div>
       ${d.extras.map(x => `<div class="rs-row"><span>${esc(x.nombre)}</span><b>+${euros(x.precio)}${x.mensual ? '/mes' : ''}</b></div>`).join('')}
       ${d.urgente ? `<div class="rs-row"><span>Entrega urgente</span><b>+${euros(d.recargo)}</b></div>` : ''}
+      ${d.descuento ? `<div class="rs-row dto"><span>Descuento ${esc(W.cupon.codigo)} (${W.cupon.pct} %)</span><b>−${euros(d.descuento)}</b></div>` : ''}
       <div class="rs-row total"><span>Total</span><b>${euros(d.total)}</b></div>
+      <div class="cupon">
+        ${W.cupon
+          ? `<p class="cupon-ok">${icono('tag')} Cupón <b>${esc(W.cupon.codigo)}</b> aplicado <button type="button" class="link-btn" id="cuponQuitar">Quitar</button></p>`
+          : `<details><summary>${icono('tag')} ¿Tienes un código de descuento?</summary><div class="cupon-fila"><input id="cuponIn" maxlength="30" placeholder="CÓDIGO" autocomplete="off" aria-label="Código de descuento"><button type="button" class="btn btn-sm btn-ghost" id="cuponOk">Aplicar</button></div></details>`}
+      </div>
+      <div class="rs-row"><span>Entrega prevista</span><b>${esc(W.plan.entrega)}${d.urgente ? ' (urgente: antes)' : ''}</b></div>
       ${d.mensual ? `<div class="rs-row"><span>Cuota mensual</span><b>${euros(d.mensual)}/mes</b></div>` : ''}
       <div class="rs-note">Para empezar pagas la señal de <b>${euros(d.total * CONFIG.senal / 100)}</b> (${CONFIG.senal} %) y el resto cuando la web esté lista y te guste.</div>
     </div>
     <div class="rs-terms">${aceptarTerminos('wizTerms')}</div>
     ${store.usuarioActual() ? '' : '<p class="muted rs-login">Al confirmar te pediremos iniciar sesión para que puedas seguir tu pedido.</p>'}`;
   vigilarMiniaturas($('#resumen'));
+  $('#cuponOk')?.addEventListener('click', async e => {
+    const codigo = $('#cuponIn').value.trim();
+    if (!codigo) return;
+    ocupado(e.currentTarget, true);
+    try {
+      const c = await store.comprobarCupon(codigo);
+      if (!c) { toast('Ese código no existe o ha caducado', 'err'); ocupado(e.currentTarget, false); return; }
+      W.cupon = { codigo: c.codigo.toUpperCase(), pct: Math.min(100, Math.max(0, +c.pct || 0)) };
+      toast(`Descuento del ${W.cupon.pct} % aplicado`, 'ok');
+      pintarResumen(); actualizarTotal();
+    } catch (err) { toast(err.message, 'err'); ocupado(e.currentTarget, false); }
+  });
+  $('#cuponIn')?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('#cuponOk').click(); } });
+  $('#cuponQuitar')?.addEventListener('click', () => { W.cupon = null; pintarResumen(); actualizarTotal(); });
 }
 
 async function confirmarPedido() {
@@ -652,6 +704,7 @@ async function confirmarPedido() {
       plan: W.plan.id, planNombre: W.plan.nombre, precioBase: W.plan.precio,
       extras: d.extras, urgente: d.urgente, total: d.total, mensual: d.mensual,
       plantilla: W.plantilla, respuestas: d.respuestas, aceptaTerminos: Date.now(),
+      ...(W.cupon ? { cupon: W.cupon.codigo, descuento: d.descuento, precioSinDescuento: d.bruto } : {}),
       ref: leerRef() && leerRef() !== u.uid ? leerRef() : ''
     });
     exito(pedido);
@@ -664,12 +717,6 @@ async function confirmarPedido() {
 
 function exito(p) {
   const r = p.respuestas;
-  const pl = plantillaPorId(p.plantilla);
-  const msg = `¡Hola! Acabo de hacer un pedido en vuestra web 🙌
-▸ ${p.planNombre} — ${euros(p.total)}${p.mensual ? ` + ${euros(p.mensual)}/mes` : ''}
-▸ Negocio: ${r.negocio}
-▸ Diseño: ${pl ? pl.nombre : 'desde cero'}
-▸ Ref: ${refPedido(p.id)}`;
   borrarBorrador();
   clearTimeout(tGuardar);
   $('#wizDots').innerHTML = '';
@@ -681,12 +728,12 @@ function exito(p) {
     <div class="paso on exito">
       <div class="ok-ic">${icono('check')}</div>
       <h3>Pedido recibido</h3>
-      <p class="muted">Referencia <b>${refPedido(p.id)}</b>. Te contactaremos al <b>${esc(r.telefono)}</b> en menos de 24 horas. Si abonas ahora la señal, empezamos en cuanto confirmemos el pedido. Desde «Mis proyectos» podrás elegir el dominio y enviarnos el contenido.</p>
+      <p class="muted">Referencia <b>${refPedido(p.id)}</b>. Te escribiremos a <b>${esc(p.clienteEmail)}</b> en menos de 24 horas laborables para confirmar los detalles. Si abonas ahora la señal, empezamos en cuanto lo confirmemos. Fecha prevista de entrega: <b>${fecha(fechaEntrega(p))}</b>.</p>
       <div class="exito-pay">${botonPago(p)}</div>
-      <a class="btn btn-wa w100" href="${waLink(msg)}" target="_blank" rel="noopener">${icono('wa')} Avisar por WhatsApp</a>
-      <button type="button" class="btn btn-ghost w100" id="verPedidos">Ir a mis proyectos</button>
+      <button type="button" class="btn btn-ghost w100" id="verPedidos">${icono('bag')} Ir a mi proyecto</button>
+      <p class="muted exito-nota">En «Mis proyectos» puedes elegir el dominio, subir tus fotos y hablar con el equipo.</p>
     </div>`;
-  $('#verPedidos').addEventListener('click', () => { cerrar(dlg); abrirPedidos(); });
+  $('#verPedidos').addEventListener('click', () => { cerrar(dlg); abrirPedidos(p.id); });
   $('[data-pagar]', form)?.addEventListener('click', e =>
     animarYPagar(e.currentTarget, () => abrirPago(p, 'senal', () => {
       const pay = $('.exito-pay', form); if (pay) pay.innerHTML = botonPago(p);
@@ -698,17 +745,97 @@ dlg.addEventListener('close', () => { W = null; });
 dlg.addEventListener('cancel', () => { if (W && W.paso > 0) toast('Hemos guardado lo que has rellenado'); });
 
 /* ==========================================================
-   MIS PEDIDOS
+   MIS PROYECTOS
+   Cada proyecto tiene pestañas: Estado · Mensajes · Archivos · Pagos · Historial
    ========================================================== */
 const pedDlg = $('#pedidosDlg');
 let misPedidos = [];
+let abierto = '';          // proyecto desplegado
+let pestana = 'estado';    // pestaña del proyecto desplegado
+let desmontar = () => {};
 
-async function abrirPedidos() {
+async function abrirPedidos(id = '', pest = '') {
   const u = await conSesion('Inicia sesión para ver tus proyectos.');
   if (!u) return;
+  if (id) { abierto = id; pestana = pest || 'estado'; }
   $('#pedidosList').innerHTML = cargandoHTML('Cargando tus proyectos…');
   abrir(pedDlg);
   await pintarPedidos();
+}
+pedDlg.addEventListener('close', () => { desmontar(); desmontar = () => {}; });
+
+const PESTANAS = [['estado', 'Estado', 'chart'], ['mensajes', 'Mensajes', 'message'], ['archivos', 'Archivos', 'folder'], ['pagos', 'Pagos', 'receipt'], ['historial', 'Historial', 'history']];
+
+function resumenProyectos() {
+  const activos = misPedidos.filter(p => !['entregado', 'cancelado'].includes(p.estado));
+  const tuTurno = activos.filter(p => ETAPAS.find(e => e.id === (p.etapa || 'recibido'))?.accion || (p.pagoEstado || 'pendiente') === 'pendiente');
+  const pendiente = misPedidos.filter(p => p.estado !== 'cancelado').reduce((s, p) => s + (p.pagoEstado === 'pagado' ? 0 : p.pagoEstado === 'senal' ? importeResto(p) : p.total || 0), 0);
+  return `<div class="mp-resumen">
+    <div><small>Proyectos activos</small><b>${activos.length}</b></div>
+    <div class="${tuTurno.length ? 'turno' : ''}"><small>Te toca a ti</small><b>${tuTurno.length}</b></div>
+    <div><small>Pendiente de pago</small><b>${euros(pendiente)}</b></div>
+    <div class="mp-res-btns"><button class="btn btn-sm btn-ghost" data-soporte>${icono('help')}<span>Ayuda</span></button><a class="btn btn-sm btn-primary" href="#webs" data-close>${icono('plus')}<span>Nueva web</span></a></div>
+  </div>`;
+}
+
+function tarjetaProyecto(p) {
+  const est = ESTADOS[p.estado] || ESTADOS.nuevo;
+  const pl = plantillaPorId(p.plantilla);
+  const cancelado = p.estado === 'cancelado';
+  const abiertoAqui = abierto === p.id;
+  const plazo = plazoTexto(p);
+  return `
+  <article class="mp mp-proyecto ${abiertoAqui ? 'abierto' : ''}" data-proy="${p.id}">
+    <button type="button" class="mp-top mp-toggle" data-toggle="${p.id}" aria-expanded="${abiertoAqui}">
+      <div><b>${esc(p.respuestas?.negocio || p.planNombre)}</b><small>${esc(p.planNombre)} · ${pl ? 'Diseño ' + esc(pl.nombre) : 'Diseño a medida'} · Ref. ${refPedido(p.id)} · ${fecha(p.createdAt)}</small></div>
+      <div class="mp-top-r"><b>${euros(p.total)}${p.mensual ? ` <small>+ ${euros(p.mensual)}/mes</small>` : ''}</b>
+        <span class="mp-pills"><span class="pill ${est.cls}">${est.txt}</span>${plazo ? `<span class="pill plazo ${plazoClase(p)}">${icono('clock')} ${plazo}</span>` : ''}</span></div>
+      <span class="mp-chev">${icono('down')}</span>
+    </button>
+    ${cancelado ? '<p class="muted">Este pedido está cancelado.</p>' : `
+    ${barraEtapas(p)}
+    ${abiertoAqui ? `
+    <nav class="mp-tabs" role="tablist">${PESTANAS.map(([k, t, ic]) => `<button type="button" role="tab" data-pest="${k}" class="${pestana === k ? 'on' : ''}">${icono(ic)}<span>${t}</span></button>`).join('')}</nav>
+    <div class="mp-pest" id="pest-${p.id}">${pestanaHTML(p)}</div>` : `
+    <button type="button" class="mp-abrir" data-toggle="${p.id}">${ETAPAS.find(e => e.id === (p.etapa || 'recibido'))?.accion ? `${icono('alert')} <b>Te toca a ti:</b> ${esc(ETAPAS.find(e => e.id === p.etapa)?.cliente || '')}` : `${icono('eye')} Ver detalles, mensajes y archivos`}</button>`}`}
+  </article>`;
+}
+
+function pestanaHTML(p) {
+  if (pestana === 'mensajes' || pestana === 'archivos') return '<div class="mp-montaje"></div>';
+  if (pestana === 'historial') return lineaTiempoHTML(p);
+  if (pestana === 'pagos') {
+    const s = importeSenal(p), r = importeResto(p), e = p.pagoEstado || 'pendiente';
+    const fila = (txt, imp, pagado, fase) => `<div class="pg-fila ${pagado ? 'ok' : ''}"><span class="pg-ic">${icono(pagado ? 'check' : 'clock')}</span><div><b>${txt}</b><small>${pagado ? 'Pagado' : e === 'verificando' && p.pagoFase === fase ? 'Comprobando tu pago' : 'Pendiente'}</small></div><b>${euros(imp)}</b>${pagado ? `<button type="button" class="btn btn-sm btn-ghost" data-recibo="${p.id}" data-fase="${fase}">${icono('receipt')}<span>Recibo</span></button>` : ''}</div>`;
+    return `<div class="pg">
+      ${fila(`Señal (${CONFIG.senal} %)`, s, ['senal', 'pagado'].includes(e), 'senal')}
+      ${fila('Pago final', r, e === 'pagado', 'resto')}
+      ${p.mensual ? `<div class="pg-fila"><span class="pg-ic">${icono('calendar')}</span><div><b>Mantenimiento</b><small>Se cobra cada mes desde la publicación</small></div><b>${euros(p.mensual)}/mes</b></div>` : ''}
+      ${p.descuento ? `<p class="ac-nota">${icono('tag')} Cupón ${esc(p.cupon || '')}: −${euros(p.descuento)} ya descontados del total.</p>` : ''}
+      <div class="pg-pie"><div class="mp-pay">${botonPago(p)}</div>
+        <button type="button" class="btn btn-sm btn-ghost" data-recibo="${p.id}" data-fase="">${icono('printer')}<span>Resumen del pedido</span></button></div>
+      <p class="ac-nota">${icono('file')} ¿Necesitas factura a nombre de tu empresa? Añade tus datos fiscales en <a class="link-btn" href="ajustes.html#facturacion">Ajustes → Facturación</a>.</p>
+    </div>`;
+  }
+  return `<div class="mp-cuerpo">
+    <div class="mp-accion">${accionCliente(p, botonPago(p))}</div>
+    <aside class="mp-lado">
+      <div class="mp-dato">${icono('calendar')}<span>Entrega prevista</span><b>${fecha(fechaEntrega(p))}</b></div>
+      ${p.dominio ? `<div class="mp-dato">${icono('link')}<span>Dominio</span><b>${esc(dominioTexto(p.dominio))}</b></div>` : ''}
+      ${p.asignadoNombre ? `<div class="mp-dato">${icono('laptop')}<span>Responsable</span><b>${esc(p.asignadoNombre)}</b></div>` : ''}
+      <div class="mp-dato">${icono('euro')}<span>Pago</span><b>${esc((PAGOS[p.pagoEstado || 'pendiente'] || PAGOS.pendiente).txt)}</b></div>
+      <div class="mp-dato">${icono('chart')}<span>Avance</span><b>${Math.round(indiceEtapa(p) / (ETAPAS.length - 1) * 100)} %</b></div>
+    </aside>
+  </div>`;
+}
+
+function montarPestana() {
+  desmontar(); desmontar = () => {};
+  const p = misPedidos.find(x => x.id === abierto);
+  const caja = p && $(`#pest-${p.id} .mp-montaje`);
+  if (!caja) return;
+  if (pestana === 'mensajes') desmontar = montarHilo(caja, p) || (() => {});
+  if (pestana === 'archivos') montarArchivos(caja, p);
 }
 
 async function pintarPedidos() {
@@ -719,42 +846,23 @@ async function pintarPedidos() {
       list.innerHTML = `<div class="empty"><div class="em">${icono('bag')}</div><b>Todavía no tienes proyectos</b><p>Elige el tipo de web que necesitas para empezar.</p><a href="#webs" class="btn btn-primary" data-close style="margin-top:18px">Ver tipos de web</a></div>`;
       return;
     }
-    list.innerHTML = misPedidos.map(p => {
-      const est = ESTADOS[p.estado] || ESTADOS.nuevo;
-      const pl = plantillaPorId(p.plantilla);
-      const cancelado = p.estado === 'cancelado';
-      return `
-      <article class="mp mp-proyecto">
-        <div class="mp-top">
-          <div><b>${esc(p.respuestas?.negocio || p.planNombre)}</b><small>${esc(p.planNombre)} · ${pl ? 'Diseño ' + esc(pl.nombre) : 'Diseño a medida'} · Ref. ${refPedido(p.id)} · ${fecha(p.createdAt)}</small></div>
-          <div class="mp-top-r"><b>${euros(p.total)}${p.mensual ? ` <small>+ ${euros(p.mensual)}/mes</small>` : ''}</b><span class="pill ${est.cls}">${est.txt}</span></div>
-        </div>
-        ${cancelado ? '<p class="muted">Este pedido está cancelado.</p>' : `
-        ${barraEtapas(p)}
-        <div class="mp-cuerpo">
-          <div class="mp-accion">${accionCliente(p, botonPago(p))}</div>
-          <aside class="mp-lado">
-            ${p.dominio ? `<div class="mp-dato">${icono('link')}<span>Dominio</span><b>${esc(dominioTexto(p.dominio))}</b></div>` : ''}
-            ${p.asignadoNombre ? `<div class="mp-dato">${icono('laptop')}<span>Responsable</span><b>${esc(p.asignadoNombre)}</b></div>` : ''}
-            <div class="mp-dato">${icono('euro')}<span>Pago</span><b>${esc((PAGOS[p.pagoEstado || 'pendiente'] || PAGOS.pendiente).txt)}</b></div>
-            <div class="mp-dato">${icono('chart')}<span>Avance</span><b>${Math.round(indiceEtapa(p) / (ETAPAS.length - 1) * 100)} %</b></div>
-          </aside>
-        </div>`}
-      </article>`;
-    }).join('');
+    if (!abierto || !misPedidos.some(p => p.id === abierto)) abierto = misPedidos.length === 1 ? misPedidos[0].id : '';
+    list.innerHTML = resumenProyectos() + misPedidos.map(tarjetaProyecto).join('');
     etiquetas(list);
+    montarPestana();
   } catch (e) {
     console.error(e);
     list.innerHTML = `<div class="empty"><b>No se han podido cargar</b><p>${esc(e.message)}</p></div>`;
   }
 }
 
-async function guardarProyecto(p, cambios, msg, btn) {
+async function guardarProyecto(p, cambios, msg, btn, hito = '') {
   if (btn) ocupado(btn, true);
   try {
     if (cambios.etapa) cambios.estado = estadoParaEtapa(cambios.etapa, p.estado);
+    if (hito) cambios = conHistorial(p, cambios, hito, store.usuarioActual()?.name);
     await store.actualizarPedido(p.id, cambios);
-    toast(msg);
+    toast(msg, 'ok');
     await pintarPedidos();
   } catch (err) {
     toast(err.message, 'err');
@@ -774,15 +882,46 @@ $('#pedidosList').addEventListener('submit', e => {
   } catch (err) { toast(err.message, 'err'); }
 });
 $('#pedidosList').addEventListener('click', e => {
+  const tg = e.target.closest('[data-toggle]');
+  if (tg) {
+    abierto = abierto === tg.dataset.toggle ? '' : tg.dataset.toggle;
+    pestana = 'estado';
+    $('#pedidosList').innerHTML = resumenProyectos() + misPedidos.map(tarjetaProyecto).join('');
+    etiquetas($('#pedidosList'));
+    montarPestana();
+    if (abierto) $(`[data-proy="${abierto}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+  const pe = e.target.closest('[data-pest], [data-ir-pestana]');
+  if (pe) {
+    pestana = pe.dataset.pest || pe.dataset.irPestana;
+    const p = misPedidos.find(x => x.id === abierto);
+    const art = $(`[data-proy="${abierto}"]`);
+    if (!p || !art) return;
+    $$('.mp-tabs [data-pest]', art).forEach(b => b.classList.toggle('on', b.dataset.pest === pestana));
+    $(`#pest-${p.id}`).innerHTML = pestanaHTML(p);
+    etiquetas(art);
+    montarPestana();
+    return;
+  }
   const pg = e.target.closest('[data-pagar]');
   if (pg) {
     const p = misPedidos.find(x => x.id === pg.dataset.pagar);
     return animarYPagar(pg, () => abrirPago(p, pg.dataset.fase, pintarPedidos));
   }
+  const rc = e.target.closest('[data-recibo]');
+  if (rc) return abrirRecibo(misPedidos.find(x => x.id === rc.dataset.recibo), rc.dataset.fase);
   const ap = e.target.closest('[data-aprobar-web]');
   if (ap) {
     const p = misPedidos.find(x => x.id === ap.dataset.aprobarWeb);
     return guardarProyecto(p, aprobarWeb(p), 'Web aprobada. Solo falta el pago final para publicarla.', ap);
+  }
+  const ca = e.target.closest('[data-cancelar]');
+  if (ca) {
+    const p = misPedidos.find(x => x.id === ca.dataset.cancelar);
+    const motivo = prompt('¿Por qué quieres cancelar el pedido? (opcional)');
+    if (motivo === null) return;
+    return guardarProyecto(p, { cancelacion: { motivo: motivo.trim(), t: Date.now() } }, 'Solicitud de cancelación enviada', ca);
   }
   const v = e.target.closest('[data-valorar]');
   if (v) abrirResena(misPedidos.find(x => x.id === v.dataset.valorar), () => pintarPedidos());
@@ -794,11 +933,158 @@ $('#pedidosList').addEventListener('input', e => {
 
 document.addEventListener('click', e => {
   if (e.target.closest('[data-mis-pedidos]')) { e.preventDefault(); $('.user-menu')?.classList.remove('open'); abrirPedidos(); }
+  if (e.target.closest('[data-soporte]')) { e.preventDefault(); $('.user-menu')?.classList.remove('open'); abrirSoporte(); }
 });
-if (location.hash === '#mis-pedidos') {
-  history.replaceState(null, '', location.pathname);
-  abrirPedidos();
+
+/* ==========================================================
+   AYUDA Y SOPORTE (consultas del cliente con respuesta del equipo)
+   ========================================================== */
+const sopDlg = $('#soporteDlg');
+const TIPOS = { duda: 'Duda', cambio: 'Cambio en mi web', incidencia: 'Algo no funciona', factura: 'Facturación', otro: 'Otro' };
+const ESTADO_TICKET = { abierto: ['Pendiente', 'p-pend'], respondido: ['Respondido', 'p-new'], cerrado: ['Resuelto', 'p-done'] };
+
+async function abrirSoporte() {
+  const u = await conSesion('Inicia sesión para escribir al equipo de soporte.');
+  if (!u) return;
+  abrir(sopDlg);
+  await pintarSoporte();
 }
+async function pintarSoporte() {
+  const box = $('#soporteBody');
+  box.innerHTML = cargandoHTML('Cargando tus consultas…');
+  let L = [], P = [];
+  try { [L, P] = await Promise.all([store.misTickets(), store.misPedidos().catch(() => [])]); }
+  catch (e) { box.innerHTML = `<p class="muted">${esc(e.message)}</p>`; return; }
+  box.innerHTML = `
+    <form class="sop-form" id="sopForm" novalidate>
+      <p class="muted">Cuéntanos qué necesitas. ${esc(CONFIG.respuesta)} y te avisamos aquí y en la campana.</p>
+      <div class="row-2">
+        <label class="fc-select"><span>Tipo</span><select name="tipo">${Object.entries(TIPOS).map(([k, t]) => `<option value="${k}">${t}</option>`).join('')}</select></label>
+        <label class="fc-select"><span>Proyecto</span><select name="pedido"><option value="">General</option>${P.map(p => `<option value="${p.id}">${esc(p.respuestas?.negocio || p.planNombre)} · ${refPedido(p.id)}</option>`).join('')}</select></label>
+      </div>
+      ${campo({ id: 'sopAsunto', name: 'asunto', label: 'Asunto', required: true, attrs: 'maxlength="120"' })}
+      ${campo({ id: 'sopMsg', name: 'mensaje', label: 'Mensaje', type: 'textarea', required: true, attrs: 'maxlength="3000"' })}
+      <button class="btn btn-primary" type="submit"><span>Enviar consulta</span>${icono('send')}</button>
+    </form>
+    <h3 class="sop-h">Tus consultas</h3>
+    <div class="sop-list">${L.length ? L.map(t => {
+      const [txt, cls] = ESTADO_TICKET[t.estado] || ESTADO_TICKET.abierto;
+      return `<details class="tk" ${t.estado === 'respondido' ? 'open' : ''}>
+        <summary><div><b>${esc(t.asunto)}</b><small>${TIPOS[t.tipo] || 'Consulta'} · ${haceCuanto(t.createdAt)}</small></div><span class="pill ${cls}">${txt}</span></summary>
+        <div class="tk-hilo">
+          <div class="tk-m yo"><small>Tú · ${fecha(t.createdAt)}</small><p>${esc(t.mensaje)}</p></div>
+          ${(t.respuestas || []).map(r => `<div class="tk-m ${r.rol === 'client' ? 'yo' : 'el'}"><small>${r.rol === 'client' ? 'Tú' : esc(r.autor) + ' · Equipo'} · ${haceCuanto(r.t)}</small><p>${esc(r.texto)}</p></div>`).join('')}
+          ${t.estado !== 'cerrado' ? `<form class="tk-resp" data-tk="${t.id}"><input name="texto" placeholder="Responder…" maxlength="2000" aria-label="Responder"><button class="btn btn-sm btn-ghost">Enviar</button></form>` : ''}
+        </div>
+      </details>`;
+    }).join('') : `<p class="muted" style="font-size:14px">Aún no has escrito ninguna consulta.</p>`}</div>`;
+  etiquetas(box);
+  $('#sopForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const asunto = String(f.get('asunto')).trim(), mensaje = String(f.get('mensaje')).trim();
+    if (!asunto || mensaje.length < 5) return toast('Escribe un asunto y el mensaje', 'err');
+    const b = e.submitter; ocupado(b, true);
+    try { await store.crearTicket({ tipo: f.get('tipo'), asunto, mensaje, pedido: f.get('pedido') }); toast('Consulta enviada. Te responderemos pronto.', 'ok'); pintarSoporte(); }
+    catch (err) { toast(err.message, 'err'); ocupado(b, false); }
+  });
+  $$('.tk-resp', box).forEach(fm => fm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const texto = fm.texto.value.trim();
+    if (!texto) return;
+    const t = L.find(x => x.id === fm.dataset.tk);
+    try { await store.responderTicket(t, texto); toast('Respuesta enviada', 'ok'); pintarSoporte(); }
+    catch (err) { toast(err.message, 'err'); }
+  }));
+}
+
+/* ==========================================================
+   CONTACTO (sin cuenta) y LISTA DE ESPERA
+   ========================================================== */
+$('#ctMail').href = mailLink('Consulta desde la web');
+$('#ctMail b').textContent = CONFIG.email;
+$('#ctHorario b').textContent = CONFIG.horario;
+$('#ctResp b').textContent = CONFIG.respuesta;
+$$('.contacto-datos .cd > span').forEach((s, i) => (s.innerHTML = icono(['mail', 'clock', 'message'][i])));
+const MOTIVOS = { presupuesto: 'Quiero un presupuesto', duda: 'Tengo una duda', espera: 'Lista de espera', trabajo: 'Trabajar con vosotros', otro: 'Otro' };
+function pintarContacto() {
+  const u = store.usuarioActual();
+  $('#contactoForm').innerHTML = `
+    <div class="row-2">
+      ${campo({ id: 'ctNombre', name: 'nombre', label: 'Nombre', required: true, value: u?.name || '', attrs: 'autocomplete="name" maxlength="80"' })}
+      ${campo({ id: 'ctEmail', name: 'email', label: 'Correo electrónico', type: 'email', required: true, value: u?.email || '', attrs: 'autocomplete="email" maxlength="120"' })}
+    </div>
+    <label class="fc-select"><span>Motivo</span><select name="tipo" id="ctTipo">${Object.entries(MOTIVOS).map(([k, t]) => `<option value="${k}">${t}</option>`).join('')}</select></label>
+    ${campo({ id: 'ctAsunto', name: 'asunto', label: 'Asunto', required: true, attrs: 'maxlength="120"' })}
+    ${campo({ id: 'ctMsg', name: 'mensaje', label: 'Cuéntanos tu proyecto o tu duda', type: 'textarea', required: true, attrs: 'maxlength="3000"' })}
+    <input type="text" name="web" tabindex="-1" autocomplete="off" class="trampa" aria-hidden="true">
+    ${aceptarTerminos('ctTerms', 'He leído y acepto la <a href="terminos.html#privacidad" target="_blank">política de privacidad</a>')}
+    <div class="ct-btns"><button class="btn btn-primary" type="submit"><span>Enviar mensaje</span>${icono('send')}</button>
+    <a class="btn btn-ghost" id="ctCorreo" href="${mailLink('Consulta desde la web')}">${icono('mail')}<span>Abrir mi correo</span></a></div>
+    <p class="form-err" id="ctErr" role="alert"></p>`;
+  etiquetas($('#contactoForm'));
+}
+pintarContacto();
+store.alCambiarUsuario(u => { if (u && !$('#ctNombre').value) pintarContacto(); });
+function irAContacto(tipo, asunto = '') {
+  cerrar(dlg);
+  $('#contacto').scrollIntoView({ behavior: 'smooth' });
+  $('#ctTipo').value = tipo;
+  if (asunto) { $('#ctAsunto').value = asunto; }
+  if (tipo === 'espera') toast(CONFIG.mensajeCerrado);
+  setTimeout(() => $('#ctMsg').focus({ preventScroll: true }), 700);
+}
+$('#contactoForm').addEventListener('input', e => {
+  if (['ctAsunto', 'ctMsg'].includes(e.target.id)) $('#ctCorreo').href = mailLink($('#ctAsunto').value || 'Consulta desde la web', $('#ctMsg').value);
+});
+$('#contactoForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = new FormData(e.target);
+  if (f.get('web')) return; // trampa para robots
+  const d = Object.fromEntries(['nombre', 'email', 'tipo', 'asunto', 'mensaje'].map(k => [k, String(f.get(k) || '').trim()]));
+  const err = m => ($('#ctErr').textContent = m);
+  const marcar = (id, mal) => $('#' + id).closest('.fc').classList.toggle('error', mal);
+  marcar('ctNombre', !d.nombre); marcar('ctEmail', !/^\S+@\S+\.\S+$/.test(d.email)); marcar('ctAsunto', !d.asunto); marcar('ctMsg', d.mensaje.length < 10);
+  if (!d.nombre || !/^\S+@\S+\.\S+$/.test(d.email) || !d.asunto || d.mensaje.length < 10) return err('Revisa los campos marcados. El mensaje debe tener al menos 10 caracteres.');
+  if (!terminosAceptados('ctTerms')) return;
+  err('');
+  const b = e.submitter; ocupado(b, true);
+  try {
+    await store.crearTicket(d);
+    $('#contactoForm').innerHTML = `<div class="exito"><div class="ok-ic">${icono('check')}</div><h3>Mensaje enviado</h3><p class="muted">Gracias, ${esc(d.nombre.split(' ')[0])}. Te responderemos a <b>${esc(d.email)}</b>. ${esc(CONFIG.respuesta)}.</p></div>`;
+  } catch (er) {
+    ocupado(b, false);
+    err('No se ha podido enviar. Escríbenos directamente a ' + CONFIG.email);
+  }
+});
+
+/* ---------- Buscador de preguntas frecuentes ---------- */
+$('#faqQ').addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  let n = 0;
+  $$('.faq details').forEach(d => {
+    const ok = !q || d.textContent.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').includes(q);
+    d.hidden = !ok; if (ok) n++;
+    d.open = !!q && ok && n <= 2;
+  });
+  $('#faqNada').hidden = n > 0;
+});
+
+/* ---------- Enlaces directos ---------- */
+const hash = location.hash;
+if (hash === '#mis-pedidos' || hash.startsWith('#proyecto-')) {
+  history.replaceState(null, '', location.pathname);
+  const id = hash.startsWith('#proyecto-') ? hash.slice(10) : '';
+  abrirPedidos(id, id ? 'mensajes' : '');
+} else if (hash === '#soporte') {
+  history.replaceState(null, '', location.pathname);
+  abrirSoporte();
+}
+addEventListener('hashchange', () => {
+  if (location.hash === '#mis-pedidos') { history.replaceState(null, '', location.pathname); abrirPedidos(); }
+  if (location.hash.startsWith('#proyecto-')) { const id = location.hash.slice(10); history.replaceState(null, '', location.pathname); abrirPedidos(id, 'mensajes'); }
+  if (location.hash === '#soporte') { history.replaceState(null, '', location.pathname); abrirSoporte(); }
+});
 
 // Acceso directo de la app instalada (?comprar=negocio)
 const qComprar = new URLSearchParams(location.search).get('comprar');

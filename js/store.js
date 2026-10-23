@@ -12,6 +12,7 @@ const rolDe = (email, guardado) =>
   propietarios.includes((email || '').toLowerCase()) ? 'owner' : (guardado || 'client');
 
 let sb = null;
+let nombrePendiente = '';
 let usuario = null;
 let listo = false;
 let resolverListo;
@@ -49,7 +50,7 @@ const local = {
 };
 
 function sembrarDemo() {
-  if (local.get('sembrado_v4')) return;
+  if (local.get('sembrado_v5')) return;
   const ahora = Date.now(), dia = 864e5;
   const users = {
     u_trab: { uid: 'u_trab', name: 'Laura Ruiz', email: 'trabajador@demo.com', photo: '', role: 'worker', createdAt: ahora - 30 * dia },
@@ -81,12 +82,22 @@ function sembrarDemo() {
     { id: 'r4', uid: 'u_pepe', nombre: 'Pepe Gómez', estrellas: 5, texto: 'Todo perfecto, repetiría.', plan: 'Web de negocio', aprobada: false, demo: true, createdAt: ahora - 3 * 36e5 }
   ];
   local.set('resenas', resenas);
-  local.set('sembrado_v4', true);
+  local.set('mensajes', [
+    { id: 'm1', uid: 'u_trab', pedido: 'o1', autor: 'Laura Ruiz', rol: 'worker', texto: 'Hola Ana, ya tenemos el dominio. Cuando puedas, envíanos los textos de los tratamientos.', createdAt: ahora - 2 * dia },
+    { id: 'm2', uid: 'u_ana', pedido: 'o1', autor: 'Ana Torres', rol: 'client', texto: 'Perfecto, esta semana os los mando. ¿Las fotos las subo aquí?', createdAt: ahora - 2 * dia + 36e5 },
+    { id: 'm3', uid: 'u_trab', pedido: 'o1', autor: 'Laura Ruiz', rol: 'worker', texto: 'Sí, en la pestaña «Archivos» de tu proyecto.', createdAt: ahora - 2 * dia + 2 * 36e5 }
+  ]);
+  local.set('tickets', [
+    { id: 't1', uid: null, nombre: 'Rafael Prieto', email: 'rafa@ejemplo.com', tipo: 'contacto', asunto: 'Presupuesto para una academia', mensaje: 'Tengo una academia de inglés y quiero una web con matrícula online. ¿Me podéis pasar un presupuesto?', estado: 'abierto', respuestas: [], createdAt: ahora - 5 * 36e5 },
+    { id: 't2', uid: 'u_marta', nombre: 'Marta Gil', email: 'marta@ejemplo.com', tipo: 'cambio', pedido: 'o4', asunto: 'Cambiar el horario', mensaje: 'Hola, en verano abro de 9 a 14. ¿Podéis cambiarlo en la web?', estado: 'abierto', respuestas: [], createdAt: ahora - dia }
+  ]);
+  local.set('avisos', []);
+  local.set('sembrado_v5', true);
 }
 
 function usuarioLocal(uid) {
   const d = local.get('users', {})[uid];
-  return d ? { uid: d.uid, name: d.name, email: d.email, photo: d.photo || '', role: rolDe(d.email, d.role) } : null;
+  return d ? { uid: d.uid, name: d.name, email: d.email, photo: d.photo || '', role: rolDe(d.email, d.role), datos: d.datos || {} } : null;
 }
 function entrarLocal({ name, email, role = 'client' }) {
   const users = local.get('users', {});
@@ -146,7 +157,7 @@ async function sincronizar(su) {
     }
   } catch (e) { console.warn(e); }
   perfil = perfil || { name: su.email.split('@')[0], role: 'client' };
-  return { uid: su.id, name: perfil.name, email: su.email, photo: perfil.photo || meta.avatar_url || '', role: rolDe(su.email, perfil.role) };
+  return { uid: su.id, name: perfil.name, email: su.email, photo: perfil.photo || meta.avatar_url || '', role: rolDe(su.email, perfil.role), datos: perfil.datos || {}, proveedor: su.app_metadata?.provider || 'email' };
 }
 
 /* ---------- Login ---------- */
@@ -199,7 +210,7 @@ export function entrarDemo(rol) {
   const cuentas = {
     client: { name: 'Cliente Demo', email: 'cliente@demo.com', role: 'client' },
     worker: { name: 'Laura Ruiz', email: 'trabajador@demo.com', role: 'worker' },
-    owner: { name: 'Propietario', email: CONFIG.propietarios[0] || 'propietario@demo.com', role: 'client' }
+    owner: { name: 'AurevixWeb', email: CONFIG.propietarios[0] || 'propietario@demo.com', role: 'client' }
   };
   return entrarLocal(cuentas[rol]);
 }
@@ -241,6 +252,7 @@ export async function crearPedido(datos) {
   if (modoDemo) {
     p.id = nuevoId();
     local.set('orders', [p, ...local.get('orders', [])]);
+    uidsPropietariosDemo().forEach(o => avisoDemo(o, `Nuevo pedido: ${p.respuestas?.negocio || p.planNombre}`, p.id, 'pedido'));
     return p;
   }
   return insertar('pedidos', p);
@@ -261,7 +273,9 @@ export async function todosLosPedidos() {
 export async function actualizarPedido(id, cambios) {
   necesitaUsuario();
   if (modoDemo) {
+    const antes = local.get('orders', []).find(o => o.id === id);
     local.set('orders', local.get('orders', []).map(o => (o.id === id ? { ...o, ...cambios } : o)));
+    if (antes) avisosDemoPedido(antes, { ...antes, ...cambios });
     return;
   }
   await cambiar('pedidos', id, cambios);
@@ -311,7 +325,7 @@ export async function listarUsuarios() {
   necesitaUsuario();
   if (modoDemo) return Object.values(local.get('users', {})).map(u => ({ ...u, role: rolDe(u.email, u.role) }));
   const filas = comprobar(await sb.from('perfiles').select('*'));
-  return filas.map(u => ({ uid: u.id, name: u.name, email: u.email, photo: u.photo, createdAt: Date.parse(u.created_at), role: rolDe(u.email, u.role) }));
+  return filas.map(u => ({ uid: u.id, name: u.name, email: u.email, photo: u.photo, datos: u.datos || {}, createdAt: Date.parse(u.created_at), role: rolDe(u.email, u.role) }));
 }
 
 export async function cambiarRol(uid, role) {
@@ -380,4 +394,283 @@ export async function preguntarIA(cuerpo) {
   const { data, error } = await sb.functions.invoke('asistente', { body: cuerpo });
   if (error) throw new Error('El asistente no está disponible ahora mismo');
   return data;
+}
+
+/* ==========================================================
+   PERFIL, CUENTA Y PRIVACIDAD
+   ========================================================== */
+const esEquipo = () => usuario && (usuario.role === 'owner' || usuario.role === 'worker');
+
+/** Cambia nombre, foto y datos no sensibles del perfil (disponibilidad, objetivo, preferencias…) */
+export async function guardarPerfil({ name, photo, datos } = {}) {
+  const u = necesitaUsuario();
+  const nuevo = { name: name ?? u.name, photo: photo ?? u.photo, datos: { ...(u.datos || {}), ...(datos || {}) } };
+  if (modoDemo) {
+    const users = local.get('users', {});
+    if (users[u.uid]) Object.assign(users[u.uid], nuevo);
+    local.set('users', users);
+  } else {
+    comprobar(await sb.from('perfiles').update(nuevo).eq('id', u.uid));
+  }
+  emitir({ ...u, ...nuevo });
+  return usuario;
+}
+
+/** Datos privados: teléfono, facturación, datos de cobro */
+export async function leerPrivado(uid) {
+  const u = necesitaUsuario();
+  const id = uid || u.uid;
+  if (modoDemo) return local.get('privado', {})[id] || {};
+  const { data } = await sb.from('privado').select('datos').eq('id', id).maybeSingle();
+  return data?.datos || {};
+}
+export async function guardarPrivado(cambios) {
+  const u = necesitaUsuario();
+  const actual = await leerPrivado();
+  const datos = { ...actual, ...cambios };
+  if (modoDemo) { const t = local.get('privado', {}); t[u.uid] = datos; local.set('privado', t); return datos; }
+  comprobar(await sb.from('privado').upsert({ id: u.uid, datos, actualizado: new Date().toISOString() }));
+  return datos;
+}
+
+export async function cambiarEmail(email) {
+  necesitaUsuario();
+  if (modoDemo) throw new Error('En el modo demo no se puede cambiar el email');
+  const { error } = await sb.auth.updateUser({ email }, { emailRedirectTo: volverA() });
+  if (error) throw new Error(traducirError(error));
+}
+export async function cambiarPass(pass) {
+  necesitaUsuario();
+  if (modoDemo) return;
+  const { error } = await sb.auth.updateUser({ password: pass });
+  if (error) throw new Error(traducirError(error));
+}
+export async function cerrarSesionTodas() {
+  if (modoDemo) return cerrarSesion();
+  await sb.auth.signOut({ scope: 'global' });
+}
+
+/** Todos tus datos en un archivo (derecho de acceso y portabilidad) */
+export async function exportarMisDatos() {
+  const u = necesitaUsuario();
+  const pedidos = await misPedidos();
+  const [privado, tickets] = await Promise.all([leerPrivado(), misTickets()]);
+  const mensajes = (await Promise.all(pedidos.map(p => mensajesDe(p.id).catch(() => [])))).flat();
+  return { exportado: new Date().toISOString(), cuenta: { nombre: u.name, email: u.email, rol: u.role, perfil: u.datos }, privado, pedidos, mensajes, consultas: tickets };
+}
+
+/* ==========================================================
+   AJUSTES DE LA WEB (los cambia el propietario)
+   ========================================================== */
+export async function leerAjustes(clave) {
+  if (modoDemo) return local.get('ajustes', {})[clave] || null;
+  const { data, error } = await sb.from('ajustes').select('datos').eq('clave', clave).maybeSingle();
+  if (error) throw new Error(traducirError(error));
+  return data?.datos || null;
+}
+export async function guardarAjustes(clave, datos) {
+  necesitaUsuario();
+  if (modoDemo) { const a = local.get('ajustes', {}); a[clave] = datos; local.set('ajustes', a); return; }
+  comprobar(await sb.from('ajustes').upsert({ clave, datos, actualizado: new Date().toISOString() }));
+}
+/** Devuelve el cupón si existe y está activo (sin enseñar la lista de cupones) */
+export async function comprobarCupon(codigo) {
+  codigo = String(codigo || '').trim().toUpperCase();
+  if (!codigo) return null;
+  if (modoDemo) {
+    const hoy = new Date().toISOString().slice(0, 10);
+    return (local.get('ajustes', {}).cupones?.lista || []).find(c => c.codigo.toUpperCase() === codigo && c.activo !== false && (!c.hasta || c.hasta >= hoy)) || null;
+  }
+  const { data, error } = await sb.rpc('cupon', { codigo });
+  if (error) throw new Error(traducirError(error));
+  return data || null;
+}
+
+/* ==========================================================
+   MENSAJES DE CADA PROYECTO
+   ========================================================== */
+const mensajeDe = f => ({ ...(f.datos || {}), id: f.id, uid: f.uid, pedido: f.pedido, createdAt: f.datos?.createdAt || Date.parse(f.created_at) });
+export async function mensajesDe(pedidoId) {
+  necesitaUsuario();
+  if (modoDemo) return local.get('mensajes', []).filter(m => m.pedido === pedidoId).sort((a, b) => a.createdAt - b.createdAt);
+  const filas = comprobar(await sb.from('mensajes').select('id, uid, pedido, datos, created_at').eq('pedido', pedidoId).order('created_at'));
+  return filas.map(mensajeDe);
+}
+export async function enviarMensaje(pedidoId, texto, extra = {}) {
+  const u = necesitaUsuario();
+  const datos = { autor: u.name, rol: u.role, texto, createdAt: Date.now(), ...extra };
+  if (modoDemo) {
+    const m = { id: nuevoId(), uid: u.uid, pedido: pedidoId, ...datos };
+    local.set('mensajes', [...local.get('mensajes', []), m]);
+    const p = local.get('orders', []).find(o => o.id === pedidoId);
+    if (p) {
+      if (u.uid === p.uid) [p.asignado, ...uidsPropietariosDemo()].filter((x, i, a) => x && a.indexOf(x) === i).forEach(x => avisoDemo(x, `Mensaje nuevo de ${p.clienteNombre}`, p.id, 'mensaje'));
+      else avisoDemo(p.uid, `Tienes un mensaje nuevo sobre «${p.respuestas?.negocio || 'tu web'}»`, p.id, 'mensaje');
+    }
+    return m;
+  }
+  const f = comprobar(await sb.from('mensajes').insert({ uid: u.uid, pedido: pedidoId, datos }).select('id, uid, pedido, datos, created_at').single());
+  return mensajeDe(f);
+}
+/** Escucha mensajes nuevos de un pedido en tiempo real. Devuelve la función para dejar de escuchar. */
+export function escucharMensajes(pedidoId, cb) {
+  if (modoDemo || !sb) return () => {};
+  const canal = sb.channel('men-' + pedidoId)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensajes', filter: `pedido=eq.${pedidoId}` }, ev => cb(mensajeDe(ev.new)))
+    .subscribe();
+  return () => sb.removeChannel(canal);
+}
+
+/* ==========================================================
+   SOPORTE Y CONTACTO
+   ========================================================== */
+export async function crearTicket({ tipo = 'duda', asunto, mensaje, pedido = '', nombre = '', email = '' }) {
+  const u = usuario;
+  const t = { tipo, asunto, mensaje, pedido, nombre: u?.name || nombre, email: u?.email || email, estado: 'abierto', respuestas: [], createdAt: Date.now() };
+  if (modoDemo) {
+    const c = { ...t, id: nuevoId(), uid: u?.uid || null };
+    local.set('tickets', [c, ...local.get('tickets', [])]);
+    uidsPropietariosDemo().forEach(o => avisoDemo(o, `Nueva consulta: ${asunto}`, '', 'soporte'));
+    return c;
+  }
+  const { error } = await sb.from('tickets').insert({ uid: u?.uid || null, datos: t });
+  if (error) throw new Error(traducirError(error));
+  return t;
+}
+export async function misTickets() {
+  const u = necesitaUsuario();
+  if (modoDemo) return recientes(local.get('tickets', []).filter(t => t.uid === u.uid));
+  return leer('tickets', q => q.eq('uid', u.uid));
+}
+export async function todosLosTickets() {
+  necesitaUsuario();
+  if (modoDemo) return recientes(local.get('tickets', []));
+  return leer('tickets');
+}
+export async function actualizarTicket(id, cambios) {
+  necesitaUsuario();
+  if (modoDemo) { local.set('tickets', local.get('tickets', []).map(t => (t.id === id ? { ...t, ...cambios } : t))); return; }
+  await cambiar('tickets', id, cambios);
+}
+export async function borrarTicket(id) {
+  necesitaUsuario();
+  if (modoDemo) { local.set('tickets', local.get('tickets', []).filter(t => t.id !== id)); return; }
+  await borrar('tickets', id);
+}
+export async function responderTicket(t, texto) {
+  const u = necesitaUsuario();
+  const respuestas = [...(t.respuestas || []), { autor: u.name, rol: u.role, texto, t: Date.now() }];
+  const cambios = { respuestas, estado: esEquipo() ? 'respondido' : 'abierto', actualizado: Date.now() };
+  await actualizarTicket(t.id, cambios);
+  if (modoDemo && esEquipo() && t.uid) avisoDemo(t.uid, `Hemos respondido a tu consulta «${t.asunto}»`, '', 'soporte');
+  return cambios;
+}
+
+/* ==========================================================
+   AVISOS (campana)
+   ========================================================== */
+const avisoDeFila = f => ({ ...(f.datos || {}), id: f.id, leido: f.leido, t: f.datos?.t || Date.parse(f.created_at) });
+export async function misAvisos() {
+  const u = usuario;
+  if (!u) return [];
+  if (modoDemo) return local.get('avisos', []).filter(a => a.uid === u.uid).sort((a, b) => b.t - a.t).slice(0, 50);
+  const { data, error } = await sb.from('avisos').select('id, datos, leido, created_at').eq('uid', u.uid).order('created_at', { ascending: false }).limit(50);
+  if (error) throw new Error(traducirError(error));
+  return data.map(avisoDeFila);
+}
+export async function marcarAvisosLeidos() {
+  const u = necesitaUsuario();
+  if (modoDemo) { local.set('avisos', local.get('avisos', []).map(a => (a.uid === u.uid ? { ...a, leido: true } : a))); return; }
+  await sb.from('avisos').update({ leido: true }).eq('uid', u.uid).eq('leido', false);
+}
+export async function borrarAvisos() {
+  const u = necesitaUsuario();
+  if (modoDemo) { local.set('avisos', local.get('avisos', []).filter(a => a.uid !== u.uid)); return; }
+  await sb.from('avisos').delete().eq('uid', u.uid);
+}
+export function escucharAvisos(cb) {
+  const u = usuario;
+  if (!u) return () => {};
+  if (modoDemo) {
+    // En el modo demo, otra pestaña puede crear avisos: se comprueba cada pocos segundos
+    let n = (local.get('avisos', []).filter(a => a.uid === u.uid)).length;
+    const i = setInterval(() => {
+      const L = local.get('avisos', []).filter(a => a.uid === u.uid);
+      if (L.length > n) L.sort((a, b) => b.t - a.t).slice(0, L.length - n).forEach(cb);
+      n = L.length;
+    }, 4000);
+    return () => clearInterval(i);
+  }
+  const canal = sb.channel('avisos-' + u.uid)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'avisos', filter: `uid=eq.${u.uid}` }, ev => cb(avisoDeFila(ev.new)))
+    .subscribe();
+  return () => sb.removeChannel(canal);
+}
+/** El equipo puede avisar a un cliente (por ejemplo, al responder) */
+export async function crearAviso(uid, texto, pedido = '', tipo = 'info') {
+  if (!uid) return;
+  if (modoDemo) return avisoDemo(uid, texto, pedido, tipo);
+  await sb.from('avisos').insert({ uid, datos: { texto, pedido, tipo, t: Date.now() } });
+}
+
+/* Avisos del modo demo (en Supabase los crea la base de datos) */
+function uidsPropietariosDemo() {
+  return Object.values(local.get('users', {})).filter(x => propietarios.includes((x.email || '').toLowerCase())).map(x => x.uid);
+}
+function avisoDemo(uid, texto, pedido, tipo) {
+  if (!uid) return;
+  local.set('avisos', [{ id: nuevoId(), uid, texto, pedido, tipo, leido: false, t: Date.now() }, ...local.get('avisos', [])].slice(0, 300));
+}
+function avisosDemoPedido(a, n) {
+  const nombre = n.respuestas?.negocio || n.planNombre || 'tu web';
+  if (esEquipo()) {
+    if (a.etapa !== n.etapa) avisoDemo(n.uid, `Tu proyecto «${nombre}» ha pasado a una nueva etapa`, n.id, 'etapa');
+    if (a.pagoEstado !== n.pagoEstado && ['senal', 'pagado'].includes(n.pagoEstado)) avisoDemo(n.uid, `Pago confirmado en «${nombre}»`, n.id, 'pago');
+    if (a.urlVista !== n.urlVista && n.urlVista) avisoDemo(n.uid, `Ya puedes ver la vista previa de «${nombre}»`, n.id, 'revision');
+  } else {
+    const dest = [n.asignado, ...uidsPropietariosDemo()].filter((x, i, l) => x && l.indexOf(x) === i);
+    if (n.pagoEstado === 'verificando' && a.pagoEstado !== 'verificando') uidsPropietariosDemo().forEach(o => avisoDemo(o, `Pago por verificar en «${nombre}»`, n.id, 'pago'));
+    const J = JSON.stringify;
+    if (J(a.dominio) !== J(n.dominio) || J(a.contenido) !== J(n.contenido) || J(a.revision) !== J(n.revision) || J(a.cancelacion) !== J(n.cancelacion))
+      dest.forEach(x => avisoDemo(x, `El cliente ha actualizado «${nombre}»`, n.id, 'cliente'));
+  }
+}
+
+/* ==========================================================
+   ARCHIVOS DE CADA PROYECTO (Supabase Storage, carpeta = id del pedido)
+   ========================================================== */
+const limpiarNombre = n => n.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w.\-]+/g, '_').slice(-80);
+export async function listarArchivos(pedidoId) {
+  necesitaUsuario();
+  if (modoDemo) return local.get('archivos', []).filter(a => a.pedido === pedidoId).sort((a, b) => b.t - a.t);
+  const { data, error } = await sb.storage.from('archivos').list(pedidoId, { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
+  if (error) throw new Error(traducirError(error));
+  return data.filter(f => f.id).map(f => ({ ruta: `${pedidoId}/${f.name}`, nombre: f.name.replace(/^\d+_/, ''), tam: f.metadata?.size || 0, tipo: f.metadata?.mimetype || '', t: Date.parse(f.created_at) }));
+}
+export async function subirArchivo(pedidoId, archivo) {
+  const u = necesitaUsuario();
+  if (archivo.size > 25 * 1024 * 1024) throw new Error(`«${archivo.name}» ocupa más de 25 MB`);
+  const ruta = `${pedidoId}/${Date.now()}_${limpiarNombre(archivo.name)}`;
+  if (modoDemo) {
+    if (archivo.size > 1.5 * 1024 * 1024) throw new Error('En el modo demo solo se pueden subir archivos de menos de 1,5 MB');
+    const url = await new Promise((ok, mal) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = mal; r.readAsDataURL(archivo); });
+    const a = { ruta, pedido: pedidoId, nombre: archivo.name, tam: archivo.size, tipo: archivo.type, t: Date.now(), url, autor: u.name };
+    try { local.set('archivos', [a, ...local.get('archivos', [])]); } catch { throw new Error('No queda espacio en este navegador'); }
+    return a;
+  }
+  const { error } = await sb.storage.from('archivos').upload(ruta, archivo, { contentType: archivo.type || 'application/octet-stream', upsert: false });
+  if (error) throw new Error(traducirError(error));
+  return { ruta, nombre: archivo.name, tam: archivo.size, tipo: archivo.type, t: Date.now() };
+}
+export async function urlArchivo(a) {
+  if (modoDemo) return a.url;
+  const { data, error } = await sb.storage.from('archivos').createSignedUrl(a.ruta, 3600);
+  if (error) throw new Error(traducirError(error));
+  return data.signedUrl;
+}
+export async function borrarArchivo(a) {
+  necesitaUsuario();
+  if (modoDemo) { local.set('archivos', local.get('archivos', []).filter(x => x.ruta !== a.ruta)); return; }
+  const { error } = await sb.storage.from('archivos').remove([a.ruta]);
+  if (error) throw new Error(traducirError(error));
 }
