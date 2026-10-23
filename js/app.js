@@ -7,7 +7,7 @@ import * as store from './store.js';
 import {
   $, $$, esc, euros, fecha, icono, toast, abrir, cerrar, conSesion, arrancar, waLink, refPedido,
   ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados,
-  estrellas, ocupado, cargandoHTML, spinner, etiquetas
+  estrellas, ocupado, cargandoHTML, spinner, etiquetas, TAREAS, progreso
 } from './ui.js';
 import { botonPago, abrirPago, abrirResena, animarYPagar } from './pago.js';
 
@@ -55,8 +55,20 @@ $('#planes').innerHTML = PLANES.map(p => `
 /* ==========================================================
    GALERÍA DE DISEÑOS
    ========================================================== */
+const GRUPO = { filo: 'local', brasa: 'local', calma: 'local', pulso: 'local', kiosko: 'tienda', lienzo: 'pro' };
+const FILTROS_DZ = [['todos', 'Todos'], ['local', 'Negocio local'], ['tienda', 'Tienda online'], ['pro', 'Profesional']];
+$('#dzFiltro').innerHTML = FILTROS_DZ.map(([k, t], i) =>
+  `<label class="opt"><input type="radio" name="dzf" value="${k}" ${i === 0 ? 'checked' : ''}><span><i>${t}</i></span></label>`).join('');
+$('#dzFiltro').addEventListener('change', e => {
+  const g = e.target.value;
+  $$('#disenosGrid .dz').forEach((c, i) => {
+    const ver = g === 'todos' || c.dataset.grupo === g;
+    if (ver) { c.hidden = false; requestAnimationFrame(() => c.classList.remove('fuera')); c.style.transitionDelay = `${i * 40}ms`; }
+    else { c.classList.add('fuera'); setTimeout(() => { if (c.classList.contains('fuera')) c.hidden = true; }, 350); }
+  });
+});
 $('#disenosGrid').innerHTML = PLANTILLAS.map(p => `
-  <article class="dz reveal" data-ver="${p.id}" tabindex="0" role="button" aria-label="Ver diseño ${esc(p.nombre)}">
+  <article class="dz reveal" data-ver="${p.id}" data-grupo="${GRUPO[p.id] || 'local'}" tabindex="0" role="button" aria-label="Ver diseño ${esc(p.nombre)}">
     ${miniatura(p.id)}
     <div class="dz-info">
       <div><b>${esc(p.nombre)}</b><small>${esc(p.sector)}</small></div>
@@ -100,6 +112,58 @@ const io = new IntersectionObserver(es => es.forEach(e => {
 }), { threshold: .1, rootMargin: '0px 0px -30px 0px' });
 $$('.reveal').forEach((el, i) => { el.style.transitionDelay = `${(i % 3) * 70}ms`; io.observe(el); });
 pintarOpiniones();
+
+/* ---------- Línea de tiempo de "Cómo funciona": se rellena al hacer scroll ---------- */
+const pasosEl = $('#pasos');
+const pasosHijos = $$('.step', pasosEl);
+function avanzarPasos() {
+  const r = pasosEl.getBoundingClientRect();
+  const k = Math.min(1, Math.max(0, (innerHeight * .75 - r.top) / (r.height + innerHeight * .25)));
+  pasosEl.style.setProperty('--prog', k.toFixed(3));
+  pasosHijos.forEach((s, i) => s.classList.toggle('hecho', k >= (i + .35) / pasosHijos.length));
+}
+addEventListener('scroll', () => requestAnimationFrame(avanzarPasos), { passive: true });
+avanzarPasos();
+
+/* ==========================================================
+   TE AYUDO A ELEGIR (3 preguntas → plan recomendado)
+   ========================================================== */
+const recoDlg = $('#recoDlg');
+const PREG = [
+  ['necesito', '¿Qué necesitas sobre todo?', ['Que me encuentren y me contacten', 'Enseñar mis trabajos', 'Que reserven cita', 'Vender productos', 'Algo especial']],
+  ['tamano', '¿Cuánta información quieres poner?', ['Lo justo, una página', 'Bastante: servicios, galería, horarios…']],
+  ['prisa', '¿Para cuándo la necesitas?', ['Sin prisa', 'Lo antes posible']]
+];
+$('#recoForm').innerHTML = PREG.map(([n, q, o]) => `<span class="q-label">${q}</span>${opciones(n, o, '')}`).join('');
+function recomendar() {
+  const fd = new FormData($('#recoForm'));
+  const [a, b, c] = ['necesito', 'tamano', 'prisa'].map(k => fd.get(k));
+  const res = $('#recoRes');
+  if (!a) { res.innerHTML = ''; return; }
+  let id = 'negocio', motivo = 'Tiene todo lo que un negocio local necesita: servicios, galería, horarios y mapa.';
+  if (a.startsWith('Enseñar')) { id = 'portfolio'; motivo = 'Pensada para lucir tus trabajos con una galería cuidada.'; }
+  else if (a.startsWith('Que reserven')) { id = 'reservas'; motivo = 'Tus clientes eligen día y hora y reservan solos, sin llamadas.'; }
+  else if (a.startsWith('Vender')) { id = 'tienda'; motivo = 'Catálogo, carrito y pagos sin comisiones de plataformas.'; }
+  else if (a.startsWith('Algo especial')) { id = 'medida'; motivo = 'Lo diseñamos y programamos desde cero para tu idea.'; }
+  else if (b?.startsWith('Lo justo')) { id = 'landing'; motivo = 'Una sola página directa al grano: la forma más rápida y barata de estar en internet.'; }
+  const pl = PLANES.find(p => p.id === id);
+  const urg = c === 'Lo antes posible';
+  res.innerHTML = `
+    <div class="reco-card">
+      <small>Te recomendamos</small>
+      <div class="reco-top"><span class="pc-ic">${icono(pl.icono)}</span><div><b>${esc(pl.nombre)}</b><span>desde ${euros(pl.precio)} · ${esc(pl.entrega)}</span></div></div>
+      <p>${motivo}${urg ? ' Te marcamos la entrega urgente.' : ''}</p>
+      <button type="button" class="btn btn-primary w100" data-reco="${id}" data-urg="${urg ? 1 : ''}"><span>Empezar con esta</span>${icono('arrow')}</button>
+    </div>`;
+}
+$('#recoForm').addEventListener('change', recomendar);
+$('#abrirReco').addEventListener('click', () => { abrir(recoDlg); recomendar(); });
+recoDlg.addEventListener('click', e => {
+  const b = e.target.closest('[data-reco]');
+  if (!b) return;
+  cerrar(recoDlg);
+  abrirCompra(b.dataset.reco, '', { urgente: !!b.dataset.urg });
+});
 
 /* ==========================================================
    VISTA PREVIA DE UN DISEÑO
@@ -178,10 +242,39 @@ const dlg = $('#compraDlg');
 const form = $('#wizForm');
 let W = null;
 
-function abrirCompra(planId, plantillaInicial = '') {
+/* --- Borrador: si cierras el cuestionario, lo recuperamos al volver --- */
+const BORRADOR = 'tm_borrador';
+const leerBorrador = () => { try { return JSON.parse(localStorage.getItem(BORRADOR) || 'null'); } catch { return null; } };
+const borrarBorrador = () => { try { localStorage.removeItem(BORRADOR); } catch {} };
+let tGuardar;
+function guardarBorrador() {
+  clearTimeout(tGuardar);
+  tGuardar = setTimeout(() => {
+    if (!W) return;
+    const campos = {};
+    $$('input[name], select[name], textarea[name]', form).forEach(el => {
+      if (el.type === 'radio' || el.type === 'checkbox') { if (el.checked) (campos[el.name] ||= []).push(el.value); }
+      else campos[el.name] = el.value;
+    });
+    try { localStorage.setItem(BORRADOR, JSON.stringify({ plan: W.plan.id, paso: W.paso, max: W.max, campos, colorCustom: W.colorCustom, plantilla: W.plantilla, t: Date.now() })); } catch {}
+  }, 300);
+}
+function restaurarBorrador(b) {
+  $$('input[name], select[name], textarea[name]', form).forEach(el => {
+    const v = b.campos[el.name];
+    if (v === undefined) { if (el.type === 'radio' || el.type === 'checkbox') el.checked = false; return; }
+    if (el.type === 'radio' || el.type === 'checkbox') el.checked = v.includes(el.value);
+    else el.value = v;
+  });
+  W.colorCustom = b.colorCustom || '';
+  W.plantilla = b.plantilla || W.plantilla;
+  W.max = b.max || 0;
+}
+
+function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
   const plan = PLANES.find(p => p.id === planId);
   if (!plan) return;
-  W = { plan, paso: 0, plantilla: plantillaInicial || plan.plantillas[0] || 'cero', colorCustom: '' };
+  W = { plan, paso: 0, max: 0, plantilla: plantillaInicial || plan.plantillas[0] || 'cero', colorCustom: '' };
   const objetivo = plan.id === 'reservas' ? 'Reservas / citas' : plan.id === 'tienda' ? 'Vender online' : OBJETIVOS[0];
 
   form.innerHTML = `
@@ -247,7 +340,16 @@ function abrirCompra(planId, plantillaInicial = '') {
     <div class="paso" data-paso="resumen"><div id="resumen"></div></div>`;
 
   etiquetas(form);
-  irA(0);
+  if (urgente) $('#fUrg', form).checked = true;
+  const b = leerBorrador();
+  let inicio = 0;
+  if (b && b.plan === plan.id && Date.now() - b.t < 7 * 864e5 && b.campos?.negocio) {
+    restaurarBorrador(b);
+    inicio = Math.min(b.paso || 0, PASOS.length - 2);
+    setTimeout(() => toast('Hemos recuperado lo que ya habías rellenado ✍️'), 400);
+  }
+  W.paso = inicio;
+  irA(inicio);
   abrir(dlg);
 }
 
@@ -290,20 +392,35 @@ form.addEventListener('change', e => {
   if (e.target.name === 'logo' && e.target.value === 'No, necesito uno') marcarExtra('logo');
   if (e.target.name === 'contenido' && e.target.value === 'No, ayudadme') marcarExtra('textos');
   actualizarTotal();
+  guardarBorrador();
 });
 form.addEventListener('input', e => {
+  guardarBorrador();
   if (e.target.id === 'colorPick') {
     W.colorCustom = e.target.value;
     $$('input[name=color]', form).forEach(r => (r.checked = false));
   }
 });
 form.addEventListener('submit', e => { e.preventDefault(); $('#wizNext').click(); });
+// Intro en un campo de texto = Continuar
+form.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.matches('input:not([type=checkbox]):not([type=radio]):not([type=color])')) { e.preventDefault(); $('#wizNext').click(); }
+});
+// Puntos de pasos: se puede volver a cualquier paso ya visitado
+$('#wizDots').addEventListener('click', e => {
+  const d = e.target.closest('[data-ir]');
+  if (d && W && +d.dataset.ir <= W.max) irA(+d.dataset.ir);
+});
 
 /* --- Pasos --- */
 function irA(i) {
   form.dataset.dir = i >= W.paso ? 'fwd' : 'back';
   W.paso = i;
+  W.max = Math.max(W.max || 0, i);
   const paso = PASOS[i];
+  $('#wizDots').innerHTML = PASOS.map((p, k) =>
+    `<button type="button" class="${k === i ? 'on' : k <= W.max ? 'hecho' : ''}" data-ir="${k}" ${k > W.max ? 'disabled' : ''} aria-label="Paso ${k + 1}: ${p.titulo}"></button>`).join('');
+  guardarBorrador();
   $$('.paso', form).forEach(p => p.classList.toggle('on', p.dataset.paso === paso.id));
   $('#wizStep').textContent = `Paso ${i + 1} de ${PASOS.length} · ${paso.titulo}`;
   $('#wizTitle').textContent = W.plan.nombre;
@@ -435,6 +552,9 @@ function exito(p) {
 ▸ Negocio: ${r.negocio}
 ▸ Diseño: ${pl ? pl.nombre : 'desde cero'}
 ▸ Ref: ${refPedido(p.id)}`;
+  borrarBorrador();
+  clearTimeout(tGuardar);
+  $('#wizDots').innerHTML = '';
   $('#wizFoot').hidden = true;
   $('#wizBack').style.visibility = 'hidden';
   $('#wizStep').textContent = 'Pedido enviado';
@@ -458,9 +578,7 @@ function exito(p) {
 }
 
 dlg.addEventListener('close', () => { W = null; });
-dlg.addEventListener('cancel', e => {
-  if (W && W.paso > 1 && !confirm('¿Salir? Perderás lo que has rellenado.')) e.preventDefault();
-});
+dlg.addEventListener('cancel', () => { if (W && W.paso > 0) toast('Guardamos lo que has rellenado para la próxima vez'); });
 
 /* ==========================================================
    MIS PEDIDOS
@@ -496,6 +614,8 @@ async function pintarPedidos() {
           <span class="pill ${est.cls}">${est.txt}</span>
         </div>
         ${p.estado === 'cancelado' ? '' : `<div class="track">${FASES.map((f, i) => `<div class="tk ${i <= fase ? 'on' : ''}"><i></i><span>${ESTADOS[f].txt}</span></div>`).join('')}</div>`}
+        ${p.estado === 'cancelado' ? '' : `<div class="mp-prog"><div class="mp-prog-h"><span>Progreso de tu web</span><b>${progreso(p)} %</b></div><div class="barra"><i style="--w:${progreso(p)}%"></i></div>
+          <div class="mp-tareas">${TAREAS.map(([k, t]) => `<span class="${p.estado === 'entregado' || p.tareas?.[k] ? 'ok' : ''}">${t}</span>`).join('')}</div></div>`}
         <div class="mp-foot"><span>Ref. ${refPedido(p.id)}</span><b>${euros(p.total)}${p.mensual ? ` <small>+ ${euros(p.mensual)}/mes</small>` : ''}</b></div>
         <div class="mp-pay">${botonPago(p)}</div>
         ${p.asignadoNombre ? `<p class="mp-who">👩‍💻 Trabajando en ella: <b>${esc(p.asignadoNombre)}</b></p>` : ''}

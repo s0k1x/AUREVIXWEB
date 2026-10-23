@@ -40,6 +40,13 @@ export const PAGOS = {
 };
 export const METODOS = { bizum: 'Bizum', transferencia: 'Transferencia', stripe: 'Tarjeta / online', paypal: 'PayPal' };
 export const ROLES = { owner: 'Propietario', worker: 'Trabajador', client: 'Cliente' };
+/* Tareas de cada web: las marca el equipo y el cliente ve el progreso */
+export const TAREAS = [['diseno', 'Diseño'], ['contenido', 'Contenido'], ['desarrollo', 'Desarrollo'], ['revision', 'Revisión'], ['publicacion', 'Publicación']];
+export const progreso = p => {
+  if (p.estado === 'entregado') return 100;
+  const t = p.tareas || {};
+  return Math.round(TAREAS.filter(([k]) => t[k]).length / TAREAS.length * 100);
+};
 
 /* ---------- Iconos ---------- */
 const ICONOS = {
@@ -190,14 +197,17 @@ export function toast(texto, tipo = '') {
     t.id = 'toast'; t.setAttribute('role', 'status');
     document.body.appendChild(t);
   }
-  t.textContent = texto;
+  const ic = { ok: '✓', err: '!' }[tipo] || 'i';
+  t.innerHTML = `<span class="t-ic">${ic}</span><span>${esc(texto)}</span>`;
+  t.className = 'toast';
+  void t.offsetWidth;
   t.className = `toast show ${tipo}`;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
 }
 
 export async function copiar(texto) {
-  try { await navigator.clipboard.writeText(texto); toast('Copiado ✓'); }
+  try { await navigator.clipboard.writeText(texto); toast('Copiado', 'ok'); }
   catch { toast('No se pudo copiar, mantenlo pulsado para copiarlo'); }
 }
 
@@ -410,7 +420,7 @@ function crearLogin() {
     if (loginResolver) { loginResolver(store.usuarioActual()); loginResolver = null; }
   });
   store.alCambiarUsuario(u => {
-    if (u && d.open) { cerrar(d); toast(`¡Hola, ${u.name.split(' ')[0]}!`); }
+    if (u && d.open) { cerrar(d); toast(`¡Hola, ${u.name.split(' ')[0]}!`, 'ok'); }
   });
   return d;
 }

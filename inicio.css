@@ -323,7 +323,7 @@ dialog.dlg-prev{padding:0}
 #heroArt{position:absolute;inset:0}
 .sello{position:absolute;right:-14px;bottom:-6px;width:118px;height:118px;z-index:4;animation:girar 22s linear infinite;
   filter:drop-shadow(0 10px 24px rgba(0,0,0,.5))}
-.sello text{font-family:var(--fm);font-size:10.4px;letter-spacing:.18em;fill:var(--ink)}
+.sello text{font-family:var(--fm);font-size:9.6px;fill:var(--ink)}
 .sello::before{content:""}
 .hero-art .sello{background:radial-gradient(circle,var(--accent) 0 58px,transparent 58.5px)}
 @keyframes girar{to{transform:rotate(360deg)}}
@@ -375,4 +375,114 @@ dialog.dlg-prev{padding:0}
   .trust > div{flex:1;min-width:0}
   .trust b{font-size:17px;white-space:nowrap}
   .trust span{font-size:10.5px;display:block;line-height:1.35}
+}
+
+/* ==========================================================
+   Pantallas anchas (monitores de ordenador): la web ocupa todo el ancho
+   ========================================================== */
+@media (min-width:981px){
+  .hero-art{height:clamp(440px,36vw,640px)}
+  .fan{width:80%}
+  .fan.f0{top:6%}
+  .fan.f2{top:34%}
+  .sec-head h2{max-width:900px}
+}
+@media (min-width:1400px){
+  section{padding:120px 0}
+  .hero{padding:90px 0 120px}
+  .hero-grid{grid-template-columns:1fr 1fr;gap:80px}
+  .hero h1{font-size:clamp(80px,5.8vw,112px)}
+  .hero .lead{font-size:19px;max-width:620px}
+  .trust b{font-size:26px}
+  h2{font-size:clamp(52px,3.6vw,68px)}
+  .lead{font-size:18px;max-width:680px}
+  .planes,.disenos{gap:22px}
+  .plan-card{padding:32px}
+  .op-grid{gap:20px}
+  .steps{gap:40px}
+  .faq{max-width:1100px}
+  .join{padding:64px 72px}
+  .sello{width:140px;height:140px}
+  .hero-art .sello{background:radial-gradient(circle,var(--accent) 0 69px,transparent 69.5px)}
+}
+@media (min-width:1800px){
+  .disenos{grid-template-columns:repeat(3,1fr)}
+  .op-grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* ==========================================================
+   Ronda 3: herramientas nuevas de la portada
+   ========================================================== */
+/* Ayuda para elegir */
+.ayuda{display:flex;align-items:center;gap:18px;padding:18px 22px;margin-bottom:22px;border-radius:18px;border:1px dashed rgba(200,245,96,.35);background:linear-gradient(90deg,rgba(200,245,96,.07),transparent 60%)}
+.ayuda > div{flex:1;min-width:0}
+.ayuda b{display:block;font-family:var(--fd);font-size:19px}
+.ayuda span:not(.ayuda-ic){color:var(--muted);font-size:14.5px}
+.ayuda-ic{width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--accent);color:var(--ink);font-family:var(--fd);font-weight:800;font-size:22px;animation:balanceo 3s var(--e-out) infinite}
+@keyframes balanceo{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-14deg)}86%{transform:rotate(10deg)}94%{transform:rotate(-4deg)}}
+.reco .opts{margin-bottom:4px}
+.reco-res:empty{display:none}
+.reco-card{margin-top:22px;padding:18px;border-radius:18px;background:var(--accent-soft);border:1px solid rgba(200,245,96,.35);animation:subir .5s var(--e-out)}
+.reco-card > small{font-family:var(--fm);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.reco-top{display:flex;align-items:center;gap:12px;margin:10px 0}
+.reco-top b{display:block;font-family:var(--fd);font-size:22px}
+.reco-top span:not(.pc-ic){color:var(--muted);font-size:14px}
+.reco-card p{font-size:14.5px;margin-bottom:14px;color:#dfe9c4}
+
+/* Filtro de diseños + cartas que se ocultan con suavidad */
+.dz-filtro{margin:-14px 0 24px}
+.dz{transition:opacity .35s var(--e-out),transform .45s var(--e-out),border-color .4s,box-shadow .5s}
+.dz.fuera{opacity:0;transform:scale(.94)}
+.dz .thumb{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .5s var(--e-out)}
+
+/* Línea de tiempo de "Cómo funciona" */
+.steps.timeline{position:relative;--prog:0}
+.steps.timeline .step{border-top:0;padding-top:34px;position:relative}
+.steps.timeline::before,.steps.timeline::after{content:"";position:absolute;left:0;right:0;top:8px;height:2px;border-radius:2px;background:var(--line2)}
+.steps.timeline::after{background:var(--accent);transform-origin:left;transform:scaleX(var(--prog));box-shadow:0 0 12px rgba(200,245,96,.6)}
+.st-dot{position:absolute;left:0;top:1px;width:16px;height:16px;border-radius:50%;background:var(--bg2);border:2px solid var(--line2);z-index:1;transition:background .4s var(--e-out),border-color .4s,transform .5s var(--e-spring),box-shadow .4s}
+.step.hecho .st-dot{background:var(--accent);border-color:var(--accent);transform:scale(1.15);box-shadow:0 0 0 6px rgba(200,245,96,.15)}
+.step.hecho::before{-webkit-text-stroke-color:var(--accent)}
+.step::before{transition:-webkit-text-stroke-color .5s}
+
+/* FAQ a dos columnas en ordenador */
+.faq-side .btn{margin-top:20px}
+@media (min-width:981px){
+  .faq-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:60px;align-items:start}
+  .faq-side{position:sticky;top:110px;margin-bottom:0}
+  .faq{max-width:none}
+}
+
+/* Puntos de pasos del cuestionario */
+.wiz-dots{display:flex;justify-content:center;gap:8px;padding:10px 0 0}
+.wiz-dots button{width:8px;height:8px;border-radius:99px;border:0;padding:0;background:var(--line2);transition:width .4s var(--e-spring),background .3s}
+.wiz-dots button.hecho{background:rgba(200,245,96,.5);cursor:pointer}
+.wiz-dots button.on{width:26px;background:var(--accent)}
+.wiz-dots button:disabled{cursor:default}
+
+/* Progreso de la web para el cliente */
+.mp-prog{margin:4px 0 12px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.mp-prog-h{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px}
+.mp-prog-h b{color:var(--accent);font-family:var(--fm)}
+.barra{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.barra i{display:block;height:100%;width:var(--w);border-radius:inherit;background:linear-gradient(90deg,#9fd23a,var(--accent));animation:llenar 1.1s var(--e-out) both}
+@keyframes llenar{from{width:0}}
+.mp-tareas{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.mp-tareas span{font-size:11.5px;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.05);color:var(--dim)}
+.mp-tareas span.ok{background:var(--accent-soft);color:var(--accent)}
+.mp-tareas span.ok::before{content:"✓ "}
+
+@media (max-width:980px){
+  .steps.timeline{grid-template-columns:1fr;gap:26px;padding-left:34px}
+  .steps.timeline::before,.steps.timeline::after{left:7px;right:auto;top:0;bottom:0;width:2px;height:auto}
+  .steps.timeline::after{transform-origin:top;transform:scaleY(var(--prog))}
+  .steps.timeline .step{padding-top:0}
+  .st-dot{left:-34px;top:2px}
+}
+@media (max-width:640px){
+  .ayuda{flex-wrap:wrap;padding:16px}
+  .ayuda .btn{width:100%}
+  .dz-filtro{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:calc(var(--gutter) * -1);padding-right:var(--gutter)}
+  .dz-filtro::-webkit-scrollbar{display:none}
+  .dz-filtro .opt > span{white-space:nowrap}
 }

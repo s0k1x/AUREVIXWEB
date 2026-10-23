@@ -86,11 +86,92 @@ function botonWhatsapp(link) {
   setTimeout(() => b.classList.add('show'), 2200);
 }
 
+/* Inclinación 3D de las miniaturas de diseños al mover el ratón */
+function inclinar() {
+  if (!conRaton() || reducido()) return;
+  document.addEventListener('pointermove', e => {
+    const c = e.target.closest?.('.dz');
+    if (!c) return;
+    const r = c.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    c.style.setProperty('--ry', `${x * 7}deg`);
+    c.style.setProperty('--rx', `${-y * 7}deg`);
+  }, { passive: true });
+  document.addEventListener('pointerout', e => {
+    const c = e.target.closest?.('.dz');
+    if (c && !c.contains(e.relatedTarget)) { c.style.setProperty('--ry', '0deg'); c.style.setProperty('--rx', '0deg'); }
+  });
+}
+
+/* Botones "magnéticos": se acercan un poco al ratón */
+function magnetos() {
+  if (!conRaton() || reducido()) return;
+  document.querySelectorAll('[data-magnet]').forEach(b => {
+    b.addEventListener('pointermove', e => {
+      const r = b.getBoundingClientRect();
+      b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px, ${(e.clientY - r.top - r.height / 2) * .3}px)`;
+    });
+    b.addEventListener('pointerleave', () => { b.style.transform = ''; });
+  });
+}
+
+/* Títulos que aparecen palabra a palabra */
+export function partirTitulos(raiz = document) {
+  raiz.querySelectorAll('.sec-head h2:not(.split)').forEach(h => {
+    const palabras = h.textContent.trim().split(/\s+/);
+    h.setAttribute('aria-label', h.textContent.trim());
+    h.innerHTML = palabras.map((w, i) => `<span class="w" aria-hidden="true"><span style="--i:${i}">${w}</span></span>`).join(' ');
+    h.classList.add('split');
+  });
+}
+
+/* En el móvil, las ventanas que salen desde abajo se cierran deslizando hacia abajo */
+function deslizarParaCerrar() {
+  let box = null, y0 = 0, dy = 0;
+  document.addEventListener('pointerdown', e => {
+    if (innerWidth > 640 || e.pointerType === 'mouse') return;
+    const b = e.target.closest('dialog.dlg:not(.dlg-wiz):not(.dlg-prev):not(.dlg-side) > .dlg-box');
+    if (!b || b.scrollTop > 0 || e.clientY - b.getBoundingClientRect().top > 70) return;
+    if (e.target.closest('input, textarea, select, button, a, label')) return;
+    box = b; y0 = e.clientY; dy = 0;
+    box.style.transition = 'none';
+  }, { passive: true });
+  document.addEventListener('pointermove', e => {
+    if (!box) return;
+    dy = Math.max(0, e.clientY - y0);
+    box.style.transform = `translateY(${dy}px)`;
+  }, { passive: true });
+  const soltar = () => {
+    if (!box) return;
+    const b = box; box = null;
+    b.style.transition = '';
+    if (dy > 110) { b.closest('dialog').close(); setTimeout(() => (b.style.transform = ''), 350); }
+    else b.style.transform = '';
+  };
+  document.addEventListener('pointerup', soltar);
+  document.addEventListener('pointercancel', soltar);
+}
+
+/* Enlace "Saltar al contenido" para teclado y lectores de pantalla */
+function saltar() {
+  const m = document.querySelector('main');
+  if (!m) return;
+  m.id ||= 'main';
+  const a = document.createElement('a');
+  a.className = 'skip'; a.href = '#' + m.id; a.textContent = 'Saltar al contenido';
+  document.body.prepend(a);
+}
+
 export function iniciarEfectos({ waLink } = {}) {
+  saltar();
   ondas();
   seguirRaton();
+  inclinar();
+  magnetos();
   scroll();
   focos();
   contar();
+  partirTitulos();
+  deslizarParaCerrar();
   if (waLink) botonWhatsapp(waLink);
 }

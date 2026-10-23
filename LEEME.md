@@ -60,7 +60,17 @@ Todo se puede hacer desde el móvil en **console.firebase.google.com**:
 Listo: los clientes entran con Google o email, sus pedidos se guardan en la nube
 y tú los ves en el panel desde cualquier dispositivo.
 
-## 4. Cómo funciona el equipo
+## 4. Herramientas que ya trae
+- **Te ayudo a elegir**: 3 preguntas y recomienda el tipo de web (con entrega urgente si la piden).
+- **Borrador automático**: si el cliente cierra el cuestionario, al volver recupera lo que había rellenado.
+- **Filtro de diseños** por tipo de negocio.
+- **Tareas por pedido** (diseño, contenido, desarrollo, revisión, publicación): las marca el equipo y el cliente ve la barra de progreso en «Mis pedidos».
+- **Tablero** en *Panel → Pedidos*: arrastra las tarjetas entre columnas para cambiar el estado (en ordenador).
+- **Exportar** los pedidos a un archivo que se abre en Excel o Google Sheets.
+- Atajo **/** para buscar en el panel y número de pendientes en el icono de la app instalada.
+- **Imagen para compartir** (`icons/og.png`): la que sale al pegar el enlace en WhatsApp o redes. Cámbiala cuando tengas tu marca.
+
+## 4b. Cómo funciona el equipo
 - Alguien rellena **Trabaja con nosotros** → te aparece en *Panel → Candidaturas*.
 - Pulsas **Aceptar** → pasa a ser **trabajador** y ya puede entrar a su panel.
 - También puedes añadir a alguien por email en *Panel → Equipo*
@@ -77,7 +87,7 @@ y tú los ves en el panel desde cualquier dispositivo.
 > directamente** en el móvil; tiene que estar publicada (GitHub Pages, Netlify…).
 
 ## 6. Cuando hagas cambios
-Sube la versión en `sw.js` (ahora está en `v3` → pon `v4`…) para que los móviles con la app instalada se actualicen.
+Sube la versión en `sw.js` (ahora está en `v5` → pon `v6`…) para que los móviles con la app instalada se actualicen.
 
 ## 7. Cobros (lo más barato posible)
 El cliente paga desde «Mis pedidos» o al terminar el pedido. Solo aparecen las formas de pago que rellenes en `config.js → pagos`:

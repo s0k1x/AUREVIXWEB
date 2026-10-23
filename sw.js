@@ -2,7 +2,7 @@
    Service worker — la web funciona sin conexión
    👉 Cada vez que subas cambios, sube VERSION (v1 → v2…)
    ========================================================== */
-const VERSION = 'v3';
+const VERSION = 'v5';
 const CACHE = `tumarca-${VERSION}`;
 
 const ARCHIVOS = [

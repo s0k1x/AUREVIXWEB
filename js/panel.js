@@ -7,7 +7,7 @@ import { contar } from './efectos.js';
 import * as store from './store.js';
 import {
   $, $$, esc, euros, fecha, haceCuanto, icono, avatar, toast, abrir, cerrar, arrancar, pedirLogin, waLink, refPedido,
-  ESTADOS, PAGOS, METODOS, cargandoHTML, ocupado, campo, estrellas, etiquetas
+  ESTADOS, PAGOS, METODOS, cargandoHTML, ocupado, campo, estrellas, etiquetas, TAREAS, progreso
 } from './ui.js';
 
 await arrancar('panel');
@@ -18,6 +18,8 @@ let U = null;
 let datos = { pedidos: [], cands: [], usuarios: [], resenas: [] };
 let tab = '';
 let filtro = { estado: 'todos', q: '', ocultar: false };
+const leerVista = () => { try { return localStorage.getItem('tm_vista'); } catch { return null; } };
+let vista = leerVista() || (innerWidth >= 1100 ? 'tablero' : 'lista');
 
 const neg = p => p.respuestas?.negocio || p.planNombre;
 const trabajadores = () => datos.usuarios.filter(u => u.role === 'worker');
@@ -70,6 +72,10 @@ async function cargar() {
     ]);
     datos = { pedidos, usuarios, cands, resenas };
     pintar();
+    // Número en el icono de la app instalada (pedidos nuevos + pagos por verificar)
+    const pend = owner ? pedidos.filter(p => p.estado === 'nuevo' || p.pagoEstado === 'verificando').length
+      : pedidos.filter(p => !p.asignado && p.estado === 'nuevo').length;
+    try { pend ? navigator.setAppBadge?.(pend) : navigator.clearAppBadge?.(); } catch {}
   } catch (e) {
     console.error(e);
     body.innerHTML = `<div class="card gate"><div class="em">⚠️</div><h3>No se pudieron cargar los datos</h3><p class="muted">${esc(e.message)}</p><p class="muted" style="font-size:13px">Si acabas de conectar Firebase, revisa las reglas de Firestore (LEEME.md).</p></div>`;
@@ -115,6 +121,7 @@ function filaPedido(p, { coger = false } = {}) {
         ${p.pagoEstado === 'verificando' ? '<span class="pill p-pend">💶 Pago por verificar</span>' : ''}
         ${p.urgente ? '<span class="pill p-off">Urgente</span>' : ''}</div>
       <small>${esc(p.planNombre)} · ${pl ? esc(pl.nombre) : 'A medida'} · ${esc(p.clienteNombre)} · ${haceCuanto(p.createdAt)}</small>
+      ${p.estado !== 'cancelado' ? `<div class="row-prog" title="Progreso ${progreso(p)} %"><i style="--w:${progreso(p)}%"></i></div>` : ''}
     </div>
     <div class="row-side">
       <b class="row-price">${euros(p.total)}</b>
@@ -182,10 +189,24 @@ function vistaPedidos() {
         <svg viewBox="0 0 24 24" aria-hidden="true" class="search-icon"><path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"/></svg>
         <input id="q" class="input" type="search" placeholder="Buscar cliente, negocio o ref…" value="${esc(filtro.q)}" aria-label="Buscar pedidos">
       </div>
-      <label class="switch-inline"><span class="switch"><input type="checkbox" id="ocultar" ${filtro.ocultar ? 'checked' : ''}><span class="slider"></span></span> Ocultar terminados</label>
+      <div class="tool-r">
+        <label class="switch-inline"><span class="switch"><input type="checkbox" id="ocultar" ${filtro.ocultar ? 'checked' : ''}><span class="slider"></span></span> Ocultar terminados</label>
+        <div class="seg vista-seg" role="group" aria-label="Vista">
+          <button type="button" data-vista="lista" class="${vista === 'lista' ? 'on' : ''}" aria-label="Lista"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
+          <button type="button" data-vista="tablero" class="${vista === 'tablero' ? 'on' : ''}" aria-label="Tablero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="18" rx="1.5"/><rect x="10" y="3" width="5" height="12" rx="1.5"/><rect x="17" y="3" width="4" height="8" rx="1.5"/></svg></button>
+        </div>
+        <button type="button" class="btn btn-sm btn-ghost" id="csv" title="Descargar en Excel (CSV)">${icono('copy')}<span>Exportar</span></button>
+      </div>
     </div>
     <div class="opts filters">${Object.entries(FILTROS).map(([k, t]) => `<label class="opt"><input type="radio" name="flt" value="${k}" ${filtro.estado === k ? 'checked' : ''}><span><i>${t} · ${base.filter(p => pasaFiltro(p, k)).length}</i></span></label>`).join('')}</div>
-    <div class="rows card flush">${lista.map(p => filaPedido(p)).join('') || vacio('🔍', 'No hay pedidos aquí')}</div>`;
+    ${vista === 'tablero' ? tablero(lista) : `<div class="rows card flush">${lista.map(p => filaPedido(p)).join('') || vacio('🔍', 'No hay pedidos aquí')}</div>`}`;
+  $$('[data-vista]').forEach(b => b.addEventListener('click', () => {
+    vista = b.dataset.vista;
+    try { localStorage.setItem('tm_vista', vista); } catch {}
+    vistaPedidos();
+  }));
+  $('#csv').addEventListener('click', () => exportarCSV(lista));
+  if (vista === 'tablero') arrastrar();
   $$('input[name=flt]').forEach(r => r.addEventListener('change', () => { filtro.estado = r.value; vistaPedidos(); }));
   $('#ocultar').addEventListener('change', e => { filtro.ocultar = e.target.checked; vistaPedidos(); });
   const q = $('#q');
@@ -196,6 +217,68 @@ function vistaPedidos() {
     const n = $('#q'); n.focus(); n.setSelectionRange(pos, pos);
   });
 }
+
+/* ---------- Tablero (arrastra las tarjetas entre columnas en el ordenador) ---------- */
+const COLS = ['nuevo', 'en_curso', 'revision', 'entregado'];
+function tablero(lista) {
+  return `<div class="board">${COLS.map(k => {
+    const L = lista.filter(p => p.estado === k);
+    return `<div class="col" data-col="${k}">
+      <div class="col-h"><span class="pill ${ESTADOS[k].cls}">${ESTADOS[k].txt}</span><b>${L.length}</b></div>
+      <div class="col-body">${L.map(p => `
+        <article class="kcard" draggable="true" data-open="${p.id}" data-id="${p.id}" tabindex="0">
+          <div class="kc-t"><b>${esc(neg(p))}</b><span>${euros(p.total)}</span></div>
+          <small>${esc(p.planNombre)} · ${esc(p.clienteNombre)}</small>
+          <div class="kc-tags">${p.pagoEstado === 'verificando' ? '<span class="pill p-pend">💶 Verificar</span>' : ''}${p.urgente ? '<span class="pill p-off">Urgente</span>' : ''}</div>
+          <div class="kc-f"><div class="row-prog"><i style="--w:${progreso(p)}%"></i></div>${p.asignadoNombre ? avatar({ name: p.asignadoNombre }, 'sm') : '<span class="who none">—</span>'}</div>
+        </article>`).join('') || '<p class="col-empty">Suelta aquí</p>'}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+function arrastrar() {
+  let id = null;
+  $$('.kcard').forEach(c => {
+    c.addEventListener('dragstart', e => { id = c.dataset.id; c.classList.add('drag'); e.dataTransfer.effectAllowed = 'move'; });
+    c.addEventListener('dragend', () => { c.classList.remove('drag'); $$('.col').forEach(x => x.classList.remove('over')); });
+  });
+  $$('.col').forEach(col => {
+    col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('over'); });
+    col.addEventListener('dragleave', e => { if (!col.contains(e.relatedTarget)) col.classList.remove('over'); });
+    col.addEventListener('drop', async e => {
+      e.preventDefault();
+      col.classList.remove('over');
+      const p = datos.pedidos.find(x => x.id === id);
+      const nuevo = col.dataset.col;
+      if (!p || p.estado === nuevo) return;
+      if (U.role !== 'owner' && p.asignado !== U.uid) return toast('Solo puedes mover tus encargos', 'err');
+      try {
+        await store.actualizarPedido(p.id, { estado: nuevo });
+        p.estado = nuevo;
+        toast(`${neg(p)} → ${ESTADOS[nuevo].txt}`, 'ok');
+        pintar();
+      } catch (err) { toast(err.message, 'err'); }
+    });
+  });
+}
+
+/* ---------- Exportar a CSV (se abre en Excel o Google Sheets) ---------- */
+function exportarCSV(lista) {
+  const cab = ['Referencia', 'Fecha', 'Negocio', 'Cliente', 'Email', 'Teléfono', 'Tipo de web', 'Total', 'Mensual', 'Estado', 'Pago', 'Asignado', 'Progreso'];
+  const filas = lista.map(p => [refPedido(p.id), fecha(p.createdAt), neg(p), p.clienteNombre, p.clienteEmail, p.respuestas?.telefono || '',
+    p.planNombre, String(p.total).replace('.', ','), p.mensual || 0, ESTADOS[p.estado]?.txt, PAGOS[p.pagoEstado || 'pendiente']?.txt, p.asignadoNombre || '', progreso(p) + ' %']);
+  const csv = [cab, ...filas].map(f => f.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(';')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = `pedidos-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast(`${lista.length} pedidos exportados`, 'ok');
+}
+
+/* Atajo: pulsa «/» para buscar */
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && !e.target.closest('input, textarea, select') && $('#q')) { e.preventDefault(); $('#q').focus(); }
+});
 
 /* ---------- PROPIETARIO: Candidaturas ---------- */
 function candidaturas() {
@@ -379,6 +462,14 @@ function abrirPedido(id) {
           : p.pagoMetodo ? `Último pago por ${METODOS[p.pagoMetodo] || p.pagoMetodo}.` : `Señal: ${euros(senal)} · Resto: ${euros((p.total || 0) - senal)}`}</p>
       </div>
 
+      <div class="od-tareas">
+        <div class="od-tareas-h"><span>Tareas</span><b>${progreso(p)} %</b></div>
+        <div class="barra"><i style="--w:${progreso(p)}%"></i></div>
+        <div class="tareas">${TAREAS.map(([k, t]) => `
+          <label class="tarea ${puedeEditar ? '' : 'off'}"><input type="checkbox" data-tarea="${k}" ${p.tareas?.[k] ? 'checked' : ''} ${puedeEditar ? '' : 'disabled'}><span class="ck-mark"></span><span>${t}</span></label>`).join('')}</div>
+        <small class="muted">El cliente ve este progreso en «Mis pedidos».</small>
+      </div>
+
       <div class="od-client">
         ${avatar({ name: p.clienteNombre })}
         <div><b>${esc(p.clienteNombre)}</b><small>${esc(p.clienteEmail)}${r.telefono ? ' · ' + esc(r.telefono) : ''}</small></div>
@@ -424,6 +515,11 @@ function abrirPedido(id) {
       abrirPedido(p.id);
     } catch (err) { toast(err.message, 'err'); }
   };
+  $$('[data-tarea]', box).forEach(c => c.addEventListener('change', () => {
+    const tareas = { ...(p.tareas || {}), [c.dataset.tarea]: c.checked };
+    const todas = TAREAS.every(([k]) => tareas[k]);
+    guardar({ tareas }, todas ? '¡Todo listo! Puedes marcarla como entregada 🎉' : 'Tarea actualizada');
+  }));
   $('#odEstado', box)?.addEventListener('change', e => guardar({ estado: e.target.value }, `Estado: ${ESTADOS[e.target.value].txt}`));
   $('#odPago', box)?.addEventListener('change', e => guardar({ pagoEstado: e.target.value }, `Pago: ${PAGOS[e.target.value].txt}`));
   $('#odAsig', box)?.addEventListener('change', e => {

@@ -14,7 +14,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta property="og:title" content="Diseño de páginas web">
   <meta property="og:description" content="Elige tu web, rellena un cuestionario de 2 minutos y la tienes en días.">
-  <meta property="og:image" content="icons/icon-512.png">
+  <meta property="og:image" content="icons/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -37,7 +40,7 @@
           <h1>Webs con <span class="scribble">carácter<svg viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true"><path d="M3 21c40-9 92-15 150-13 50 2 96 7 144 4-38 4-84 9-131 9"/></svg></span>.<br>Listas en días.</h1>
           <p class="lead">Nada de plantillas sin alma. Eliges un punto de partida, lo hacemos <b>tuyo</b> y sigues cómo avanza desde el móvil.</p>
           <div class="hero-ctas">
-            <a href="#webs" class="btn btn-primary">Ver webs y precios <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a href="#webs" class="btn btn-primary" data-magnet>Ver webs y precios <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             <a href="#disenos" class="btn btn-ghost">Ver diseños</a>
           </div>
           <div class="trust">
@@ -50,7 +53,7 @@
           <div id="heroArt"></div>
           <svg class="sello" viewBox="0 0 120 120" aria-hidden="true">
             <defs><path id="circ" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"/></defs>
-            <text><textPath href="#circ">DISEÑO WEB · A TU MEDIDA · DISEÑO WEB · A TU MEDIDA ·</textPath></text>
+            <text><textPath href="#circ" textLength="286" lengthAdjust="spacing">DISEÑO WEB · A TU MEDIDA · DISEÑO WEB · A TU MEDIDA · </textPath></text>
           </svg>
           <span class="nota-mano">tócalos, son reales ↓</span>
         </div>
@@ -71,6 +74,11 @@
           <h2>Elige tu web. Sin letra pequeña.</h2>
           <p class="lead">Precios de partida claros. Al darle a comprar te explicamos qué incluye y te hacemos unas preguntas para ajustar el presupuesto.</p>
         </div>
+        <div class="ayuda reveal">
+          <span class="ayuda-ic">?</span>
+          <div><b>¿No sabes cuál elegir?</b><span>Responde 3 preguntas rápidas y te recomendamos la web que mejor encaja.</span></div>
+          <button class="btn btn-ghost btn-fill" id="abrirReco"><span>Ayúdame a elegir</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
         <div class="planes" id="planes"></div>
       </div>
     </section>
@@ -83,6 +91,7 @@
           <h2>Empieza con un diseño. Acaba con el tuyo.</h2>
           <p class="lead">Elige uno como punto de partida y lo adaptamos a tu marca: colores, textos, fotos y secciones. Toca cualquiera para verlo en grande.</p>
         </div>
+        <div class="opts dz-filtro reveal" id="dzFiltro" role="radiogroup" aria-label="Filtrar diseños"></div>
         <div class="disenos" id="disenosGrid"></div>
       </div>
     </section>
@@ -94,11 +103,11 @@
           <span class="eyebrow"><b>03</b>Cómo funciona</span>
           <h2>De la idea a tu web en 4 pasos.</h2>
         </div>
-        <div class="steps">
-          <div class="step reveal"><h3>Elige y cuéntanos</h3><p>Escoge el tipo de web, responde el cuestionario y elige un diseño base.</p></div>
-          <div class="step reveal"><h3>Confirma</h3><p>Revisamos tu pedido, te escribimos y pagas el 50 % para empezar.</p></div>
-          <div class="step reveal"><h3>Lo creamos</h3><p>Diseñamos tu web y sigues el estado de tu pedido desde tu cuenta.</p></div>
-          <div class="step reveal"><h3>¡Publicada!</h3><p>Te la entregamos con tu dominio, pagas el resto y listo.</p></div>
+        <div class="steps timeline" id="pasos">
+          <div class="step reveal"><span class="st-dot"></span><h3>Elige y cuéntanos</h3><p>Escoge el tipo de web, responde el cuestionario y elige un diseño base.</p></div>
+          <div class="step reveal"><span class="st-dot"></span><h3>Confirma</h3><p>Revisamos tu pedido, te escribimos y pagas el 50 % para empezar.</p></div>
+          <div class="step reveal"><span class="st-dot"></span><h3>Lo creamos</h3><p>Diseñamos tu web y sigues el estado de tu pedido desde tu cuenta.</p></div>
+          <div class="step reveal"><span class="st-dot"></span><h3>¡Publicada!</h3><p>Te la entregamos con tu dominio, pagas el resto y listo.</p></div>
         </div>
       </div>
     </section>
@@ -127,20 +136,26 @@
             <h2>¿Diseñas o programas? Trabaja con nosotros.</h2>
             <p>Buscamos personas con ganas de crear webs bonitas. Trabajo en remoto y proyectos reales desde el primer día.</p>
           </div>
-          <a href="trabaja.html" class="btn btn-dark">Trabaja con nosotros <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="trabaja.html" class="btn btn-dark" data-magnet>Trabaja con nosotros <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </div>
       </div>
     </section>
 
     <!-- ===== DUDAS ===== -->
     <section id="faq" class="alt">
-      <div class="wrap">
-        <div class="sec-head reveal"><span class="eyebrow"><b>06</b>Dudas</span><h2>Lo que siempre nos preguntan.</h2></div>
+      <div class="wrap faq-grid">
+        <div class="sec-head reveal faq-side">
+          <span class="eyebrow"><b>06</b>Dudas</span><h2>Lo que siempre nos preguntan.</h2>
+          <p class="lead">¿Tienes otra pregunta? Escríbenos y te respondemos en el día.</p>
+          <a class="btn btn-ghost btn-fill" data-wa-link href="#" target="_blank" rel="noopener"><span>Preguntar por WhatsApp</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
         <div class="faq reveal">
           <details><summary>¿El precio es el final?</summary><p>Es el precio de partida. Con el cuestionario añades extras si los necesitas (dominio, logo, textos…) y ves el total al momento, antes de confirmar nada.</p></details>
           <details><summary>¿Cómo se paga?</summary><p>Cuando confirmas el pedido te escribimos. Pagas el 50 % para empezar (Bizum o transferencia) y el resto cuando la web esté terminada y te guste.</p></details>
           <details><summary>¿Puedo cambiar el diseño que elija?</summary><p>Claro. El diseño es un punto de partida: cambiamos colores, textos, fotos y secciones para que sea tuyo.</p></details>
-          <details><summary>¿Cómo sé cómo va mi web?</summary><p>Entra con tu cuenta y en «Mis pedidos» verás el estado: nuevo, en curso, en revisión o entregado.</p></details>
+          <details><summary>¿Cómo sé cómo va mi web?</summary><p>Entra con tu cuenta y en «Mis pedidos» verás el estado y una barra con el progreso real: diseño, contenido, desarrollo, revisión y publicación.</p></details>
+          <details><summary>¿Necesito dominio y alojamiento?</summary><p>No hace falta que sepas nada técnico. Si no tienes, añade el extra «Dominio + alojamiento» en el cuestionario y nos encargamos de todo.</p></details>
+          <details><summary>¿Y si después quiero cambios?</summary><p>Los planes incluyen revisiones hasta que quede como quieres. Después puedes contratar el mantenimiento mensual o pedirnos cambios sueltos.</p></details>
         </div>
       </div>
     </section>
@@ -162,11 +177,22 @@
         <button class="icon-btn" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       </div>
       <div class="wiz-bar"><i id="wizBar"></i></div>
+      <div class="wiz-dots" id="wizDots" aria-label="Pasos"></div>
       <form class="wiz-body" id="wizForm" novalidate></form>
       <div class="wiz-foot" id="wizFoot">
-        <div class="wiz-total"><small>Total estimado</small><b id="wizTotal">0 €</b><span id="wizMensual"></span></div>
+        <div class="wiz-total"><small>Total estimado</small><b id="wizTotal" aria-live="polite">0 €</b><span id="wizMensual"></span></div>
         <button class="btn btn-primary" id="wizNext">Continuar</button>
       </div>
+    </div>
+  </dialog>
+
+  <!-- ===== AYUDA PARA ELEGIR ===== -->
+  <dialog class="dlg dlg-sm" id="recoDlg" aria-labelledby="recoTitle">
+    <div class="dlg-box reco">
+      <button class="dlg-x" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <h2 class="dlg-h" id="recoTitle">Te ayudo a elegir</h2>
+      <form id="recoForm"></form>
+      <div class="reco-res" id="recoRes" aria-live="polite"></div>
     </div>
   </dialog>
 

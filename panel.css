@@ -150,3 +150,67 @@ dialog.dlg-side{justify-content:flex-end;padding:0}
   .dlg-box.side{max-width:none;border:0;animation:up .3s}
   .od-actions{grid-template-columns:1fr}
 }
+
+/* Pantallas anchas: el panel aprovecha todo el ancho */
+@media (min-width:1300px){
+  .kpis{grid-template-columns:repeat(6,1fr)}
+  .kpis.small{grid-template-columns:repeat(3,1fr)}
+  .cols{grid-template-columns:1.6fr 1fr}
+  .cands{grid-template-columns:repeat(3,1fr)}
+}
+
+/* ==========================================================
+   Ronda 3: tablero, tareas, exportar
+   ========================================================== */
+.tool-r{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.seg{display:flex;padding:3px;border-radius:12px;background:var(--field);border:1px solid var(--line)}
+.seg button{width:38px;height:34px;border:0;border-radius:9px;background:none;color:var(--muted);display:grid;place-items:center}
+.seg button svg{width:18px;height:18px}
+.seg button.on{background:var(--card2);color:var(--text)}
+
+/* Barra de progreso fina en las filas */
+.row-prog{height:4px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:8px;max-width:220px}
+.row-prog i{display:block;height:100%;width:var(--w);background:var(--accent);border-radius:inherit;transition:width .6s var(--e-out)}
+.barra{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.barra i{display:block;height:100%;width:var(--w);border-radius:inherit;background:linear-gradient(90deg,#9fd23a,var(--accent));transition:width .6s var(--e-out)}
+
+/* Tablero */
+.board{display:grid;grid-template-columns:repeat(4,minmax(240px,1fr));gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
+.col{background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:18px;padding:12px;min-height:300px;scroll-snap-align:start;transition:border-color .25s var(--e-out),background-color .25s var(--e-out)}
+.col.over{border-color:var(--accent);background:var(--accent-soft)}
+.col-h{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 12px}
+.col-h b{font-family:var(--fm);font-size:13px;color:var(--muted)}
+.col-body{display:grid;gap:10px;align-content:start}
+.col-empty{color:var(--dim);font-size:13px;text-align:center;padding:30px 0;border:1px dashed var(--line2);border-radius:12px}
+.kcard{padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--line);cursor:grab;transition:transform .3s var(--e-spring),box-shadow .3s var(--e-out),border-color .25s,opacity .2s}
+.kcard:hover{border-color:var(--line2);transform:translateY(-2px);box-shadow:0 14px 30px -16px rgba(0,0,0,.8)}
+.kcard.drag{opacity:.4;transform:rotate(2deg) scale(.98)}
+.kcard:active{cursor:grabbing}
+.kc-t{display:flex;justify-content:space-between;gap:10px}
+.kc-t b{font-size:15px}
+.kc-t span{font-family:var(--fd);font-weight:700;white-space:nowrap}
+.kcard small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.kc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.kc-tags:empty{display:none}
+.kc-f{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
+.kc-f .row-prog{flex:1;margin:0}
+
+/* Tareas en el detalle */
+.od-tareas{padding:14px 16px;border-radius:14px;border:1px solid var(--line);margin:0 0 14px}
+.od-tareas-h{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:8px}
+.od-tareas-h span{color:var(--accent)}
+.od-tareas-h b{font-family:var(--fm)}
+.tareas{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:12px 0 8px}
+.tarea{position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;font-size:14px;transition:background-color .2s}
+.tarea:hover{background:rgba(255,255,255,.04)}
+.tarea input{position:absolute;opacity:0;pointer-events:none}
+.tarea .ck-mark{font-size:16px}
+.tarea input:checked ~ span:last-child{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--accent)}
+.tarea.off{cursor:default}
+.od-tareas small{font-size:12px}
+
+@media (max-width:640px){
+  .tool-r{width:100%;justify-content:space-between}
+  .tool-r .btn span{display:none}
+  .board{grid-template-columns:repeat(4,82%)}
+}
