@@ -449,14 +449,19 @@ function intro() {
   if (vista || location.hash || location.search || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const s = document.createElement('div');
   s.className = 'splash';
-  s.innerHTML = `<div class="splash-logo"><img src="icons/logo-a.png" alt="" width="64" height="64"><img class="splash-nombre" src="icons/nombre.png" alt="${esc(CONFIG.marca)}"></div>`;
+  // La misma tarjeta del pie: marco que se cierra, eslogan y «Diseño web».
+  // El logotipo y el nombre salen juntos desde el principio (no se despliega el nombre después).
+  s.innerHTML = tarjetaMarca('splash-card');
   document.body.appendChild(s);
-  // El logotipo y el nombre aparecen a la vez: se espera a que estén las dos imágenes
   const imgs = [...s.querySelectorAll('img')];
   Promise.race([Promise.all(imgs.map(i => (i.decode ? i.decode() : Promise.resolve()).catch(() => {}))), new Promise(r => setTimeout(r, 700))])
-    .then(() => s.classList.add('listo'));
-  const fuera = () => { s.classList.add('out'); setTimeout(() => s.remove(), 600); };
-  setTimeout(fuera, 1500);
+    .then(() => {
+      s.classList.add('listo');
+      setTimeout(() => s.querySelector('.brand-card')?.classList.add('on'), 250);
+      setTimeout(fuera, 2300);
+    });
+  const fuera = () => { if (s.classList.contains('out')) return; s.classList.add('out'); setTimeout(() => s.remove(), 600); };
+  setTimeout(fuera, 4000); // por si algo falla
   s.addEventListener('click', fuera);
 }
 
