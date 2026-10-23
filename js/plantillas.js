@@ -58,7 +58,7 @@ export const PLANTILLAS = [
     cinta: ['Envío 24/48 h', 'Devoluciones gratis', 'Hecho en pequeñas tiradas', 'Pago seguro', 'Nueva colección'],
     secciones: [
       { tipo: 'productos', id: 'tienda', kicker: 'Tienda', titulo: 'Lo más vendido', items: [['Sudadera Básica', '39 €', 'Nuevo', 9594679], ['Gorra Logo', '22 €', '', 1510509], ['Taza Cerámica', '14 €', '', 11075707], ['Tote Bag', '18 €', '-20%', 4068314], ['Camiseta Oversize', '25 €', '', 12039633], ['Pack Pegatinas', '6 €', '', 17567386]] },
-      { tipo: 'ventajas', items: [['truck', 'Envío 24/48 h', 'Gratis a partir de 40 €.'], ['undo', 'Devoluciones', '30 días sin preguntas.'], ['lock', 'Pago seguro', 'Tarjeta, Bizum o PayPal.']] },
+      { tipo: 'ventajas', items: [['truck', 'Envío 24/48 h', 'Gratis a partir de 40 €.'], ['undo', 'Devoluciones', '30 días sin preguntas.'], ['lock', 'Pago seguro', 'Bizum o transferencia.']] },
       { tipo: 'opiniones', kicker: 'Opiniones', titulo: 'Clientes felices', nota: '4,9', total: 1240, items: [['Marta García', 'Calidad increíble y llegó al día siguiente.'], ['Dani Ramos', 'La sudadera es comodísima. Repetiré.'], ['Lucía Fernández', 'Todo precioso, hasta el paquete.']] },
       { tipo: 'cta', titulo: '10 % en tu primer pedido', texto: 'Escríbenos y te mandamos tu código.', boton: 'Quiero mi descuento', img: 5490969 }
     ]

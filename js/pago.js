@@ -46,8 +46,6 @@ function metodos() {
   const m = [];
   if (P.bizum) m.push({ id: 'bizum', nombre: 'Bizum', icono: 'phone', sub: 'Gratis · llega al momento' });
   if (P.iban) m.push({ id: 'transferencia', nombre: 'Transferencia bancaria', icono: 'bank', sub: 'Gratis · 1 día hábil' });
-  if (P.stripe) m.push({ id: 'stripe', nombre: 'Tarjeta, Apple Pay o Google Pay', icono: 'card', sub: 'Pasarela segura de Stripe', tag: 'Al momento' });
-  if (P.paypal) m.push({ id: 'paypal', nombre: 'PayPal', icono: 'wallet', sub: 'El importe ya va rellenado' });
   return m;
 }
 
@@ -119,16 +117,7 @@ export function abrirPago(p, fase = faseDePago(p), alTerminar = () => {}) {
     if (m === 'transferencia') d.innerHTML = `
       <p class="pay-how">Haz una transferencia con estos datos:</p>
       ${fila('IBAN', P.iban, P.iban.replace(/\s/g, ''))}${fila('Titular', P.titular, '')}${fila('Importe', euros(imp), String(imp).replace('.', ','))}${fila('Concepto', concepto)}`;
-    if (m === 'stripe') d.innerHTML = `
-      <p class="pay-how">Te llevamos a la pasarela segura de Stripe. Puedes pagar con tarjeta, Apple Pay, Google Pay o Bizum online.
-      Si te pide el importe, escribe <b>${euros(imp)}</b>.</p>
-      <a class="btn btn-ghost w100" target="_blank" rel="noopener" data-externo
-         href="${esc(P.stripe)}${P.stripe.includes('?') ? '&' : '?'}client_reference_id=${encodeURIComponent(p.id)}${u?.email ? `&prefilled_email=${encodeURIComponent(u.email)}` : ''}">${icono('card')} Ir a pagar ${euros(imp)}</a>`;
-    if (m === 'paypal') d.innerHTML = `
-      <p class="pay-how">Se abrirá PayPal con el importe ya puesto. Añade la referencia <b>${ref}</b> en la nota.</p>
-      <a class="btn btn-ghost w100" target="_blank" rel="noopener" data-externo
-         href="https://paypal.me/${encodeURIComponent(P.paypal)}/${imp.toFixed(2)}EUR">${icono('wallet')} Pagar ${euros(imp)} con PayPal</a>`;
-    $('#pagoOk span', body).textContent = (m === 'stripe' || m === 'paypal') ? 'Ya he completado el pago' : 'Ya he hecho el pago';
+    $('#pagoOk span', body).textContent = 'Ya he hecho el pago';
   };
   body.addEventListener('change', e => { if (e.target.name === 'metodo') detalle(); });
   $('#pagoCard', body).addEventListener('click', e => e.currentTarget.classList.toggle('flipped'));

@@ -345,8 +345,7 @@ async function negocio() {
         <label class="aj-num"><span>Comisión vendedores (%)</span><input type="number" min="0" max="100" name="comision" value="${a.comision}"></label>
       </div>
       <div class="row-2">${texto('bizum', 'Bizum (teléfono)', a.pagos.bizum, 'type="tel"')}${texto('titular', 'Titular de la cuenta', a.pagos.titular)}</div>
-      ${texto('iban', 'IBAN', a.pagos.iban, 'autocapitalize="characters"')}
-      <div class="row-2">${texto('stripe', 'Enlace de pago de Stripe', a.pagos.stripe, 'type="url"', 'https://buy.stripe.com/…')}${texto('paypal', 'Usuario de PayPal.Me', a.pagos.paypal, '', 'Solo el usuario, sin paypal.me/')}</div>`)}
+      ${texto('iban', 'IBAN', a.pagos.iban, 'autocapitalize="characters"')}`)}
     ${bloque('Descuento de bienvenida', 'Se anuncia en la web y solo vale en la primera web de cada cliente (se comprueba al confirmar el pedido).', `
       ${interruptor({ id: 'bvActivo', titulo: 'Ofrecer descuento en la primera compra', checked: a.bienvenida.activo })}
       <div class="row-2">${texto('bvCodigo', 'Código', a.bienvenida.codigo, 'maxlength="30" autocapitalize="characters"')}<label class="aj-num"><span>Descuento (%)</span><input type="number" min="1" max="100" name="bvPct" value="${a.bienvenida.pct}"></label></div>`)}
@@ -406,7 +405,7 @@ async function negocio() {
       bienvenida: { activo: $('#bvActivo').checked, codigo: v('bvCodigo').toUpperCase().replace(/[^A-Z0-9_-]/g, '') || ORIGINAL.config.bienvenida.codigo, pct: Math.min(100, Math.max(1, +v('bvPct') || 10)) },
       videos: { precio: Math.max(0, +v('vPrecio') || 0), bonus: Math.max(0, +v('vBonus') || 0), visitas: Math.max(0, +v('vVisitas') || 0), maxMes: Math.max(1, +v('vMax') || 1) },
       senal: +v('senal'), urgente: (+v('urgente')) / 100, comision: +v('comision'),
-      pagos: { bizum: v('bizum'), titular: v('titular'), iban: v('iban'), stripe: v('stripe'), paypal: v('paypal').replace(/^.*paypal\.me\//i, '') },
+      pagos: { bizum: v('bizum'), titular: v('titular'), iban: v('iban') },
       asistente: { activo: $('#asistActivo').checked, saludo: v('saludo') },
       planes, extras
     }, { lista }, $('#gNeg'), { cco: v('tpCco') });

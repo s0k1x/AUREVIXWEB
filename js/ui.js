@@ -55,7 +55,7 @@ export const PAGOS = {
   senal: { txt: 'Señal pagada', cls: 'p-work' },
   pagado: { txt: 'Pagado', cls: 'p-done' }
 };
-export const METODOS = { bizum: 'Bizum', transferencia: 'Transferencia', stripe: 'Tarjeta / online', paypal: 'PayPal' };
+export const METODOS = { bizum: 'Bizum', transferencia: 'Transferencia' };
 export const ROLES = { owner: 'Propietario', worker: 'Trabajador', client: 'Cliente' };
 /* Tareas de cada web: las marca el equipo y el cliente ve el progreso */
 export const TAREAS = [['diseno', 'Diseño'], ['contenido', 'Contenido'], ['desarrollo', 'Desarrollo'], ['revision', 'Revisión'], ['publicacion', 'Publicación']];

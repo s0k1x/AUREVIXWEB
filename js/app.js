@@ -1146,7 +1146,3 @@ addEventListener('hashchange', () => {
 const qComprar = new URLSearchParams(location.search).get('comprar');
 if (qComprar) abrirCompra(qComprar);
 
-// Vuelta desde Stripe (?pagado=ID): recordar que avise del pago
-if (new URLSearchParams(location.search).get('pagado')) {
-  toast('Gracias por tu pago. Lo verás confirmado en «Mis proyectos» cuando lo comprobemos.');
-}
