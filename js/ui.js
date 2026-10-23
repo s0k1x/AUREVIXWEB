@@ -140,12 +140,14 @@ export function etiquetas(raiz = document) {
 document.addEventListener('input', e => e.target.closest?.('.fc, .field')?.classList.remove('error'));
 
 /** Tarjeta de marca animada */
+// «AurevixWeb» con «Web» en verde, como en el logotipo
+export const marcaHTML = () => { const m = esc(CONFIG.marca); return /web$/i.test(m) ? `${m.slice(0, -3)}<em class="marca-web">${m.slice(-3)}</em>` : m; };
 export const tarjetaMarca = (cls = '') => `
   <div class="brand-card ${cls}" tabindex="0" aria-label="${esc(CONFIG.marca)}">
     <div class="border"></div>
     <div class="content">
       <div class="logo">
-        <div class="logo1">${icono('medida')}</div>
+        <div class="logo1"><img src="icons/logo-a.png" alt="" style="width:60%;height:auto"></div>
         <div class="logo2">${esc(CONFIG.marca)}</div>
         <span class="trail"></span>
       </div>
@@ -211,7 +213,7 @@ export function pintarCabecera(activa = '') {
   h.className = 'header';
   h.innerHTML = `
     <div class="wrap">
-      <a href="index.html" class="logo"><span class="logo-mark">${icono('medida')}</span><span data-marca>${esc(CONFIG.marca)}</span></a>
+      <a href="index.html" class="logo"><img class="logo-img" src="icons/logo-a.png" alt="" width="34" height="34"><span data-marca>${marcaHTML()}</span></a>
       <nav class="nav" id="nav" aria-label="Principal">
         <a href="${ir('#webs')}">Webs y precios</a>
         <a href="${ir('#disenos')}">Diseños</a>
@@ -235,8 +237,8 @@ export function pintarCabecera(activa = '') {
   onScroll();
   addEventListener('scroll', onScroll, { passive: true });
   store.alCambiarUsuario(pintarSesion);
-  document.title = document.title.replace(/TuMarca/g, CONFIG.marca);
-  $$('[data-marca]').forEach(el => (el.textContent = CONFIG.marca));
+  document.title = document.title.replace(/AurevixWeb/g, CONFIG.marca);
+  $$('[data-marca]').forEach(el => (el.innerHTML = marcaHTML()));
 }
 
 export function pintarPie() {
@@ -311,7 +313,7 @@ function crearLogin() {
   d.innerHTML = `
     <div class="dlg-box form-container">
       <button class="dlg-x" data-close aria-label="Cerrar">${icono('x')}</button>
-      <span class="logo-mark big">${icono('medida')}</span>
+      <img class="logo-img" src="icons/logo-a.png" alt="" style="width:56px;height:56px">
       <p class="title" id="lgTitle">Iniciar sesión</p>
       <p class="subtitle" id="lgSub">Para guardar tu pedido y seguir su estado.</p>
       <form class="form" id="lgForm" novalidate>

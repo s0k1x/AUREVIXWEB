@@ -74,11 +74,11 @@ function mostrarVitrina(i) {
   const old = vt.activa, sig = 1 - old;
   ['pc', 'mv'].forEach(k => {
     const f = vt[k][sig], o = vt[k][old];
-    f.classList.remove('on', 'rec');
+    f.classList.remove('on', 'vt-rec');
     f.onload = () => requestAnimationFrame(() => {
       f.classList.add('on');
-      o.classList.remove('on', 'rec');
-      setTimeout(() => f.classList.add('rec'), 700);
+      o.classList.remove('on', 'vt-rec');
+      setTimeout(() => f.classList.add('vt-rec'), 700);
     });
     f.src = urlPlantilla(id, '', '', true);
   });

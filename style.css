@@ -267,3 +267,7 @@ dialog.dlg::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit
 .vj > span svg{width:24px;height:24px}
 .cero-ic svg,.cero-mini svg{width:24px;height:24px}
 .toast .t-ic svg{width:14px;height:14px}
+/* Logotipo AurevixWeb */
+.logo-img{width:34px;height:34px;object-fit:contain;flex:none;transition:transform .5s var(--e-spring,ease)}
+.logo:hover .logo-img{transform:rotate(-8deg) scale(1.06)}
+.marca-web{font-style:normal;color:var(--accent)}

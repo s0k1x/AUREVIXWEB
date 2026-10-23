@@ -2,7 +2,7 @@
    CONFIGURACIÓN: cambia aquí y se actualiza toda la web
    ========================================================== */
 export const CONFIG = {
-  marca: 'TuMarca',                         // el nombre de tu marca (cuando lo tengas)
+  marca: 'AurevixWeb',                       // el nombre de tu marca (cuando lo tengas)
   eslogan: 'Webs profesionales para tu negocio',
   whatsapp: '34600000000',                  // con prefijo 34, sin + ni espacios
   email: 'hola@tudominio.com',

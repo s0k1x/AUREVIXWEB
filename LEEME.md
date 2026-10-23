@@ -1,4 +1,4 @@
-# Web de servicios + PWA (TuMarca)
+# Web de servicios + PWA (AurevixWeb)
 
 ## Qué hay dentro
 | Archivo | Para qué sirve |
@@ -131,7 +131,7 @@ Solo aparecen las formas de pago que rellenes en `config.js → pagos`:
 ## 10. Publicarla (GitHub Pages)
 1. Sube **todo** el contenido de la carpeta al repositorio (también `js/`, `icons/` y `supabase/`).
 2. Settings → Pages → Branch `main` → Save.
-3. Cada vez que subas cambios, sube la versión en `sw.js` (ahora `v8` → pon `v9`…).
+3. Cada vez que subas cambios, sube la versión en `sw.js` (ahora `v9` → pon `v10`…).
    La web siempre descarga los archivos nuevos; la versión sirve para limpiar lo guardado en los móviles.
 
 > La web usa módulos de JavaScript: **no funciona abriendo el archivo directamente**; tiene que estar publicada.
