@@ -22,8 +22,11 @@ export { icono, pintarIconos };
 export const $ = (s, c = document) => c.querySelector(s);
 export const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-export const euros = n => (Math.round(n * 100) / 100).toLocaleString('es-ES', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €';
-export const fecha = t => new Date(t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+const NF_0 = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const NF_2 = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const DF = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+export const euros = n => { const r = Math.round(n * 100) / 100; return (n % 1 ? NF_2 : NF_0).format(r) + ' €'; };
+export const fecha = t => DF.format(new Date(t));
 export const haceCuanto = t => {
   const m = Math.round((Date.now() - t) / 6e4);
   if (m < 1) return 'ahora mismo';

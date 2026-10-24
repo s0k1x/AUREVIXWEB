@@ -7,8 +7,9 @@
 .hero::before{content:"";position:absolute;width:720px;height:720px;right:-240px;top:-200px;background:radial-gradient(circle,rgba(200,245,96,.15),transparent 65%);pointer-events:none}
 .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center;position:relative}
 .status{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);font-size:14px;color:var(--muted)}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(200,245,96,.55)}70%{box-shadow:0 0 0 10px rgba(200,245,96,0)}100%{box-shadow:0 0 0 0 rgba(200,245,96,0)}}
+.dot{position:relative;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:rgba(200,245,96,.55);animation:pulse 2s infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:1}70%,100%{transform:scale(3.5);opacity:0}}
 .hero h1{font-size:clamp(44px,7.6vw,80px);font-weight:800;margin:22px 0 20px}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
@@ -338,8 +339,8 @@ dialog.dlg-prev{padding:0}
 .wa-fab span{max-width:0;overflow:hidden;white-space:nowrap;transition:max-width .45s var(--e-out)}
 .wa-fab:hover{gap:10px}
 .wa-fab:hover span{max-width:180px}
-.wa-fab::before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 0 rgba(37,211,102,.5);animation:latido 2.6s infinite}
-@keyframes latido{0%{box-shadow:0 0 0 0 rgba(37,211,102,.45)}70%,100%{box-shadow:0 0 0 16px rgba(37,211,102,0)}}
+.wa-fab::before{content:"";position:absolute;inset:0;border-radius:inherit;background:rgba(37,211,102,.4);z-index:-1;animation:latido 2.6s infinite;will-change:transform,opacity}
+@keyframes latido{0%{transform:scale(1);opacity:.9}70%,100%{transform:scale(1.3);opacity:0}}
 
 @media (max-width:980px){
 }
@@ -617,3 +618,14 @@ dialog.dlg-prev{padding:0}
   .vt-tabs span{font-size:15px}
   .vt-tabs button{padding:10px 0 6px}
 }
+
+/* Rendimiento: las secciones que aún no se ven no se dibujan ni animan (content-visibility).
+   El alto estimado es el real medido en cada tamaño de pantalla; «auto» recuerda el alto real una vez dibujada. */
+#webs,#disenos,#como,#opiniones,.join-sec,#faq,#contacto,#footer{content-visibility:auto}
+#webs{contain-intrinsic-size:auto 1800px}#disenos{contain-intrinsic-size:auto 1700px}#como{contain-intrinsic-size:auto 580px}
+#opiniones{contain-intrinsic-size:auto 700px}.join-sec{contain-intrinsic-size:auto 480px}#faq{contain-intrinsic-size:auto 1070px}
+#contacto{contain-intrinsic-size:auto 790px}#footer{contain-intrinsic-size:auto 510px}
+@media (max-width:1100px){#webs{contain-intrinsic-size:auto 2290px}#disenos{contain-intrinsic-size:auto 2030px}#como{contain-intrinsic-size:auto 910px}#opiniones{contain-intrinsic-size:auto 840px}#faq{contain-intrinsic-size:auto 1300px}#contacto{contain-intrinsic-size:auto 1200px}#footer{contain-intrinsic-size:auto 550px}}
+@media (max-width:700px){#webs{contain-intrinsic-size:auto 4050px}#disenos{contain-intrinsic-size:auto 3670px}#como{contain-intrinsic-size:auto 970px}#opiniones{contain-intrinsic-size:auto 1070px}.join-sec{contain-intrinsic-size:auto 570px}#faq{contain-intrinsic-size:auto 1420px}#contacto{contain-intrinsic-size:auto 1320px}#footer{contain-intrinsic-size:auto 730px}}
+/* Al saltar a un apartado se dibuja todo un momento para que el salto caiga justo */
+html.ancla #webs,html.ancla #disenos,html.ancla #como,html.ancla #opiniones,html.ancla .join-sec,html.ancla #faq,html.ancla #contacto,html.ancla #footer{content-visibility:visible}
