@@ -152,13 +152,7 @@ dialog.dlg-side:not([open]) .dlg-box{transform:translateX(40px)}
 /* ==========================================================
    Ronda 3
    ========================================================== */
-/* Transición suave al cambiar de página (Chrome/Edge; en otros navegadores no pasa nada) */
-@view-transition{navigation:auto}
-::view-transition-old(root){animation:vt-salir .25s var(--e-out) both}
-::view-transition-new(root){animation:vt-entrar .4s var(--e-out) both}
-@keyframes vt-salir{to{opacity:0;transform:translateY(-10px)}}
-@keyframes vt-entrar{from{opacity:0;transform:translateY(12px)}}
-.header{view-transition-name:cabecera}
+/* Sin transición animada entre páginas (@view-transition de Chrome): al recargar dejaba a medias un fundido entre el tema claro y el oscuro, con trozos de la página anterior y recuadros grises en el logo. */
 
 /* Títulos palabra a palabra */
 .split .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em;margin-bottom:-.1em}
@@ -191,5 +185,4 @@ dialog.dlg-side:not([open]) .dlg-box{transform:translateX(40px)}
 
 @media (prefers-reduced-motion:reduce){
   .split .w > span{transform:none}
-  ::view-transition-old(root),::view-transition-new(root){animation:none}
 }
