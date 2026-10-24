@@ -493,3 +493,32 @@ etiquetas, índice de iconos caído).
   tiempo máximo de Supabase. Si el modelo no admite el razonamiento, la función repite sin él.
 - **Probado (simulado):** función 33/33, recorrido del cliente y de las preguntas 14/14, generador, iconos y contraste.
   **No probado:** con Gemini real.
+
+## 25. Versión v34 — app más rápida, miniaturas de diseños, franja de Safari y revisión completa
+
+- **La app abre más rápido.** El service worker (`sw.js`, v34) sirve al momento el CSS, el JS y las imágenes que ya
+  tiene guardados y los actualiza por detrás para la próxima vez. Las páginas siguen yendo por internet primero, como
+  máximo 2,5 s. Las páginas piden todos sus módulos a la vez (`<link rel="modulepreload">`) en lugar de uno tras otro.
+  `supabase-js` 2.100.1 se sirve desde la propia web (`js/vendor/supabase.js`, con licencia MIT) y el CDN solo se usa
+  si falla. En una prueba con un servidor lento simulado (350 ms por petición), volver a abrir la app pasó de unos
+  3,7 s a unos 0,9 s.
+- **Miniaturas de «Diseños de partida».** La escala y el recorrido de cada miniatura se calculan con JavaScript
+  (`colocarDz` en `js/app.js`). Safari no recalculaba el `transform` cuando cambiaba una variable CSS, y por eso la
+  web salía encogida con una franja blanca. El fondo de cada tarjeta lleva el color de su plantilla. Al cambiar el
+  tamaño, la escala se recoloca sin animación.
+- **Franja de arriba en Safari (iOS 26).** La cabecera es opaca y se prolonga hacia arriba (`.header::before`), así
+  que el contenido ya no se ve detrás de la barra de estado. Lo mismo en la librería (`.lb-top::before`). El fondo de
+  `html` es el del tema.
+- **Revisión crítica de toda la web.** Revisadas 18 páginas (inicio, panel, ajustes, trabaja, términos, sin
+  conexión, librería y las 6 plantillas) a 360, 390, 768 y 1440 px, en tema oscuro y claro. No hay errores de JS,
+  peticiones fallidas, desbordes laterales, imágenes rotas ni ids repetidos. Arreglado:
+  - Contraste en el tema claro: textos de la tarjeta «El más pedido», dominio de las miniaturas y la etiqueta
+    «recorre la web».
+  - Librería en móvil: el botón «Código» salía vacío (20 px). Ahora muestra `</>` y mide 44 px.
+  - Pie: en pantallas táctiles, los enlaces tienen una zona de toque de 40 px. En móvil, los botones flotantes de
+    subir y del chat ya no tapan los últimos enlaces.
+  - Panel: plurales correctos («1 vendedor», «1 pedido», «1 publicada») y cifras cortas en el gráfico de ingresos
+    (2,1 k€ en vez de «205…»).
+  - El enlace «Saltar al contenido» queda fuera de la pantalla también en iPhone con barra de estado.
+- **No probado:** Safari real en iPhone, porque aquí solo hay Chromium. Los arreglos de Safari se basan en cómo
+  funciona WebKit y en las capturas recibidas.

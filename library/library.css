@@ -12,8 +12,9 @@ html[data-tema=claro] .lb{--lb-puntos:rgba(20,20,26,.11)}
 .lb :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* ---------- Barra superior ---------- */
-.lb-top{position:sticky;top:0;z-index:60;background:rgba(12,12,14,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
-html[data-tema=claro] .lb-top{background:rgba(246,245,240,.9)}
+.lb-top{position:sticky;top:0;z-index:60;background:var(--bg);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+/* Tapa la franja de la barra de estado de Safari (iOS 26) con el mismo color */
+.lb-top::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:160px;background:inherit;pointer-events:none}
 .lb-top-in{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:18px;padding:12px var(--borde);padding-left:max(var(--borde),env(safe-area-inset-left));padding-right:max(var(--borde),env(safe-area-inset-right))}
 .lb-logo{min-height:44px}
 .lb-busca{position:relative;width:100%;max-width:640px;justify-self:center}
@@ -253,8 +254,8 @@ html[data-tema=claro] .hl-p{color:#0369a1}
 }
 @media (max-width:380px){
   .lb-pie{padding-left:12px}
-  .lb-cod{padding:0 9px}
-  .lb-cod span{display:none}
+  .lb-cod{padding:0 9px;min-width:44px;justify-content:center}
+  .lb-cod span+span{display:none}
 }
 
 /* Reducir movimiento (ajuste de la web o del móvil) */

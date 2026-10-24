@@ -179,8 +179,8 @@ dialog.dlg-side:not([open]) .dlg-box{transform:translateX(40px)}
 @keyframes tiempo{from{transform:scaleX(1)}to{transform:scaleX(0)}}
 
 /* Saltar al contenido */
-.skip{position:fixed;left:12px;top:-60px;z-index:4000;padding:10px 16px;border-radius:10px;background:var(--accent);color:var(--ink);font-weight:700;transition:top .3s var(--e-out)}
-.skip:focus{top:12px}
+.skip{position:fixed;left:12px;top:calc(-80px - env(safe-area-inset-top));z-index:4000;padding:10px 16px;border-radius:10px;background:var(--accent);color:var(--ink);font-weight:700;transition:top .3s var(--e-out)}
+.skip:focus{top:calc(12px + env(safe-area-inset-top))}
 
 /* Asa para deslizar y cerrar (solo móvil) */
 @media (max-width:640px){

@@ -113,8 +113,11 @@ function entrarLocal({ name, email, role = 'client' }) {
 }
 
 /* ---------- Arranque ---------- */
-// Cliente de Supabase (versión fija para que nada cambie sin avisar)
-const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.100.1/+esm';
+// Cliente de Supabase (versión fija para que nada cambie sin avisar). Va alojado en la web (js/vendor/)
+// y el service worker lo guarda: así la app no espera al CDN en cada arranque. El CDN queda de reserva.
+const SUPABASE_JS = new URL('./vendor/supabase.js', import.meta.url).href;
+const SUPABASE_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.100.1/+esm';
+const cargarSupabase = () => import(SUPABASE_JS).catch(() => import(SUPABASE_CDN));
 
 /* ---------- Conexión a prueba de cuelgues ----------
    1) Ninguna petición puede quedarse esperando para siempre: si el servidor
@@ -165,7 +168,7 @@ export async function iniciar() {
   }
   let u = null, fallo = null;
   try {
-    const { createClient } = await limite(import(SUPABASE_JS), 15000);
+    const { createClient } = await limite(cargarSupabase(), 15000);
     sb = createClient(CONFIG.supabase.url, CONFIG.supabase.anonKey, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce', lock: candado },
       global: { fetch: fetchConLimite }
