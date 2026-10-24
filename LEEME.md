@@ -431,3 +431,27 @@ con tamaño y color del CSS) → retoque que añade otro icono → `.zip` con la
 SVG de cada uno de los 19 sets y de un SVG malicioso, y la parte de la función (ids inventados o con rutas raras, máximo 24, «uso» sin
 etiquetas, índice de iconos caído).
 **No probado:** con Gemini real (si obedece siempre los marcadores; si no lo hace, los iconos inventados se quitan igualmente).
+
+## 23. Versión v32 — crear la web con IA funcionando, precio del paso 3 y tema claro
+
+- **Crear la web con IA y Mega prompt con IA ya funcionan** (antes fallaban con «Petición incompleta» porque la
+  función desplegada solo tenía el chat). Son instrucciones nuevas en `supabase/functions/asistente/web.ts`
+  (la versión v23/v26 no se conservó). Solo el equipo puede usarlos.
+  - **Modelo:** de momento el mismo del chat, `gemini-3.5-flash-lite` (básico y barato). Para usar uno mejor sin
+    tocar código: Supabase → *Edge Functions → Secrets* → añade `GEMINI_MODEL_WEB` con el nombre del modelo
+    (por ejemplo `gemini-3.8-flash`) y guarda; no hace falta volver a desplegar.
+  - Si un modelo no acepta algún ajuste, la función repite la petición una vez con una configuración más sencilla.
+  - El chat y «Te ayudo a elegir» no cambian (mismas instrucciones y mismos ajustes que antes).
+- **Paso 3 del pedido (Estilo):** «No, necesito uno» (logotipo) y «Necesito ayuda» (textos) suman su extra y,
+  si cambias de opción, ahora se quita y el precio baja. Si el cliente marcó el extra él mismo en «Extras», se respeta.
+  Un aviso dice qué se ha añadido o quitado. El estilo y el color no cambian el precio.
+- **Tema claro:** la nota «Para empezar pagas la señal…» del resumen ya se lee (antes, verde claro sobre verde claro).
+  Comprobado el contraste de todos los textos de la portada y de los 6 pasos del pedido en tema claro y oscuro.
+- **Librería:** las vistas previas ya no abren la web dentro de la tarjeta al tocar un componente que es un enlace.
+- **Probado (simulado):**
+  - modos nuevos 29/29: solo el equipo, peticiones incompletas, plan con fotos, web con iconos, revisión, retoques,
+    reintento y Gemini caído;
+  - chat y «Te ayudo a elegir» idénticos a la versión anterior;
+  - precio del paso 3: 7/7;
+  - contraste en los dos temas.
+- **No probado:** con Gemini real (calidad del resultado con el modelo básico).

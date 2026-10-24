@@ -4,14 +4,19 @@
 //  - modo "elegir": recomienda tipo de web y diseño
 //  - modo "web-recursos" (v31): elige componentes de la librería
 //    para un pedido (solo equipo). Está en libreria.ts.
+//  - modos "prompt" y "web-plan/html/revisar/retocar" (v32): mega
+//    prompt y crear la web con IA (solo equipo). Están en web.ts.
 //  La clave de Gemini se guarda como secreto en Supabase
 //  (GEMINI_API_KEY). Nunca va dentro de la web.
 // ==========================================================
 
 import * as Libreria from './libreria.ts';
+import * as Web from './web.ts';
 
 const MODELO = Deno.env.get('GEMINI_MODEL') || 'gemini-3.5-flash-lite';
 const CLAVE = Deno.env.get('GEMINI_API_KEY') || '';
+// Crear webs: GEMINI_MODEL_WEB si existe (por ejemplo, un modelo mejor); si no, el mismo del chat
+const MODELO_WEB = Deno.env.get('GEMINI_MODEL_WEB') || MODELO;
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -79,6 +84,8 @@ Deno.serve(async req => {
     const { modo, mensajes, catalogo } = cuerpo as { modo: string; mensajes: Mensaje[]; catalogo: Catalogo };
     // v31 · Librería: la IA elige componentes (comprueba que es del equipo; ver libreria.ts)
     if (modo === 'web-recursos') return await Libreria.responderRecursos(req, cuerpo, { clave: CLAVE, modelo: MODELO });
+    // v32 · Mega prompt y crear la web con IA (comprueba que es del equipo; ver web.ts)
+    if (modo === 'prompt' || String(modo || '').startsWith('web-')) return await Web.responder(req, cuerpo, modo, { clave: CLAVE, modelo: MODELO_WEB, modeloPrompt: MODELO, contexto });
     if (!catalogo?.planes?.length || !Array.isArray(mensajes) || !mensajes.length) return json({ error: 'Petición incompleta' }, 400);
     // Límites para evitar abusos
     const hilo = mensajes.slice(-16).map(m => ({
