@@ -149,8 +149,8 @@ export function accionCliente(p, botonPagoHTML) {
 export const MAS_CONTENIDO = [
   ['publico', '¿A quién te diriges?', 'Edad, zona, qué buscan, por qué te eligen'],
   ['diferencia', '¿Qué te diferencia de la competencia?', 'Experiencia, especialidad, garantía, trato, precio…'],
-  ['accion', '¿Qué quieres que haga quien visita tu web?', 'Llamarte, escribirte por WhatsApp, reservar, comprar, pedir presupuesto…', 'text'],
-  ['contactoWeb', 'Teléfono, email y WhatsApp que se publican en la web', 'Pueden ser distintos de los del pedido', 'text'],
+  ['accion', '¿Qué debe hacer quien te visita?', 'Llamarte, escribirte por WhatsApp, reservar, comprar, pedir presupuesto…', 'text'],
+  ['contactoWeb', 'Contacto que se publica en la web', 'Teléfono, email y WhatsApp (pueden ser distintos de los del pedido)', 'text'],
   ['zona', 'Dirección exacta y zona donde trabajas', 'Calle, número, ciudad y si vas a domicilio o a qué zonas'],
   ['opiniones', 'Opiniones reales de tus clientes', 'Copia algunas (con su nombre o inicial, y con su permiso) o el enlace a tus reseñas de Google'],
   ['faq', 'Preguntas que te hacen siempre tus clientes', 'Y lo que les respondes: precios, plazos, formas de pago, aparcamiento…'],

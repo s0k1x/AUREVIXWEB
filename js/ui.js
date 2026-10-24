@@ -158,7 +158,9 @@ export function etiquetas(raiz = document) {
   $$('.fc label:not([data-split])', raiz).forEach(l => {
     const t = l.textContent;
     const paso = Math.min(40, 600 / Math.max(t.length, 1));
-    l.innerHTML = [...t].map((c, i) => `<span style="transition-delay:${Math.round(i * paso)}ms">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');
+    // Las letras van agrupadas por palabras: si la etiqueta no cabe, salta de línea entre palabras (nunca se aplasta)
+    let i = 0;
+    l.innerHTML = t.split(' ').map(w => `<span class="fc-w">${[...w].map(c => `<span style="transition-delay:${Math.round(i++ * paso)}ms">${esc(c)}</span>`).join('')}</span>`).join('<span class="fc-sp"> </span>');
     l.setAttribute('aria-label', t);
     l.dataset.split = '1';
   });

@@ -522,3 +522,8 @@ etiquetas, índice de iconos caído).
   - El enlace «Saltar al contenido» queda fuera de la pantalla también en iPhone con barra de estado.
 - **No probado:** Safari real en iPhone, porque aquí solo hay Chromium. Los arreglos de Safari se basan en cómo
   funciona WebKit y en las capturas recibidas.
+
+### v35 — etiquetas de los formularios en móvil
+- Las etiquetas animadas largas («Teléfono, email y WhatsApp que se publican en la web»…) se aplastaban en iPhone porque
+  cada letra podía encogerse. Ahora las letras no se encogen y la etiqueta salta de línea entre palabras (`etiquetas()` en
+  `js/ui.js`, `.fc-w` en `componentes.css`). Se acortaron dos etiquetas de «Más detalles». `sw.js` v35.
