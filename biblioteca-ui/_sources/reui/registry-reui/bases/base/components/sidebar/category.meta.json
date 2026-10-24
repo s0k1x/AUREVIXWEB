@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "The persistent navigation column of an app, which can narrow to an icon rail or slide off screen",
+      "Documentation trees with collapsible sections and sub-pages, or project lists narrowed by a search field",
+      "A right side inspector that shows the details of the record open beside it"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A complete multi page product layout with header, nav and content area already built",
+        "instead": "application/app-shell"
+      },
+      {
+        "when": "Account settings pages that switch between personal details, billing and team panels",
+        "instead": "application/profile"
+      },
+      {
+        "when": "A shop catalog facet panel with price range, brand counts, color swatches and sizes",
+        "instead": "ecommerce/filter-sidebar"
+      }
+    ],
+    "agentNotes": [
+      "Menu links are anchors passed through `render` on the base twin and `asChild` on radix; point each # `href` at your route",
+      "`SidebarProvider` listens for Cmd or Ctrl+B on the whole window, so pressing it in a text editor on the page toggles its `open` state too"
+    ]
+  }
+}

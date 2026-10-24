@@ -1,0 +1,92 @@
+name: Validate PR
+
+# Runs in the unprivileged `pull_request` context (read-only token, no secrets),
+# so it is safe to install and execute code from fork PRs here. Results are
+# uploaded as an artifact and posted by the "Validate PR Comment" workflow.
+on: [pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-pr:
+    if: github.repository == 'tabler/tabler-icons'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set base branch and PR info
+        run: |
+          BASE_REF="${{ github.event.pull_request.base.ref }}"
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          PR_REPO="${{ github.event.pull_request.head.repo.full_name }}"
+          PR_SHA="${{ github.event.pull_request.head.sha }}"
+          echo "BASE_REF=${BASE_REF}" >> $GITHUB_ENV
+          echo "BASE_SHA=${BASE_SHA}" >> $GITHUB_ENV
+          echo "PR_REPO=${PR_REPO}" >> $GITHUB_ENV
+          echo "PR_SHA=${PR_SHA}" >> $GITHUB_ENV
+          # Fetch base branch to ensure it's available
+          git fetch origin ${BASE_REF}:${BASE_REF} || true
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+
+      # Only `rsvg-convert` is needed (PNG/PDF/EPS packages and preview images).
+      # `canvas` is merely an optional peer dependency of jsdom and is not installed.
+      - name: Install rsvg-convert
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends librsvg2-bin
+          rsvg-convert --version
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v6
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate icons
+        id: validate
+        env:
+          BASE_REF: ${{ env.BASE_REF }}
+          BASE_SHA: ${{ env.BASE_SHA }}
+        run: pnpm run --silent validate > ./comment-markup.md
+        continue-on-error: true
+
+      - name: Generate icons comment
+        id: generate-icons-comment
+        env:
+          BASE_REF: ${{ env.BASE_REF }}
+          BASE_SHA: ${{ env.BASE_SHA }}
+          PR_REPO: ${{ env.PR_REPO }}
+          PR_SHA: ${{ env.PR_SHA }}
+        run: pnpm run --silent generate-icons-comment > ./comment-icons.md || true
+        continue-on-error: true
+
+      - name: Upload validation results
+        uses: actions/upload-artifact@v7
+        with:
+          name: validate-results
+          path: |
+            comment-markup.md
+            comment-icons.md
+          if-no-files-found: error
+          retention-days: 1

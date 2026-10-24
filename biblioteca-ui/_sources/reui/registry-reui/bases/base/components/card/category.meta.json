@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Titled sections with body copy and footer actions, such as a help notice or a sign in form",
+      "Image tiles with a photo above the copy or filling the tile under a dark text overlay",
+      "Dashboard widgets such as a KPI with a trend, a usage meter or a deployment or integration status"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A finished grid of KPI tiles, feature links or profile records ready to drop in",
+        "instead": "application/card"
+      },
+      {
+        "when": "A KPI panel with a range filter, a segmented meter or an activity feed beneath it",
+        "instead": "application/stats"
+      },
+      {
+        "when": "A preview that pops up over a link while the pointer rests on it",
+        "instead": "hover-card"
+      }
+    ],
+    "agentNotes": [
+      "Each example caps `Card` with `max-w-xs`, `max-w-sm` or `max-w-md`; drop the cap when the card should fill a grid cell or column",
+      "`size` sm on `Card` tightens padding and gaps in every style; none of these examples sets it, so try it before padding overrides"
+    ]
+  }
+}

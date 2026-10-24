@@ -1,0 +1,168 @@
+{
+  "items": [
+    {
+      "name": "c-input-otp-1",
+      "type": "registry:block",
+      "title": "Basic OTP input.",
+      "categories": [
+        "input-otp"
+      ],
+      "description": "Basic OTP input.",
+      "descriptionLong": "Basic OTP input. Built by composing Field, Input Otp. A free, open source shadcn input otp example you can install with npx shadcn@latest add @reui/c-input-otp-1 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-otp"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-otp/c-input-otp-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-otp-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Basic"
+      }
+    },
+    {
+      "name": "c-input-otp-2",
+      "type": "registry:block",
+      "title": "OTP input with numeric digits.",
+      "categories": [
+        "input-otp"
+      ],
+      "description": "OTP input with numeric digits.",
+      "descriptionLong": "OTP input with numeric digits. Built by composing Field, Input Otp. Uses input-otp alongside the shadcn primitives. A free, open source shadcn input otp example you can install with npx shadcn@latest add @reui/c-input-otp-2 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-otp"
+      ],
+      "dependencies": [
+        "input-otp"
+      ],
+      "files": [
+        {
+          "path": "components/input-otp/c-input-otp-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-otp-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Digits Only"
+      }
+    },
+    {
+      "name": "c-input-otp-3",
+      "type": "registry:block",
+      "title": "OTP input with multiple separators.",
+      "categories": [
+        "input-otp"
+      ],
+      "description": "OTP input with multiple separators.",
+      "descriptionLong": "OTP input with multiple separators. Built by composing Field, Input Otp. A free, open source shadcn input otp example you can install with npx shadcn@latest add @reui/c-input-otp-3 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-otp"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-otp/c-input-otp-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-otp-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Multiple Separators"
+      }
+    },
+    {
+      "name": "c-input-otp-4",
+      "type": "registry:block",
+      "title": "OTP input with letters and numbers.",
+      "categories": [
+        "input-otp"
+      ],
+      "description": "OTP input with letters and numbers.",
+      "descriptionLong": "OTP input with letters and numbers. Built by composing Field, Input Otp. Uses input-otp alongside the shadcn primitives. A free, open source shadcn input otp example you can install with npx shadcn@latest add @reui/c-input-otp-4 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-otp"
+      ],
+      "dependencies": [
+        "input-otp"
+      ],
+      "files": [
+        {
+          "path": "components/input-otp/c-input-otp-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-otp-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Letters & Numbers"
+      }
+    },
+    {
+      "name": "c-input-otp-5",
+      "type": "registry:block",
+      "title": "OTP input for PIN codes.",
+      "categories": [
+        "input-otp"
+      ],
+      "description": "OTP input for PIN codes.",
+      "descriptionLong": "OTP input for PIN codes. Built by composing Field, Input Otp. Uses input-otp alongside the shadcn primitives. A free, open source shadcn input otp example you can install with npx shadcn@latest add @reui/c-input-otp-5 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-otp"
+      ],
+      "dependencies": [
+        "input-otp"
+      ],
+      "files": [
+        {
+          "path": "components/input-otp/c-input-otp-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-otp-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "PIN Code"
+      }
+    },
+    {
+      "name": "c-input-otp-6",
+      "type": "registry:block",
+      "title": "OTP input verification code.",
+      "categories": [
+        "input-otp"
+      ],
+      "description": "OTP input verification code.",
+      "descriptionLong": "OTP input verification code. Built by composing Button, Card, Field, Input Otp. A free, open source shadcn input otp example you can install with npx shadcn@latest add @reui/c-input-otp-6 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "card",
+        "field",
+        "input-otp"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-otp/c-input-otp-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-otp-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Verification Card"
+      }
+    }
+  ]
+}

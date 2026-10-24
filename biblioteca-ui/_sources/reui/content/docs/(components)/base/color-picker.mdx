@@ -1,0 +1,550 @@
+---
+title: Color Picker
+description: A shadcn color picker with a saturation area, hue, opacity and channel sliders, a hue wheel, HEX, RGB, HSL, HSB and OKLCH fields, swatches and an eye dropper.
+component: true
+base: base
+---
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-color-picker-1"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[400px]"
+/>
+
+## Installation
+
+```bash component
+npx shadcn@latest add @reui/color-picker
+```
+
+## Usage
+
+```tsx
+import {
+  ColorPicker,
+  ColorPickerArea,
+  ColorPickerContent,
+  ColorPickerFields,
+  ColorPickerPanel,
+  ColorPickerSlider,
+  ColorPickerSwatches,
+  ColorPickerTrigger,
+} from "@/components/reui/color-picker"
+```
+
+```tsx
+<ColorPicker value={color} onValueChange={setColor} alpha>
+  <ColorPickerTrigger />
+  <ColorPickerContent>
+    <ColorPickerPanel>
+      <ColorPickerArea />
+      <ColorPickerSlider channel="hue" />
+      <ColorPickerSlider channel="alpha" />
+      <ColorPickerFields />
+      <ColorPickerSwatches colors={["#ef4444", "#22c55e", "#3b82f6"]} />
+    </ColorPickerPanel>
+  </ColorPickerContent>
+</ColorPicker>
+```
+
+## Examples
+
+The hue wheel, channel sliders, recent colors, contrast checker, brand scale
+and the other examples are on the
+[Color Picker](/components/color-picker) page.
+
+### Popover picker
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-color-picker-2"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[170px]"
+/>
+
+### Color input
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-color-picker-3"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[190px]"
+/>
+
+### Opacity
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-color-picker-4"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[360px]"
+/>
+
+### Preset swatches
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-color-picker-5"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[340px]"
+/>
+
+### OKLCH theme token
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-color-picker-6"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[420px]"
+/>
+
+## API Reference
+
+Color Picker is composable. `ColorPicker` holds the value and renders no
+wrapper element. `ColorPickerTrigger` or `ColorPickerInput` opens
+`ColorPickerContent`, and `ColorPickerPanel` renders the same controls in
+place. Inside either, mix the area, sliders, wheel, fields, swatches and
+actions in any layout. It composes the shadcn Popover, Button, InputGroup and
+DropdownMenu, and does its own color math, so there is no color library to
+install.
+
+### Value
+
+The value is a CSS color string, written in `format`: `#3b82f6` by default.
+`null` or `""` is empty. A value from outside can be any color `parseColor`
+reads, in any format; the picker shows it, and the next change is written in
+`format`.
+
+| `format`  | Opaque                          | With `alpha`                          |
+| :-------- | :------------------------------ | :------------------------------------ |
+| `"hex"`   | `#3b82f6`                       | `#3b82f680`                           |
+| `"rgb"`   | `rgb(59 130 246)`               | `rgb(59 130 246 / 0.5)`               |
+| `"hsl"`   | `hsl(217.2 91.2% 59.8%)`        | `hsl(217.2 91.2% 59.8% / 0.5)`        |
+| `"hsb"`   | `hsb(217.2 76% 96.5%)`          | `hsb(217.2 76% 96.5% / 0.5)`          |
+| `"oklch"` | `oklch(62.31% 0.18801 259.815)` | `oklch(62.31% 0.18801 259.815 / 0.5)` |
+
+OKLCH is written to 0.01% lightness, 5 decimals of chroma and 3 of hue, so
+hex to OKLCH and back lands on the same color. A swatch picked in an
+`"oklch"` picker stays selected after a reload.
+
+`onValueChange` fires on every change, each move of a drag included, and only
+when the written string changes. `onValueCommit` fires once an interaction
+ends: a drag released, a key pressed, a field or the input read, a swatch,
+the eye dropper or Clear. Save to a server or an undo history there.
+
+```tsx
+const [color, setColor] = useState<string | null>("#3b82f6")
+
+<ColorPicker
+  value={color}
+  onValueChange={setColor}
+  onValueCommit={(value) => saveBrandColor(value)}
+/>
+```
+
+The picker keeps the channels a color was edited in, not only the string it
+emits. Drag to a gray and the hue slider stays where you left it; set OKLCH
+chroma to 0 and back and the hue returns. An OKLCH value outside sRGB, such as
+Tailwind v4's `oklch(62.3% 0.214 259.815)`, round-trips verbatim in `"oklch"`
+format. The other formats, and the area and sliders, map it into sRGB the way
+CSS Color 4 does: chroma comes down at the same lightness and hue until
+clipping the rest is not noticeable, so the hex matches what a browser paints
+on an sRGB screen. `lab()`, `lch()`, `oklab()` and a wide-gamut `color()` are
+kept as OKLCH the same way.
+
+Without `alpha`, the value is always opaque: an incoming alpha is ignored and
+the opacity slider and field are left out.
+
+```ts
+type ColorPickerColor = {
+  space: "rgb" | "hsl" | "hsv" | "oklch"
+  channels: [number, number, number]
+  alpha: number
+}
+```
+
+`useColorPicker` and the helpers hand you that parsed color. `rgb` runs 0 to
+255; `hsl` and `hsv` take hue 0 to 360 and the rest 0 to 100; `oklch` takes
+lightness 0 to 100, chroma 0 to 0.4 and hue 0 to 360. `alpha` is 0 to 1.
+
+### i18n
+
+Every string the picker renders comes from `i18n`. It is merged over the
+English defaults per section, so one label is enough.
+
+| Label                                                    | Default                                            | Used for                                           |
+| :------------------------------------------------------- | :------------------------------------------------- | :------------------------------------------------- |
+| `placeholder`                                            | `"Select color"`                                   | Trigger and input text while empty.                |
+| `panelLabel`                                             | `"Choose color"`                                   | Names the popover and an inline panel.             |
+| `openPicker`                                             | `"Open color picker"`                              | Names the swatch button in `ColorPickerInput`.     |
+| `area`                                                   | `"Color"`                                          | Names the saturation and brightness area.          |
+| `hue`, `saturation`, `brightness`, `lightness`, `chroma` | `"Hue"`, `"Saturation"` and so on                  | Names the sliders and fields, and the area's text. |
+| `red`, `green`, `blue`, `alpha`, `hex`                   | `"Red"`, `"Green"`, `"Blue"`, `"Opacity"`, `"Hex"` | Names the sliders and fields.                      |
+| `format`                                                 | `"Color format"`                                   | Names the format menu in `ColorPickerFields`.      |
+| `eyeDropper`, `copy`, `copied`, `clear`                  | `"Pick a color from the screen"` and so on         | The action buttons.                                |
+| `swatches`                                               | `"Swatches"`                                       | Names a swatch list with no label of its own.      |
+
+| Function       | Type                                  | Description                                                                                                    |
+| :------------- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------- |
+| `getColorName` | `(color: ColorPickerColor) => string` | A spoken name, "dark vibrant blue", in the area's and the hue slider's value text and for unlabelled swatches. |
+
+```tsx
+const DE: ColorPickerI18nOverrides = {
+  labels: {
+    placeholder: "Farbe wählen",
+    hue: "Farbton",
+    alpha: "Deckkraft",
+    eyeDropper: "Farbe vom Bildschirm aufnehmen",
+  },
+}
+
+<ColorPicker i18n={DE} />
+```
+
+### ColorPicker
+
+The root. Holds the value and the popover state and renders no wrapper
+element. Without children it renders a `ColorPickerTrigger` and a
+`ColorPickerContent` with the default panel, so `<ColorPicker />` alone is a
+complete picker; `className` and `placeholder` reach that trigger.
+
+| Prop               | Type                              | Default              | Description                                                                           |
+| :----------------- | :-------------------------------- | :------------------- | :------------------------------------------------------------------------------------ |
+| `value`            | `string \| null`                  | -                    | Controlled value, any color `parseColor` reads. `null` is empty.                      |
+| `defaultValue`     | `string \| null`                  | `null`               | Initial value when uncontrolled, and what a form reset restores.                      |
+| `onValueChange`    | `(value: string \| null) => void` | -                    | Fires on every change, a drag included, with the value in `format`.                   |
+| `onValueCommit`    | `(value: string \| null) => void` | -                    | Fires once an interaction ends, when the value changed during it.                     |
+| `format`           | `ColorPickerFormat`               | `"hex"`              | How the value is written: `"hex"`, `"rgb"`, `"hsl"`, `"hsb"` or `"oklch"`.            |
+| `alpha`            | `boolean`                         | `false`              | Adds the opacity slider and field, and lets the value carry alpha.                    |
+| `swatches`         | `string[]`                        | -                    | Preset colors under the default panel.                                                |
+| `open`             | `boolean`                         | -                    | Controlled popover state.                                                             |
+| `defaultOpen`      | `boolean`                         | `false`              | Initial popover state when uncontrolled.                                              |
+| `onOpenChange`     | `(open: boolean) => void`         | -                    | Fires when the popover opens or closes.                                               |
+| `disabled`         | `boolean`                         | `false`              | Disables every part and stops the popover opening. A disabled picker submits nothing. |
+| `readOnly`         | `boolean`                         | `false`              | The popover opens and the controls take focus, but nothing changes the value.         |
+| `invalid`          | `boolean`                         | `false`              | Sets `aria-invalid` on the trigger or the input, and `data-invalid` on the trigger.   |
+| `name`             | `string`                          | -                    | Submits the value with a native form under this name.                                 |
+| `form`             | `string`                          | -                    | Associates the field with a form elsewhere in the page.                               |
+| `required`         | `boolean`                         | `false`              | Fails native form validation while empty.                                             |
+| `inputRef`         | `Ref<HTMLInputElement>`           | -                    | The hidden form field, for form libraries that focus a field on error.                |
+| `id`               | `string`                          | generated            | Lands on the trigger or the input, so a label's `htmlFor` reaches it.                 |
+| `aria-label`       | `string`                          | -                    | Names the trigger or the input, the popover and an inline panel.                      |
+| `aria-labelledby`  | `string`                          | -                    | The same, by id. The trigger keeps its own text in the name.                          |
+| `aria-describedby` | `string`                          | -                    | Describes the trigger or the input.                                                   |
+| `i18n`             | `ColorPickerI18nOverrides`        | English              | Labels and the color namer, merged over the defaults.                                 |
+| `placeholder`      | `string`                          | `labels.placeholder` | Text of the default trigger while empty.                                              |
+| `className`        | `string`                          | -                    | Classes for the default trigger.                                                      |
+
+### ColorPickerTrigger
+
+A shadcn `Button` that opens the popover, and the element that takes the root's
+`id` and ARIA props. It shows a `ColorPickerSwatch`, the value and a chevron.
+`children` replace all three, for a swatch-only or icon trigger. Accepts every
+`Button` prop.
+
+| Prop          | Type             | Default                | Description                         |
+| :------------ | :--------------- | :--------------------- | :---------------------------------- |
+| `variant`     | `Button` variant | `"outline"`            | The look of the button.             |
+| `placeholder` | `ReactNode`      | `labels.placeholder`   | Shown while there is no value.      |
+| `children`    | `ReactNode`      | swatch, value, chevron | Replaces the content of the button. |
+
+### ColorPickerValue
+
+The value as text, in `format` with hex in capitals, or the placeholder, in a
+`span`. Accepts every `span` prop.
+
+| Prop          | Type        | Default              | Description                    |
+| :------------ | :---------- | :------------------- | :----------------------------- |
+| `placeholder` | `ReactNode` | `labels.placeholder` | Shown while there is no value. |
+
+### ColorPickerInput
+
+A shadcn `InputGroup` with a swatch button that opens the popover and a field
+you can type in. It reads everything `parseColor` reads, plus what only a
+page can resolve, on blur and <Kbd>Enter</Kbd>: `color-mix()`, relative colors,
+`light-dark()` and `var()`, so `var(--primary)` takes your theme's primary and
+`var(--x, red)` its fallback. A CSS-wide keyword, `currentColor` or a `var()`
+with no value is rejected rather than read as black. Text it cannot read is
+dropped and the value restored. An empty field clears the value. Accepts every
+`input` prop except `value` and `defaultValue`.
+
+### ColorPickerContent
+
+The shadcn `PopoverContent`, aligned to the start and `w-72` wide, or with
+`alpha` `w-84` (`w-96` below `md`, where the fields' text is 16px), capped to
+the viewport. Without children
+it renders `ColorPickerPanel` with the default controls. Accepts every
+`PopoverContent` prop, `align`, `side` and `className` included.
+
+### ColorPickerPanel
+
+The controls in a column, spaced per style. Without children: the area, the
+eye dropper and a copy button either side of the hue slider (and the opacity
+slider with `alpha`), the fields and the root's `swatches`. Put it straight
+inside `ColorPicker` for an inline picker. Accepts every `div` prop.
+
+### ColorPickerArea
+
+The saturation and brightness square at the current hue, `h-40` and full
+width. Saturation runs left to right and brightness bottom to top. Accepts
+every `div` prop; size it with `className`.
+
+### ColorPickerSlider
+
+One channel as a gradient track. The track shows what the channel can reach
+from the current color, so dragging red redraws green and blue. Accepts every
+`div` prop.
+
+| Prop          | Type                                 | Default        | Description                                                                                                                                 |
+| :------------ | :----------------------------------- | :------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| `channel`     | `ColorPickerChannel`                 | -              | `"hue"`, `"saturation"`, `"brightness"`, `"lightness"`, `"chroma"`, `"red"`, `"green"`, `"blue"` or `"alpha"`.                              |
+| `colorSpace`  | `"hsv" \| "hsl" \| "rgb" \| "oklch"` | per channel    | The space the channel belongs to. HSB for hue, saturation and brightness, HSL for lightness, OKLCH for chroma, RGB for red, green and blue. |
+| `orientation` | `"horizontal" \| "vertical"`         | `"horizontal"` | Vertical tracks run bottom to top and default to the area's height.                                                                         |
+
+`colorSpace="oklch"` with `"lightness"`, `"chroma"` and `"hue"` gives
+perceptual sliders, the ones the OKLCH theme token example uses.
+
+### ColorPickerWheel
+
+A hue ring, `size-48`. Children fill the square inscribed in its hole, so a
+`ColorPickerArea` with `className="size-full"` there gives the ring-and-square
+picker. `--color-picker-wheel-thickness` sets the ring's width. Accepts every
+`div` prop.
+
+### ColorPickerFields
+
+A format menu and the value's channels as joined fields in a shadcn
+`InputGroup`, divided by full-height shadcn `Separator`s: 1 hex field, or 3
+channels, plus opacity with `alpha`, which keeps its own width at the end
+while hex or the channels take the rest. Each menu item shows the color in
+that format. The shown format is the fields' own and never changes what
+`onValueChange` emits, but it is what a copy takes.
+
+| Prop             | Type                                  | Default       | Description                                  |
+| :--------------- | :------------------------------------ | :------------ | :------------------------------------------- |
+| `format`         | `ColorPickerFormat`                   | -             | The shown format, controlled.                |
+| `defaultFormat`  | `ColorPickerFormat`                   | root `format` | The shown format, uncontrolled.              |
+| `onFormatChange` | `(format: ColorPickerFormat) => void` | -             | Fires when the menu changes it.              |
+| `formats`        | `ColorPickerFormat[]`                 | all 5         | The menu's formats. 1 format hides the menu. |
+
+### ColorPickerChannelInput
+
+One channel as a borderless field, for your own `InputGroup`, sized by its
+widest value. Text is read on blur and <Kbd>Enter</Kbd>: one number with a
+comma or dot decimal. `%` is a share of the channel's range as in CSS, so 50%
+red is 127.5 and 50% chroma 0.2, and a hue takes `deg`, `rad`, `grad` or
+`turn` and wraps, so -30 is 330. A number field is a `spinbutton` with its
+range. Accepts every `input` prop except `value` and `defaultValue`.
+
+The fields of OKLCH with opacity need about 290px, or 312px below `md` where
+the text is 16px. The popover's opacity width fits both; in a narrower inline
+panel the widest values clip.
+
+| Prop         | Type                                 | Default     | Description                                 |
+| :----------- | :----------------------------------- | :---------- | :------------------------------------------ |
+| `channel`    | `ColorPickerChannel \| "hex"`        | -           | A channel, or `"hex"` for the 6 hex digits. |
+| `colorSpace` | `"hsv" \| "hsl" \| "rgb" \| "oklch"` | per channel | As on `ColorPickerSlider`.                  |
+
+```tsx
+<InputGroup>
+  <InputGroupAddon>R</InputGroupAddon>
+  <ColorPickerChannelInput channel="red" />
+</InputGroup>
+```
+
+### ColorPickerSwatches, ColorPickerSwatchItem
+
+Preset colors as a `listbox`, in a grid that fills its width.
+`--color-picker-swatch-size` sets the chip size, 24px by default, and a
+`grid-cols-*` class fixes the columns. An item is selected while the value is
+its color, and shows a check in black or white, whichever contrasts more.
+
+| Prop       | Type                                                 | Default    | Description                                     |
+| :--------- | :--------------------------------------------------- | :--------- | :---------------------------------------------- |
+| `colors`   | `Array<string \| { value: string; label?: string }>` | -          | The presets. Children replace them.             |
+| `shape`    | `"square" \| "circle"`                               | `"square"` | `square` follows each style's radius.           |
+| `children` | `ReactNode`                                          | -          | `ColorPickerSwatchItem` parts, for custom data. |
+
+`ColorPickerSwatchItem` takes `value`, any color `parseColor` reads, `label`,
+read out instead of the generated color name, and `disabled`.
+
+### ColorPickerSwatch
+
+A color chip. It shows the picker's value by default, or `color`, so it also
+works outside a picker, in a table or a legend. Translucent colors sit on a
+checkerboard, and an empty value shows a slash. It is hidden from assistive
+tech unless you give it an `aria-label`. Accepts every `span` prop.
+
+| Prop    | Type                   | Default        | Description                           |
+| :------ | :--------------------- | :------------- | :------------------------------------ |
+| `color` | `string \| null`       | picker's value | The color to show.                    |
+| `shape` | `"square" \| "circle"` | `"square"`     | `square` follows each style's radius. |
+
+### ColorPickerEyeDropper, ColorPickerCopy, ColorPickerClear
+
+shadcn `Button`s for the three actions. Each accepts every `Button` prop.
+
+- `ColorPickerEyeDropper` samples a color from anywhere on screen with the
+  browser's EyeDropper API and keeps the current opacity. Where the browser
+  has no EyeDropper, Firefox and Safari among them, it renders nothing.
+- `ColorPickerCopy` copies the value in its own `format` prop or, by default,
+  the format on screen: what `ColorPickerFields` shows, else the picker's. It
+  shows a check for a moment and announces "Copied". <Kbd>⌘</Kbd> + <Kbd>C</Kbd>
+  or <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> on any control copies the same way, with
+  no button needed; in a field it does so only when no text is selected, so a
+  selection still copies as text.
+- `ColorPickerClear` empties the value, for an optional color.
+
+### useColorPicker
+
+Returns the picker's state and actions inside a `ColorPicker`, for a custom
+readout or action. It throws outside one.
+
+| Field      | Type                              | Description                                                                            |
+| :--------- | :-------------------------------- | :------------------------------------------------------------------------------------- |
+| `value`    | `string \| null`                  | The value as emitted.                                                                  |
+| `color`    | `ColorPickerColor \| null`        | The same value, parsed.                                                                |
+| `format`   | `ColorPickerFormat`               | The root's `format`.                                                                   |
+| `open`     | `boolean`                         | Whether the popover is open.                                                           |
+| `setOpen`  | `(open: boolean) => void`         | Opens or closes the popover.                                                           |
+| `setValue` | `(value: string \| null) => void` | Commits any color `parseColor` reads; `null` or `""` clears, anything else is ignored. |
+| `clear`    | `() => void`                      | Empties the value.                                                                     |
+
+```tsx
+function HexLabel() {
+  const { color } = useColorPicker()
+  return color ? <span>{formatColor(color, "hex")}</span> : null
+}
+```
+
+### Helpers
+
+Pure functions for code that never mounts a picker. They ship in the same
+`"use client"` module as the picker, so a Server Component cannot call them.
+
+| Helper                                            | Returns                                                                                                                                                                                                     |
+| :------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `parseColor(value)`                               | A `ColorPickerColor` from hex, the 148 named colors, `transparent`, `rgb()`, `hsl()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()`, `color()` in any CSS Color 4 space, `hsb()` or `hsv()`, else `null`. |
+| `formatColor(color, format)`                      | The color written in a format, as the table under Value shows.                                                                                                                                              |
+| `getContrastRatio(text, background)`              | The WCAG 2 contrast ratio, 1 to 21, from strings or parsed colors, or `null`.                                                                                                                               |
+| `getForegroundColor(background, { light, dark })` | The text color that reads better on the background, `light` (white) or `dark` (`#0a0a0a`), never light under 3:1, or `null`.                                                                                |
+| `isColorInSrgb(color)`                            | Whether a color fits sRGB. Only an OKLCH color can fall outside it.                                                                                                                                         |
+| `mergeColorPickerI18n(overrides)`                 | The full i18n config, the overrides merged over the defaults per section.                                                                                                                                   |
+| `DEFAULT_COLOR_PICKER_I18N`                       | The English labels and color namer.                                                                                                                                                                         |
+| `COLOR_PICKER_FORMATS`                            | `["hex", "rgb", "hsl", "hsb", "oklch"]`.                                                                                                                                                                    |
+
+```ts
+const blue = parseColor("#3b82f6") // { space: "rgb", channels: [59, 130, 246], alpha: 1 }
+if (blue) formatColor(blue, "oklch") // "oklch(62.31% 0.18801 259.815)"
+getContrastRatio("#ffffff", "#3b82f6") // 3.68
+getForegroundColor("#3b82f6") // "#ffffff", where the ratio above prefers black
+```
+
+### Forms
+
+Give the root a `name` and the value submits with a native form, in `format`.
+An empty picker submits an empty string, so `required` works, and a disabled
+picker submits nothing. `form` ties the field to a form elsewhere in the page,
+and `inputRef` points at it for form libraries that focus a field on error.
+
+A form reset restores `defaultValue`, empty unless you passed one; a
+controlled picker gets it through `onValueChange`. A listener that cancels the
+reset keeps the value. `invalid` is for your own validation: pair it with an
+error message in `aria-describedby`, as the form field example on the
+[Color Picker](/components/color-picker) page does.
+
+```tsx
+<form onSubmit={handleSubmit}>
+  <FieldLabel htmlFor="brand">Brand color</FieldLabel>
+  <ColorPicker id="brand" name="brandColor" required>
+    <ColorPickerInput />
+    <ColorPickerContent />
+  </ColorPicker>
+</form>
+```
+
+### Data Attributes
+
+| Attribute          | On                                | Values                                   |
+| :----------------- | :-------------------------------- | :--------------------------------------- |
+| `data-placeholder` | trigger, value                    | present while there is no value          |
+| `data-invalid`     | trigger                           | present when `invalid`                   |
+| `data-disabled`    | panel, `ColorPickerInput`, fields | present when disabled                    |
+| `data-dragging`    | area, slider, wheel track         | present during a pointer drag            |
+| `data-channel`     | slider, channel input             | the channel, or `hex`                    |
+| `data-orientation` | slider                            | `horizontal`, `vertical`                 |
+| `data-empty`       | swatch, swatches                  | no value; or no keyboard swatch yet      |
+| `data-active`      | swatch item                       | present on the swatch the keyboard is on |
+| `data-selected`    | swatch item                       | present on the swatch of the value       |
+| `data-copied`      | copy button                       | present while it shows the check         |
+
+| Part                     | `data-slot`                                                                 |
+| :----------------------- | :-------------------------------------------------------------------------- |
+| `ColorPickerTrigger`     | `color-picker-trigger`                                                      |
+| `ColorPickerValue`       | `color-picker-value`                                                        |
+| `ColorPickerInput`       | `color-picker-input`, and `color-picker-input-trigger` on the swatch button |
+| `ColorPickerContent`     | `popover-content`, the shadcn popover's own                                 |
+| `ColorPickerPanel`       | `color-picker-panel`                                                        |
+| `ColorPickerArea`        | `color-picker-area`, and `color-picker-area-thumb` inside                   |
+| `ColorPickerSlider`      | `color-picker-slider`, and `color-picker-slider-thumb` inside               |
+| `ColorPickerWheel`       | `color-picker-wheel`, then `color-picker-wheel-track` and its thumb         |
+| `ColorPickerFields`      | `color-picker-fields`, and `color-picker-format-trigger` on the menu button |
+| `ColorPickerSwatches`    | `color-picker-swatches`, and `color-picker-swatch-item` on each item        |
+| `ColorPickerSwatch`      | `color-picker-swatch`                                                       |
+| Eye dropper, Copy, Clear | `color-picker-eye-dropper`, `color-picker-copy`, `color-picker-clear`       |
+| The hidden form field    | `color-picker-field`                                                        |
+
+### Keyboard
+
+On the area, a slider or the wheel:
+
+| Key                                     | Action                                                               |
+| :-------------------------------------- | :------------------------------------------------------------------- |
+| <Kbd>←</Kbd> <Kbd>→</Kbd>               | Area: saturation down or up. Slider and wheel: the value down or up. |
+| <Kbd>↓</Kbd> <Kbd>↑</Kbd>               | Area: brightness down or up. Slider and wheel: the value down or up. |
+| <Kbd>Shift</Kbd> + arrow                | Moves 10 steps.                                                      |
+| <Kbd>Page Down</Kbd> <Kbd>Page Up</Kbd> | Moves 10 steps; brightness on the area.                              |
+| <Kbd>Home</Kbd> <Kbd>End</Kbd>          | The lowest or highest value; saturation on the area.                 |
+
+A step is 1 unit: 1° of hue, 1% of saturation, brightness, lightness or
+opacity, 1 of red, green or blue, and 0.004 of chroma. The wheel wraps at 360°.
+
+On swatches:
+
+| Key                                                 | Action                                                                         |
+| :-------------------------------------------------- | :----------------------------------------------------------------------------- |
+| <Kbd>←</Kbd> <Kbd>→</Kbd> <Kbd>↑</Kbd> <Kbd>↓</Kbd> | Moves to the previous or next swatch in order, mirrored in right-to-left text. |
+| <Kbd>Home</Kbd> <Kbd>End</Kbd>                      | Moves to the first or last swatch.                                             |
+| <Kbd>Enter</Kbd> <Kbd>Space</Kbd>                   | Picks the swatch the keyboard is on.                                           |
+
+In the fields and `ColorPickerInput`:
+
+| Key                                           | Action                                                                           |
+| :-------------------------------------------- | :------------------------------------------------------------------------------- |
+| <Kbd>Enter</Kbd>                              | Reads the typed text, before a form submits.                                     |
+| <Kbd>↑</Kbd> <Kbd>↓</Kbd>                     | In a number field, steps it by 1, or 10 with <Kbd>Shift</Kbd>.                   |
+| <Kbd>Page Up</Kbd> <Kbd>Page Down</Kbd>       | In a number field, steps it by 10. A hue wraps.                                  |
+| <Kbd>Alt</Kbd> + <Kbd>↓</Kbd>                 | In `ColorPickerInput`, reads the text and opens the popover.                     |
+| <Kbd>Esc</Kbd>                                | While editing, puts the value back and leaves the popover open.                  |
+| <Kbd>⌘</Kbd> / <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> | On any control, with no text selected, copies the value in the format on screen. |
+
+In the popover, <Kbd>Tab</Kbd> and <Kbd>Shift</Kbd> + <Kbd>Tab</Kbd> cycle
+through the controls, and <Kbd>Esc</Kbd> closes it once no field holds an
+edit.
+
+### Accessibility
+
+- The area, each slider and the wheel are `slider`s. The area is one slider
+  whose value text names both channels and the color, "Saturation 72%,
+  Brightness 85%, vibrant blue", since a 2D control has no ARIA role of its
+  own. The hue slider's value text adds the color name too.
+- A click focuses the control without painting the keyboard ring; the ring
+  shows from the keyboard only, on the thumb.
+- Swatches are a `listbox` with one tab stop. `aria-activedescendant` points
+  at the swatch the keyboard is on, and each option is named by its `label`
+  or the color name, never by a hex code read digit by digit.
+- With `aria-labelledby`, the trigger is named by your label followed by its
+  own text, so the value, or what custom children show, stays in the name.
+- The area, the sliders and the fields are `dir="ltr"` in every text
+  direction: gradients and channel order do not mirror.
+- In forced colors mode the area, the tracks, the wheel and the swatches keep
+  their colors (`forced-color-adjust: none`), since the color is the content,
+  and the thumbs keep an outline.
+- The hidden form field is out of the tab order and hidden from assistive
+  tech. A failed `required` check focuses it, and it hands focus on to the
+  trigger, the input or, for an inline panel, the area.

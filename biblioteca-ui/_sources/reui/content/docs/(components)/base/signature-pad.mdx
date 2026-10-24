@@ -1,0 +1,382 @@
+---
+title: Signature Pad
+description: A shadcn signature pad with pressure and speed sized ink, touch and stylus input, undo and redo, native form fields and PNG, JPEG, SVG or JSON export.
+component: true
+base: base
+---
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-1"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[340px]"
+/>
+
+## Installation
+
+```bash component
+npx shadcn@latest add @reui/signature-pad
+```
+
+## Usage
+
+```tsx
+import {
+  SignaturePad,
+  SignaturePadArea,
+  SignaturePadClear,
+  SignaturePadControls,
+  SignaturePadGuide,
+  SignaturePadPlaceholder,
+  SignaturePadUndo,
+} from "@/components/reui/signature-pad"
+```
+
+```tsx
+<SignaturePad onValueChange={setStrokes}>
+  <SignaturePadArea>
+    <SignaturePadGuide />
+    <SignaturePadPlaceholder />
+    <SignaturePadControls>
+      <SignaturePadUndo />
+      <SignaturePadClear />
+    </SignaturePadControls>
+  </SignaturePadArea>
+</SignaturePad>
+```
+
+## Examples
+
+### Undo and redo toolbar
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-2"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[310px]"
+/>
+
+### Form field with validation
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-3"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[420px]"
+/>
+
+### Signing workspace
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-4"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[460px]"
+/>
+
+### Export PNG, JPEG, SVG or JSON
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-5"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[300px]"
+/>
+
+### Draw or type
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-6"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[330px]"
+/>
+
+### Agreement signing card
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-7"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[500px]"
+/>
+
+### Signature in a dialog
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-8"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[150px]"
+/>
+
+### Stylus mode with palm rejection
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-9"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[370px]"
+/>
+
+### Initials per clause
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-10"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[530px]"
+/>
+
+### Proof of delivery
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-11"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[520px]"
+/>
+
+### Upload with apiRef
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-signature-pad-12"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[300px]"
+/>
+
+## API Reference
+
+Signature Pad is composable: `SignaturePad` holds the strokes and the undo
+history, `SignaturePadArea` is the drawing surface, and every other part is
+optional. Children of the area are overlays. A stroke only starts on the area
+itself, so a pinned control never leaves ink under the finger that pressed it,
+and a custom overlay that is not a control needs `pointer-events-none`. Ink is
+SVG, so it stays sharp and follows the theme; a canvas is created only for PNG
+or JPEG output. The only dependencies are the `cn` utility and the shadcn
+Button.
+
+### Value
+
+The value is an array of strokes. Each point is `[x, y, size]`: its position in
+CSS pixels from the area's top-left corner, and the ink diameter there. Store it
+as JSON to redraw or edit a signature later.
+
+```ts
+type SignaturePadStroke = {
+  points: [x: number, y: number, size: number][]
+  color?: string
+}
+```
+
+`onValueChange` fires once per finished stroke and on clear, undo and redo,
+never per pointer move. Strokes are compared by content, so a fresh copy of the
+same value, the kind react-hook-form hands back, keeps the undo history. A value
+that really differs, such as one set from outside, clears it.
+
+```tsx
+const [strokes, setStrokes] = useState<SignaturePadStroke[]>([])
+
+<SignaturePad value={strokes} onValueChange={setStrokes}>
+  <SignaturePadArea />
+</SignaturePad>
+```
+
+### SignaturePad
+
+The root. Holds the strokes and the history, and renders a `div`.
+
+| Prop            | Type                                                          | Default  | Description                                                                                 |
+| :-------------- | :------------------------------------------------------------ | :------- | :------------------------------------------------------------------------------------------ |
+| `value`         | `SignaturePadStroke[]`                                        | -        | Controlled strokes. A different value from outside clears undo.                             |
+| `defaultValue`  | `SignaturePadStroke[]`                                        | `[]`     | Initial strokes when uncontrolled.                                                          |
+| `onValueChange` | `(value: SignaturePadStroke[]) => void`                       | -        | Fires per finished stroke, clear, undo and redo.                                            |
+| `onStrokeStart` | `(details: { pointerType: SignaturePadPointerType }) => void` | -        | Fires when a stroke begins, with the pointer that drew it.                                  |
+| `onStrokeEnd`   | `(stroke: SignaturePadStroke) => void`                        | -        | Fires with each finished stroke.                                                            |
+| `apiRef`        | `Ref<SignaturePadApi>`                                        | -        | The pad's API, for code outside the tree.                                                   |
+| `color`         | `string`                                                      | -        | Ink color, recorded on each stroke. Unset, ink follows the area's text color.               |
+| `minWidth`      | `number`                                                      | `0.8`    | Thinnest ink, in CSS pixels. Equal to `maxWidth` for a constant line.                       |
+| `maxWidth`      | `number`                                                      | `3.2`    | Thickest ink, in CSS pixels.                                                                |
+| `smoothing`     | `number`                                                      | `0.5`    | From `0` (raw input) to `1`. Higher is smoother; strokes still end where the pointer lifts. |
+| `sizing`        | `"auto" \| "pressure" \| "velocity"`                          | `"auto"` | Width source. `auto` uses pen pressure for a stylus and drawing speed otherwise.            |
+| `pointerTypes`  | `("mouse" \| "pen" \| "touch")[]`                             | all      | Accept only these pointers, e.g. `["pen"]` to ignore a resting palm.                        |
+| `disabled`      | `boolean`                                                     | `false`  | Stops input, dims the pad and removes it from the tab order.                                |
+| `readOnly`      | `boolean`                                                     | `false`  | Stops input, keeps the ink at full strength and removes the pad from the tab order.         |
+| `name`          | `string`                                                      | -        | Submits the signature with a native form under this name.                                   |
+| `form`          | `string`                                                      | -        | Associates the field with a form elsewhere in the page.                                     |
+| `required`      | `boolean`                                                     | `false`  | Fails native form validation while the pad is empty.                                        |
+| `format`        | `"png" \| "jpeg" \| "svg" \| "json"`                          | `"svg"`  | What the form field carries. `png` and `jpeg` rasterize after every stroke.                 |
+
+### SignaturePadArea
+
+The drawing surface, and a focusable `application` region. Accepts every `div`
+prop, including `aria-labelledby`, `aria-describedby` and `aria-invalid`. Size
+it with a class: `h-40` is the default height.
+
+| Prop      | Type                              | Default     | Description                                                                                |
+| :-------- | :-------------------------------- | :---------- | :----------------------------------------------------------------------------------------- |
+| `variant` | `"default" \| "muted" \| "ghost"` | `"default"` | `default` matches the shadcn Textarea, `muted` is a filled surface, `ghost` has no chrome. |
+
+### SignaturePadControls
+
+Pins its children to a corner of the area, above the ink. The default keeps
+controls off the signing line.
+
+| Prop       | Type                                                         | Default     |
+| :--------- | :----------------------------------------------------------- | :---------- |
+| `position` | `"top-start" \| "top-end" \| "bottom-start" \| "bottom-end"` | `"top-end"` |
+
+### SignaturePadClear, SignaturePadUndo, SignaturePadRedo
+
+shadcn `Button`s wired to the pad. Each disables itself when it has nothing to
+do, and hands focus to the area when its own action leaves it disabled. They
+default to `variant="outline"` and `size="icon-sm"` with an icon; pass text as
+`children` and a text `size` for a text button.
+
+### SignaturePadSave
+
+A shadcn `Button` that serializes the pad. Disabled while the pad is empty.
+
+| Prop      | Type                                                     | Default | Description                                 |
+| :-------- | :------------------------------------------------------- | :------ | :------------------------------------------ |
+| `format`  | `"png" \| "jpeg" \| "svg" \| "json"`                     | `"png"` | Output format.                              |
+| `options` | `SignaturePadExportOptions`                              | -       | Crop, padding, color, background and scale. |
+| `onSave`  | `(value: string, strokes: SignaturePadStroke[]) => void` | -       | Receives the serialized signature.          |
+
+### SignaturePadGuide
+
+A dashed signing line with a cross at its start. Pass `children` to replace the
+cross, and a class to move the line.
+
+### SignaturePadPlaceholder
+
+Centered hint text, shown only while the pad is empty and nobody is drawing.
+Defaults to "Sign here".
+
+### SignaturePadPreview
+
+Saved strokes as an inline SVG cropped to the ink, for lists, receipts and
+documents. Works without a `SignaturePad` and accepts every `svg` prop.
+
+| Prop      | Type                   | Default | Description                               |
+| :-------- | :--------------------- | :------ | :---------------------------------------- |
+| `strokes` | `SignaturePadStroke[]` | -       | **Required**. Renders nothing when empty. |
+| `padding` | `number`               | `4`     | Space around the ink.                     |
+| `color`   | `string`               | -       | Ink for strokes without their own color.  |
+
+### useSignaturePad
+
+Returns the pad's API inside a `SignaturePad`. `apiRef` exposes the same
+members on one handle for the pad's life.
+
+| Field                            | Type                                                             |
+| :------------------------------- | :--------------------------------------------------------------- |
+| `strokes`                        | `SignaturePadStroke[]`                                           |
+| `isEmpty`, `isDrawing`           | `boolean`                                                        |
+| `canUndo`, `canRedo`             | `boolean`                                                        |
+| `disabled`, `readOnly`           | `boolean`                                                        |
+| `clear`, `undo`, `redo`, `focus` | `() => void`                                                     |
+| `toSVG`                          | `(options?: SignaturePadExportOptions) => string`                |
+| `toDataURL`                      | `(options?: SignaturePadExportOptions) => string`                |
+| `toBlob`                         | `(options?: SignaturePadExportOptions) => Promise<Blob \| null>` |
+| `serialize`                      | `(format?, options?) => string`                                  |
+
+For an upload, a `Blob` skips the base64 inflation of a data URL:
+
+```tsx
+const padRef = useRef<SignaturePadApi>(null)
+
+async function upload() {
+  const blob = await padRef.current?.toBlob()
+  if (!blob) return
+  const body = new FormData()
+  body.append("signature", blob, "signature.png")
+  await fetch("/api/signatures", { method: "POST", body })
+}
+```
+
+### SignaturePadExportOptions
+
+Exports crop to the ink with padding by default. Through the hook or `apiRef`,
+`crop: false` frames the whole area as rendered; the standalone helpers have no
+area to measure, so there it keeps the origin and ends at the ink unless you
+pass `width` and `height`. Ink without its own color exports black, because an
+export usually lands on paper.
+
+| Option       | Type                                          | Default       | Description                                   |
+| :----------- | :-------------------------------------------- | :------------ | :-------------------------------------------- |
+| `padding`    | `number`                                      | `8`           | Space around the ink when cropping.           |
+| `crop`       | `boolean`                                     | `true`        | `false` keeps the area's origin.              |
+| `width`      | `number`                                      | -             | With `height`, a fixed frame from the origin. |
+| `height`     | `number`                                      | -             | With `width`, a fixed frame from the origin.  |
+| `color`      | `string`                                      | `"#000000"`   | Ink for strokes without their own color.      |
+| `background` | `string`                                      | transparent   | Fill behind the ink. JPEG defaults to white.  |
+| `scale`      | `number`                                      | `2`           | Raster only. Pixels per CSS pixel.            |
+| `type`       | `"image/png" \| "image/jpeg" \| "image/webp"` | `"image/png"` | Raster only.                                  |
+| `quality`    | `number`                                      | -             | Raster only, for lossy types.                 |
+
+### Helpers
+
+Pure functions over a stroke array, for client code that never mounts a pad: a
+list of saved signatures, an upload handler, a print view. They ship in the same
+`"use client"` module as the pad, so a Server Component cannot call them. The
+raster ones need a browser.
+
+| Helper                                            | Returns                                                                             |
+| :------------------------------------------------ | :---------------------------------------------------------------------------------- |
+| `signaturePadToSVG(strokes, options)`             | An SVG document string.                                                             |
+| `signaturePadToDataURL(strokes, options)`         | A PNG data URL, or `options.type`. Browser only.                                    |
+| `signaturePadToBlob(strokes, options)`            | `Promise<Blob \| null>`. Browser only.                                              |
+| `serializeSignaturePad(strokes, format, options)` | The form field value, SVG by default; `""` when empty. png and jpeg need a browser. |
+| `getSignaturePadBounds(strokes)`                  | The ink's box, or `null` without ink.                                               |
+| `getSignaturePadStrokePath(stroke)`               | SVG path data for one stroke's outline.                                             |
+
+### Forms
+
+Give the root a `name` and the signature submits with a native form as an SVG
+data URL, or as `format` says. The field updates after every stroke, so keep it
+`svg` or `json` and rasterize once at submit when you need an image. An empty
+pad submits an empty string, so `required` works. A form reset restores
+`defaultValue`, empty unless you passed one, as a native field returns to its
+default. A listener that cancels the reset keeps the ink.
+
+```tsx
+<form onSubmit={handleSubmit}>
+  <SignaturePad name="signature" required>
+    <SignaturePadArea aria-labelledby="signature-label" />
+  </SignaturePad>
+</form>
+```
+
+### Data Attributes
+
+| Attribute       | On                                                | Values                                               |
+| :-------------- | :------------------------------------------------ | :--------------------------------------------------- |
+| `data-empty`    | root, area                                        | present while there is no ink                        |
+| `data-drawing`  | root, area                                        | present while a stroke is in progress                |
+| `data-disabled` | root, area                                        | present when disabled                                |
+| `data-readonly` | root, area                                        | present when read-only                               |
+| `data-variant`  | area                                              | `default`, `muted`, `ghost`                          |
+| `data-position` | controls                                          | `top-start`, `top-end`, `bottom-start`, `bottom-end` |
+| `data-slot`     | every part, and each committed stroke in the area | `signature-pad-*`                                    |
+
+### Keyboard
+
+| Key                                               | Action                   |
+| :------------------------------------------------ | :----------------------- |
+| <Kbd>Tab</Kbd>                                    | Moves focus to the area. |
+| <Kbd>Ctrl</Kbd> + <Kbd>Z</Kbd>                    | Undoes the last edit.    |
+| <Kbd>Ctrl</Kbd> + <Kbd>Shift</Kbd> + <Kbd>Z</Kbd> | Redoes.                  |
+| <Kbd>Ctrl</Kbd> + <Kbd>Y</Kbd>                    | Redoes.                  |
+
+On macOS, <Kbd>⌘</Kbd> works in place of <Kbd>Ctrl</Kbd>. The shortcuts follow
+the physical key on layouts that type no Latin letter.
+
+### Accessibility
+
+- The area is a focusable `application` region with the role description
+  "signature pad". It is labelled "Signature pad" unless you pass `aria-label`
+  or `aria-labelledby`, and it takes `aria-describedby` and `aria-invalid` like
+  any form control.
+- The pad describes its own state, "Empty" or "Signed" and whether it is read
+  only, after any `aria-describedby` you pass.
+- The area blocks page scrolling and the long-press menu under a finger, only
+  the first touch draws, and a pen landing during a touch stroke discards it as
+  a resting palm.
+- Drawing needs a pointer. Offer another route to the same outcome, such as a
+  typed name, wherever a signature is required.
+- A control that disables itself hands focus to the area instead of dropping it
+  on the page.
+- A failed `required` check focuses the pad, not the hidden field behind it.
+  The browser's own error bubble is anchored to that hidden field, so for an
+  error assistive tech announces, validate yourself and pair `aria-invalid`
+  with a described-by message, as the form field example does.

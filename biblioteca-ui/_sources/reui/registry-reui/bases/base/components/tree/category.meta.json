@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Folder and file explorers for a code project, a workspace or a document store",
+      "Record hierarchies such as CRM accounts and contacts, or an org chart of who reports to whom",
+      "Role permission editors grouped by area, where each action is ticked on or off"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A whole drive page with a folder rail beside a listing of the open folder",
+        "instead": "solutions/files"
+      },
+      {
+        "when": "Folder rows with size and item count columns that move into other folders by pointer",
+        "instead": "data-grid/drag-drop"
+      },
+      {
+        "when": "A pick of one value from a nested list, made inside a popup",
+        "instead": "cascader"
+      }
+    ],
+    "agentNotes": [
+      "`syncDataLoaderFeature` throws when `getItem` returns nothing or a promise, so children fetched from a server need the async data loader feature",
+      "The `rootItemId` record is never drawn, so its children form the top level and its own name stays hidden",
+      "After adding, moving or removing records behind `dataLoader`, call rebuildTree on `tree`, or the rows keep the old structure"
+    ]
+  }
+}

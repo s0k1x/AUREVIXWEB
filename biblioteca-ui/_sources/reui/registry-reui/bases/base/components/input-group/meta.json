@@ -1,0 +1,727 @@
+[
+  {
+    "name": "c-input-group-1",
+    "title": "Basic input group",
+    "label": "Basic",
+    "description": "Basic input group",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The bare shell: one field inside the bordered wrapper with no addon yet, the base to add icons, text or controls to",
+      "whenNotToUse": [
+        {
+          "when": "A plain text field that will never carry an icon, text or action",
+          "instead": "input"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-2",
+    "title": "Input group in disabled state",
+    "label": "Disabled",
+    "description": "Input group in disabled state",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A locked field that takes no focus or typing, with its Field wrapper flagged as disabled to match"
+    }
+  },
+  {
+    "name": "c-input-group-3",
+    "title": "Input group in invalid state",
+    "label": "Invalid",
+    "description": "Input group in invalid state",
+    "order": 3,
+    "guidance": {
+      "bestFor": "The error look on its own, a red border on the whole wrapper with no message text printed below it",
+      "agentNotes": [
+        "`aria-invalid` and `data-invalid` are hardcoded to true; set them from your validation result"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "An error that also needs its message shown under the control",
+          "instead": "field"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-4",
+    "title": "Input group with prefix icon",
+    "label": "Prefix Icon",
+    "description": "Input group with prefix icon",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A single leading search icon ahead of the field, with nothing at the trailing end",
+      "whenNotToUse": [
+        {
+          "when": "A leading icon that also needs a visible label above the border",
+          "instead": "c-input-group-20"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-5",
+    "title": "Input group with suffix icon",
+    "label": "Suffix Icon",
+    "description": "Input group with suffix icon",
+    "order": 5,
+    "guidance": {
+      "bestFor": "An email field with a mail icon after the typed text and nothing before it",
+      "whenNotToUse": [
+        {
+          "when": "A search icon placed ahead of the typed text",
+          "instead": "c-input-group-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-6",
+    "title": "Input group with both prefix and suffix icons",
+    "label": "Prefix Suffix Icons",
+    "description": "Input group with both prefix and suffix icons",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A listening state with a mic icon before the field and a pulsing red broadcast icon after it",
+      "agentNotes": [
+        "Nothing records audio; the `animate-pulse` broadcast icon is fixed markup, so toggle it from your recording state"
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-7",
+    "title": "Input group with prefix text addon",
+    "label": "Prefix Text",
+    "description": "Input group with prefix text addon",
+    "order": 7,
+    "guidance": {
+      "bestFor": "A fixed https scheme printed ahead of a domain field as muted prefix text",
+      "whenNotToUse": [
+        {
+          "when": "A scheme and a domain ending kept outside the border as joined cells",
+          "instead": "c-input-group-27"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-8",
+    "title": "Input group with suffix text addon",
+    "label": "Suffix Text",
+    "description": "Input group with suffix text addon",
+    "order": 8,
+    "guidance": {
+      "bestFor": "A username field followed by a fixed mail domain as trailing text",
+      "agentNotes": [
+        "The `@gmail.com` suffix is display text and never part of the field value; join it to the username when you read it"
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-9",
+    "title": "Input group with both prefix and suffix text addons",
+    "label": "Prefix Suffix Text",
+    "description": "Input group with both prefix and suffix text addons",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A money amount with a dollar sign before and a USD code after a number field",
+      "whenNotToUse": [
+        {
+          "when": "Euro amounts whose sign and code sit behind thin rules on both sides",
+          "instead": "c-input-group-30"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-10",
+    "title": "Input group with action button addon",
+    "label": "Action Button",
+    "description": "Input group with action button addon",
+    "order": 10,
+    "guidance": {
+      "bestFor": "A text Search control at the trailing end of a query field, with no icon on either side",
+      "agentNotes": [
+        "The Search `InputGroupButton` has no `onClick` and is not a submit button; give it a handler, or make it submit inside a form"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A field and a separate outlined action joined side by side at a shared seam",
+          "instead": "button-group"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-11",
+    "title": "Input group with icon button action",
+    "label": "Icon Button",
+    "description": "Input group with icon button action",
+    "order": 11,
+    "guidance": {
+      "bestFor": "A read only share URL with one icon only copy control at the end",
+      "agentNotes": [
+        "The copy `InputGroupButton` shows a `toast` from `onClick` without writing anything to the clipboard; add the copy call there",
+        "The copy `InputGroupButton` is icon only and has no accessible name; label it"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A share link that also sets who may open it from a menu",
+          "instead": "c-input-group-40"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-12",
+    "title": "Input group with dropdown menu selection",
+    "label": "Dropdown Select",
+    "description": "Input group with dropdown menu selection",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A calling code menu at the start of a phone field, its trigger showing the picked code such as +1",
+      "agentNotes": [
+        "`country` only changes the trigger text and is never joined to the typed number; combine both when you read the value"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A dialing number with country flags, a searchable country list and live formatting",
+          "instead": "phone-input"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-13",
+    "title": "Input group with keyboard shortcut (Kbd)",
+    "label": "Keyboard Shortcut",
+    "description": "Input group with keyboard shortcut (Kbd)",
+    "order": 13,
+    "guidance": {
+      "bestFor": "A documentation search ending in a single Command K key hint",
+      "agentNotes": [
+        "The `Kbd` hint is text only; nothing listens for Command K, so register the shortcut that focuses the field"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Keyboard keys shown on their own, outside any text field",
+          "instead": "kbd"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-14",
+    "title": "Input group with tooltip action",
+    "label": "Tooltip Action",
+    "description": "Input group with tooltip action",
+    "order": 14,
+    "guidance": {
+      "bestFor": "A numeric limit with an info icon control whose tooltip explains the value on hover or focus",
+      "agentNotes": [
+        "The info `InputGroupButton` in `TooltipTrigger` is icon only with no accessible name; label it, since the tooltip text is not its name"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Help that opens on click and holds a title and a paragraph",
+          "instead": "c-input-group-22"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-15",
+    "title": "Input group with loading spinner",
+    "label": "Loading Spinner",
+    "description": "Input group with loading spinner",
+    "order": 15,
+    "guidance": {
+      "bestFor": "A busy state: a locked field keeping its value while a spinner turns at the trailing end",
+      "agentNotes": [
+        "The `Spinner`, the input `disabled` and `data-disabled` on `Field` are hardcoded; drive all three from your pending check, such as a username lookup"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A loading indicator shown alone, with no field around it",
+          "instead": "spinner"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-16",
+    "title": "Input group with block-start addon",
+    "label": "Block-Start Addon",
+    "description": "Input group with block-start addon",
+    "order": 16,
+    "guidance": {
+      "bestFor": "A header row inside the border above the field, holding a User Profile caption with an info icon pushed to its far end",
+      "agentNotes": [
+        "An `InputGroupAddon` with `align` block-start shows first through CSS order only; the DOM keeps it after the field, so screen readers reach it second"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A caption that sits above and outside the border and names the field",
+          "instead": "c-input-group-20"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-17",
+    "title": "Textarea input group with dynamic character limit",
+    "label": "Character Limit",
+    "description": "Textarea input group with dynamic character limit",
+    "order": 17,
+    "guidance": {
+      "bestFor": "A multi line description whose bottom row counts typed characters live against a 140 limit",
+      "agentNotes": [
+        "A click on the counter row focuses nothing, since `InputGroupAddon` only looks for an input element to focus"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A comment box with Cancel and Post actions under the text",
+          "instead": "c-input-group-26"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-18",
+    "title": "AI Chat textarea with rich toolbar actions",
+    "label": "AI Chat Toolbar",
+    "description": "AI Chat textarea with rich toolbar actions",
+    "order": 18,
+    "guidance": {
+      "bestFor": "A prompt box whose bottom toolbar holds add, voice and web search tools, a model menu and a send arrow",
+      "agentNotes": [
+        "`model` only relabels the menu trigger, and the plus, mic, Search and send buttons have no handlers; wire each to your chat client",
+        "The plus, mic and send `InputGroupButton` elements are icon only with no accessible names; label each"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A composer with mention, file count and tab count chips above the text",
+          "instead": "c-input-group-19"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-19",
+    "title": "AI Chat interface with file and context attachments",
+    "label": "AI Chat Attachments",
+    "description": "AI Chat interface with file and context attachments",
+    "order": 19,
+    "guidance": {
+      "bestFor": "A composer with a top row of an @ mention button and file and tab count chips over the text, and a model menu below",
+      "agentNotes": [
+        "The 1 file and 1 Tab counts are fixed text inside outline `InputGroupButton` chips; render them from your attached items",
+        "`model` only changes the menu label, and the mention, image and send buttons have no handlers or accessible names"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A prompt box with web search and voice tools in one bottom row",
+          "instead": "c-input-group-18"
+        },
+        {
+          "when": "Attached files shown as chips with names, sizes and upload states",
+          "instead": "attachment"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-20",
+    "title": "Input group demonstrating label usage",
+    "label": "Label Usage",
+    "description": "Input group demonstrating label usage",
+    "order": 20,
+    "guidance": {
+      "bestFor": "A visible Search Components label above the border, tied to the field through a matching id",
+      "whenNotToUse": [
+        {
+          "when": "A compact search with only a leading icon and no visible label",
+          "instead": "c-input-group-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-21",
+    "title": "Input group with multiple icons/buttons at the end",
+    "label": "Multiple End Actions",
+    "description": "Input group with multiple icons/buttons at the end",
+    "order": 21,
+    "guidance": {
+      "bestFor": "A trailing pair of a muted star icon and an icon only copy control after a name field",
+      "agentNotes": [
+        "The copy control calls `toast` alone, so nothing reaches the clipboard, and the star is a static icon with no toggle"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A read only link whose single trailing control copies it",
+          "instead": "c-input-group-11"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-22",
+    "title": "Input group with popover trigger addon",
+    "label": "Popover Trigger",
+    "description": "Input group with popover trigger addon",
+    "order": 22,
+    "guidance": {
+      "bestFor": "A read only address led by a green shield that opens a Secure Connection popover on click",
+      "agentNotes": [
+        "The shield `InputGroupButton` in `PopoverTrigger` is icon only and has no accessible name; label it"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A hint that appears on hover over a small info icon",
+          "instead": "c-input-group-14"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-23",
+    "title": "Input group with Sparkles icon and complex Kbd shortcut",
+    "label": "Sparkles Shortcut",
+    "description": "Input group with Sparkles icon and complex Kbd shortcut",
+    "order": 23,
+    "guidance": {
+      "bestFor": "An AI generate field led by a green sparkles icon and ending in a Command plus Enter key chord",
+      "agentNotes": [
+        "The `KbdGroup` chord is display only; nothing runs on Command Enter, so add the key handler yourself"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A documentation search showing one Command K key hint",
+          "instead": "c-input-group-13"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-24",
+    "title": "Input group with success indicator circle",
+    "label": "Success Indicator",
+    "description": "Input group with success indicator circle",
+    "order": 24,
+    "guidance": {
+      "bestFor": "A filled username followed by a small green circle with a white check, marking the value as accepted",
+      "agentNotes": [
+        "The green check is fixed markup beside a `defaultValue`; render it only once your availability check passes"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A check still running, shown by a turning indicator",
+          "instead": "c-input-group-15"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-25",
+    "title": "Input group with search results count",
+    "label": "Results Count",
+    "description": "Input group with search results count",
+    "order": 25,
+    "guidance": {
+      "bestFor": "A log search with a leading search icon and a muted 12 results count at the trailing end",
+      "agentNotes": [
+        "The 12 results count is static `InputGroupText`; compute it from your filtered rows"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A search that also narrows matches by status through a checkbox popover",
+          "instead": "c-input-group-37"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-26",
+    "title": "Textarea input group with action buttons",
+    "label": "Textarea Actions",
+    "description": "Textarea input group with action buttons",
+    "order": 26,
+    "guidance": {
+      "bestFor": "A comment box with Cancel at the left and Post Comment at the right of its bottom row",
+      "agentNotes": [
+        "Cancel and Post Comment have no handlers and the `InputGroupTextarea` is uncontrolled; read and clear the text yourself"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A description box that counts characters against a limit",
+          "instead": "c-input-group-17"
+        },
+        {
+          "when": "A multi line field with no actions inside its border",
+          "instead": "textarea"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-27",
+    "title": "Input group wrapped in a button group with text prefixes/suffixes",
+    "label": "Button Group",
+    "description": "Input group wrapped in a button group with text prefixes/suffixes",
+    "order": 27,
+    "guidance": {
+      "bestFor": "A domain field held between https and dot com cells that sit outside its border, all joined at shared seams",
+      "whenNotToUse": [
+        {
+          "when": "A scheme printed inside the field's own border",
+          "instead": "c-input-group-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-28",
+    "title": "Input group with a menu button (three dots) at the end",
+    "label": "Three Dot Menu",
+    "description": "Input group with a menu button (three dots) at the end",
+    "order": 28,
+    "guidance": {
+      "bestFor": "A file name field ending in a three dot menu of Rename, Duplicate and a red Delete",
+      "agentNotes": [
+        "The 3 `DropdownMenuItem` entries have no handlers and the dots trigger has no accessible name; wire and label them"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A search with a clear control, a status filter and a more actions menu",
+          "instead": "c-input-group-39"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-29",
+    "title": "Pill-shaped input group with a category dropdown at the end",
+    "label": "Pill Category",
+    "description": "Pill-shaped input group with a category dropdown at the end",
+    "order": 29,
+    "guidance": {
+      "bestFor": "A fully rounded product search ending in a category menu that starts unset and shows the picked one",
+      "agentNotes": [
+        "`category` starts as the word Category and is never applied to a search; send it with the query"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A company search scoped by region with a clear control",
+          "instead": "c-input-group-38"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-30",
+    "title": "Input group with inline addons (no separating borders)",
+    "label": "Inline Addons",
+    "description": "Input group with inline addons (no separating borders)",
+    "order": 30,
+    "guidance": {
+      "bestFor": "A euro amount whose sign and EUR code are set off from the field by thin vertical rules on both sides",
+      "whenNotToUse": [
+        {
+          "when": "A rule on one side only, before the currency code",
+          "instead": "c-input-group-31"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-31",
+    "title": "Input group with inline start and block-end addon",
+    "label": "Inline Block-End",
+    "description": "Input group with inline start and block-end addon",
+    "order": 31,
+    "guidance": {
+      "bestFor": "A muted euro sign hugging the amount with no rule, and a single thin rule setting the EUR code apart",
+      "whenNotToUse": [
+        {
+          "when": "A dollar amount with plain prefix and suffix text and no rules",
+          "instead": "c-input-group-9"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-32",
+    "title": "Member row with avatar, email and role selection",
+    "label": "Member Row",
+    "description": "Member row with avatar, email and role selection",
+    "order": 32,
+    "guidance": {
+      "bestFor": "A member row with a small avatar before the handle and an Admin, Member or Viewer role menu after it",
+      "agentNotes": [
+        "Replace the `AvatarImage` src, which loads from github.com, and the `roles` list; the picked `role` lives in local state only"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A profile photo on its own with no editable field beside it",
+          "instead": "avatar"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-33",
+    "title": "Project save interface with status and action buttons",
+    "label": "Project Save",
+    "description": "Project save interface with status and action buttons",
+    "order": 33,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A wide create panel stacking a name line over a description beside an icon tile, then a Save to menu, Cancel and Save",
+      "agentNotes": [
+        "Keep `h-auto` on `InputGroup`: the textarea sits inside a nested div, so the wrapper does not grow to fit it on its own",
+        "Cancel and Save have no handlers, and `visibility` only relabels the trigger; send the name, description and choice from Save"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A comment box with only Cancel and Post under the text",
+          "instead": "c-input-group-26"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-34",
+    "title": "Pill-shaped AI prompt bar with voice and audio icons",
+    "label": "Pill AI Prompt",
+    "description": "Pill-shaped AI prompt bar with voice and audio icons",
+    "order": 34,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A tall pill prompt bar: a plus opening an upward tools menu with a More submenu, and mic and voice buttons at the far end",
+      "agentNotes": [
+        "The voice `InputGroupButton` hardcodes `bg-black` and `text-white`, so it ignores the theme tokens; use the default variant colors",
+        "None of the 9 `DropdownMenuItem` entries, the mic or the voice button has a handler, and the 3 icon only triggers have no accessible names"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A multi line prompt with a model menu and send arrow in a bottom row",
+          "instead": "c-input-group-18"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-35",
+    "title": "Password input with visibility toggle",
+    "label": "Password Toggle",
+    "description": "Password input with visibility toggle",
+    "order": 35,
+    "guidance": {
+      "bestFor": "A password field with a lock icon in front and an eye control that reveals or hides the characters",
+      "agentNotes": [
+        "The eye `InputGroupButton` has no accessible name or pressed state; label it Show or Hide password from `showPassword`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A password box with a strength meter or rule checklist under it",
+          "instead": "input"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-36",
+    "title": "API request input with method selector and send action",
+    "label": "API Request",
+    "description": "API request input with method selector and send action",
+    "order": 36,
+    "guidance": {
+      "bestFor": "An API endpoint bar led by a color coded GET, POST, PUT, PATCH or DELETE menu and ending in Send",
+      "agentNotes": [
+        "On the base twin each method row sets `method` from `onSelect`, which a Base UI menu never calls, so it stays GET; use `onClick`",
+        "Send has no handler; call your API with `method` and the endpoint path from it"
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-37",
+    "title": "Order search input with status filter",
+    "label": "Order Search",
+    "description": "Order search input with status filter",
+    "order": 37,
+    "guidance": {
+      "bestFor": "An order search with a clear control that appears once typing starts and a Status popover of checkboxes with a count",
+      "agentNotes": [
+        "`searchQuery` and `selectedStatuses` are kept in local state and filter nothing; apply both to your order query"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A full bar of removable chips, each with its own field, operator and value",
+          "instead": "filters"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-38",
+    "title": "Company search input with region selector",
+    "label": "Company Search",
+    "description": "Company search input with region selector",
+    "order": 38,
+    "guidance": {
+      "bestFor": "A company search scoped by a globe region menu of Global, United States, Europe and APAC, plus a clear control",
+      "agentNotes": [
+        "Base twin rows call `setRegion` from `onSelect`, which Base UI menus skip on a click, so the region never changes; move it to `onClick`",
+        "`searchQuery` and `region` stay in local state; pass both to your company search"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Status checkboxes in a popover that narrow the matches",
+          "instead": "c-input-group-37"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-39",
+    "title": "Contact search input with filter and actions menu",
+    "label": "Contact Search",
+    "description": "Contact search input with filter and actions menu",
+    "order": 39,
+    "guidance": {
+      "bestFor": "A contact search with per status totals in its filter popover and a more actions menu for bulk email, export and add",
+      "agentNotes": [
+        "Replace `statusCounts`, whose 12, 7 and 5 are fixed numbers, with counts from your contacts",
+        "The Bulk email, Export CSV and Add contact `DropdownMenuItem` rows have no handlers, and `searchQuery` filters nothing"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A search with only a status filter and no actions menu",
+          "instead": "c-input-group-37"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-group-40",
+    "title": "Share link input with visibility selector and copy action",
+    "label": "Share Link",
+    "description": "Share link input with visibility selector and copy action",
+    "order": 40,
+    "guidance": {
+      "bestFor": "An editable share link with a Private, Team or Public access menu and a copy control at the end",
+      "agentNotes": [
+        "The Copy link `InputGroupButton` has no `onClick`, so nothing is copied; write the link to the clipboard there",
+        "On the base twin `setVisibility` runs from `onSelect`, which Base UI never fires on a click; call it from `onClick`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A read only link with only a copy control and no access setting",
+          "instead": "c-input-group-11"
+        }
+      ]
+    }
+  }
+]

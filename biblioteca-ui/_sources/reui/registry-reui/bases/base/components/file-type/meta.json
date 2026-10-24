@@ -1,0 +1,234 @@
+[
+  {
+    "name": "c-file-type-1",
+    "title": "Common formats",
+    "label": "Common Formats",
+    "description": "The formats people share most, in their brand colors.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "A 5 column grid of 10 everyday formats in the default outline at 40px, uncaptioned because each icon names itself",
+      "whenNotToUse": [
+        {
+          "when": "Every built-in extension at once, grouped by family with a variant switch",
+          "instead": "c-file-type-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-type-2",
+    "title": "Outline, solid, light and mono",
+    "label": "Variants",
+    "description": "The 4 variants side by side: outlined, filled, soft grey and one gray for every type.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "One row per variant over the same 5 types, PDF, DOCX, XLSX, JPG and ZIP, so only the paint changes between rows"
+    }
+  },
+  {
+    "name": "c-file-type-3",
+    "title": "Sizes",
+    "label": "Sizes",
+    "description": "6 sizes from 18px to 56px drawing the same icon, tuned to stay legible at 18px.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "A PDF at each size preset from mini to xl, captioned with the prop value and its pixel box, bottoms aligned"
+    }
+  },
+  {
+    "name": "c-file-type-4",
+    "title": "Family glyphs",
+    "label": "Family Glyphs",
+    "description": "One glyph per family, drawn on one grid, for family types and the glyph option.",
+    "order": 4,
+    "guidance": {
+      "bestFor": "All 13 family types from the exported category list, captioned by name, with the blank empty page placed last"
+    }
+  },
+  {
+    "name": "c-file-type-5",
+    "title": "All formats",
+    "label": "All Formats",
+    "description": "Every built-in format grouped by family, with a variant switch.",
+    "order": 5,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "The full extension table split into 11 family rows with counts, painted in whichever of 4 variant tabs is active",
+      "agentNotes": [
+        "`GROUPS` and the count line both read `FILE_TYPE_EXTENSION_NAMES`; filter it once to list only the formats your app accepts"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A short set of the most shared formats with no tabs or counts",
+          "instead": "c-file-type-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-type-6",
+    "title": "Data grid file browser",
+    "label": "File Browser",
+    "description": "Mini icons resolved from each file name in the rows of a sortable data grid.",
+    "order": 6,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Folders sorted ahead of files, a Type column filled from each family, and item counts in place of sizes for folders",
+      "agentNotes": [
+        "`files` is sample data with `size` in bytes and `modified` as an ISO date; map your storage records onto `FileItem`",
+        "`manualPagination` keeps all rows on one page; drop it and the bundled pagination model shows 10 rows with no pager rendered"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Record tables that sort and page where no row stands for a document",
+          "instead": "data-grid"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-type-7",
+    "title": "Attachment list",
+    "label": "Attachment List",
+    "description": "Attachments with their type, size and a download action.",
+    "order": 7,
+    "guidance": {
+      "bestFor": "Static rows pairing a light page with the name, size and a dated time element, ending in a ghost download button",
+      "agentNotes": [
+        "The download `Button` has no handler; point each row at its file URL or your download call",
+        "`ATTACHMENTS` holds preformatted `size` and `modifiedLabel` strings; format them from your file records"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Documents shown as chips in a chat composer or an assistant reply",
+          "instead": "attachment"
+        },
+        {
+          "when": "Rows that track each transfer with a bar, cancel and retry",
+          "instead": "c-file-type-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-type-8",
+    "title": "Upload queue",
+    "label": "Upload Queue",
+    "description": "Files uploading with progress, each icon resolved from its MIME type.",
+    "order": 8,
+    "guidance": {
+      "bestFor": "A live count of uploaded and failed items above rows that swap a named bar for a size line, with retry and cancel",
+      "agentNotes": [
+        "`retry` marks the file done at once and `remove` only filters local state; start or abort the real transfer in both",
+        "`QUEUE` is sample data; drive each row's `progress` and `status` from your upload events"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A queue that also needs idle and processing states for each item",
+          "instead": "attachment"
+        },
+        {
+          "when": "A drop zone that adds new documents to the queue",
+          "instead": "file-upload"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-type-9",
+    "title": "Resolve from a file name",
+    "label": "Resolve From Name",
+    "description": "Type a file name, path, URL or MIME type and see the icon it resolves to.",
+    "order": 9,
+    "guidance": {
+      "bestFor": "Sample chips under one input with a clear button, the result in all 4 variants and a live Type and Family readout"
+    }
+  },
+  {
+    "name": "c-file-type-10",
+    "title": "Custom labels",
+    "label": "Custom Labels",
+    "description": "Version tags and document codes in place of the extension.",
+    "order": 10,
+    "guidance": {
+      "bestFor": "A revision history newest first, rows tagged SIGNED or V1 to V3, under a large blank page carrying a CA-1042 code",
+      "agentNotes": [
+        "Replace `REVISIONS` with your versions; a `label` past 4 characters, like SIGNED, is set smaller to fit the band"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A lock, link or star mark on the page in place of a text tag",
+          "instead": "c-file-type-13"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-type-11",
+    "title": "Custom colors and unknown types",
+    "label": "Custom Colors",
+    "description": "Unknown extensions fall back to a neutral icon, and one class recolors any type.",
+    "order": 11,
+    "guidance": {
+      "bestFor": "The same 4 CAD and 3D formats twice, on the default neutral page and then recolored teal, indigo, orange and rose",
+      "agentNotes": [
+        "The `FORMATS` shades keep white label text at 4.5:1, 700 for teal and orange; a lighter class needs dark label text"
+      ]
+    }
+  },
+  {
+    "name": "c-file-type-12",
+    "title": "Export format picker",
+    "label": "Format Picker",
+    "description": "Radio cards for choosing an export format, each with its file type icon.",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A preselected PDF choice among 5, a button labeled with the picked extension, and a status line naming the result",
+      "agentNotes": [
+        "The Export `Button` only stores the pick in `exported` for the status line; run your export there"
+      ]
+    }
+  },
+  {
+    "name": "c-file-type-13",
+    "title": "Locked, linked and starred",
+    "label": "Locked & Starred",
+    "description": "A lock, link or star drawn on the icon in place of the extension label.",
+    "order": 13,
+    "guidance": {
+      "bestFor": "Pairs of outline and solid pages for 6 states, from verified and hidden to uploading, captioned with state and format",
+      "agentNotes": [
+        "An `icon` is decorative, so a lone locked PDF still reads PDF file; drop `aria-hidden` and pass an `aria-label` such as Locked PDF file"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A version number or document code in the band in place of the extension",
+          "instead": "c-file-type-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-type-14",
+    "title": "Restyled labels",
+    "label": "Restyled Labels",
+    "description": "File type extension labels restyled through labelClassName: rounded, outlined, inverted, recolored.",
+    "order": 14,
+    "guidance": {
+      "bestFor": "Each badge recipe printed beside its class string, from a pill and an inverted band to a DRAFT tag in amber"
+    }
+  },
+  {
+    "name": "c-file-type-15",
+    "title": "Dotfiles and build names",
+    "label": "Dotfiles & Build Names",
+    "description": "Icons read from names such as .env.local, Dockerfile and Makefile, which carry no usual extension.",
+    "order": 15,
+    "guidance": {
+      "bestFor": "A 2 column list of 12 repository entries, dotfiles and extensionless build scripts among them, each icon read from the name",
+      "agentNotes": [
+        "`FILES` holds bare names; pass full paths to `getFileType` as they are, since it reads only the last segment"
+      ]
+    }
+  }
+]

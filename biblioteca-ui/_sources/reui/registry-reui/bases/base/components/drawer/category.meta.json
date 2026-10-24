@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Touch panels that slide in from a screen edge and close with a swipe",
+      "Mobile tasks with a scrolling body between a title and footer actions"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A desktop side panel opened by mouse or keyboard with no swipe gesture",
+        "instead": "sheet"
+      },
+      {
+        "when": "A slide out mini bag with quantity steppers, subtotal and checkout",
+        "instead": "ecommerce/shopping-cart"
+      },
+      {
+        "when": "A centered modal for a short form or a confirmation",
+        "instead": "dialog"
+      }
+    ],
+    "agentNotes": [
+      "Set the edge with `swipeDirection` down, up, left or right on the base twin and `direction` bottom, top, left or right on radix",
+      "The base `Drawer` draws no grab handle unless you pass `showSwipeHandle`; the radix one draws it on every bottom drawer",
+      "The footer Submit `Button` has no handler and leaves the drawer open, unlike the `DrawerClose` Cancel beside it"
+    ]
+  }
+}

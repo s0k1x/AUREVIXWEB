@@ -1,0 +1,194 @@
+{
+  "items": [
+    {
+      "name": "c-bubble-1",
+      "type": "registry:block",
+      "title": "Support thread with sender alignment",
+      "categories": [
+        "bubble"
+      ],
+      "description": "A two sided billing thread where align and variant carry the sender.",
+      "descriptionLong": "Support thread with sender alignment. Built by composing Avatar, Bubble, Card. A free, open source shadcn bubble example you can install with npx shadcn@latest add @reui/c-bubble-1 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "bubble",
+        "card"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/bubble/c-bubble-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-bubble-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "gridSize": 2,
+        "label": "Sender Alignment"
+      }
+    },
+    {
+      "name": "c-bubble-2",
+      "type": "registry:block",
+      "title": "Bubble variants in a release thread",
+      "categories": [
+        "bubble"
+      ],
+      "description": "All seven variants doing the job each one is for, in one deploy thread.",
+      "descriptionLong": "Bubble variants in a release thread. Built with the Bubble component. A free, open source shadcn bubble example you can install with npx shadcn@latest add @reui/c-bubble-2 and edit as your own code.",
+      "registryDependencies": [
+        "bubble"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/bubble/c-bubble-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-bubble-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "gridSize": 2,
+        "label": "All Variants"
+      }
+    },
+    {
+      "name": "c-bubble-3",
+      "type": "registry:block",
+      "title": "Grouped consecutive messages",
+      "categories": [
+        "bubble"
+      ],
+      "description": "Consecutive turns from one sender collapse into a single BubbleGroup.",
+      "descriptionLong": "Grouped consecutive messages. Built with the Bubble component. A free, open source shadcn bubble example you can install with npx shadcn@latest add @reui/c-bubble-3 and edit as your own code.",
+      "registryDependencies": [
+        "bubble"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/bubble/c-bubble-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-bubble-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "gridSize": 2,
+        "label": "Grouped Messages"
+      }
+    },
+    {
+      "name": "c-bubble-4",
+      "type": "registry:block",
+      "title": "Message reactions and a reaction button",
+      "categories": [
+        "bubble"
+      ],
+      "description": "A static emoji row, a pressable reaction with a count, and a top anchored row.",
+      "descriptionLong": "Message reactions and a reaction button. Built by composing Bubble, Button, Card. A free, open source shadcn bubble example you can install with npx shadcn@latest add @reui/c-bubble-4 and edit as your own code.",
+      "registryDependencies": [
+        "bubble",
+        "button",
+        "card"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/bubble/c-bubble-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-bubble-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "gridSize": 2,
+        "label": "Reactions"
+      }
+    },
+    {
+      "name": "c-bubble-5",
+      "type": "registry:block",
+      "title": "Long reply with show more",
+      "categories": [
+        "bubble"
+      ],
+      "description": "A long assistant answer folds to its first paragraph behind a Collapsible.",
+      "descriptionLong": "Long reply with show more. Built by composing Bubble, Button, Collapsible. A free, open source shadcn bubble example you can install with npx shadcn@latest add @reui/c-bubble-5 and edit as your own code.",
+      "registryDependencies": [
+        "bubble",
+        "button",
+        "collapsible"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/bubble/c-bubble-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-bubble-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "gridSize": 2,
+        "label": "Show More"
+      }
+    },
+    {
+      "name": "c-bubble-6",
+      "type": "registry:block",
+      "title": "Quick reply bubbles and an action row",
+      "categories": [
+        "bubble"
+      ],
+      "description": "Tinted bubbles that are real buttons and a link, plus an action row after the pick.",
+      "descriptionLong": "Quick reply bubbles and an action row. Built by composing Bubble, Button, Card. A free, open source shadcn bubble example you can install with npx shadcn@latest add @reui/c-bubble-6 and edit as your own code.",
+      "registryDependencies": [
+        "bubble",
+        "button",
+        "card"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/bubble/c-bubble-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-bubble-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "gridSize": 2,
+        "label": "Quick Replies"
+      }
+    },
+    {
+      "name": "c-bubble-7",
+      "type": "registry:block",
+      "title": "Assistant answer with formatted content",
+      "categories": [
+        "bubble"
+      ],
+      "description": "A ghost bubble carrying a heading, a list, emphasis and inline code.",
+      "descriptionLong": "Assistant answer with formatted content. Built with the Bubble component. A free, open source shadcn bubble example you can install with npx shadcn@latest add @reui/c-bubble-7 and edit as your own code.",
+      "registryDependencies": [
+        "bubble"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/bubble/c-bubble-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-bubble-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "gridSize": 1,
+        "label": "Formatted Answer"
+      }
+    }
+  ]
+}

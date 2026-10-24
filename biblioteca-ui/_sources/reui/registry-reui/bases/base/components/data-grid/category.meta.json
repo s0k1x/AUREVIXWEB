@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Admin and back office tables that sort, filter, paginate and select rows",
+      "Spreadsheet style editing with cell selection, clipboard and inline edits",
+      "Large record sets that need virtualized rows, columns or infinite scroll"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A short static list of rows with no sorting or paging",
+        "instead": "table"
+      },
+      {
+        "when": "Records moved as cards between status columns",
+        "instead": "kanban"
+      },
+      {
+        "when": "A folder or category hierarchy with no columns of data",
+        "instead": "tree"
+      }
+    ],
+    "agentNotes": [
+      "With `manualPagination`, pass the server total to `useTable` as `rowCount` as well as `recordCount`, or the page buttons never render",
+      "Give `useTable` a stable `getRowId` whenever rows can be pinned, reordered or virtualized",
+      "Swap `DataGridTable` for `DataGridTableVirtual` when rows need virtualization or infinite scroll"
+    ]
+  }
+}

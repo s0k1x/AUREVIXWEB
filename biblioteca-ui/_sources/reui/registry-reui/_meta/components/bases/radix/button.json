@@ -1,0 +1,1555 @@
+{
+  "items": [
+    {
+      "name": "c-button-1",
+      "type": "registry:block",
+      "title": "Default button",
+      "categories": [
+        "button"
+      ],
+      "description": "Default button",
+      "descriptionLong": "Default button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-1 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Default"
+      }
+    },
+    {
+      "name": "c-button-2",
+      "type": "registry:block",
+      "title": "Secondary button",
+      "categories": [
+        "button"
+      ],
+      "description": "Secondary button",
+      "descriptionLong": "Secondary button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-2 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Secondary"
+      }
+    },
+    {
+      "name": "c-button-3",
+      "type": "registry:block",
+      "title": "Outline button",
+      "categories": [
+        "button"
+      ],
+      "description": "Outline button",
+      "descriptionLong": "Outline button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-3 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Outline"
+      }
+    },
+    {
+      "name": "c-button-4",
+      "type": "registry:block",
+      "title": "Ghost button",
+      "categories": [
+        "button"
+      ],
+      "description": "Ghost button",
+      "descriptionLong": "Ghost button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-4 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Ghost"
+      }
+    },
+    {
+      "name": "c-button-5",
+      "type": "registry:block",
+      "title": "Destructive button",
+      "categories": [
+        "button"
+      ],
+      "description": "Destructive button",
+      "descriptionLong": "Destructive button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-5 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Destructive"
+      }
+    },
+    {
+      "name": "c-button-6",
+      "type": "registry:block",
+      "title": "Link button variant",
+      "categories": [
+        "button"
+      ],
+      "description": "Link button variant",
+      "descriptionLong": "Link button variant. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-6 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Link"
+      }
+    },
+    {
+      "name": "c-button-7",
+      "type": "registry:block",
+      "title": "Extra small button",
+      "categories": [
+        "button"
+      ],
+      "description": "Extra small button",
+      "descriptionLong": "Extra small button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-7 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Extra Small"
+      }
+    },
+    {
+      "name": "c-button-8",
+      "type": "registry:block",
+      "title": "Small button",
+      "categories": [
+        "button"
+      ],
+      "description": "Small button",
+      "descriptionLong": "Small button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-8 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Small"
+      }
+    },
+    {
+      "name": "c-button-9",
+      "type": "registry:block",
+      "title": "Large button",
+      "categories": [
+        "button"
+      ],
+      "description": "Large button",
+      "descriptionLong": "Large button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-9 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "Large"
+      }
+    },
+    {
+      "name": "c-button-10",
+      "type": "registry:block",
+      "title": "Disabled button",
+      "categories": [
+        "button"
+      ],
+      "description": "Disabled button",
+      "descriptionLong": "Disabled button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-10 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "label": "Disabled"
+      }
+    },
+    {
+      "name": "c-button-11",
+      "type": "registry:block",
+      "title": "Icon button",
+      "categories": [
+        "button"
+      ],
+      "description": "Icon button",
+      "descriptionLong": "Icon button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-11 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "label": "Icon Button"
+      }
+    },
+    {
+      "name": "c-button-12",
+      "type": "registry:block",
+      "title": "Button with an icon on the right",
+      "categories": [
+        "button"
+      ],
+      "description": "Button with an icon on the right",
+      "descriptionLong": "Button with an icon on the right. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-12 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "label": "Icon Right"
+      }
+    },
+    {
+      "name": "c-button-13",
+      "type": "registry:block",
+      "title": "Button in a loading state",
+      "categories": [
+        "button"
+      ],
+      "description": "Button in a loading state",
+      "descriptionLong": "Button in a loading state. Built by composing Button, Spinner. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-13 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-13.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-13.tsx"
+        }
+      ],
+      "meta": {
+        "order": 13,
+        "label": "Loading State"
+      }
+    },
+    {
+      "name": "c-button-14",
+      "type": "registry:block",
+      "title": "Button with an icon on the left",
+      "categories": [
+        "button"
+      ],
+      "description": "Button with an icon on the left",
+      "descriptionLong": "Button with an icon on the left. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-14 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-14.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-14.tsx"
+        }
+      ],
+      "meta": {
+        "order": 14,
+        "label": "Icon Left"
+      }
+    },
+    {
+      "name": "c-button-15",
+      "type": "registry:block",
+      "title": "Button with an invalid state highlight",
+      "categories": [
+        "button"
+      ],
+      "description": "Button with an invalid state highlight",
+      "descriptionLong": "Button with an invalid state highlight. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-15 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-15.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-15.tsx"
+        }
+      ],
+      "meta": {
+        "order": 15,
+        "label": "Invalid State"
+      }
+    },
+    {
+      "name": "c-button-16",
+      "type": "registry:block",
+      "title": "Secondary button with an icon on the left",
+      "categories": [
+        "button"
+      ],
+      "description": "Secondary button with an icon on the left",
+      "descriptionLong": "Secondary button with an icon on the left. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-16 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-16.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-16.tsx"
+        }
+      ],
+      "meta": {
+        "order": 16,
+        "label": "Secondary Icon Left"
+      }
+    },
+    {
+      "name": "c-button-17",
+      "type": "registry:block",
+      "title": "Secondary button with an icon on the right",
+      "categories": [
+        "button"
+      ],
+      "description": "Secondary button with an icon on the right",
+      "descriptionLong": "Secondary button with an icon on the right. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-17 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-17.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-17.tsx"
+        }
+      ],
+      "meta": {
+        "order": 17,
+        "label": "Secondary Icon Right"
+      }
+    },
+    {
+      "name": "c-button-18",
+      "type": "registry:block",
+      "title": "Outline button with an icon on the left",
+      "categories": [
+        "button"
+      ],
+      "description": "Outline button with an icon on the left",
+      "descriptionLong": "Outline button with an icon on the left. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-18 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-18.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-18.tsx"
+        }
+      ],
+      "meta": {
+        "order": 18,
+        "label": "Outline Icon Left"
+      }
+    },
+    {
+      "name": "c-button-19",
+      "type": "registry:block",
+      "title": "Outline button with an icon on the right",
+      "categories": [
+        "button"
+      ],
+      "description": "Outline button with an icon on the right",
+      "descriptionLong": "Outline button with an icon on the right. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-19 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-19.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-19.tsx"
+        }
+      ],
+      "meta": {
+        "order": 19,
+        "label": "Outline Icon Right"
+      }
+    },
+    {
+      "name": "c-button-20",
+      "type": "registry:block",
+      "title": "Ghost button with an icon on the left",
+      "categories": [
+        "button"
+      ],
+      "description": "Ghost button with an icon on the left",
+      "descriptionLong": "Ghost button with an icon on the left. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-20 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-20.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-20.tsx"
+        }
+      ],
+      "meta": {
+        "order": 20,
+        "label": "Ghost Icon Left"
+      }
+    },
+    {
+      "name": "c-button-21",
+      "type": "registry:block",
+      "title": "Ghost button with an icon on the right",
+      "categories": [
+        "button"
+      ],
+      "description": "Ghost button with an icon on the right",
+      "descriptionLong": "Ghost button with an icon on the right. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-21 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-21.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-21.tsx"
+        }
+      ],
+      "meta": {
+        "order": 21,
+        "label": "Ghost Icon Right"
+      }
+    },
+    {
+      "name": "c-button-22",
+      "type": "registry:block",
+      "title": "Destructive button with an icon on the left",
+      "categories": [
+        "button"
+      ],
+      "description": "Destructive button with an icon on the left",
+      "descriptionLong": "Destructive button with an icon on the left. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-22 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-22.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-22.tsx"
+        }
+      ],
+      "meta": {
+        "order": 22,
+        "label": "Destructive Icon Left"
+      }
+    },
+    {
+      "name": "c-button-23",
+      "type": "registry:block",
+      "title": "Destructive button with an icon on the right",
+      "categories": [
+        "button"
+      ],
+      "description": "Destructive button with an icon on the right",
+      "descriptionLong": "Destructive button with an icon on the right. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-23 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-23.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-23.tsx"
+        }
+      ],
+      "meta": {
+        "order": 23,
+        "label": "Destructive Icon Right"
+      }
+    },
+    {
+      "name": "c-button-24",
+      "type": "registry:block",
+      "title": "Extra small icon button",
+      "categories": [
+        "button"
+      ],
+      "description": "Extra small icon button",
+      "descriptionLong": "Extra small icon button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-24 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-24.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-24.tsx"
+        }
+      ],
+      "meta": {
+        "order": 24,
+        "label": "Extra Small Icon"
+      }
+    },
+    {
+      "name": "c-button-25",
+      "type": "registry:block",
+      "title": "Small icon button",
+      "categories": [
+        "button"
+      ],
+      "description": "Small icon button",
+      "descriptionLong": "Small icon button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-25 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-25.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-25.tsx"
+        }
+      ],
+      "meta": {
+        "order": 25,
+        "label": "Small Icon"
+      }
+    },
+    {
+      "name": "c-button-26",
+      "type": "registry:block",
+      "title": "Large (lg) icon-only button",
+      "categories": [
+        "button"
+      ],
+      "description": "Large (lg) icon-only button",
+      "descriptionLong": "Large (lg) icon-only button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-26 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-26.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-26.tsx"
+        }
+      ],
+      "meta": {
+        "order": 26,
+        "label": "Large Icon"
+      }
+    },
+    {
+      "name": "c-button-27",
+      "type": "registry:block",
+      "title": "Button rendered as a Next.js Link",
+      "categories": [
+        "button"
+      ],
+      "description": "Button rendered as a Next.js Link",
+      "descriptionLong": "Button rendered as a Next.js Link. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-27 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-27.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-27.tsx"
+        }
+      ],
+      "meta": {
+        "order": 27,
+        "label": "Next Link"
+      }
+    },
+    {
+      "name": "c-button-28",
+      "type": "registry:block",
+      "title": "Link button with an icon on the left",
+      "categories": [
+        "button"
+      ],
+      "description": "Link button with an icon on the left",
+      "descriptionLong": "Link button with an icon on the left. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-28 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-28.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-28.tsx"
+        }
+      ],
+      "meta": {
+        "order": 28,
+        "label": "Link Icon Left"
+      }
+    },
+    {
+      "name": "c-button-29",
+      "type": "registry:block",
+      "title": "Link button with an icon on the right",
+      "categories": [
+        "button"
+      ],
+      "description": "Link button with an icon on the right",
+      "descriptionLong": "Link button with an icon on the right. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-29 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-29.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-29.tsx"
+        }
+      ],
+      "meta": {
+        "order": 29,
+        "label": "Link Icon Right"
+      }
+    },
+    {
+      "name": "c-button-30",
+      "type": "registry:block",
+      "title": "Large button with an icon on the left",
+      "categories": [
+        "button"
+      ],
+      "description": "Large button with an icon on the left",
+      "descriptionLong": "Large button with an icon on the left. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-30 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-30.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-30.tsx"
+        }
+      ],
+      "meta": {
+        "order": 30,
+        "label": "Large Icon Left"
+      }
+    },
+    {
+      "name": "c-button-31",
+      "type": "registry:block",
+      "title": "Large button with an icon on the right",
+      "categories": [
+        "button"
+      ],
+      "description": "Large button with an icon on the right",
+      "descriptionLong": "Large button with an icon on the right. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-31 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-31.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-31.tsx"
+        }
+      ],
+      "meta": {
+        "order": 31,
+        "label": "Large Icon Right"
+      }
+    },
+    {
+      "name": "c-button-32",
+      "type": "registry:block",
+      "title": "Outline button with an invalid state",
+      "categories": [
+        "button"
+      ],
+      "description": "Outline button with an invalid state",
+      "descriptionLong": "Outline button with an invalid state. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-32 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-32.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-32.tsx"
+        }
+      ],
+      "meta": {
+        "order": 32,
+        "label": "Outline Invalid"
+      }
+    },
+    {
+      "name": "c-button-33",
+      "type": "registry:block",
+      "title": "Ghost button with an invalid state",
+      "categories": [
+        "button"
+      ],
+      "description": "Ghost button with an invalid state",
+      "descriptionLong": "Ghost button with an invalid state. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-33 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-33.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-33.tsx"
+        }
+      ],
+      "meta": {
+        "order": 33,
+        "label": "Ghost Invalid"
+      }
+    },
+    {
+      "name": "c-button-34",
+      "type": "registry:block",
+      "title": "Button with an icon on the left",
+      "categories": [
+        "button"
+      ],
+      "description": "Button with an icon on the left",
+      "descriptionLong": "Button with an icon on the left. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-34 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-34.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-34.tsx"
+        }
+      ],
+      "meta": {
+        "order": 34,
+        "label": "Email Login"
+      }
+    },
+    {
+      "name": "c-button-35",
+      "type": "registry:block",
+      "title": "Ghost button with more/less toggle",
+      "categories": [
+        "button"
+      ],
+      "description": "Ghost button with more/less toggle",
+      "descriptionLong": "Ghost button with more/less toggle. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-35 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-35.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-35.tsx"
+        }
+      ],
+      "meta": {
+        "order": 35,
+        "label": "More Less Toggle"
+      }
+    },
+    {
+      "name": "c-button-36",
+      "type": "registry:block",
+      "title": "Social login buttons with Remix Icons",
+      "categories": [
+        "button"
+      ],
+      "description": "Social login buttons with Remix Icons",
+      "descriptionLong": "Social login buttons with Remix Icons. Built with the Button component. Uses @remixicon/react alongside the shadcn primitives. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-36 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "@remixicon/react"
+      ],
+      "files": [
+        {
+          "path": "components/button/c-button-36.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-36.tsx"
+        }
+      ],
+      "meta": {
+        "order": 36,
+        "label": "Outline Social Icons"
+      }
+    },
+    {
+      "name": "c-button-37",
+      "type": "registry:block",
+      "title": "Outline like button with count",
+      "categories": [
+        "button"
+      ],
+      "description": "Outline like button with count",
+      "descriptionLong": "Outline like button with count. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-37 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-37.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-37.tsx"
+        }
+      ],
+      "meta": {
+        "order": 37,
+        "label": "Like Count"
+      }
+    },
+    {
+      "name": "c-button-38",
+      "type": "registry:block",
+      "title": "Star button with count",
+      "categories": [
+        "button"
+      ],
+      "description": "Star button with count",
+      "descriptionLong": "Star button with count. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-38 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-38.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-38.tsx"
+        }
+      ],
+      "meta": {
+        "order": 38,
+        "label": "Star Count"
+      }
+    },
+    {
+      "name": "c-button-39",
+      "type": "registry:block",
+      "title": "Button with an unread badge",
+      "categories": [
+        "button"
+      ],
+      "description": "Button with an unread badge",
+      "descriptionLong": "Button with an unread badge. Built by composing Badge, Button. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-39 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-39.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-39.tsx"
+        }
+      ],
+      "meta": {
+        "order": 39,
+        "label": "Unread Badge"
+      }
+    },
+    {
+      "name": "c-button-40",
+      "type": "registry:block",
+      "title": "Button with icon, label, and shortcut keys",
+      "categories": [
+        "button"
+      ],
+      "description": "Button with icon, label, and shortcut keys",
+      "descriptionLong": "Button with icon, label, and shortcut keys. Built by composing Button, Kbd. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-40 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "kbd"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-40.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-40.tsx"
+        }
+      ],
+      "meta": {
+        "order": 40,
+        "label": "Shortcut Keys"
+      }
+    },
+    {
+      "name": "c-button-41",
+      "type": "registry:block",
+      "title": "Copy button with feedback",
+      "categories": [
+        "button"
+      ],
+      "description": "Copy button with feedback",
+      "descriptionLong": "Copy button with feedback. Built by composing Button, Use Copy To Clipboard. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-41 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "use-copy-to-clipboard"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-41.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-41.tsx"
+        }
+      ],
+      "meta": {
+        "order": 41,
+        "label": "Copy Feedback"
+      }
+    },
+    {
+      "name": "c-button-42",
+      "type": "registry:block",
+      "title": "Icon-only copy button with feedback",
+      "categories": [
+        "button"
+      ],
+      "description": "Icon-only copy button with feedback",
+      "descriptionLong": "Icon-only copy button with feedback. Built by composing Button, Tooltip, Use Copy To Clipboard. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-42 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "tooltip",
+        "use-copy-to-clipboard"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-42.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-42.tsx"
+        }
+      ],
+      "meta": {
+        "order": 42,
+        "label": "Icon Copy"
+      }
+    },
+    {
+      "name": "c-button-43",
+      "type": "registry:block",
+      "title": "Animated hamburger / close toggle button",
+      "categories": [
+        "button"
+      ],
+      "description": "Animated hamburger / close toggle button",
+      "descriptionLong": "Animated hamburger / close toggle button. Built with the Button component. Uses cn alongside the shadcn primitives. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-43 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button/c-button-43.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-43.tsx"
+        }
+      ],
+      "meta": {
+        "order": 43,
+        "label": "Hamburger Toggle"
+      }
+    },
+    {
+      "name": "c-button-44",
+      "type": "registry:block",
+      "title": "Async action button with loading and success states",
+      "categories": [
+        "button"
+      ],
+      "description": "Async action button with loading and success states",
+      "descriptionLong": "Async action button with loading and success states. Built by composing Button, Spinner. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-44 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-44.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-44.tsx"
+        }
+      ],
+      "meta": {
+        "order": 44,
+        "label": "Async Action"
+      }
+    },
+    {
+      "name": "c-button-45",
+      "type": "registry:block",
+      "title": "Outline button with inline count badge",
+      "categories": [
+        "button"
+      ],
+      "description": "Outline button with inline count badge",
+      "descriptionLong": "Outline button with inline count badge. Built by composing Badge, Button. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-45 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-45.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-45.tsx"
+        }
+      ],
+      "meta": {
+        "order": 45,
+        "label": "Inline Count"
+      }
+    },
+    {
+      "name": "c-button-46",
+      "type": "registry:block",
+      "title": "Button with status dot badge",
+      "categories": [
+        "button"
+      ],
+      "description": "Button with status dot badge",
+      "descriptionLong": "Button with status dot badge. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-46 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-46.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-46.tsx"
+        }
+      ],
+      "meta": {
+        "order": 46,
+        "label": "Status Dot"
+      }
+    },
+    {
+      "name": "c-button-47",
+      "type": "registry:block",
+      "title": "Ghost button with a status badge",
+      "categories": [
+        "button"
+      ],
+      "description": "Ghost button with a status badge",
+      "descriptionLong": "Ghost button with a status badge. Built by composing Badge, Button. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-47 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-47.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-47.tsx"
+        }
+      ],
+      "meta": {
+        "order": 47,
+        "label": "Status Badge"
+      }
+    },
+    {
+      "name": "c-button-48",
+      "type": "registry:block",
+      "title": "Icon button with notification badge",
+      "categories": [
+        "button"
+      ],
+      "description": "Icon button with notification badge",
+      "descriptionLong": "Icon button with notification badge. Built by composing Badge, Button. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-48 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-48.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-48.tsx"
+        }
+      ],
+      "meta": {
+        "order": 48,
+        "label": "Notification Badge"
+      }
+    },
+    {
+      "name": "c-button-49",
+      "type": "registry:block",
+      "title": "Go back link button",
+      "categories": [
+        "button"
+      ],
+      "description": "Go back link button",
+      "descriptionLong": "Go back link button. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-49 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-49.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-49.tsx"
+        }
+      ],
+      "meta": {
+        "order": 49,
+        "label": "Go Back"
+      }
+    },
+    {
+      "name": "c-button-50",
+      "type": "registry:block",
+      "title": "Go back link button with animation",
+      "categories": [
+        "button"
+      ],
+      "description": "Go back link button with animation",
+      "descriptionLong": "Go back link button with animation. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-50 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-50.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-50.tsx"
+        }
+      ],
+      "meta": {
+        "order": 50,
+        "label": "Animated Go Back"
+      }
+    },
+    {
+      "name": "c-button-51",
+      "type": "registry:block",
+      "title": "Expanding button from icon to label",
+      "categories": [
+        "button"
+      ],
+      "description": "Expanding button from icon to label",
+      "descriptionLong": "Expanding button from icon to label. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-51 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-51.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-51.tsx"
+        }
+      ],
+      "meta": {
+        "order": 51,
+        "label": "Expanding Button"
+      }
+    },
+    {
+      "name": "c-button-52",
+      "type": "registry:block",
+      "title": "Multi-line button with icon, title & description",
+      "categories": [
+        "button"
+      ],
+      "description": "Multi-line button with icon, title & description",
+      "descriptionLong": "Multi-line button with icon, title & description. Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-52 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-52.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-52.tsx"
+        }
+      ],
+      "meta": {
+        "order": 52,
+        "label": "Title & Description"
+      }
+    },
+    {
+      "name": "c-button-53",
+      "type": "registry:block",
+      "title": "Sliding Icon Button (Hover reveal)",
+      "categories": [
+        "button"
+      ],
+      "description": "Sliding Icon Button (Hover reveal)",
+      "descriptionLong": "Sliding Icon Button (Hover reveal). Built with the Button component. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-53 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-53.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-53.tsx"
+        }
+      ],
+      "meta": {
+        "order": 53,
+        "label": "Sliding Arrow"
+      }
+    },
+    {
+      "name": "c-button-54",
+      "type": "registry:block",
+      "title": "Shortcut Tooltip Button (Kbd hints)",
+      "categories": [
+        "button"
+      ],
+      "description": "Shortcut Tooltip Button (Kbd hints)",
+      "descriptionLong": "Shortcut Tooltip Button (Kbd hints). Built by composing Button, Kbd, Tooltip. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-54 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "kbd",
+        "tooltip"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-54.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-54.tsx"
+        }
+      ],
+      "meta": {
+        "order": 54,
+        "label": "Shortcut Tooltip"
+      }
+    },
+    {
+      "name": "c-button-55",
+      "type": "registry:block",
+      "title": "Button with avatar",
+      "categories": [
+        "button"
+      ],
+      "description": "Button with avatar",
+      "descriptionLong": "Button with avatar. Built by composing Avatar, Button. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-55 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-55.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-55.tsx"
+        }
+      ],
+      "meta": {
+        "order": 55,
+        "label": "Avatar"
+      }
+    },
+    {
+      "name": "c-button-56",
+      "type": "registry:block",
+      "title": "Outline button with avatar",
+      "categories": [
+        "button"
+      ],
+      "description": "Outline button with avatar",
+      "descriptionLong": "Outline button with avatar. Built by composing Avatar, Button. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-56 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-56.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-56.tsx"
+        }
+      ],
+      "meta": {
+        "order": 56,
+        "label": "Outline Avatar"
+      }
+    },
+    {
+      "name": "c-button-57",
+      "type": "registry:block",
+      "title": "Small button with avatar",
+      "categories": [
+        "button"
+      ],
+      "description": "Small button with avatar",
+      "descriptionLong": "Small button with avatar. Built by composing Avatar, Button. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-57 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-57.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-57.tsx"
+        }
+      ],
+      "meta": {
+        "order": 57,
+        "label": "Small Avatar"
+      }
+    },
+    {
+      "name": "c-button-58",
+      "type": "registry:block",
+      "title": "Small outline button with avatar",
+      "categories": [
+        "button"
+      ],
+      "description": "Small outline button with avatar",
+      "descriptionLong": "Small outline button with avatar. Built by composing Avatar, Button. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-58 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button/c-button-58.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-58.tsx"
+        }
+      ],
+      "meta": {
+        "order": 58,
+        "label": "Small Outline Avatar"
+      }
+    },
+    {
+      "name": "c-button-59",
+      "type": "registry:block",
+      "title": "Social login buttons with Remix icons",
+      "categories": [
+        "button"
+      ],
+      "description": "Social login buttons with Remix icons",
+      "descriptionLong": "Social login buttons with Remix icons. Built with the Button component. Uses @remixicon/react alongside the shadcn primitives. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-59 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "@remixicon/react"
+      ],
+      "files": [
+        {
+          "path": "components/button/c-button-59.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-59.tsx"
+        }
+      ],
+      "meta": {
+        "order": 59,
+        "label": "Social Login Stack"
+      }
+    },
+    {
+      "name": "c-button-60",
+      "type": "registry:block",
+      "title": "Social icon-only buttons with Remix icons",
+      "categories": [
+        "button"
+      ],
+      "description": "Social icon-only buttons with Remix icons",
+      "descriptionLong": "Social icon-only buttons with Remix icons. Built with the Button component. Uses @remixicon/react alongside the shadcn primitives. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-60 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "@remixicon/react"
+      ],
+      "files": [
+        {
+          "path": "components/button/c-button-60.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-60.tsx"
+        }
+      ],
+      "meta": {
+        "order": 60,
+        "label": "Colored Social Icons"
+      }
+    },
+    {
+      "name": "c-button-61",
+      "type": "registry:block",
+      "title": "Theme toggle button with animated moon and sun icons",
+      "categories": [
+        "button"
+      ],
+      "description": "Theme toggle button with animated moon and sun icons",
+      "descriptionLong": "Theme toggle button with animated moon and sun icons. Built with the Button component. Uses cn alongside the shadcn primitives. A free, open source shadcn button example you can install with npx shadcn@latest add @reui/c-button-61 and edit as your own code.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button/c-button-61.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-61.tsx"
+        }
+      ],
+      "meta": {
+        "order": 61,
+        "label": "Theme Toggle"
+      }
+    }
+  ]
+}

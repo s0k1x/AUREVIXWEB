@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Right click actions on a file, row or canvas area, such as copy, paste, share and delete",
+      "Toggles and single choice settings changed from a right click, such as visible bars or the theme",
+      "Long command lists split into headed sections, key hints or a nested flyout of extra tools"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Actions that must stay discoverable, opened from a visible button like a row's more icon",
+        "instead": "dropdown-menu"
+      },
+      {
+        "when": "A persistent bar of File, Edit and View lists across the top of an app window",
+        "instead": "menubar"
+      },
+      {
+        "when": "Site links in a header bar whose panels open on hover or click",
+        "instead": "navigation-menu"
+      }
+    ],
+    "agentNotes": [
+      "Each dashed `ContextMenuTrigger` stands in for your target; wrap the row or card in it, or pass it through `render` on base and `asChild` on radix",
+      "`ContextMenuLabel` throws on the base twin outside a `ContextMenuGroup` or `ContextMenuRadioGroup`; the radix one renders anywhere"
+    ]
+  }
+}

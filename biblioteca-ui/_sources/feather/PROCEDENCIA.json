@@ -1,0 +1,22 @@
+{
+  "repo": "https://github.com/feathericons/feather",
+  "commit": "3dc050d97405062eba78aa57115c0a15c63abdaa",
+  "commit_date": "2025-03-10T19:18:59-07:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 343,
+  "files_skipped": {
+    "media": 0,
+    "lockfile": 1,
+    "too_large": 0,
+    "symlink": 0,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

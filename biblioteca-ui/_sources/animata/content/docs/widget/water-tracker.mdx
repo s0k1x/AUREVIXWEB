@@ -1,0 +1,50 @@
+---
+title: Water Tracker
+description: Track daily water intake with a glanceable fill bar and one-tap top-ups.
+labels: ["requires interaction", "click"]
+author: Sumingurung9
+---
+
+<ComponentPreview name="widget-water-tracker--morning-start" />
+
+## How it works
+
+`dailyGoal` and `sipMl` set the target and increment size. Use `defaultIntake` for an uncontrolled demo, or `intake` with `onIntakeChange` when your app owns hydration state. The right edge is a CSS height transition — no chart library — so the tile stays lightweight for bento grids.
+
+## Installation
+
+### CLI
+
+<RegistryInstall category="widget" name="water-tracker" />
+
+### Manual
+
+<Steps>
+
+<Step>Install dependencies</Step>
+
+```bash
+npm install lucide-react
+```
+
+<Step>Run the following command</Step>
+
+It will create a new file called `water-tracker.tsx` inside the `components/animata/widget` directory.
+
+```bash
+mkdir -p components/animata/widget && touch components/animata/widget/water-tracker.tsx
+```
+
+<Step>Paste the code</Step>
+
+Open the newly created file and paste the following code:
+
+```jsx file=<rootDir>/animata/widget/water-tracker.tsx
+
+```
+
+</Steps>
+
+## Credits
+
+Built by [Sumin Gurung](https://github.com/GrgSumin)

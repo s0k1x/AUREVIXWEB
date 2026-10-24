@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Team calendars in month, week, day and agenda views where events are added, edited and dragged",
+      "Room and appointment bookings laid out as one column per resource or as a single day of open slots",
+      "Project and campaign plans drawn as color coded bars spanning several days of a month"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A finished full page scheduling workspace, such as a hotel desk, shift roster or clinic",
+        "instead": "application/event-calendar"
+      },
+      {
+        "when": "A compact booking card where someone picks a day, then a free time slot, and confirms",
+        "instead": "application/schedule"
+      },
+      {
+        "when": "A plain date or date range input in a form, with no hours, events or dragging",
+        "instead": "calendar"
+      }
+    ],
+    "agentNotes": [
+      "No example passes `onEventsChange`, so drags, resizes and `apiRef` edits stay in calendar state and are lost on reload",
+      "New event ids come from a `useRef` counter that restarts at 0 on every mount, so take ids from your store once events persist"
+    ]
+  }
+}

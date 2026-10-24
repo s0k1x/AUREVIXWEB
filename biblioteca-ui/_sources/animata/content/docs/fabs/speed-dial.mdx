@@ -1,0 +1,57 @@
+---
+title: Speed Dial
+description: FAB that expands into a row of actions on click. CSS stagger, no hover gate.
+author: masabinhok
+labels: ["requires interaction", "click"]
+---
+
+<ComponentPreview name="fabs-speed-dial--primary" />
+
+## Installation
+
+### CLI
+
+<RegistryInstall category="fabs" name="speed-dial" />
+
+### Manual
+
+<Steps>
+<Step>Install dependencies</Step>
+
+```bash
+npm install lucide-react
+```
+
+<Step>Run the following command</Step>
+
+It will create `speed-dial.tsx` and the co-located `speed-dial.css` inside `components/animata/fabs`.
+
+```bash
+mkdir -p components/animata/fabs && touch components/animata/fabs/speed-dial.tsx components/animata/fabs/speed-dial.css
+```
+
+<Step>Paste the code</Step>{" "}
+
+```jsx file=<rootDir>/animata/fabs/speed-dial.css
+
+```
+
+```jsx file=<rootDir>/animata/fabs/speed-dial.tsx
+
+```
+
+</Steps>
+
+## How it works
+
+Click opens the menu; hover doesn't. That matters on touch devices. The trigger is a `<button>` with `aria-expanded`, `aria-haspopup="menu"`, and `aria-controls` pointing at the action list, which only mounts while open.
+
+Each action is a `role="menuitem"` at `size-11` (44×44 px). Labels live in `aria-label` and an `sr-only` span, not beside the icon. The action list is positioned absolutely (`left-full`, `bottom-full`, and so on relative to `direction`) so the FAB doesn't jump when items appear.
+
+Motion is CSS only: direction-specific `@keyframes` in the co-located `speed-dial.css`, 120ms per item, staggered with `animation-delay: calc(12ms + var(--i) * 22ms)`. No Motion package. The plus icon rotates 45° via `transition-transform` over 150ms. Reduced-motion users get the layout without the keyframes.
+
+Keyboard: arrows move along the axis you picked with `direction`; Home and End hit the first and last item; Escape or an outside tap closes and refocuses the trigger.
+
+## Credits
+
+Built by [Sabin Shrestha](https://github.com/masabinhok)

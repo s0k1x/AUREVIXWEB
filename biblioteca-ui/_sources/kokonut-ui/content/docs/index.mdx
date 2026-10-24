@@ -1,0 +1,60 @@
+---
+title: Installation
+description: Install KokonutUI components in any React or Next.js project with the shadcn CLI, using namespaces or direct registry URLs. No extra setup required.
+---
+
+<SetupChoice />
+
+## Add the registry
+
+Kokonut UI is a shadcn/ui registry. The shadcn CLI reads its configuration from `components.json`; if your project doesn't have one yet, create it:
+
+<Command run="shadcn@latest init" />
+
+Then add the `@kokonutui` namespace to it, so components install by name:
+
+```json title="components.json"
+{
+  "registries": {
+    "@kokonutui": "https://kokonutui.com/r/{name}.json"
+  }
+}
+```
+
+<Note title="Copying code instead?">
+  `components.json` is only needed for the CLI. If you copy a component's source by hand, you can skip it, but you'll have to install its dependencies yourself.
+</Note>
+
+## Install the utilities
+
+Components are styled with [Tailwind CSS v4](https://tailwindcss.com/docs/installation/framework-guides/nextjs), so make sure it's set up. Most of them also use the `cn` helper:
+
+<Command run="shadcn@latest add https://kokonutui.com/r/utils.json" />
+
+## Add a component
+
+Name the component. The CLI writes it to `components/kokonutui/` and installs what it needs, such as [lucide-react](https://lucide.dev/guide/installation) icons, [shadcn/ui](https://ui.shadcn.com/) primitives and `motion`:
+
+<Command run="shadcn@latest add @kokonutui/particle-button" />
+
+Then use it like any component in your project:
+
+```tsx title="app/page.tsx"
+import ParticleButton from "@/components/kokonutui/particle-button";
+
+export default function Page() {
+  return <ParticleButton />;
+}
+```
+
+Each component page lists the packages it installs above its demo. Prefer the CLI over copying the source: it brings every file and dependency the component needs.
+
+## Use an AI agent
+
+Claude Code, Cursor, VS Code and Codex can find and install components for you through the shadcn MCP server. See [Agents](/docs/agents) to connect your editor and add a rules file.
+
+## Monorepos
+
+In a monorepo, pass the workspace the component belongs to with `-c`:
+
+<Command run="shadcn@latest add @kokonutui/particle-button -c ./apps/www" />

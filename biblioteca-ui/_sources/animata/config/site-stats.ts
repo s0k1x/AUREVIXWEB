@@ -1,0 +1,41 @@
+import type { docs as allDocs } from "#site/content";
+
+import { getPublishedDocs } from "@/lib/published-docs";
+
+/** Updated manually when marketing copy needs to reflect GitHub stars. */
+const GITHUB_STARS = 2802;
+
+const NON_COMPONENT_SECTIONS = new Set(["contributing", "changelog"]);
+
+function isPublishedComponentDoc(doc: (typeof allDocs)[number]) {
+  if (!doc.published) return false;
+  if (doc.slug === "/docs" || doc.slug === "/docs/setup") return false;
+
+  const parts = doc.slugAsParams.split("/");
+  if (NON_COMPONENT_SECTIONS.has(parts[0] ?? "")) return false;
+
+  // Category index pages are single-segment (e.g. "button").
+  return parts.length >= 2;
+}
+
+const publishedComponentCount = getPublishedDocs().filter(isPublishedComponentDoc).length;
+
+function formatStatPlus(value: number) {
+  return `${value.toLocaleString("en-US")}+`;
+}
+
+function formatStarsCompact(value: number) {
+  if (value >= 1000) {
+    const compact = (value / 1000).toFixed(value >= 10_000 ? 0 : 1).replace(/\.0$/, "");
+    return `${compact}k`;
+  }
+  return value.toLocaleString("en-US");
+}
+
+export const siteStats = {
+  githubStars: GITHUB_STARS,
+  githubStarsFormatted: formatStatPlus(GITHUB_STARS),
+  githubStarsCompact: formatStarsCompact(GITHUB_STARS),
+  componentCount: publishedComponentCount,
+  componentsFormatted: formatStatPlus(publishedComponentCount),
+} as const;

@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Settings tuned by dragging along a bounded scale, such as volume, opacity or color temperature",
+      "Ranges picked with 2 or more thumbs on a single track, laid out horizontally or vertically",
+      "Durations, storage sizes and scores read off tick marks, scale labels, a value bubble or an emoji"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A complete shop facet panel with brands, colors, sizes and a price range",
+        "instead": "ecommerce/filter-sidebar"
+      },
+      {
+        "when": "A value typed straight into a box, such as an exact price, with no scale to drag",
+        "instead": "input"
+      },
+      {
+        "when": "A read only bar that reports how far a task or upload has got",
+        "instead": "progress"
+      }
+    ],
+    "agentNotes": [
+      "The base `Slider` draws a thumb per entry of an array `value` or `defaultValue`; a plain number gets 2 stacked thumbs and 2 tab stops",
+      "`htmlFor` on a `Label` reaches only the root div of the base `Slider`, not its thumb input; name the slider with aria-labelledby instead",
+      "Base `onValueChange` is typed as a number or a read only array, so narrow it with `Array.isArray`; the radix twin passes a number array"
+    ]
+  }
+}

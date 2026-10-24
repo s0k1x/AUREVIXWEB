@@ -1,0 +1,166 @@
+[
+  {
+    "name": "c-context-menu-1",
+    "title": "Basic context menu.",
+    "label": "Basic",
+    "description": "Basic context menu.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The bare minimum of 3 plain text rows in a single group, with the middle row disabled",
+      "whenNotToUse": [
+        {
+          "when": "A long list that needs headed sections and a key hint on every row",
+          "instead": "c-context-menu-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-context-menu-2",
+    "title": "Context menu with icons for common actions.",
+    "label": "Icons",
+    "description": "Context menu with icons for common actions.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "Clipboard commands, Copy, Cut and Paste, each with a leading icon, and a destructive Delete below a divider",
+      "whenNotToUse": [
+        {
+          "when": "Record actions such as edit, share and archive rather than clipboard commands",
+          "instead": "c-context-menu-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-context-menu-3",
+    "title": "Context menu with keyboard shortcuts.",
+    "label": "Shortcuts",
+    "description": "Context menu with keyboard shortcuts.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "Navigation and save commands with a trailing key hint on each row and Forward disabled",
+      "agentNotes": [
+        "`ContextMenuShortcut` is a plain span that only prints the key hint; bind the Save and Reload keys in your own keydown handler"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Key hints sorted under File and Edit headings",
+          "instead": "c-context-menu-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-context-menu-4",
+    "title": "Context menu with nested submenus.",
+    "label": "Nested Submenus",
+    "description": "Context menu with nested submenus.",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A More Tools flyout of 3 divided groups, Delete last, below 2 clipboard rows with key hints",
+      "whenNotToUse": [
+        {
+          "when": "A flat list with every action, Delete included, at the top level",
+          "instead": "c-context-menu-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-context-menu-5",
+    "title": "Context menu labels and separators.",
+    "label": "Labels & Separators",
+    "description": "Context menu labels and separators.",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A list of 4 groups, File and Edit headed by labels, with a key hint on every row down to a destructive Delete",
+      "whenNotToUse": [
+        {
+          "when": "A short list of 3 rows with no headings or key hints",
+          "instead": "c-context-menu-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-context-menu-6",
+    "title": "Context menu with checkbox items.",
+    "label": "Checkbox Items",
+    "description": "Context menu with checkbox items.",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A list of 3 browser view toggles that show a check when on, 2 of them on at load",
+      "agentNotes": [
+        "Base items keep their own state from `defaultChecked`, so nothing reads them; pass `checked` and `onCheckedChange` as the radix twin does"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A setting where picking one option clears the others",
+          "instead": "c-context-menu-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-context-menu-7",
+    "title": "Context menu with radio items.",
+    "label": "Radio Items",
+    "description": "Context menu with radio items.",
+    "order": 7,
+    "guidance": {
+      "bestFor": "A person picker and a Light, Dark or System theme switch, each a headed radio set held in state",
+      "agentNotes": [
+        "`user` and `theme` keep the picks in local state through `onValueChange`; persist them or lift them into your app from there",
+        "The 2 people are hardcoded `ContextMenuRadioItem` rows keyed by `value`; map them from your own user list"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Options that each switch on or off without affecting the rest",
+          "instead": "c-context-menu-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-context-menu-8",
+    "title": "Context menu with destructive actions.",
+    "label": "Destructive Actions",
+    "description": "Context menu with destructive actions.",
+    "order": 8,
+    "guidance": {
+      "bestFor": "Edit and Share over a divider, then Archive and a destructive Delete, every row led by an icon",
+      "agentNotes": [
+        "The destructive `variant` only colors Delete; it runs nothing and asks for no confirmation, so open an alert dialog from it"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Copy, cut and paste commands for selected text or files",
+          "instead": "c-context-menu-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-context-menu-9",
+    "title": "Context menu with different alignment sides.",
+    "label": "Alignment Sides",
+    "description": "Context menu with different alignment sides.",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A row of 6 triggers that each open on a different side, the logical inline start and end included",
+      "agentNotes": [
+        "`side` places `ContextMenuContent` on the base twin only; Radix pins it right of the pointer, so the radix twin's 4 triggers open alike"
+      ]
+    }
+  },
+  {
+    "name": "c-context-menu-10",
+    "title": "Context menu used inside a dialog component.",
+    "label": "Inside Dialog",
+    "description": "Context menu used inside a dialog component.",
+    "order": 10,
+    "guidance": {
+      "bestFor": "A right click area inside a modal window, with icon rows, a More Options flyout and a destructive Delete"
+    }
+  }
+]

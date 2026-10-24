@@ -1,0 +1,126 @@
+[
+  {
+    "name": "c-tree-1",
+    "title": "Basic tree.",
+    "label": "Basic",
+    "description": "Basic tree.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The bare pattern with nothing added: chevron toggles and text only rows over a CRM outline of leads and accounts",
+      "whenNotToUse": [
+        {
+          "when": "Deep outlines where a line at each level helps the eye follow the nesting",
+          "instead": "c-tree-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tree-2",
+    "title": "Tree with indented lines.",
+    "label": "Indent Lines",
+    "description": "Tree with indented lines.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "Thin vertical guide lines at each indent step behind plain text rows, painted by one gradient on the root",
+      "agentNotes": [
+        "The lines are a `repeating-linear-gradient` in the `Tree` className spaced by `indent`, so a new `indent` moves them with the rows"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Rows that need a folder or file glyph beside each name",
+          "instead": "c-tree-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tree-3",
+    "title": "Tree with custom indent.",
+    "label": "Folder File Icons",
+    "description": "Tree with custom indent.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "Guide lines with a folder glyph that turns into an open folder on expand and a file glyph on every leaf",
+      "whenNotToUse": [
+        {
+          "when": "Plus and minus marks on folders in place of turning chevrons",
+          "instead": "c-tree-4"
+        },
+        {
+          "when": "A code project with a colored glyph for each kind of file",
+          "instead": "c-tree-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tree-4",
+    "title": "Tree with custom indent.",
+    "label": "Plus Minus Toggles",
+    "description": "Tree with custom indent.",
+    "order": 4,
+    "guidance": {
+      "bestFor": "Plus and minus marks on folders in place of chevrons, over guide lines and open or closed folder glyphs",
+      "whenNotToUse": [
+        {
+          "when": "Chevrons that turn as a branch opens, with the same folder glyphs and lines",
+          "instead": "c-tree-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tree-5",
+    "title": "File explorer tree with type icons",
+    "label": "File Explorer",
+    "description": "File explorer tree with type icons",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A code project outline with a colored glyph per file type: amber folders, blue code files, purple stylesheets and yellow JSON",
+      "agentNotes": [
+        "`getFileIcon` maps each `type` to a glyph and color; a type it does not list, such as `config`, falls back to a plain file glyph",
+        "Folder rows come from `isItemFolder` counting `children`, not from `type`, so an empty folder record renders as a leaf"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Folder and file glyphs in one muted color, with guide lines between levels",
+          "instead": "c-tree-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tree-6",
+    "title": "Organization chart tree with avatars",
+    "label": "Org Chart",
+    "description": "Organization chart tree with avatars",
+    "order": 6,
+    "guidance": {
+      "bestFor": "People rows with a photo, name and job title under their manager, nested at a wider 24px step",
+      "agentNotes": [
+        "Each `avatar` is a remote Unsplash URL; `AvatarFallback` shows initials taken from `name` while one loads or if it fails"
+      ]
+    }
+  },
+  {
+    "name": "c-tree-7",
+    "title": "Permissions tree with checkboxes",
+    "label": "Permissions",
+    "description": "Permissions tree with checkboxes",
+    "order": 7,
+    "guidance": {
+      "bestFor": "Role access grouped by area with a checkbox on each action row, plus and minus toggles and 5 grants on load",
+      "agentNotes": [
+        "Grants live in local `checked` state seeded with 5 ids; save them to your API from `togglePermission`",
+        "Only leaf rows render a `Checkbox`, so an area row cannot grant or clear its whole group"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Area rows that tick or clear every action under them and show a mixed state",
+          "instead": "cascader"
+        }
+      ]
+    }
+  }
+]

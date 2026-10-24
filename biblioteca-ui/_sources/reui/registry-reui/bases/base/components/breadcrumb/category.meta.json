@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Location trails on docs, store and admin pages that link back up to each parent level",
+      "Workspace, team and file paths whose levels carry avatars, icons, count badges or button styling",
+      "Deep hierarchies whose middle levels collapse into an ellipsis or a dropdown menu"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A whole top header that pairs the trail with tabs, search, switchers and account menus",
+        "instead": "application/navbar"
+      },
+      {
+        "when": "A full product layout of side navigation, header and content around the trail",
+        "instead": "application/app-shell"
+      },
+      {
+        "when": "A divider line between page sections or groups of toolbar controls",
+        "instead": "separator"
+      }
+    ],
+    "agentNotes": [
+      "`BreadcrumbLink` takes a router link through `render` on the base twin and `asChild` on the radix twin",
+      "Every level is hard coded and each `href` is a hash placeholder; build the `BreadcrumbItem` list from your route tree"
+    ]
+  }
+}

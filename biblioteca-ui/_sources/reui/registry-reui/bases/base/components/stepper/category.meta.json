@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Forms and setup flows split into numbered steps that people move back and forth through",
+      "Shipment, delivery and freight tracking shown as stops with times, ETAs and the leg underway",
+      "Incident, ticket, sales, proposal and review workflows laid out as stages, cards, rows or nested tasks"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A finished screen that runs a billing, invoice or vendor task through numbered steps",
+        "instead": "application/wizard"
+      },
+      {
+        "when": "A complete first run account setup shown right after signup, with invites and goals",
+        "instead": "application/onboarding"
+      },
+      {
+        "when": "A storefront purchase that takes shipping and card details beside the cart total",
+        "instead": "ecommerce/checkout"
+      }
+    ],
+    "agentNotes": [
+      "`StepperTrigger` takes another element through `render` on the base twin and `asChild` on the radix twin",
+      "Trigger ids come from `step` alone, so 2 steppers on one page need their own `id` and `aria-controls` on each `StepperTrigger`",
+      "`StepperContent` unmounts every inactive step, so keep field values in parent state or pass `forceMount`"
+    ]
+  }
+}

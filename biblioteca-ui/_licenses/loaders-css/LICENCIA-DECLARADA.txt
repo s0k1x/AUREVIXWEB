@@ -1,0 +1,6 @@
+El repositorio original no incluye archivo LICENSE.
+- Su README.md (sección "Licence") contiene el texto completo de la licencia MIT
+  con el aviso "Copyright (c) 2016 Connor Atherton" (se conserva en _sources/loaders-css/README.md).
+- Su package.json y el paquete oficial de npm loaders.css@0.1.2 declaran "MIT".
+Repositorio: https://github.com/connoratherton/loaders.css
+La web del autor no se pudo consultar (inaccesible desde el entorno de descarga). Comprobado el 2026-10-24.

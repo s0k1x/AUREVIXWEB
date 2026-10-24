@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Messages, feedback and other free text answers that run over several lines",
+      "Labeled long text fields with a hint under the box, an error state or a disabled state",
+      "Profile bios that count characters toward a limit and grow as the user types"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A comment or prompt box with buttons or a live count inside its border",
+        "instead": "input-group"
+      },
+      {
+        "when": "A modal that asks for a note along with reasons to tick, such as a churn survey",
+        "instead": "application/dialog"
+      },
+      {
+        "when": "A complete page of fields, such as a support ticket or a profile edit, saved together",
+        "instead": "application/form"
+      }
+    ],
+    "agentNotes": [
+      "`Textarea` grows with its text through `field-sizing-content` with no height cap, and Chromium ignores `rows`; set min-h and max-h classes",
+      "Only `aria-invalid` on `Textarea` turns its border red, in every style; a data-invalid flag on `Field` leaves the border as it was"
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+---
+title: Alarm Clock
+description: Toggle one or two alarms on a compact card — built for a morning routine glance.
+labels: ["requires interaction", "toggle"]
+author: Sumingurung9
+---
+
+<ComponentPreview name="widget-alarm-clock--weekday-routine" />
+
+## How it works
+
+Each entry in `alarms` needs `time`, `schedule`, and a stable `id` for toggle state. `defaultEnabledIds` sets which alarms start on. The list is capped at two rows so the tile stays readable; add more alarms in your app screen, not on the widget.
+
+## Installation
+
+### CLI
+
+<RegistryInstall category="widget" name="alarm-clock" />
+
+### Manual
+
+<Steps>
+
+<Step>Install dependencies</Step>
+
+```bash
+npm install lucide-react
+```
+
+<Step>Run the following command</Step>
+
+It will create a new file called `alarm-clock.tsx` inside the `components/animata/widget` directory.
+
+```bash
+mkdir -p components/animata/widget && touch components/animata/widget/alarm-clock.tsx
+```
+
+<Step>Paste the code</Step>
+
+Open the newly created file and paste the following code:
+
+```jsx file=<rootDir>/animata/widget/alarm-clock.tsx
+
+```
+
+</Steps>
+
+## Credits
+
+Built by [Sumin Gurung](https://github.com/GrgSumin)

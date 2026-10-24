@@ -1,0 +1,50 @@
+---
+title: Animated Gradient Text
+description: A component to animate the text using gradient
+author: harimanok_
+---
+
+<ComponentPreview name="text-animated-gradient-text--primary" />
+
+## Installation
+
+### CLI
+
+<RegistryInstall category="text" name="animated-gradient-text" />
+
+### Manual
+
+<Steps>
+
+<Step>Add to your CSS</Step>
+```css
+@keyframes bg-position {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+@theme {
+  --animate-bg-position: bg-position 3s infinite alternate;
+}
+```
+
+<Step>Run the following command</Step>
+
+It will create a new file called `animated-gradient-text.tsx` inside the `components/animata/text` directory.
+
+```bash
+mkdir -p components/animata/text && touch components/animata/text/animated-gradient-text.tsx
+```
+
+<Step>Paste the code</Step>
+
+Open the newly created file and paste the following code:
+
+```jsx file=<rootDir>/animata/text/animated-gradient-text.tsx
+
+```
+
+</Steps>
+
+## Credits
+
+Built by [hari](https://github.com/hari)

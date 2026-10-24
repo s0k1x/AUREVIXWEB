@@ -1,0 +1,212 @@
+[
+  {
+    "name": "c-file-upload-1",
+    "title": "Basic file upload",
+    "label": "Basic",
+    "description": "Basic file upload",
+    "order": 1,
+    "guidance": {
+      "bestFor": "A button beside a small square avatar slot that fills with the picked image, with its name and a Remove link below",
+      "agentNotes": [
+        "`useFileUpload` here sets no `maxSize`, so an image of any size is accepted; pass a limit in bytes"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Many images collected in a grid that people drag in from the desktop",
+          "instead": "c-file-upload-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-upload-2",
+    "title": "Avatar upload",
+    "label": "Avatar",
+    "description": "Avatar upload",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A round dashed avatar that is itself the click and drop target, with a corner X, a size hint and an error alert below",
+      "agentNotes": [
+        "`defaultAvatar` shows a saved image, but the corner X renders only for a new pick, so a saved avatar cannot be cleared here",
+        "`onFileChange` fires with null before every new pick as well as on removal, so a null alone does not mean the user cleared it"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A profile picture displayed read only, with nothing to pick or drop",
+          "instead": "avatar"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-upload-3",
+    "title": "Basic drag and drop file upload",
+    "label": "Drag & Drop",
+    "description": "Basic drag and drop file upload",
+    "order": 3,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A single row dashed strip holding an Add files button, 48px thumbnails in line and a count against the limit",
+      "agentNotes": [
+        "The remove `Button` on each thumbnail shows only on hover and has no accessible name; give it a label and a focus style"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Picks that need their names, sizes and a progress bar listed in full",
+          "instead": "c-file-upload-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-upload-4",
+    "title": "Gallery file upload",
+    "label": "Gallery",
+    "description": "Gallery file upload",
+    "order": 4,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A square image grid under a large drop zone, where a zoom button opens the full picture in a Dialog, with a total size and Clear all",
+      "agentNotes": [
+        "`defaultImages` seeds 3 picsum.photos URLs through `initialFiles`; load the user's saved images there or drop the option",
+        "The zoom and remove `Button` pair on each tile appears on hover only with no accessible names; add labels and a focus reveal"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Mixed documents where each one needs a progress bar and a retry",
+          "instead": "c-file-upload-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-upload-5",
+    "title": "Progress file upload",
+    "label": "Progress List",
+    "description": "Progress file upload",
+    "order": 5,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A stacked list of cards, each with a thin bar while sending and an inline retry alert, under completed, failed and uploading counts",
+      "agentNotes": [
+        "`simulateUpload` runs a 500ms timer that advances progress and fails files at random; replace that effect with your upload's progress events",
+        "`defaultImages` adds 2 finished grayscale picsum.photos rows; remove them or map the user's stored files"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Documents laid out in columns for name, type, size and actions",
+          "instead": "c-file-upload-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-upload-6",
+    "title": "Table file upload",
+    "label": "Table",
+    "description": "Table file upload",
+    "order": 6,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Rows in a Table with type and size columns, a ring around each icon while sending, and per row download, delete or retry",
+      "agentNotes": [
+        "The download `Button` in each row has no `onClick`; point it at the file's `preview` URL or your storage link",
+        "`defaultFiles` seeds 4 finished rows whose /media/files URLs are placeholders; replace them with the user's stored files",
+        "`simulateUpload` fakes progress on a timer and marks about 1 in 10 finished files as failed; wire real upload events instead"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A lighter list of cards with a bar under each name and no columns",
+          "instead": "c-file-upload-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-upload-7",
+    "title": "Image upload",
+    "label": "Product Images",
+    "description": "Image upload",
+    "order": 7,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Product shots in a 4 column grid above a dashed Card drop area, with a progress card per new image that counts up its percent",
+      "agentNotes": [
+        "`simulateUpload` fakes progress with a 100ms timer per image; send the file to your API from `addImages` instead",
+        "`visibleDefaultImages` holds 4 picsum.photos samples in their own grid apart from new uploads; replace or drop them",
+        "`onUploadComplete` is passed the list from before the new image was added, so read `images` state for the finished set"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Product shots the user drags into a display order before saving",
+          "instead": "c-file-upload-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-upload-8",
+    "title": "Image upload with sorting.",
+    "label": "Sortable Images",
+    "description": "Image upload with sorting.",
+    "order": 8,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A 5 column grid reordered by a grip handle on hover, where new images join the same order as the sample shots",
+      "agentNotes": [
+        "Each reorder calls `toast` from sonner, which shows nothing unless your app mounts its Toaster",
+        "The order lives only in `allImages` state; save it from the `Sortable` `onValueChange` handler",
+        "`simulateUpload` ticks a fake percent every 100ms; replace it with your upload inside `addImages`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Photos kept in the order they were added, with no dragging",
+          "instead": "c-file-upload-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-upload-9",
+    "title": "Card file upload.",
+    "label": "Preview Cards",
+    "description": "Card file upload.",
+    "order": 9,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Square preview cards in a grid of up to 6 columns, a ring over each while sending and a tooltip retry on failure",
+      "agentNotes": [
+        "`defaultFiles` points 2 of its 3 samples at /media/files placeholder paths; swap in the user's stored files",
+        "`simulateUpload` fakes progress and fails about 1 in 10 files at the end; feed real upload events into `uploadFiles` instead"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Documents listed as rows with type and size columns",
+          "instead": "c-file-upload-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-file-upload-10",
+    "title": "Cover image upload.",
+    "label": "Cover Image",
+    "description": "Cover image upload.",
+    "order": 10,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A wide 21:9 banner with Change Cover and Remove on hover, a percent ring while sending and an image guidelines box below",
+      "agentNotes": [
+        "The empty state prints Max size 5MB as fixed text, so edit it whenever you change `maxSize`",
+        "`simulateUpload` fakes the percent ring on a 200ms timer; start your real upload where `onImageChange` fires",
+        "`defaultCoverImage` is a picsum.photos placeholder; pass the saved cover or start `coverImage` at null"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Several product photos shown side by side in a grid",
+          "instead": "c-file-upload-7"
+        }
+      ]
+    }
+  }
+]

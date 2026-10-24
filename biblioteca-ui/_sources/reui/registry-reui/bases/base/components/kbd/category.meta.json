@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Shortcut hints set beside an action name, in a tooltip or inside a search field",
+      "Single keys and key combinations, as loose caps, a group of caps or keys with an icon",
+      "Reference lists that pair each command name with its key chord"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A searchable palette of actions the user picks from with the keyboard",
+        "instead": "command"
+      },
+      {
+        "when": "A ready made shortcuts panel with search and sections, sliding in from the side",
+        "instead": "application/sheet"
+      },
+      {
+        "when": "A status, tag or count shown as a small chip, not a key to press",
+        "instead": "badge"
+      }
+    ],
+    "agentNotes": [
+      "No example listens for its keys: `Kbd` only draws the label, so bind each shortcut with your own keydown handler",
+      "`Kbd` turns off pointer events and text selection, so it cannot be clicked, used as a hover trigger or selected"
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Single on or off preferences beside a label, such as airplane mode, sign in security or an AI feature",
+      "Grouped notification, privacy and editor preferences in a card, a Frame panel or a dense list",
+      "Options with a supporting sentence set as clickable tiles, including a risky one that erases data"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A complete options page with account, security and notification sections ready to drop in",
+        "instead": "application/settings"
+      },
+      {
+        "when": "A row of pressed buttons that picks a view, an alignment or a time range",
+        "instead": "toggle-group"
+      },
+      {
+        "when": "A consent or terms box that is ticked and sent along with a form",
+        "instead": "checkbox"
+      }
+    ],
+    "agentNotes": [
+      "Every `Switch` here is uncontrolled, seeded by `defaultChecked` or left off, and nothing reads a flip back; control it to save the setting",
+      "No example gives `Switch` a name, so a native form submit carries none of these values; add one when the switch sits inside a form"
+    ]
+  }
+}

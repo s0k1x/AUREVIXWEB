@@ -1,0 +1,64 @@
+---
+title: AI Button
+description: Animated AI button with shimmer effect for loading and idle states.
+seoTitle: Interactive AI Button Component (React & Tailwind)
+seoDescription: Animated AI button with shimmer processing state. Copy-paste React + Tailwind CSS component for Next.js — open source and customizable.
+author: harimanok_
+labels: ["requires interaction", "hover"]
+---
+
+<ComponentPreview name="button-ai-button--primary" />
+
+## Installation
+
+### CLI
+
+<RegistryInstall category="button" name="ai-button" />
+
+### Manual
+
+<Steps>
+<Step>Install dependencies</Step>
+
+```bash
+npm install tsparticles @tsparticles/react @tsparticles/engine
+```
+
+<Step>Add to your CSS</Step>
+
+```css
+@keyframes sparkle {
+  0%, 100% { opacity: 0.75; scale: 0.9; }
+  50% { opacity: 1; scale: 1; }
+}
+@theme {
+  --animate-sparkle: sparkle 2s ease-in-out infinite;
+}
+```
+
+<Step>Run the following command</Step>
+
+It will create a new file `ai-button.tsx` inside the `components/animata/button` directory.
+
+```bash
+mkdir -p components/animata/button && touch components/animata/button/ai-button.tsx
+```
+
+<Step>Paste the code</Step>{" "}
+
+Open the newly created file and paste the following code:
+
+```jsx file=<rootDir>/animata/button/ai-button.tsx
+
+```
+
+</Steps>
+
+## Changelog
+
+
+## Credits
+
+Built by [hari](https://github.com/hari)
+
+Inspired by [this](https://dribbble.com/shots/21729480--Start-your-site-with-Framer-AI)

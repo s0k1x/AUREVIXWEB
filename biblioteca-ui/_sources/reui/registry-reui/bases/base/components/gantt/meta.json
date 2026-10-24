@@ -1,0 +1,148 @@
+[
+  {
+    "name": "c-gantt-1",
+    "title": "Gantt chart with settings menu and schedulable rows",
+    "label": "Settings Menu",
+    "description": "Gantt chart with settings menu and schedulable rows",
+    "order": 1,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A tabbed Settings popover with 12 display and behavior switches, 6 languages and 5 time zones, over empty rows waiting to be scheduled",
+      "agentNotes": [
+        "`handleSelectSlot` adds the scheduled bar with `addEvent` and saves nothing; send the slot to your API there",
+        "Right to left comes from `dir` on the wrapping div, which `Gantt` inherits; set it on your own layout for Arabic",
+        "`SettingsMenu` and the 14 `useState` hooks feeding it only demo the props; pass the values you want straight to `Gantt`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A lean starting point with no settings panel to strip out",
+          "instead": "c-gantt-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-gantt-2",
+    "title": "Gantt chart with drag-to-reorder tree rows",
+    "label": "Drag Reorder",
+    "description": "Gantt chart with drag-to-reorder tree rows",
+    "order": 2,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "The leanest setup, where one callback adds a drag grip to every tree row and a single setState keeps the new order",
+      "agentNotes": [
+        "The row grip shows only when `onResourceReorder` is passed, and `resources` must be state it updates or a drop changes nothing"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Records dragged into a new order in a table with no dates",
+          "instead": "data-grid"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-gantt-3",
+    "title": "Gantt chart with quarter roadmap and rollups",
+    "label": "Quarter Roadmap",
+    "description": "Gantt chart with quarter roadmap and rollups",
+    "order": 3,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Multi month initiatives grouped by workstream, with a toolbar button that drops the next backlog item onto its empty row",
+      "agentNotes": [
+        "Each `BACKLOG` id must match an empty row in `RESOURCES`, since `addInitiative` uses it as the new bar's `resourceId`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A single week of assignments per person rather than a year of initiatives",
+          "instead": "c-gantt-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-gantt-4",
+    "title": "Gantt chart with weekly capacity board",
+    "label": "Capacity Board",
+    "description": "Gantt chart with weekly capacity board",
+    "order": 4,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Teammates grouped by squad with avatar row labels and shaded weekends, where added assignments stack into extra lanes",
+      "agentNotes": [
+        "`resourceMeta` maps each row id to initials and a `randomuser.me` photo, since `GanttResource` takes no custom fields",
+        "`addAssignment` is a demo stub that cycles `PEOPLE` and `TASK_POOL`; swap in your own booking flow"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Owner and status columns beside each task in a report that cannot be dragged",
+          "instead": "c-gantt-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-gantt-5",
+    "title": "Gantt chart with task table and progress",
+    "label": "Task Table",
+    "description": "Gantt chart with task table and progress",
+    "order": 5,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A read only status report whose tree panel adds Owner avatars and Status badges as columns, with rows added from the toolbar",
+      "agentNotes": [
+        "Owner and Status cells read the `meta` state by row id, so a row added without a `meta` entry renders empty cells",
+        "Drag, resize and slot selection are off through `defaultInteractions`, so bars change only through `addTask`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A plan whose bars should be dragged and resized on the chart",
+          "instead": "c-gantt-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-gantt-6",
+    "title": "Gantt chart with as-built baseline tracking",
+    "label": "Baseline Tracking",
+    "description": "Gantt chart with as-built baseline tracking",
+    "order": 6,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Frozen plan dates ghosted behind actual bars, showing early, late and on time work plus a planned band on a whole group",
+      "agentNotes": [
+        "Rows come from `buildResources`, which also dates the Implementation group's planned band around the current week",
+        "Give a bar both `baselineStart` and `baselineEnd` or neither; equal values draw a planned milestone diamond"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Tasks chained by arrows from each predecessor into the next",
+          "instead": "c-gantt-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-gantt-7",
+    "title": "Gantt chart with dependency arrows and milestones",
+    "label": "Dependencies & Milestones",
+    "description": "Gantt chart with dependency arrows and milestones",
+    "order": 7,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A rollout chain where QA waits on 2 build tracks and a zero length sign off gate opens the go live step",
+      "agentNotes": [
+        "`dependencies` holds predecessor bar ids such as `bar-kickoff`, not row ids, so keep them in step with each bar's `id`",
+        "Arrows only draw: moving a bar never shifts the bars after it, so reschedule dependents in `onEventUpdate`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Actual dates compared against a frozen plan for each task",
+          "instead": "c-gantt-6"
+        }
+      ]
+    }
+  }
+]

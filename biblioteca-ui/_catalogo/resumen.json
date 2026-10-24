@@ -1,0 +1,201 @@
+{
+ "total_component_entries": 9301,
+ "total_verified": 9291,
+ "by_library": {
+  "uiverse-galaxy": {
+   "entries": 3802,
+   "verified": 3802,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "hyperui": {
+   "entries": 560,
+   "verified": 560,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "flowbite": {
+   "entries": 70,
+   "verified": 70,
+   "examples_inside_docs": 670,
+   "license": "MIT"
+  },
+  "daisyui": {
+   "entries": 61,
+   "verified": 61,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "preline": {
+   "entries": 33,
+   "verified": 33,
+   "examples_inside_docs": 0,
+   "license": "MIT + Preline UI Fair Use License"
+  },
+  "shadcn-ui": {
+   "entries": 390,
+   "verified": 380,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "origin-ui": {
+   "entries": 1235,
+   "verified": 1235,
+   "examples_inside_docs": 0,
+   "license": "MIT (apps/origin y apps/ui, segun LICENSING.md; el LICENSE AGPL-3.0 de la raiz se conserva como referencia y cubre partes no copiadas)"
+  },
+  "magic-ui": {
+   "entries": 248,
+   "verified": 248,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "kokonut-ui": {
+   "entries": 106,
+   "verified": 106,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "reui": {
+   "entries": 1291,
+   "verified": 1291,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "pines": {
+   "entries": 47,
+   "verified": 47,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "tailblocks": {
+   "entries": 126,
+   "verified": 126,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "spinkit": {
+   "entries": 12,
+   "verified": 12,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "css-loaders": {
+   "entries": 8,
+   "verified": 8,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "loaders-css": {
+   "entries": 31,
+   "verified": 31,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "svg-loaders": {
+   "entries": 12,
+   "verified": 12,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "whirl": {
+   "entries": 108,
+   "verified": 108,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "loading-io-css-spinner": {
+   "entries": 12,
+   "verified": 12,
+   "examples_inside_docs": 0,
+   "license": "CC0-1.0 (loaders; resto del codigo MIT, segun su README)"
+  },
+  "animate-css": {
+   "entries": 98,
+   "verified": 98,
+   "examples_inside_docs": 0,
+   "license": "Hippocratic License 2.1"
+  },
+  "headless-ui": {
+   "entries": 80,
+   "verified": 80,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "radix-primitives": {
+   "entries": 58,
+   "verified": 58,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "sonner": {
+   "entries": 1,
+   "verified": 1,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "cult-ui": {
+   "entries": 273,
+   "verified": 273,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "meraki-ui": {
+   "entries": 228,
+   "verified": 228,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "motion-primitives": {
+   "entries": 33,
+   "verified": 33,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "animata": {
+   "entries": 204,
+   "verified": 204,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "mantine-ui": {
+   "entries": 123,
+   "verified": 123,
+   "examples_inside_docs": 0,
+   "license": "MIT"
+  },
+  "tw-elements": {
+   "entries": 12,
+   "verified": 12,
+   "examples_inside_docs": 0,
+   "license": "MIT (LICENSE del repo y License.txt del paquete npm 2.0.0, MIT para TW Elements Free)"
+  },
+  "tremor": {
+   "entries": 39,
+   "verified": 39,
+   "examples_inside_docs": 0,
+   "license": "Apache-2.0"
+  }
+ },
+ "by_category": {
+  "buttons": 1622,
+  "otros": 1423,
+  "loaders": 1048,
+  "cards": 1000,
+  "inputs": 926,
+  "navigation": 470,
+  "data-display": 453,
+  "toggles": 402,
+  "feedback": 343,
+  "forms": 268,
+  "backgrounds": 261,
+  "checkboxes": 244,
+  "layouts": 191,
+  "animations": 185,
+  "text-effects": 159,
+  "radios": 156,
+  "modals": 150
+ },
+ "icons_total": 26180,
+ "icons_verified": 26180
+}

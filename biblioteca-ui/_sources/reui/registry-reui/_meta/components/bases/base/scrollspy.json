@@ -1,0 +1,60 @@
+{
+  "items": [
+    {
+      "name": "c-scrollspy-1",
+      "type": "registry:block",
+      "title": "Basic scrollspy",
+      "categories": [
+        "scrollspy"
+      ],
+      "description": "Basic scrollspy",
+      "descriptionLong": "Basic scrollspy. Built by composing Button, Scroll Area, Scrollspy. A free, open source shadcn scrollspy example you can install with npx shadcn@latest add @reui/c-scrollspy-1 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "scroll-area",
+        "scrollspy"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/scrollspy/c-scrollspy-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-scrollspy-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "gridSize": 1,
+        "label": "Vertical Nav"
+      }
+    },
+    {
+      "name": "c-scrollspy-2",
+      "type": "registry:block",
+      "title": "Basic scroll area",
+      "categories": [
+        "scrollspy"
+      ],
+      "description": "Basic scroll area",
+      "descriptionLong": "Basic scroll area. Built by composing Button, Scroll Area, Scrollspy. A free, open source shadcn scrollspy example you can install with npx shadcn@latest add @reui/c-scrollspy-2 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "scroll-area",
+        "scrollspy"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/scrollspy/c-scrollspy-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-scrollspy-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "gridSize": 1,
+        "label": "Horizontal Nav"
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Consent and opt-in fields, such as accepting terms or turning on a feature",
+      "Lists where any number of options can be ticked, like notification channels or permissions",
+      "Selectable cards and tiles for modules, people or a saved payment card"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A choice where exactly 1 option of a set may be picked",
+        "instead": "radio-group"
+      },
+      {
+        "when": "An on or off setting that applies the moment it is flipped",
+        "instead": "switch"
+      },
+      {
+        "when": "A complete record entry page with many field types and a submit handler",
+        "instead": "application/form"
+      }
+    ],
+    "agentNotes": [
+      "No example passes a name to `Checkbox`, so a native submit sends none of these boxes; give each one a name inside a real form",
+      "The base twin sets the mixed state with the `indeterminate` prop; the radix twin passes `checked` as the string indeterminate",
+      "A mixed state draws the same `CheckIcon` as a ticked box, as the indicator has no minus icon; add one in `Checkbox` to show a dash"
+    ]
+  }
+}

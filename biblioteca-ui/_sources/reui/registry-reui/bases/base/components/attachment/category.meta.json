@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Files carried by a chat turn, as chips in a composer tray or cards in an assistant reply",
+      "Upload queues and pickers where each file reads as idle, uploading, processing, failed or done",
+      "Rows of image thumbnails or file chips that scroll sideways on one line instead of wrapping"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A drop zone that takes files dragged in from the desktop",
+        "instead": "file-upload"
+      },
+      {
+        "when": "A colored format badge that labels a document by its extension, such as PDF",
+        "instead": "file-type"
+      },
+      {
+        "when": "An upload list where each row needs a bar filling toward 100 percent",
+        "instead": "progress"
+      }
+    ],
+    "agentNotes": [
+      "`Attachment` uploads nothing and only styles the `state` you pass, so set `state` from your own transfer code",
+      "The radix `Button` behind `AttachmentAction` sets no `type`, so pass `type` button inside a `form` or it submits"
+    ]
+  }
+}

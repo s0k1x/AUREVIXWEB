@@ -1,0 +1,26 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Pending states inside buttons, status badges and search fields while a request runs",
+      "Loading views for a card or an empty panel, including blurred covers over content being refreshed",
+      "Inline notes such as checking, syncing or reconnecting, led by a small tinted spinner or bouncing dots"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Content of a known layout, held as muted placeholder shapes until it arrives",
+        "instead": "skeleton"
+      },
+      {
+        "when": "A wait where the share of work done is known, such as an upload percent",
+        "instead": "progress"
+      },
+      {
+        "when": "A save control that tracks its own pending and done states after a click",
+        "instead": "button"
+      }
+    ],
+    "agentNotes": [
+      "No example holds a pending flag and `disabled` is hardcoded where it appears; show the indicator and lock controls from your own request state"
+    ]
+  }
+}

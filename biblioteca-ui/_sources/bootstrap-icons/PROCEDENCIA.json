@@ -1,0 +1,24 @@
+{
+  "repo": "https://github.com/twbs/icons",
+  "commit": "e568465481c0c541f63a78f6452d09387711d489",
+  "commit_date": "2026-10-09T13:40:35+02:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 4240,
+  "files_skipped": {
+    "media": 12,
+    "lockfile": 2,
+    "too_large": 0,
+    "symlink": 0,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitattributes",
+    ".gitignore",
+    "astro/.gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

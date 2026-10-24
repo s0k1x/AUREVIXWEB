@@ -1,0 +1,357 @@
+{
+  "items": [
+    {
+      "name": "c-toggle-1",
+      "type": "registry:block",
+      "title": "Basic toggle.",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Basic toggle.",
+      "descriptionLong": "Basic toggle. Built with the Toggle component. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-1 and edit as your own code.",
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Basic"
+      }
+    },
+    {
+      "name": "c-toggle-2",
+      "type": "registry:block",
+      "title": "Toggle buttons with outline variant.",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Toggle buttons with outline variant.",
+      "descriptionLong": "Toggle buttons with outline variant. Built with the Toggle component. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-2 and edit as your own code.",
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Outline"
+      }
+    },
+    {
+      "name": "c-toggle-3",
+      "type": "registry:block",
+      "title": "Toggle buttons in different sizes.",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Toggle buttons in different sizes.",
+      "descriptionLong": "Toggle buttons in different sizes. Built with the Toggle component. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-3 and edit as your own code.",
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Text Sizes"
+      }
+    },
+    {
+      "name": "c-toggle-4",
+      "type": "registry:block",
+      "title": "Toggle with button and icon.",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Toggle with button and icon.",
+      "descriptionLong": "Toggle with button and icon. Built by composing Button, Toggle. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-4 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Button Comparison"
+      }
+    },
+    {
+      "name": "c-toggle-5",
+      "type": "registry:block",
+      "title": "Disabled toggle.",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Disabled toggle.",
+      "descriptionLong": "Disabled toggle. Built with the Toggle component. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-5 and edit as your own code.",
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Disabled Text"
+      }
+    },
+    {
+      "name": "c-toggle-6",
+      "type": "registry:block",
+      "title": "Toggle with icon.",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Toggle with icon.",
+      "descriptionLong": "Toggle with icon. Built with the Toggle component. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-6 and edit as your own code.",
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Icon & Label"
+      }
+    },
+    {
+      "name": "c-toggle-7",
+      "type": "registry:block",
+      "title": "Toggle with notification count badge",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Toggle with notification count badge",
+      "descriptionLong": "Toggle with notification count badge. Built by composing Badge, Toggle. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-7 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Count Badge"
+      }
+    },
+    {
+      "name": "c-toggle-8",
+      "type": "registry:block",
+      "title": "Toggle size variants showcase",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Toggle size variants showcase",
+      "descriptionLong": "Toggle size variants showcase. Built with the Toggle component. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-8 and edit as your own code.",
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Icon Sizes"
+      }
+    },
+    {
+      "name": "c-toggle-9",
+      "type": "registry:block",
+      "title": "Toggle with icon swap on press",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Toggle with icon swap on press",
+      "descriptionLong": "Toggle with icon swap on press. Built with the Toggle component. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-9 and edit as your own code.",
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "Icon Swap"
+      }
+    },
+    {
+      "name": "c-toggle-10",
+      "type": "registry:block",
+      "title": "Toggle with text label that changes",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Toggle with text label that changes",
+      "descriptionLong": "Toggle with text label that changes. Built with the Toggle component. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-10 and edit as your own code.",
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "label": "Label Swap"
+      }
+    },
+    {
+      "name": "c-toggle-11",
+      "type": "registry:block",
+      "title": "Social media reaction toggles",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Social media reaction toggles",
+      "descriptionLong": "Social media reaction toggles. Built with the Toggle component. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-11 and edit as your own code.",
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "label": "Reactions"
+      }
+    },
+    {
+      "name": "c-toggle-12",
+      "type": "registry:block",
+      "title": "Toggle with tooltip",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Toggle with tooltip",
+      "descriptionLong": "Toggle with tooltip. Built by composing Toggle, Tooltip. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-12 and edit as your own code.",
+      "registryDependencies": [
+        "toggle",
+        "tooltip"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "label": "Tooltip"
+      }
+    },
+    {
+      "name": "c-toggle-13",
+      "type": "registry:block",
+      "title": "Disabled toggle states",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Disabled toggle states",
+      "descriptionLong": "Disabled toggle states. Built with the Toggle component. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-13 and edit as your own code.",
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-13.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-13.tsx"
+        }
+      ],
+      "meta": {
+        "order": 13,
+        "label": "Disabled Icons"
+      }
+    },
+    {
+      "name": "c-toggle-14",
+      "type": "registry:block",
+      "title": "Toggle as mute/unmute button",
+      "categories": [
+        "toggle"
+      ],
+      "description": "Toggle as mute/unmute button",
+      "descriptionLong": "Toggle as mute/unmute button. Built with the Toggle component. A free, open source shadcn toggle example you can install with npx shadcn@latest add @reui/c-toggle-14 and edit as your own code.",
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/toggle/c-toggle-14.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-toggle-14.tsx"
+        }
+      ],
+      "meta": {
+        "order": 14,
+        "label": "Mute Button"
+      }
+    }
+  ]
+}

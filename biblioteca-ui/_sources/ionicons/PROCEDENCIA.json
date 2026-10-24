@@ -1,0 +1,23 @@
+{
+  "repo": "https://github.com/ionic-team/ionicons",
+  "commit": "d1e2c48641fd5f4910ee42a144dc1c84b1a9a4ee",
+  "commit_date": "2026-07-28T16:36:24-04:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 1446,
+  "files_skipped": {
+    "media": 18,
+    "lockfile": 1,
+    "too_large": 0,
+    "symlink": 0,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitignore",
+    "src/components/icon/svg/.gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

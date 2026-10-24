@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Form fields that pick one value from a short fixed list, such as a fruit, timezone, country or size",
+      "Pickers whose options carry a status dot, badge, avatar, flag, icon or one line description",
+      "Toolbar filters and property pickers, such as status, priority, access level or assignee"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A long list the user wants to search by typing part of a name",
+        "instead": "combobox"
+      },
+      {
+        "when": "A plain form field that should open the phone or browser's own picker",
+        "instead": "native-select"
+      },
+      {
+        "when": "Options nested in levels, such as a category and then its subcategories",
+        "instead": "cascader"
+      }
+    ],
+    "agentNotes": [
+      "Pass `alignItemWithTrigger` false on the base twin or `position` popper on radix to open the list below the trigger, not over it",
+      "With no children, base `SelectValue` prints a string value raw unless `Select` gets `items`; radix `SelectValue` mirrors the chosen `SelectItem`",
+      "Base `SelectItem` can take a whole object as `value`, matched to `defaultValue` by reference; radix values must be non-empty strings"
+    ]
+  }
+}

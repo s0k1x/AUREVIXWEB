@@ -1,0 +1,237 @@
+{
+  "items": [
+    {
+      "name": "c-rating-1",
+      "type": "registry:block",
+      "title": "Basic rating.",
+      "categories": [
+        "rating"
+      ],
+      "description": "Basic rating.",
+      "descriptionLong": "Basic rating. Built with the Rating component. A free, open source shadcn rating example you can install with npx shadcn@latest add @reui/c-rating-1 and edit as your own code.",
+      "registryDependencies": [
+        "rating"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/rating/c-rating-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-rating-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Basic"
+      }
+    },
+    {
+      "name": "c-rating-2",
+      "type": "registry:block",
+      "title": "Rating with decimal value.",
+      "categories": [
+        "rating"
+      ],
+      "description": "Rating with decimal value.",
+      "descriptionLong": "Rating with decimal value. Built with the Rating component. A free, open source shadcn rating example you can install with npx shadcn@latest add @reui/c-rating-2 and edit as your own code.",
+      "registryDependencies": [
+        "rating"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/rating/c-rating-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-rating-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Decimal Value"
+      }
+    },
+    {
+      "name": "c-rating-3",
+      "type": "registry:block",
+      "title": "Rating with show value.",
+      "categories": [
+        "rating"
+      ],
+      "description": "Rating with show value.",
+      "descriptionLong": "Rating with show value. Built with the Rating component. A free, open source shadcn rating example you can install with npx shadcn@latest add @reui/c-rating-3 and edit as your own code.",
+      "registryDependencies": [
+        "rating"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/rating/c-rating-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-rating-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Show Value"
+      }
+    },
+    {
+      "name": "c-rating-4",
+      "type": "registry:block",
+      "title": "Rating with editable.",
+      "categories": [
+        "rating"
+      ],
+      "description": "Rating with editable.",
+      "descriptionLong": "Rating with editable. Built with the Rating component. Uses sonner alongside the shadcn primitives. A free, open source shadcn rating example you can install with npx shadcn@latest add @reui/c-rating-4 and edit as your own code.",
+      "registryDependencies": [
+        "rating"
+      ],
+      "dependencies": [
+        "sonner"
+      ],
+      "files": [
+        {
+          "path": "components/rating/c-rating-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-rating-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Editable"
+      }
+    },
+    {
+      "name": "c-rating-5",
+      "type": "registry:block",
+      "title": "Rating with size.",
+      "categories": [
+        "rating"
+      ],
+      "description": "Rating with size.",
+      "descriptionLong": "Rating with size. Built with the Rating component. A free, open source shadcn rating example you can install with npx shadcn@latest add @reui/c-rating-5 and edit as your own code.",
+      "registryDependencies": [
+        "rating"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/rating/c-rating-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-rating-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Sizes"
+      }
+    },
+    {
+      "name": "c-rating-6",
+      "type": "registry:block",
+      "title": "Rating with review summary",
+      "categories": [
+        "rating"
+      ],
+      "description": "Rating with review summary",
+      "descriptionLong": "Rating with review summary. Built by composing Progress, Rating, Separator. A free, open source shadcn rating example you can install with npx shadcn@latest add @reui/c-rating-6 and edit as your own code.",
+      "registryDependencies": [
+        "progress",
+        "rating",
+        "separator"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/rating/c-rating-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-rating-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Review Summary"
+      }
+    },
+    {
+      "name": "c-rating-7",
+      "type": "registry:block",
+      "title": "Interactive half-star rating",
+      "categories": [
+        "rating"
+      ],
+      "description": "Interactive half-star rating",
+      "descriptionLong": "Interactive half-star rating. Built with the Rating component. A free, open source shadcn rating example you can install with npx shadcn@latest add @reui/c-rating-7 and edit as your own code.",
+      "registryDependencies": [
+        "rating"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/rating/c-rating-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-rating-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Half-Star Input"
+      }
+    },
+    {
+      "name": "c-rating-8",
+      "type": "registry:block",
+      "title": "Emoji reaction rating",
+      "categories": [
+        "rating"
+      ],
+      "description": "Emoji reaction rating",
+      "descriptionLong": "Emoji reaction rating. Uses cn alongside the shadcn primitives. A free, open source shadcn rating example you can install with npx shadcn@latest add @reui/c-rating-8 and edit as your own code.",
+      "registryDependencies": [],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/rating/c-rating-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-rating-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Emoji Reactions"
+      }
+    },
+    {
+      "name": "c-rating-9",
+      "type": "registry:block",
+      "title": "Rating with review text input",
+      "categories": [
+        "rating"
+      ],
+      "description": "Rating with review text input",
+      "descriptionLong": "Rating with review text input. Built by composing Button, Card, Label, Rating, Textarea. A free, open source shadcn rating example you can install with npx shadcn@latest add @reui/c-rating-9 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "card",
+        "label",
+        "rating",
+        "textarea"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/rating/c-rating-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-rating-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "Review Text"
+      }
+    }
+  ]
+}

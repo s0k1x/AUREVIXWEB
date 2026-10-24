@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Boards that move cards between status columns by drag and drop",
+      "Roadmap and workflow views where each column is one stage of the work"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A finished tracker for issues, tickets or releases with rich cards",
+        "instead": "application/kanban-board"
+      },
+      {
+        "when": "A sales deal pipeline with values, owners and stage forecasts",
+        "instead": "solutions/crm"
+      },
+      {
+        "when": "A single flat list reordered by drag, with no columns",
+        "instead": "sortable"
+      }
+    ],
+    "agentNotes": [
+      "Save moves in `onValueCommit`, which fires once per drop with `previousValue` for rollback; `onValueChange` also fires mid drag",
+      "Drag listeners live on `KanbanItemHandle` and `KanbanColumnHandle`; a card or column without one cannot be dragged",
+      "`KanbanColumnHandle` is hidden until its column is hovered or the handle has keyboard focus, so keep the column title outside it"
+    ]
+  }
+}

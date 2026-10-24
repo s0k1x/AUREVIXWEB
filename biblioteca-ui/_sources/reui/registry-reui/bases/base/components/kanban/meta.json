@@ -1,0 +1,100 @@
+[
+  {
+    "name": "c-kanban-1",
+    "title": "Kanban board with placeholder overlay",
+    "label": "Placeholder Overlay",
+    "description": "Kanban board with placeholder overlay",
+    "order": 1,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Task cards with priority, assignee and due date, dragged as a dashed placeholder box between reorderable columns",
+      "agentNotes": [
+        "Column headers read `COLUMN_TITLES` by key, so a new key in `columns` needs a title entry or its header is blank"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A board whose moves must reach a server and roll back on failure",
+          "instead": "c-kanban-6"
+        },
+        {
+          "when": "Drags that should show the card itself under the pointer",
+          "instead": "c-kanban-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-kanban-2",
+    "title": "Kanban board with dynamic overlay",
+    "label": "Dynamic Overlay",
+    "description": "Kanban board with dynamic overlay",
+    "order": 2,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A live copy of the dragged card or whole column under the pointer, drawn by an overlay function"
+    }
+  },
+  {
+    "name": "c-kanban-3",
+    "title": "Kanban board with frame columns",
+    "label": "Frame Columns",
+    "description": "Kanban board with frame columns",
+    "order": 3,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Frame columns with a status icon and count over label cards, where only the cards drag",
+      "agentNotes": [
+        "A key in `columns` with no `COLUMNS` entry shows its raw key as the title and no status icon"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Columns that the user should also drag into a new order",
+          "instead": "c-kanban-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-kanban-4",
+    "title": "Minimal kanban with stacked frame",
+    "label": "Stacked Frame",
+    "description": "Minimal kanban with stacked frame",
+    "order": 4,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Stacked Frame columns with a one line description each, over cards with a progress bar and assignee",
+      "agentNotes": [
+        "Column titles print the raw `columnId` key and each `FrameDescription` text is hardcoded per key"
+      ]
+    }
+  },
+  {
+    "name": "c-kanban-5",
+    "title": "Feature roadmap kanban with progress",
+    "label": "Feature Roadmap",
+    "description": "Feature roadmap kanban with progress",
+    "order": 5,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A product roadmap of feature cards with description, progress bar and vote count across color coded stages",
+      "agentNotes": [
+        "Each key in `columns` needs an entry in `COLUMNS`; an unknown key throws when the header reads `col.color`"
+      ]
+    }
+  },
+  {
+    "name": "c-kanban-6",
+    "title": "Kanban board persisted to a backend",
+    "label": "Persisted Moves",
+    "description": "Persist moves with onValueCommit, optimistic updates, and Sonner rollback",
+    "order": 6,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Drops saved to a simulated API, with a loading toast and a rollback to the previous board on failure",
+      "agentNotes": [
+        "Replace `persistBoard`, which fails at random on 1 call in 4, with your API call; on failure `handleValueCommit` restores `previousValue`",
+        "`toast` from `sonner` shows nothing unless your app mounts the Sonner toaster"
+      ]
+    }
+  }
+]

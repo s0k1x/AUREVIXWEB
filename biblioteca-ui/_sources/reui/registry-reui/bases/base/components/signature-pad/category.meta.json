@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Contracts, agreements and statements of work signed in place, down to initials per clause",
+      "Required form fields, proof of delivery on a phone and a profile signature reused on documents",
+      "Mouse, finger or stylus ink exported as PNG, JPEG, SVG or JSON, or uploaded as an image Blob"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A sign in or sign up page where people type an email and a password",
+        "instead": "application/auth"
+      },
+      {
+        "when": "A scanned or photographed mark the signer already has as an image",
+        "instead": "file-upload"
+      },
+      {
+        "when": "A whole data entry page of typed fields with nothing drawn by hand",
+        "instead": "application/form"
+      }
+    ],
+    "agentNotes": [
+      "Image exports draw ink with no `color` of its own in black, on a transparent background except `jpeg`; pass `background` for paper white",
+      "`readOnly` locks a signed pad at full ink strength while `disabled` dims it; both stop input and drop the area from the tab order",
+      "With `name` set, keep `format` as `svg` or `json`; `png` and `jpeg` rasterize the hidden form field after every stroke"
+    ]
+  }
+}

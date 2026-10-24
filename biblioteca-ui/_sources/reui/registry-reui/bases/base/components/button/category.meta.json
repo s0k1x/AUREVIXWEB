@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Page, form and dialog actions in primary, secondary, outline, ghost, destructive and link weights",
+      "Icon only controls and sign in rows, such as close, search, copy, menu or theme switches and provider logos",
+      "Actions that report state or carry extras, such as a spinner, a saved check, a count or a shortcut"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Several related actions joined edge to edge as one segmented control",
+        "instead": "button-group"
+      },
+      {
+        "when": "A control that stays pressed on or off, such as bold in an editor toolbar",
+        "instead": "toggle"
+      },
+      {
+        "when": "An action attached inside a text field, such as a search submit or a clear",
+        "instead": "input-group"
+      }
+    ],
+    "agentNotes": [
+      "The base twin `Button` defaults to `type` button, so pass `type` submit inside a form; the radix twin renders a plain `button` that submits by default",
+      "A link needs its anchor passed through `render` with `nativeButton` false on the base twin, or wrapped with `asChild` on the radix twin",
+      "Set `data-icon` to inline-start or inline-end on a leading or trailing icon so the text sizes trim the padding on that side"
+    ]
+  }
+}

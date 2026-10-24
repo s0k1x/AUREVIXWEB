@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Thin rules between a heading and its body, or between the stacked rows of a list or a summary",
+      "Vertical rules between inline labels or side by side menu entries along one row",
+      "Labeled breaks with a short caption centered on the rule, like an or continue with line"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A trail of links from the current page back up to its parent pages",
+        "instead": "breadcrumb"
+      },
+      {
+        "when": "Step lines and named phase breaks in an agent run log or transcript",
+        "instead": "marker"
+      },
+      {
+        "when": "A list of rows each led by an avatar or icon, with text and an action",
+        "instead": "item"
+      }
+    ],
+    "agentNotes": [
+      "The base `Separator` renders role separator, while the radix twin defaults `decorative` to true and renders role none, hidden from screen readers",
+      "A vertical `Separator` takes its height from `self-stretch`, so it shows only in a flex row or grid unless given a height such as `h-8`"
+    ]
+  }
+}

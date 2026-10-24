@@ -1,0 +1,299 @@
+[
+  {
+    "name": "c-card-1",
+    "title": "Basic card",
+    "label": "Basic",
+    "description": "Basic card",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The plain anatomy of title, description, body text and a full width outline button in the footer",
+      "whenNotToUse": [
+        {
+          "when": "A short help notice whose only action is an inline text link",
+          "instead": "c-card-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-card-2",
+    "title": "Card header with border",
+    "label": "Bordered Header",
+    "description": "Card header with border",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A header ruled off from the body by a bottom border, with a description line and no footer",
+      "whenNotToUse": [
+        {
+          "when": "A ruled header that also needs a ruled footer holding a button",
+          "instead": "c-card-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-card-3",
+    "title": "Card with border separation",
+    "label": "Border Separation",
+    "description": "Card with border separation",
+    "order": 3,
+    "guidance": {
+      "bestFor": "Tight zero gap sections: a slim header with its own button, a body ruled above and below, and a footer button",
+      "agentNotes": [
+        "Keep `border-none` on `CardFooter`; nova and lyra draw their own footer top rule, which doubles the bottom border of the body"
+      ]
+    }
+  },
+  {
+    "name": "c-card-4",
+    "title": "Card with header and footer",
+    "label": "Header & Footer",
+    "description": "Card with header and footer",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A titled header and a footer button, each split from the body by a rule, with no description line",
+      "whenNotToUse": [
+        {
+          "when": "Compact sections with no outer padding and a button inside the header",
+          "instead": "c-card-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-card-5",
+    "title": "Card with link",
+    "label": "Link Action",
+    "description": "Card with link",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A help notice whose only action is a link style button with an external link icon",
+      "whenNotToUse": [
+        {
+          "when": "A titled block with a description line and a full width footer button",
+          "instead": "c-card-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-card-6",
+    "title": "Card with dropdown menu",
+    "label": "Dropdown Menu",
+    "description": "Card with dropdown menu",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A help notice with an overflow menu of team actions in the header and an avatar chip button in the footer",
+      "agentNotes": [
+        "The 3 `DropdownMenuItem` entries and the footer avatar `Button` have no handlers; wire each to your own action"
+      ]
+    }
+  },
+  {
+    "name": "c-card-7",
+    "title": "Card with image",
+    "label": "Inset Image",
+    "description": "Card with image",
+    "order": 7,
+    "guidance": {
+      "bestFor": "A rounded photo inset above a Trending badge, a Featured tag, a blurb and a Get Started button",
+      "agentNotes": [
+        "The `img` loads a random picsum.photos grayscale shot with alt text 16:9; set your own source and a real description"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A photo running edge to edge with the copy centered below it",
+          "instead": "c-card-9"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-card-8",
+    "title": "Card with image scale hover effect",
+    "label": "Image Hover Zoom",
+    "description": "Card with image scale hover effect",
+    "order": 8,
+    "guidance": {
+      "bestFor": "A full bleed photo that zooms on hover under a bottom dark gradient holding a white title and line",
+      "agentNotes": [
+        "`Card` is fixed at `h-96` with the copy pinned to the bottom, so long text runs up and clips at the top; raise the height with it"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A photo tile that also names its author with an avatar, email and badge",
+          "instead": "c-card-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-card-9",
+    "title": "Card with full image",
+    "label": "Full Image",
+    "description": "Card with full image",
+    "order": 9,
+    "guidance": {
+      "bestFor": "An edge to edge photo flush with the top, then a centered badge, blurb and a fit width call to action",
+      "agentNotes": [
+        "Replace the picsum.photos `img` and its 16:9 alt with your own photo and alt text describing it"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A photo inset with rounded corners inside the padding, copy left aligned",
+          "instead": "c-card-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-card-10",
+    "title": "Full card with image and shadow fade effect",
+    "label": "Image Shadow Fade",
+    "description": "Full card with image and shadow fade effect",
+    "order": 10,
+    "guidance": {
+      "bestFor": "A tall photo with dark fades top and bottom and an author row of verified avatar, email and New badge over it",
+      "agentNotes": [
+        "The `AvatarImage` alt reads James Brown and the fallback JB while the name link says Nick Johnson; make all 3 match",
+        "`CustomBadge` is a hardcoded blue verified tick with no text alternative; render it only for verified authors"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A photo tile with only a title and one line over a bottom fade",
+          "instead": "c-card-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-card-11",
+    "title": "Card with stacked depth effect",
+    "label": "Stacked Depth",
+    "description": "Card with stacked depth effect",
+    "order": 11,
+    "guidance": {
+      "bestFor": "A stacked deck look from 2 blank layers peeking out below the bottom edge, behind a standard title, body and footer",
+      "agentNotes": [
+        "The `size-fit` wrapper shrinks to the card and holds the 2 depth layers, so widen it too when the card should fill a grid cell",
+        "The depth layers hardcode `rounded-lg`, so match their radius to your style when it rounds `Card` differently"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A single flat surface with no layers showing beneath its edge",
+          "instead": "c-card-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-card-12",
+    "title": "Advanced clean login form card",
+    "label": "Login Form",
+    "description": "Advanced clean login form card",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A sign in form with email, a password field that toggles visibility, a forgot link, a GitHub button and terms",
+      "agentNotes": [
+        "The `form` `onSubmit` only calls `preventDefault`; send the email and password to your sign in endpoint there",
+        "Forgot password and Terms of Service keep a placeholder `href`, and the Github `Button` has no handler"
+      ]
+    }
+  },
+  {
+    "name": "c-card-13",
+    "title": "Expandable billing usage card",
+    "label": "Billing Usage",
+    "description": "Expandable billing usage card",
+    "order": 13,
+    "guidance": {
+      "bestFor": "Credit used against the plan on a progress bar over 5 cost rows that fade out until a round toggle expands them",
+      "agentNotes": [
+        "Every amount and the `Progress` `value` of 90 are literals in the markup; render them from your billing data",
+        "`isOpen` swaps a fixed max height, 192px closed and 500px open, so a longer cost list clips even when expanded",
+        "`Card` carries `overflow-visible` so the round toggle can hang past its bottom edge; every style clips a `Card` otherwise"
+      ]
+    }
+  },
+  {
+    "name": "c-card-14",
+    "title": "Deployment status summary card",
+    "label": "Deployment Status",
+    "description": "Deployment status summary card",
+    "order": 14,
+    "guidance": {
+      "bestFor": "A deployment success message under a glowing terminal icon on a fuchsia fade, then 4 striped label and value rows",
+      "agentNotes": [
+        "Replace the 4 label and value pairs in `stats` with your own deployment fields",
+        "The header uses fixed fuchsia classes such as `from-fuchsia-50/80` with no dark variant; retint them to your accent"
+      ]
+    }
+  },
+  {
+    "name": "c-card-15",
+    "title": "Stat card with trend and overflow menu",
+    "label": "Stat Trend",
+    "description": "Stat card with trend and overflow menu",
+    "order": 15,
+    "guidance": {
+      "bestFor": "A single KPI with label, large figure, a trend badge that flips color and arrow for a drop, last month value and a 5 item menu",
+      "agentNotes": [
+        "Lift `title`, `value`, `delta`, `positive` and `lastMonth` into props; they are constants inside the component",
+        "`positive` picks the badge variant and arrow; derive it from the sign of `delta` so the two cannot disagree",
+        "None of the 5 `DropdownMenuItem` actions has a handler, including the destructive Remove"
+      ]
+    }
+  },
+  {
+    "name": "c-card-16",
+    "title": "Card with header badge and actions",
+    "label": "Badge & Actions",
+    "description": "Card with header badge and actions",
+    "order": 16,
+    "guidance": {
+      "bestFor": "An integration tile: a Live strip with a dots menu, an Installed badge, 3 avatars plus a count, and a full width Open button",
+      "agentNotes": [
+        "`AvatarGroupCount` shows a fixed +3 beside 3 sample avatars; compute the count from your member list",
+        "The Edit and Copy link `DropdownMenuItem` entries and the Open `Button` have no handlers yet"
+      ]
+    }
+  },
+  {
+    "name": "c-card-17",
+    "title": "Card with icon, title and link",
+    "label": "Icon & Link",
+    "description": "Card with icon, title and link",
+    "order": 17,
+    "guidance": {
+      "bestFor": "A solid primary icon tile above a linked title, a muted summary and a small View link with a chevron",
+      "agentNotes": [
+        "Replace the `item` constant with your own copy and icon, and point both `href` placeholders at real routes"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A pointer whose small icon and label sit in a ruled top strip",
+          "instead": "c-card-18"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-card-18",
+    "title": "Card with header label and link",
+    "label": "Label & Link",
+    "description": "Card with header label and link",
+    "order": 18,
+    "guidance": {
+      "bestFor": "A muted icon and label in a bordered top strip, then a summary and a small link with a leading chain icon",
+      "agentNotes": [
+        "Swap `item` for your label, summary, link text and icon, and give the anchor a real `href`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A bold filled icon tile leading straight into a linked title",
+          "instead": "c-card-17"
+        }
+      ]
+    }
+  }
+]

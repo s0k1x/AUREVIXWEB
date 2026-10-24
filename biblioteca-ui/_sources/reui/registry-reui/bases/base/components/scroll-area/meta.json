@@ -1,0 +1,83 @@
+[
+  {
+    "name": "c-scroll-area-1",
+    "title": "Basic scroll area",
+    "label": "Basic",
+    "description": "Basic scroll area",
+    "order": 1,
+    "guidance": {
+      "bestFor": "A narrow column of 30 version tags under a Releases heading, split by divider lines, that only scrolls up and down",
+      "agentNotes": [
+        "Replace `tags` with your own list; each string is also the row `key`, so keep the values unique"
+      ]
+    }
+  },
+  {
+    "name": "c-scroll-area-2",
+    "title": "Scroll area with horizontal scrollbar",
+    "label": "Horizontal",
+    "description": "Scroll area with horizontal scrollbar",
+    "order": 2,
+    "guidance": {
+      "bestFor": "One row of 10 photo cards that pans sideways under a horizontal bar, in a box only as tall as the row",
+      "agentNotes": [
+        "Each `img` loads a random picsum.photos placeholder labelled Image N; point `src` and `alt` at your own photos"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Rows and columns of figures wider and taller than their box",
+          "instead": "c-scroll-area-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-scroll-area-3",
+    "title": "Scroll area with both scrollbars",
+    "label": "Both Scrollbars",
+    "description": "Scroll area with both scrollbars",
+    "order": 3,
+    "guidance": {
+      "bestFor": "An 8 plan pricing table with a price column and 6 feature columns that pans both across and down",
+      "agentNotes": [
+        "Replace `products` and `features` together; a `key` in `features` that names no product field leaves that column blank"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "One row of cards or photos that only pans sideways",
+          "instead": "c-scroll-area-2"
+        },
+        {
+          "when": "Thousands of records that need sorting, paging or virtual rows",
+          "instead": "data-grid"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-scroll-area-4",
+    "title": "Scroll area with fade effect",
+    "label": "Fade Edges",
+    "description": "Scroll area with fade effect",
+    "order": 4,
+    "guidance": {
+      "bestFor": "Edges that fade only while content is hidden past them, over a photo column with a tinted round thumb",
+      "agentNotes": [
+        "The masks read overflow CSS variables Base UI sets on the viewport; the radix `ScrollArea` sets none, so compute them or drop the masks there"
+      ]
+    }
+  },
+  {
+    "name": "c-scroll-area-5",
+    "title": "Scroll area with scrollbar gutter",
+    "label": "Scrollbar Gutter",
+    "description": "Scroll area with scrollbar gutter",
+    "order": 5,
+    "guidance": {
+      "bestFor": "Full width photo cards that gain side padding once the column overflows, keeping the bar clear of the images",
+      "agentNotes": [
+        "`data-has-overflow-x` and `data-has-overflow-y` come from the Base UI root only; the radix `ScrollArea` never sets them, so its gutter stays off"
+      ]
+    }
+  }
+]

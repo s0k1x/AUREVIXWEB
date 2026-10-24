@@ -1,0 +1,26 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Brief feedback after an action, such as a created event or an archived message with Undo",
+      "Progress of async work in one toast that updates in place, from loading to success or failure",
+      "Rich notifications for messages, invites, deploys, builds and integrations, with their own buttons"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A status or warning that must stay on the page until the problem is fixed",
+        "instead": "alert"
+      },
+      {
+        "when": "A choice the user has to make before the page can carry on",
+        "instead": "alert-dialog"
+      },
+      {
+        "when": "An inbox panel that lists past activity for the user to review on demand",
+        "instead": "application/sheet"
+      }
+    ],
+    "agentNotes": [
+      "The examples ship only the sonner package and never render `Toaster`; mount the shadcn sonner `Toaster` once near your app root or no `toast` shows"
+    ]
+  }
+}

@@ -1,0 +1,347 @@
+{
+  "items": [
+    {
+      "name": "c-time-picker-1",
+      "type": "registry:block",
+      "title": "Inline time panel",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "Hour and minute columns rendered in place, with Now, Clear and a live readout.",
+      "descriptionLong": "Inline time panel. Built by composing Card, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-1 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Inline Panel"
+      }
+    },
+    {
+      "name": "c-time-picker-2",
+      "type": "registry:block",
+      "title": "Popover picker",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "Outline trigger in a labelled field that opens hour and minute columns with Now, Clear and OK.",
+      "descriptionLong": "Popover picker. Built by composing Field, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-2 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Popover"
+      }
+    },
+    {
+      "name": "c-time-picker-3",
+      "type": "registry:block",
+      "title": "Typable time input",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "Type 930, 14:30 or 2:30 pm, or step through free times with the arrow keys.",
+      "descriptionLong": "Typable time input. Built by composing Field, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-3 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Typable Input"
+      }
+    },
+    {
+      "name": "c-time-picker-4",
+      "type": "registry:block",
+      "title": "12-hour clock with seconds",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "Hour, minute, second and AM/PM columns for a stream go-live time.",
+      "descriptionLong": "12-hour clock with seconds. Built by composing Field, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-4 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "12-Hour Seconds"
+      }
+    },
+    {
+      "name": "c-time-picker-5",
+      "type": "registry:block",
+      "title": "Hour only",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "A daily digest send time picked by the hour in a settings row.",
+      "descriptionLong": "Hour only. Built by composing Item, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-5 and edit as your own code.",
+      "registryDependencies": [
+        "item",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Hour Only"
+      }
+    },
+    {
+      "name": "c-time-picker-6",
+      "type": "registry:block",
+      "title": "Steps and opening hours",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "15-minute steps limited to 08:30 to 17:30, with out-of-range hours disabled.",
+      "descriptionLong": "Steps and opening hours. Built by composing Field, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-6 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Opening Hours"
+      }
+    },
+    {
+      "name": "c-time-picker-7",
+      "type": "registry:block",
+      "title": "Unavailable slots",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "30-minute appointment slots with the lunch hour and booked times disabled.",
+      "descriptionLong": "Unavailable slots. Built by composing Field, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-7 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Unavailable Slots"
+      }
+    },
+    {
+      "name": "c-time-picker-8",
+      "type": "registry:block",
+      "title": "Start and end time",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "A meeting range where the end stays after the start and the duration updates.",
+      "descriptionLong": "Start and end time. Built by composing Field, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-8 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Start & End"
+      }
+    },
+    {
+      "name": "c-time-picker-9",
+      "type": "registry:block",
+      "title": "Time zone label",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "Event time in the venue's time zone, shown in the trigger, with a footer that leaves out Now.",
+      "descriptionLong": "Time zone label. Built by composing Field, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-9 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "Time Zone"
+      }
+    },
+    {
+      "name": "c-time-picker-10",
+      "type": "registry:block",
+      "title": "Confirm before applying",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "Column picks stay a draft until OK, so a shift change applies once.",
+      "descriptionLong": "Confirm before applying. Built by composing Field, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-10 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "label": "Confirm Before Apply"
+      }
+    },
+    {
+      "name": "c-time-picker-11",
+      "type": "registry:block",
+      "title": "Localized labels",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "English, German, Chinese and Arabic labels, clocks and digits, with Arabic right to left.",
+      "descriptionLong": "Localized labels. Built by composing Card, Tabs, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-11 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "tabs",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "label": "Localized"
+      }
+    },
+    {
+      "name": "c-time-picker-12",
+      "type": "registry:block",
+      "title": "Form field with validation",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "Native form field with a required check, an error, reset and the submitted value.",
+      "descriptionLong": "Form field with validation. Built by composing Button, Field, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-12 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "field",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "label": "Form Validation"
+      }
+    },
+    {
+      "name": "c-time-picker-13",
+      "type": "registry:block",
+      "title": "Date and time",
+      "categories": [
+        "time-picker"
+      ],
+      "description": "Schedule a post with a calendar and time columns side by side in one card.",
+      "descriptionLong": "Date and time. Built by composing Button, Calendar, Card, Time Picker. A free, open source shadcn time picker example you can install with npx shadcn@latest add @reui/c-time-picker-13 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "calendar",
+        "card",
+        "time-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/time-picker/c-time-picker-13.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-time-picker-13.tsx"
+        }
+      ],
+      "meta": {
+        "order": 13,
+        "gridSize": 1,
+        "label": "Date & Time"
+      }
+    }
+  ]
+}

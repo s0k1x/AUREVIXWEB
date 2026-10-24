@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Editor formatting controls that stay pressed, such as bold, italic, underline and strikethrough",
+      "Reaction and save controls, such as like, retweet, share and bookmark, with or without a count",
+      "Media and app controls with an on and off state, such as mute, pin to sidebar or a notifications bell"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A one time action such as Save, Send or Delete that keeps no pressed state",
+        "instead": "button"
+      },
+      {
+        "when": "Related actions joined edge to edge into one strip, such as playback or zoom controls",
+        "instead": "button-group"
+      },
+      {
+        "when": "A set of options read as one value and crossed with arrow keys, such as text alignment",
+        "instead": "toggle-group"
+      }
+    ],
+    "agentNotes": [
+      "Pressed state lives inside each `Toggle` or a local `useState` and nothing saves it; read changes from `onPressedChange` to persist them",
+      "Every `Toggle` here is named by `aria-label`, which wins over its visible text for screen readers, so update both when relabelling"
+    ]
+  }
+}

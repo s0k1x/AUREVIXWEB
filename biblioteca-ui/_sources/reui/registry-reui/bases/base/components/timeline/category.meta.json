@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Project milestones, product roadmaps and release histories, stacked or laid out in a row",
+      "Activity feeds and logs such as git events, deploy runs and team member actions",
+      "Progress through ordered stages, such as order shipping or a build pipeline"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A ready made activity feed, approval tracker or changelog to drop into a page",
+        "instead": "application/timeline"
+      },
+      {
+        "when": "A full page audit log of access events grouped by day, with filters and export",
+        "instead": "solutions/users"
+      },
+      {
+        "when": "A multi step form or setup flow the user clicks through, one panel at a time",
+        "instead": "stepper"
+      }
+    ],
+    "agentNotes": [
+      "`onValueChange` never fires, since no part changes the step on click or key; progress moves only when you pass a new `value`",
+      "`defaultValue` is 1 when omitted, which sets `data-completed` on the `TimelineItem` with `step` 1; pass 0 when nothing is done yet",
+      "Keep each `TimelineItem` a direct child of `Timeline`; wrapping one in an element hides its `TimelineSeparator` as if it were the last item"
+    ]
+  }
+}

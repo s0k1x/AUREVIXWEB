@@ -1,0 +1,67 @@
+[
+  {
+    "name": "c-drawer-1",
+    "title": "A basic drawer with scrollable content",
+    "label": "Scrollable Content",
+    "description": "A basic drawer with scrollable content",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The default bottom panel, capped at 80vh, that a downward swipe dismisses",
+      "whenNotToUse": [
+        {
+          "when": "A side panel docked to the right edge, closed with a sideways swipe",
+          "instead": "c-drawer-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-drawer-2",
+    "title": "A drawer that opens from the right side",
+    "label": "Right Side",
+    "description": "A drawer that opens from the right side",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A panel docked to the right edge that the user swipes right to dismiss",
+      "whenNotToUse": [
+        {
+          "when": "A panel rising from the bottom edge, capped in height for long content",
+          "instead": "c-drawer-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-drawer-3",
+    "title": "A drawer that opens from the left side",
+    "label": "Left Side",
+    "description": "A drawer that opens from the left side",
+    "order": 3,
+    "guidance": {
+      "bestFor": "A panel docked to the left edge, closed by a swipe toward the left"
+    }
+  },
+  {
+    "name": "c-drawer-4",
+    "title": "A drawer that opens from the top side",
+    "label": "Top Side",
+    "description": "A drawer that opens from the top side",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A drawer that drops from the top edge, capped at 80vh, and closes with an upward swipe"
+    }
+  },
+  {
+    "name": "c-drawer-5",
+    "title": "Drawers opening from different sides",
+    "label": "All Sides",
+    "description": "Drawers opening from different sides",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A row of 4 triggers, one drawer per edge, for comparing the directions side by side",
+      "agentNotes": [
+        "Keep 1 entry of `SIDES` and pass its `swipeDirection`, or `direction` on radix, to `Drawer`; the demo mounts a drawer per edge"
+      ]
+    }
+  }
+]

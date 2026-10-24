@@ -1,0 +1,24 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Brand, accent and theme token settings kept as a hex, rgb or oklch string",
+      "Label, text and highlight colors chosen from a fixed palette of named presets",
+      "Design and drawing tools: fill and stroke inspectors, brush pickers, contrast checks and shade scales"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A whole settings, profile or data entry screen with many fields and a save bar",
+        "instead": "application/form"
+      },
+      {
+        "when": "A full document writing surface with a formatting toolbar, lists and links",
+        "instead": "application/rich-text-editor"
+      }
+    ],
+    "agentNotes": [
+      "`ColorPicker` renders no wrapper element, so its children lay out in the parent; `className` on it styles only the trigger it draws when given no children",
+      "A value passed in any syntax `parseColor` reads is accepted, but the next change comes back written in the root `format`",
+      "Without `alpha`, opacity in a passed value is ignored on screen and every value the picker emits is opaque"
+    ]
+  }
+}

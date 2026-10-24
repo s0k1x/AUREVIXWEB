@@ -1,0 +1,20 @@
+{
+  "repo": "https://github.com/uiverse-io/galaxy",
+  "commit": "adbd2adde0a299a3956ea288fb444ec01891ca41",
+  "commit_date": "2024-09-02T16:32:05+02:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 3804,
+  "files_skipped": {
+    "media": 0,
+    "lockfile": 0,
+    "too_large": 0,
+    "symlink": 0,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

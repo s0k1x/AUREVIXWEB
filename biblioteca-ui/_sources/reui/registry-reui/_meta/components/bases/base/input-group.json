@@ -1,0 +1,1078 @@
+{
+  "items": [
+    {
+      "name": "c-input-group-1",
+      "type": "registry:block",
+      "title": "Basic input group",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Basic input group",
+      "descriptionLong": "Basic input group. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-1 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Basic"
+      }
+    },
+    {
+      "name": "c-input-group-2",
+      "type": "registry:block",
+      "title": "Input group in disabled state",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group in disabled state",
+      "descriptionLong": "Input group in disabled state. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-2 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Disabled"
+      }
+    },
+    {
+      "name": "c-input-group-3",
+      "type": "registry:block",
+      "title": "Input group in invalid state",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group in invalid state",
+      "descriptionLong": "Input group in invalid state. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-3 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Invalid"
+      }
+    },
+    {
+      "name": "c-input-group-4",
+      "type": "registry:block",
+      "title": "Input group with prefix icon",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with prefix icon",
+      "descriptionLong": "Input group with prefix icon. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-4 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Prefix Icon"
+      }
+    },
+    {
+      "name": "c-input-group-5",
+      "type": "registry:block",
+      "title": "Input group with suffix icon",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with suffix icon",
+      "descriptionLong": "Input group with suffix icon. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-5 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Suffix Icon"
+      }
+    },
+    {
+      "name": "c-input-group-6",
+      "type": "registry:block",
+      "title": "Input group with both prefix and suffix icons",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with both prefix and suffix icons",
+      "descriptionLong": "Input group with both prefix and suffix icons. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-6 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Prefix Suffix Icons"
+      }
+    },
+    {
+      "name": "c-input-group-7",
+      "type": "registry:block",
+      "title": "Input group with prefix text addon",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with prefix text addon",
+      "descriptionLong": "Input group with prefix text addon. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-7 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Prefix Text"
+      }
+    },
+    {
+      "name": "c-input-group-8",
+      "type": "registry:block",
+      "title": "Input group with suffix text addon",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with suffix text addon",
+      "descriptionLong": "Input group with suffix text addon. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-8 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Suffix Text"
+      }
+    },
+    {
+      "name": "c-input-group-9",
+      "type": "registry:block",
+      "title": "Input group with both prefix and suffix text addons",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with both prefix and suffix text addons",
+      "descriptionLong": "Input group with both prefix and suffix text addons. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-9 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "Prefix Suffix Text"
+      }
+    },
+    {
+      "name": "c-input-group-10",
+      "type": "registry:block",
+      "title": "Input group with action button addon",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with action button addon",
+      "descriptionLong": "Input group with action button addon. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-10 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "label": "Action Button"
+      }
+    },
+    {
+      "name": "c-input-group-11",
+      "type": "registry:block",
+      "title": "Input group with icon button action",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with icon button action",
+      "descriptionLong": "Input group with icon button action. Built by composing Field, Input Group. Uses sonner alongside the shadcn primitives. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-11 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [
+        "sonner"
+      ],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "label": "Icon Button"
+      }
+    },
+    {
+      "name": "c-input-group-12",
+      "type": "registry:block",
+      "title": "Input group with dropdown menu selection",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with dropdown menu selection",
+      "descriptionLong": "Input group with dropdown menu selection. Built by composing Dropdown Menu, Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-12 and edit as your own code.",
+      "registryDependencies": [
+        "dropdown-menu",
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "label": "Dropdown Select"
+      }
+    },
+    {
+      "name": "c-input-group-13",
+      "type": "registry:block",
+      "title": "Input group with keyboard shortcut (Kbd)",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with keyboard shortcut (Kbd)",
+      "descriptionLong": "Input group with keyboard shortcut (Kbd). Built by composing Field, Input Group, Kbd. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-13 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group",
+        "kbd"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-13.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-13.tsx"
+        }
+      ],
+      "meta": {
+        "order": 13,
+        "label": "Keyboard Shortcut"
+      }
+    },
+    {
+      "name": "c-input-group-14",
+      "type": "registry:block",
+      "title": "Input group with tooltip action",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with tooltip action",
+      "descriptionLong": "Input group with tooltip action. Built by composing Field, Input Group, Tooltip. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-14 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group",
+        "tooltip"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-14.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-14.tsx"
+        }
+      ],
+      "meta": {
+        "order": 14,
+        "label": "Tooltip Action"
+      }
+    },
+    {
+      "name": "c-input-group-15",
+      "type": "registry:block",
+      "title": "Input group with loading spinner",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with loading spinner",
+      "descriptionLong": "Input group with loading spinner. Built by composing Field, Input Group, Spinner. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-15 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-15.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-15.tsx"
+        }
+      ],
+      "meta": {
+        "order": 15,
+        "label": "Loading Spinner"
+      }
+    },
+    {
+      "name": "c-input-group-16",
+      "type": "registry:block",
+      "title": "Input group with block-start addon",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with block-start addon",
+      "descriptionLong": "Input group with block-start addon. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-16 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-16.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-16.tsx"
+        }
+      ],
+      "meta": {
+        "order": 16,
+        "label": "Block-Start Addon"
+      }
+    },
+    {
+      "name": "c-input-group-17",
+      "type": "registry:block",
+      "title": "Textarea input group with dynamic character limit",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Textarea input group with dynamic character limit",
+      "descriptionLong": "Textarea input group with dynamic character limit. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-17 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-17.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-17.tsx"
+        }
+      ],
+      "meta": {
+        "order": 17,
+        "label": "Character Limit"
+      }
+    },
+    {
+      "name": "c-input-group-18",
+      "type": "registry:block",
+      "title": "AI Chat textarea with rich toolbar actions",
+      "categories": [
+        "input-group"
+      ],
+      "description": "AI Chat textarea with rich toolbar actions",
+      "descriptionLong": "AI Chat textarea with rich toolbar actions. Built by composing Dropdown Menu, Field, Input Group, Kbd. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-18 and edit as your own code.",
+      "registryDependencies": [
+        "dropdown-menu",
+        "field",
+        "input-group",
+        "kbd"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-18.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-18.tsx"
+        }
+      ],
+      "meta": {
+        "order": 18,
+        "label": "AI Chat Toolbar"
+      }
+    },
+    {
+      "name": "c-input-group-19",
+      "type": "registry:block",
+      "title": "AI Chat interface with file and context attachments",
+      "categories": [
+        "input-group"
+      ],
+      "description": "AI Chat interface with file and context attachments",
+      "descriptionLong": "AI Chat interface with file and context attachments. Built by composing Dropdown Menu, Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-19 and edit as your own code.",
+      "registryDependencies": [
+        "dropdown-menu",
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-19.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-19.tsx"
+        }
+      ],
+      "meta": {
+        "order": 19,
+        "label": "AI Chat Attachments"
+      }
+    },
+    {
+      "name": "c-input-group-20",
+      "type": "registry:block",
+      "title": "Input group demonstrating label usage",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group demonstrating label usage",
+      "descriptionLong": "Input group demonstrating label usage. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-20 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-20.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-20.tsx"
+        }
+      ],
+      "meta": {
+        "order": 20,
+        "label": "Label Usage"
+      }
+    },
+    {
+      "name": "c-input-group-21",
+      "type": "registry:block",
+      "title": "Input group with multiple icons/buttons at the end",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with multiple icons/buttons at the end",
+      "descriptionLong": "Input group with multiple icons/buttons at the end. Built by composing Field, Input Group. Uses sonner alongside the shadcn primitives. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-21 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [
+        "sonner"
+      ],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-21.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-21.tsx"
+        }
+      ],
+      "meta": {
+        "order": 21,
+        "label": "Multiple End Actions"
+      }
+    },
+    {
+      "name": "c-input-group-22",
+      "type": "registry:block",
+      "title": "Input group with popover trigger addon",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with popover trigger addon",
+      "descriptionLong": "Input group with popover trigger addon. Built by composing Field, Input Group, Popover. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-22 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group",
+        "popover"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-22.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-22.tsx"
+        }
+      ],
+      "meta": {
+        "order": 22,
+        "label": "Popover Trigger"
+      }
+    },
+    {
+      "name": "c-input-group-23",
+      "type": "registry:block",
+      "title": "Input group with Sparkles icon and complex Kbd shortcut",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with Sparkles icon and complex Kbd shortcut",
+      "descriptionLong": "Input group with Sparkles icon and complex Kbd shortcut. Built by composing Field, Input Group, Kbd. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-23 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group",
+        "kbd"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-23.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-23.tsx"
+        }
+      ],
+      "meta": {
+        "order": 23,
+        "label": "Sparkles Shortcut"
+      }
+    },
+    {
+      "name": "c-input-group-24",
+      "type": "registry:block",
+      "title": "Input group with success indicator circle",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with success indicator circle",
+      "descriptionLong": "Input group with success indicator circle. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-24 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-24.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-24.tsx"
+        }
+      ],
+      "meta": {
+        "order": 24,
+        "label": "Success Indicator"
+      }
+    },
+    {
+      "name": "c-input-group-25",
+      "type": "registry:block",
+      "title": "Input group with search results count",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with search results count",
+      "descriptionLong": "Input group with search results count. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-25 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-25.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-25.tsx"
+        }
+      ],
+      "meta": {
+        "order": 25,
+        "label": "Results Count"
+      }
+    },
+    {
+      "name": "c-input-group-26",
+      "type": "registry:block",
+      "title": "Textarea input group with action buttons",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Textarea input group with action buttons",
+      "descriptionLong": "Textarea input group with action buttons. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-26 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-26.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-26.tsx"
+        }
+      ],
+      "meta": {
+        "order": 26,
+        "label": "Textarea Actions"
+      }
+    },
+    {
+      "name": "c-input-group-27",
+      "type": "registry:block",
+      "title": "Input group wrapped in a button group with text prefixes/suffixes",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group wrapped in a button group with text prefixes/suffixes",
+      "descriptionLong": "Input group wrapped in a button group with text prefixes/suffixes. Built by composing Button Group, Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-27 and edit as your own code.",
+      "registryDependencies": [
+        "button-group",
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-27.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-27.tsx"
+        }
+      ],
+      "meta": {
+        "order": 27,
+        "label": "Button Group"
+      }
+    },
+    {
+      "name": "c-input-group-28",
+      "type": "registry:block",
+      "title": "Input group with a menu button (three dots) at the end",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with a menu button (three dots) at the end",
+      "descriptionLong": "Input group with a menu button (three dots) at the end. Built by composing Dropdown Menu, Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-28 and edit as your own code.",
+      "registryDependencies": [
+        "dropdown-menu",
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-28.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-28.tsx"
+        }
+      ],
+      "meta": {
+        "order": 28,
+        "label": "Three Dot Menu"
+      }
+    },
+    {
+      "name": "c-input-group-29",
+      "type": "registry:block",
+      "title": "Pill-shaped input group with a category dropdown at the end",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Pill-shaped input group with a category dropdown at the end",
+      "descriptionLong": "Pill-shaped input group with a category dropdown at the end. Built by composing Dropdown Menu, Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-29 and edit as your own code.",
+      "registryDependencies": [
+        "dropdown-menu",
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-29.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-29.tsx"
+        }
+      ],
+      "meta": {
+        "order": 29,
+        "label": "Pill Category"
+      }
+    },
+    {
+      "name": "c-input-group-30",
+      "type": "registry:block",
+      "title": "Input group with inline addons (no separating borders)",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with inline addons (no separating borders)",
+      "descriptionLong": "Input group with inline addons (no separating borders). Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-30 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-30.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-30.tsx"
+        }
+      ],
+      "meta": {
+        "order": 30,
+        "label": "Inline Addons"
+      }
+    },
+    {
+      "name": "c-input-group-31",
+      "type": "registry:block",
+      "title": "Input group with inline start and block-end addon",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Input group with inline start and block-end addon",
+      "descriptionLong": "Input group with inline start and block-end addon. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-31 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-31.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-31.tsx"
+        }
+      ],
+      "meta": {
+        "order": 31,
+        "label": "Inline Block-End"
+      }
+    },
+    {
+      "name": "c-input-group-32",
+      "type": "registry:block",
+      "title": "Member row with avatar, email and role selection",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Member row with avatar, email and role selection",
+      "descriptionLong": "Member row with avatar, email and role selection. Built by composing Avatar, Dropdown Menu, Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-32 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "dropdown-menu",
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-32.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-32.tsx"
+        }
+      ],
+      "meta": {
+        "order": 32,
+        "label": "Member Row"
+      }
+    },
+    {
+      "name": "c-input-group-33",
+      "type": "registry:block",
+      "title": "Project save interface with status and action buttons",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Project save interface with status and action buttons",
+      "descriptionLong": "Project save interface with status and action buttons. Built by composing Dropdown Menu, Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-33 and edit as your own code.",
+      "registryDependencies": [
+        "dropdown-menu",
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-33.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-33.tsx"
+        }
+      ],
+      "meta": {
+        "order": 33,
+        "gridSize": 1,
+        "label": "Project Save"
+      }
+    },
+    {
+      "name": "c-input-group-34",
+      "type": "registry:block",
+      "title": "Pill-shaped AI prompt bar with voice and audio icons",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Pill-shaped AI prompt bar with voice and audio icons",
+      "descriptionLong": "Pill-shaped AI prompt bar with voice and audio icons. Built by composing Dropdown Menu, Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-34 and edit as your own code.",
+      "registryDependencies": [
+        "dropdown-menu",
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-34.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-34.tsx"
+        }
+      ],
+      "meta": {
+        "order": 34,
+        "gridSize": 1,
+        "label": "Pill AI Prompt"
+      }
+    },
+    {
+      "name": "c-input-group-35",
+      "type": "registry:block",
+      "title": "Password input with visibility toggle",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Password input with visibility toggle",
+      "descriptionLong": "Password input with visibility toggle. Built by composing Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-35 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-35.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-35.tsx"
+        }
+      ],
+      "meta": {
+        "order": 35,
+        "label": "Password Toggle"
+      }
+    },
+    {
+      "name": "c-input-group-36",
+      "type": "registry:block",
+      "title": "API request input with method selector and send action",
+      "categories": [
+        "input-group"
+      ],
+      "description": "API request input with method selector and send action",
+      "descriptionLong": "API request input with method selector and send action. Built by composing Dropdown Menu, Field, Input Group. Uses cn alongside the shadcn primitives. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-36 and edit as your own code.",
+      "registryDependencies": [
+        "dropdown-menu",
+        "field",
+        "input-group"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-36.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-36.tsx"
+        }
+      ],
+      "meta": {
+        "order": 36,
+        "label": "API Request"
+      }
+    },
+    {
+      "name": "c-input-group-37",
+      "type": "registry:block",
+      "title": "Order search input with status filter",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Order search input with status filter",
+      "descriptionLong": "Order search input with status filter. Built by composing Checkbox, Field, Input Group, Label, Popover. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-37 and edit as your own code.",
+      "registryDependencies": [
+        "checkbox",
+        "field",
+        "input-group",
+        "label",
+        "popover"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-37.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-37.tsx"
+        }
+      ],
+      "meta": {
+        "order": 37,
+        "label": "Order Search"
+      }
+    },
+    {
+      "name": "c-input-group-38",
+      "type": "registry:block",
+      "title": "Company search input with region selector",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Company search input with region selector",
+      "descriptionLong": "Company search input with region selector. Built by composing Dropdown Menu, Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-38 and edit as your own code.",
+      "registryDependencies": [
+        "dropdown-menu",
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-38.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-38.tsx"
+        }
+      ],
+      "meta": {
+        "order": 38,
+        "label": "Company Search"
+      }
+    },
+    {
+      "name": "c-input-group-39",
+      "type": "registry:block",
+      "title": "Contact search input with filter and actions menu",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Contact search input with filter and actions menu",
+      "descriptionLong": "Contact search input with filter and actions menu. Built by composing Checkbox, Dropdown Menu, Field, Input Group, Label and 1 more. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-39 and edit as your own code.",
+      "registryDependencies": [
+        "checkbox",
+        "dropdown-menu",
+        "field",
+        "input-group",
+        "label",
+        "popover"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-39.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-39.tsx"
+        }
+      ],
+      "meta": {
+        "order": 39,
+        "label": "Contact Search"
+      }
+    },
+    {
+      "name": "c-input-group-40",
+      "type": "registry:block",
+      "title": "Share link input with visibility selector and copy action",
+      "categories": [
+        "input-group"
+      ],
+      "description": "Share link input with visibility selector and copy action",
+      "descriptionLong": "Share link input with visibility selector and copy action. Built by composing Dropdown Menu, Field, Input Group. A free, open source shadcn input group example you can install with npx shadcn@latest add @reui/c-input-group-40 and edit as your own code.",
+      "registryDependencies": [
+        "dropdown-menu",
+        "field",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input-group/c-input-group-40.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-group-40.tsx"
+        }
+      ],
+      "meta": {
+        "order": 40,
+        "label": "Share Link"
+      }
+    }
+  ]
+}

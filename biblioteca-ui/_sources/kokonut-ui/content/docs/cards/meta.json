@@ -1,0 +1,23 @@
+{
+  "title": "Cards",
+  "pages": [
+    "card-flip",
+    "card-stack",
+    "liquid-glass-card",
+    "apple-activity-card",
+    "bento-grid",
+    "currency-transfer",
+    "carousel-cards",
+    "notification-stack",
+    "liquid-gauge",
+    "activity-terrain",
+    "page-flip",
+    "receipt-printer",
+    "metric-card",
+    "uptime-card",
+    "spending-ring",
+    "boarding-pass",
+    "lightbox-grid",
+    "onboarding-checklist"
+  ]
+}

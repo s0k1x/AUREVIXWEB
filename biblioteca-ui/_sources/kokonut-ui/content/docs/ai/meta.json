@@ -1,0 +1,25 @@
+{
+  "title": "AI",
+  "pages": [
+    "ai-prompt",
+    "ai-input-search",
+    "ai-loading",
+    "ai-text-loading",
+    "ai-voice",
+    "ai-tool-approval",
+    "ai-context-meter",
+    "ai-citations",
+    "ai-diff-review",
+    "ai-model-selector",
+    "ai-token-alternatives",
+    "ai-branches",
+    "ai-agent-lanes",
+    "ai-inline-edit",
+    "ai-message-queue",
+    "ai-redact",
+    "ai-memory",
+    "ai-autocomplete",
+    "slash-command-menu",
+    "image-generation-card"
+  ]
+}

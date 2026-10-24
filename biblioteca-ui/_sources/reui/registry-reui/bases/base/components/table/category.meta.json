@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Short lists of records such as invoices, orders, members, files or API keys, one per row",
+      "Rows that carry status badges, avatars, a totals footer or a menu of row actions",
+      "Label and value pairs describing one record, such as an employee profile or a server"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Rows the reader sorts, filters, pages or selects with checkboxes",
+        "instead": "data-grid"
+      },
+      {
+        "when": "A ready made records section with a title bar, toolbar filters and a pager",
+        "instead": "data-grid/base"
+      },
+      {
+        "when": "An account page where a person edits their avatar, name, email and regional settings",
+        "instead": "application/profile"
+      }
+    ],
+    "agentNotes": [
+      "`Table` wraps the table in its own overflow-x-auto div, and `className` lands on the inner table, never on that scroll wrapper",
+      "`TableCell` and `TableHead` are nowrap in every style, so a long value widens the table and scrolls it sideways instead of wrapping"
+    ]
+  }
+}

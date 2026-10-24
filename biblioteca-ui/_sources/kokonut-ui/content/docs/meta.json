@@ -1,0 +1,20 @@
+{
+  "title": "KokonutUI",
+  "description": "Collection of 100+ stunning UI components free and open source built with Next.js, React, Tailwind CSS, and Motion.",
+  "root": true,
+  "pages": [
+    "index",
+    "agents",
+    "changelog",
+    "templates",
+    "pro",
+    "backgrounds",
+    "cards",
+    "navigation",
+    "inputs",
+    "ai",
+    "media",
+    "texts",
+    "buttons"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Assistant replies and agent output that stream code, or lines a reader picks to ask about",
+      "Code review of diffs, git patches and diagnostics, with accept, reject and fix actions",
+      "Docs snippets and terminal or test logs with line numbers, copy, wrap, folding and search"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A full assistant conversation screen with thread list, transcript and composer",
+        "instead": "ai-agents/ai-chat"
+      },
+      {
+        "when": "A discount or promo code shown for a shopper to copy at checkout",
+        "instead": "ecommerce/coupon"
+      },
+      {
+        "when": "A release console with environment lanes, a deploy history grid and streaming logs",
+        "instead": "solutions/dev-ops"
+      }
+    ],
+    "agentNotes": [
+      "Line specs such as `highlightedLines`, `diff` and `folded` count source lines from 1, whatever `startLine` prints in the gutter",
+      "`maxLines` caps height only on the built-in surface; with `CodeBlockContent` inside your own `ScrollArea`, cap that viewport yourself",
+      "Hoist `transformers` to module scope; a new array on every render re-tokenizes the whole file"
+    ]
+  }
+}

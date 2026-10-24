@@ -1,0 +1,306 @@
+[
+  {
+    "name": "c-sonner-1",
+    "title": "Basic toast notification.",
+    "label": "Basic",
+    "description": "Basic toast notification.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "A single line message from one bare call with no options, the minimum a toast needs"
+    }
+  },
+  {
+    "name": "c-sonner-2",
+    "title": "Toast notification with description.",
+    "label": "With Description",
+    "description": "Toast notification with description.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A title over a second line passed as description, here an event name with its date and time"
+    }
+  },
+  {
+    "name": "c-sonner-3",
+    "title": "Toast positions",
+    "label": "Positions",
+    "description": "Toast positions",
+    "order": 3,
+    "guidance": {
+      "bestFor": "A grid of 6 buttons that each send their toast to a different top or bottom corner or center",
+      "agentNotes": [
+        "Each call passes its own `position`; pick one and set it on `Toaster` so every toast shares that spot"
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-4",
+    "title": "Toast variants with colored icons",
+    "label": "Variant Icons",
+    "description": "Toast variants with colored icons",
+    "order": 4,
+    "guidance": {
+      "bestFor": "Default, success, error, warning, info and loading side by side, with the 4 status icons each tinted its own color",
+      "agentNotes": [
+        "`toast.loading` never closes on its own; pass the id it returns to `toast.success` or `toast.error` to settle it"
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-5",
+    "title": "Toast duration options",
+    "label": "Durations",
+    "description": "Toast duration options",
+    "order": 5,
+    "guidance": {
+      "bestFor": "Timers of 2, 5 and 10 seconds beside a persistent notice that stays until it is closed",
+      "agentNotes": [
+        "`duration` is in milliseconds and `Infinity` turns the timer off, so the Persistent button adds `closeButton` as the way out"
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-6",
+    "title": "Toast with action button",
+    "label": "Action Button",
+    "description": "Toast with action button",
+    "order": 6,
+    "guidance": {
+      "bestFor": "An archive notice with an Undo button inside the toast that confirms with a second success toast",
+      "agentNotes": [
+        "Undo only fires `toast.success`; restore the archived conversation inside the `action` `onClick`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A choice between confirming and cancelling inside the toast",
+          "instead": "c-sonner-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-7",
+    "title": "Promise toast with loading state",
+    "label": "Promise",
+    "description": "Promise toast with loading state",
+    "order": 7,
+    "guidance": {
+      "bestFor": "A deploy whose spinner becomes a success or error line when its promise settles, quoting the resolved name",
+      "agentNotes": [
+        "The `Promise` that resolves after `setTimeout` stands in for your deploy call; hand the real one to `toast.promise`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Progress steps with their own messages that no single promise tracks",
+          "instead": "c-sonner-21"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-8",
+    "title": "Toast with custom close and cancel buttons",
+    "label": "Action & Cancel",
+    "description": "Toast with custom close and cancel buttons",
+    "order": 8,
+    "guidance": {
+      "bestFor": "A delete prompt inside the toast with a Delete action and a Cancel button that just closes it",
+      "agentNotes": [
+        "Delete only fires `toast.success` and the `cancel` `onClick` is empty; run the deletion in the `action` handler"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A permanent deletion the user must answer before doing anything else",
+          "instead": "alert-dialog"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-9",
+    "title": "Toast with custom rich content",
+    "label": "Rich Content",
+    "description": "Toast with custom rich content",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A teammate chat message with avatar, sender, time ago and Reply and Dismiss buttons on the popover surface",
+      "agentNotes": [
+        "Reply and Dismiss both call `toast.dismiss` with no id, which closes every open toast; open your reply view from Reply"
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-10",
+    "title": "Toast with upload progress simulation",
+    "label": "Upload Progress",
+    "description": "Toast with upload progress simulation",
+    "order": 10,
+    "guidance": {
+      "bestFor": "A file card whose progress bar fills in place under one toast id, closing 3 seconds after it reaches 100",
+      "agentNotes": [
+        "`setInterval` adds a random step of 5 to 19 every 500ms to fake progress; call `toast.custom` with the same `id` from your upload events",
+        "`intervalRef` holds only the latest timer, so a second click before 100 orphans the first; keep 1 handle per upload"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Progress kept in the page as a list, one row per item being sent",
+          "instead": "file-upload"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-11",
+    "title": "Toast with status alert markup",
+    "label": "Status Alert",
+    "description": "Toast with status alert markup",
+    "order": 11,
+    "guidance": {
+      "bestFor": "A deploy result with a green status dot, environment, duration and commit rows, and View Logs and Open Site",
+      "agentNotes": [
+        "View Logs and Open Site only call `toast.dismiss`, closing all toasts; point them at your log and site URLs"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A deploy summary that must stay in the page after it is read",
+          "instead": "alert"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-12",
+    "title": "Custom accent border toast",
+    "label": "Accent Border",
+    "description": "Custom accent border toast",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A release notice marked by a thick blue left edge and an info icon, offering Later or Update Now",
+      "agentNotes": [
+        "Update Now only calls `toast.dismiss` like Later does; start your update from its `onClick`"
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-13",
+    "title": "Custom invert success toast",
+    "label": "Invert Success",
+    "description": "Custom invert success toast",
+    "order": 13,
+    "guidance": {
+      "bestFor": "A paid invoice confirmation on the inverted surface with a green check badge and one View Receipt button",
+      "agentNotes": [
+        "`bg-invert` and `text-invert-foreground` need invert theme variables that this install does not add, or the card has no fill"
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-14",
+    "title": "Custom invert error toast with details",
+    "label": "Invert Error",
+    "description": "Custom invert error toast with details",
+    "order": 14,
+    "guidance": {
+      "bestFor": "A failed build listing 2 file and line errors in monospace above View Logs and a red Retry Build",
+      "agentNotes": [
+        "The card fill `bg-invert` stays empty until your theme defines the invert color variables, which this example does not ship",
+        "Retry Build and View Logs only call `toast.dismiss`; start the rebuild from Retry Build"
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-15",
+    "title": "Custom invert info toast with avatar",
+    "label": "Invert Info",
+    "description": "Custom invert info toast with avatar",
+    "order": 15,
+    "guidance": {
+      "bestFor": "A collaboration invite from a named teammate with an avatar, a Decline and a blue Accept on the inverted surface",
+      "agentNotes": [
+        "Accept and Decline both just call `toast.dismiss`; send the answer to the invite from each `onClick`",
+        "Without invert theme variables `bg-invert` generates no class, so define them before installing this card"
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-16",
+    "title": "Custom invert warning toast with countdown",
+    "label": "Invert Warning",
+    "description": "Custom invert warning toast with countdown",
+    "order": 16,
+    "guidance": {
+      "bestFor": "A session timeout warning held for 10 seconds, whose amber Extend Session button swaps in a success toast",
+      "agentNotes": [
+        "Extend Session only runs `toast.dismiss` then `toast.success`; refresh the session before the success message",
+        "`bg-invert` relies on invert color variables a plain shadcn theme lacks; add them or the warning card is see through"
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-17",
+    "title": "Multi-action invert toast with avatar group",
+    "label": "Invert Avatar Group",
+    "description": "Multi-action invert toast with avatar group",
+    "order": 17,
+    "guidance": {
+      "bestFor": "A pull request ready to merge, with an overlapping stack of 3 reviewer avatars and View and green Merge",
+      "agentNotes": [
+        "`reviewers` holds 3 sample people with remote photos; pass the real approvers of the pull request",
+        "Merge only calls `toast.dismiss` and `toast.success`; call your merge from its `onClick` first",
+        "`bg-invert` and the avatar ring `border-invert` both need invert theme variables that this example leaves out"
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-18",
+    "title": "Toast with close button on top-right",
+    "label": "Close Top Right",
+    "description": "Toast with close button on top-right",
+    "order": 18,
+    "guidance": {
+      "bestFor": "An uploaded file notice whose close button is moved from the default top left corner to the top right"
+    }
+  },
+  {
+    "name": "c-sonner-19",
+    "title": "Toast with custom icon",
+    "label": "Custom Icon",
+    "description": "Toast with custom icon",
+    "order": 19,
+    "guidance": {
+      "bestFor": "A row of 3 plain notices that each pass their own leading glyph: send, download and bookmark"
+    }
+  },
+  {
+    "name": "c-sonner-20",
+    "title": "Custom integration toast",
+    "label": "Integration",
+    "description": "Custom integration toast",
+    "order": 20,
+    "guidance": {
+      "bestFor": "A connected workspace card with a gradient link tile, Active status, a channel sync line and Configure and Open Dashboard",
+      "agentNotes": [
+        "Configure and Open Dashboard only call `toast.dismiss`; route them to your integration settings and dashboard"
+      ]
+    }
+  },
+  {
+    "name": "c-sonner-21",
+    "title": "Updatable toast with ID",
+    "label": "Updatable",
+    "description": "Updatable toast with ID",
+    "order": 21,
+    "guidance": {
+      "bestFor": "A spinner line rewritten through a stored toast id from preparing to 30 and 70 percent, then a success card",
+      "agentNotes": [
+        "The 3 `setTimeout` steps fake the upload; call `toast.custom` with `toastId` from your real progress callbacks",
+        "Loading steps pass `Infinity` as `duration`, so an upload that fails must update or dismiss `toastId` or the spinner never closes"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A determinate bar that fills as bytes arrive",
+          "instead": "c-sonner-10"
+        }
+      ]
+    }
+  }
+]

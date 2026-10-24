@@ -1,0 +1,199 @@
+[
+  {
+    "name": "c-carousel-1",
+    "title": "Basic carousel with single item",
+    "label": "Basic",
+    "description": "Basic carousel with single item",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The minimal setup with no options: 5 square photos one per view, arrow buttons shown from the sm breakpoint up",
+      "whenNotToUse": [
+        {
+          "when": "Several photos side by side in view at once",
+          "instead": "c-carousel-3"
+        },
+        {
+          "when": "A static list row with media, a title and actions that never slides",
+          "instead": "item"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-carousel-2",
+    "title": "Vertical carousel orientation",
+    "label": "Vertical",
+    "description": "Vertical carousel orientation",
+    "order": 2,
+    "guidance": {
+      "bestFor": "Cards stacked in a fixed height column that scrolls up and down, 2 in view, with arrows above and below",
+      "agentNotes": [
+        "A vertical axis needs a set height: `CarouselContent` is fixed at 325px and each `Card` at 145px to fit 2 per view, so retune them together"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Slides that move sideways and show more cards as the screen widens",
+          "instead": "c-carousel-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-carousel-3",
+    "title": "Carousel with multiple items visible",
+    "label": "Multiple Items",
+    "description": "Carousel with multiple items visible",
+    "order": 3,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A wide row holding 3 square photos in view at every screen width, aligned to the start",
+      "whenNotToUse": [
+        {
+          "when": "A row that should show fewer photos on narrow screens",
+          "instead": "c-carousel-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-carousel-4",
+    "title": "Carousel with responsive basis",
+    "label": "Responsive Basis",
+    "description": "Carousel with responsive basis",
+    "order": 4,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Portrait photos whose count in view climbs from 1 on phones to 4 on large screens, across 8 slides",
+      "agentNotes": [
+        "Per breakpoint `CarouselItem` widths follow the viewport, not the carousel, so in a narrow column at lg it still squeezes in 4 slides"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Cards stacked top to bottom that scroll up and down",
+          "instead": "c-carousel-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-carousel-5",
+    "title": "Carousel with autoplay plugin",
+    "label": "Autoplay",
+    "description": "Carousel with autoplay plugin",
+    "order": 5,
+    "guidance": {
+      "bestFor": "Square photos that advance by themselves every 2 seconds through the Autoplay plugin, arrows kept",
+      "agentNotes": [
+        "`Autoplay` sets only `delay`: it has no pause control, wraps to slide 1 after the last, and stops for good once a slide is pressed"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Slides that move only when the viewer swipes or presses an arrow",
+          "instead": "c-carousel-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-carousel-6",
+    "title": "Carousel with centered slide alignment",
+    "label": "Centered Alignment",
+    "description": "Carousel with centered slide alignment",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A looping row of 16:9 slides at 70 percent width, centered so both neighbors peek in at the edges",
+      "agentNotes": [
+        "`loop` quietly turns itself off when the other slides cannot cover the view, which at 70 percent width means 2 slides or fewer"
+      ]
+    }
+  },
+  {
+    "name": "c-carousel-7",
+    "title": "Carousel with custom spacing",
+    "label": "Custom Spacing",
+    "description": "Carousel with custom spacing",
+    "order": 7,
+    "guidance": {
+      "bestFor": "A pair of square photos in view with the slide gutter cut from the default 16px to 4px",
+      "agentNotes": [
+        "The gutter is the negative left margin on `CarouselContent` matched by the same left padding on each `CarouselItem`; keep the 2 values equal when you retune it"
+      ]
+    }
+  },
+  {
+    "name": "c-carousel-8",
+    "title": "Carousel with images and overlays",
+    "label": "Image Overlays",
+    "description": "Carousel with images and overlays",
+    "order": 8,
+    "guidance": {
+      "bestFor": "Wide 16:9 slides with a title and caption set on a dark bottom fade, zooming the photo on hover",
+      "whenNotToUse": [
+        {
+          "when": "Captioned slides tracked by a row of dots in place of arrow buttons",
+          "instead": "c-carousel-11"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-carousel-9",
+    "title": "Carousel with thumbnail navigation",
+    "label": "Thumbnail Strip",
+    "description": "Carousel with thumbnail navigation",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A main slide above a free scrolling strip of 10 thumbnails that outlines the active one and jumps on click",
+      "agentNotes": [
+        "Each thumbnail is a `CarouselItem` div with an `onClick` that takes no focus, so a keyboard user cannot pick a slide; render a button inside it",
+        "Both carousels map `ITEMS_COUNT` slides by index, so feed them from one shared array to keep each thumbnail on its slide"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Thumbnails laid over the lower edge of the main image on a dark fade",
+          "instead": "c-carousel-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-carousel-10",
+    "title": "Carousel with overlay thumbnail navigation",
+    "label": "Overlay Thumbnails",
+    "description": "Carousel with overlay thumbnail navigation",
+    "order": 10,
+    "guidance": {
+      "bestFor": "Thumbnails set over the bottom of a 16:9 slide on a dark gradient, the active one outlined in white",
+      "agentNotes": [
+        "The overlay thumbnails are clickable `CarouselItem` divs and nothing in either carousel takes focus, so wrap each image in a button",
+        "`onThumbClick` and `onSelect` pair slides by index across both carousels, so both lists must hold the same items in the same order"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A thumbnail strip in its own row below the main image",
+          "instead": "c-carousel-9"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-carousel-11",
+    "title": "Carousel with dots navigation and content overlays",
+    "label": "Dots Navigation",
+    "description": "Carousel with dots navigation and content overlays",
+    "order": 11,
+    "guidance": {
+      "bestFor": "Square captioned slides with a row of dots under them, the active dot stretched wider, and no arrow buttons",
+      "agentNotes": [
+        "`count` is read from `scrollSnapList` once when `api` arrives, so the dot total goes stale if slides per view change on resize",
+        "The active dot differs only in width and color; add aria-current to the dot whose index equals `current`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A gallery where each slide needs a small preview image to pick it from",
+          "instead": "c-carousel-9"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,303 @@
+---
+title: Chat UI
+description: Install and compose Chat UI, with source references and integration guidance for engineers and agents.
+---
+
+Chat UI is a family of components for conversations in a drawer, a panel, or a page. The components handle presentation and local interaction; your application owns messages, membership, persistence, and authorization.
+
+[Try the interactive showcase](/ui/chat): switch between a group chat and a direct message in the hero, or open the complete group drawer. All examples use synthetic conversation data.
+
+## Start here
+
+- **Build a conversation:** install `@coss/chat` with `@coss/composer` and `@coss/avatar`, then use the [minimal example](#minimal-conversation).
+- **Adapt the full drawer:** install `@coss/chat-demo`, then read the [source map](#source-map) and [application responsibilities](#connect-your-application).
+- **Working as an agent:** read [this page as Markdown](/ui/docs/chat.md). The [chat registry source](/ui/r/chat.json) and [drawer example source](/ui/r/chat-demo.json) include file contents and dependencies. Use the exported TypeScript props as the API contract; the live showcase alone does not expose the implementation.
+
+## Install
+
+Configure coss ui using [Get started](/ui/docs/get-started), then install the family:
+
+```bash
+npx shadcn@latest add @coss/chat
+```
+
+This installs the chat source into your configured components directory under `chat/`, including its hooks and text helpers. It also installs the required coss components, Lucide icons, Base UI, and `motion@14.0.0`. The family uses React 19 and Tailwind CSS 4 in this repository. Keep Tailwind source scanning enabled for the installed directory.
+
+To start from the complete drawer example, including synthetic data and simulated actions:
+
+```bash
+npx shadcn@latest add @coss/chat-demo
+```
+
+The example is separate from the component family. Its roles, moderation decisions, timers, and receipt aggregation are sample application code. Adapt them to your product's rules.
+
+The installed drawer example accepts a trigger renderer so you can place its controls anywhere on your page:
+
+```tsx
+import { ChatDemo } from "@/components/chat-demo/chat-demo";
+import { Button } from "@/components/ui/button";
+import { DrawerTrigger } from "@/components/ui/drawer";
+
+<ChatDemo
+  renderTriggers={(select) => (
+    <DrawerTrigger
+      render={<Button />}
+      onClick={() => select("conversation")}
+    >
+      Open chat
+    </DrawerTrigger>
+  )}
+/>
+```
+
+Use this composition inside a client component. Additional scenario values are exported from `chat-demo-state.ts`.
+
+## Minimal conversation
+
+The example also uses Composer and Avatar. Install them explicitly alongside the chat family:
+
+```bash
+npx shadcn@latest add @coss/chat @coss/composer @coss/avatar
+```
+
+This complete client component demonstrates plain-text sending with local state. A conversation needs a bounded height, a scroll controller, messages, and a controlled draft. Use the full drawer example for mentions, grouped messages, reactions, and focused replies.
+
+```tsx
+"use client";
+
+import { ChatConversation } from "@/components/chat/chat-conversation";
+import { ChatMessage } from "@/components/chat/chat-message";
+import { useChatScroll } from "@/components/chat/hooks/use-chat-scroll";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Composer,
+  ComposerActionGroup,
+  ComposerActions,
+  ComposerInput,
+  ComposerSubmit,
+  type ComposerValue,
+  getComposerText,
+} from "@/components/ui/composer";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { ArrowUpIcon } from "lucide-react";
+import type { ReactElement } from "react";
+import { useId, useState } from "react";
+
+export function Conversation(): ReactElement {
+  const [draft, setDraft] = useState<ComposerValue>([]);
+  const hintId = useId();
+  const touchInput = useMediaQuery({ pointer: "coarse" });
+  const [messages, setMessages] = useState([
+    {
+      id: 0,
+      own: false,
+      text: "The same chat components can live directly in a page. Try sending a message.",
+    },
+  ]);
+  const scroll = useChatScroll({ itemCount: messages.length });
+
+  return (
+    <section aria-label="Inline chat example" className="flex h-96 flex-col rounded-xl border bg-popover">
+      <ChatConversation scroll={scroll} label="Inline conversation" jumpLabel="Jump to latest">
+        <div className="space-y-4 pt-4">
+          {messages.map((message) => (
+            <ChatMessage
+              key={message.id}
+              side={message.own ? "outgoing" : "incoming"}
+              author="Casey"
+              avatar={
+                <Avatar aria-hidden="true" className="size-7 text-xs">
+                  <AvatarFallback>C</AvatarFallback>
+                </Avatar>
+              }
+              animateEntrance={message.own}>
+              {message.text}
+            </ChatMessage>
+          ))}
+        </div>
+      </ChatConversation>
+      <div className="flex shrink-0 flex-col gap-2.5 px-4 pb-4">
+        <Composer
+          submitOnEnter="desktop"
+          value={draft}
+          onValueChange={setDraft}
+          onSubmit={(value: ComposerValue) => {
+            const text = getComposerText(value).trim();
+            if (!text) return;
+            scroll.atBottomRef.current = true;
+            setMessages((current) => [...current, { id: current.length, own: true, text }]);
+            setDraft([]);
+          }}>
+          <ComposerInput
+            aria-describedby={touchInput ? undefined : hintId}
+            aria-label="Inline message"
+            placeholder="Write a message…"
+            render={<textarea />}
+          />
+          <ComposerActions>
+            <ComposerActionGroup align="end">
+              <ComposerSubmit
+                render={
+                  <Button aria-label="Send message" size="icon">
+                    <ArrowUpIcon aria-hidden="true" />
+                  </Button>
+                }
+              />
+            </ComposerActionGroup>
+          </ComposerActions>
+        </Composer>
+        {!touchInput && (
+          <p id={hintId} className="text-end text-muted-foreground text-xs">
+            Enter to send / Shift + Enter for a new line
+          </p>
+        )}
+      </div>
+    </section>
+  );
+}
+```
+
+In a real application, `onSubmit` starts your mutation. Clear the draft after accepting the message into your local send queue. Give each message a stable client ID so replacing a pending message with the server response does not remount it.
+
+## Component map
+
+Import components directly from their files. There is no required global chat provider.
+
+| Area | Components | Responsibility |
+| --- | --- | --- |
+| Conversation | `ChatConversation`, `useChatScroll` | Scroll viewport, end following, jump to latest, overlay slot |
+| Message | `ChatMessage` | Incoming/outgoing row, avatar, author, grouping, actions, reactions, footer |
+| Surfaces | `ChatMessageBubble`, `ChatBubble`, `ChatMessageLayout` | Standalone previews and custom row compositions |
+| Content | `ChatMessageText`, `ChatCollapsibleMessage`, `ChatReplyReference` | Mention emphasis, long text, quoted message navigation |
+| Composer | `Composer`, `ComposerInput`, `ComposerPopup`, `ComposerList`, `ComposerItem`, `ComposerSubmit` | Shared coss Composer: structured draft, send, adaptive layout, and mentions |
+| Actions | `ChatMessageActionToolbar`, `ChatReactionPicker`, `ChatReactionChip` | Reply/menu controls, emoji selection, reactor list |
+| Focused reply | `ChatReplyPreview` | Move the selected message above the composer, dim the timeline, cancel/exit |
+| Timeline | `ChatDatePill`, `ChatUnreadDivider`, `ChatJumpToLatestButton` | Sticky date markers, unread boundary, latest navigation |
+| Activity | `ChatTypingIndicator`, `ChatDeliveryIndicator` | Typing and delivery presentation |
+| People | `ChatMemberList`, `ChatMemberSection`, `ChatMessageInfo` | Member rows and receipt groups with supplied actions |
+| States | `ChatEmptyState`, `ChatLoadingState`, `ChatStatusBar` | Joining, unavailable history, loading, connection feedback |
+
+## Source map
+
+Paths below are relative to your configured components directory after installation. Adjust `@/components` and `@/hooks` in examples to match your aliases. In the Coss repository, the canonical sources live under `apps/ui/registry/default/`.
+
+| File | Read it for |
+| --- | --- |
+| `chat/chat-*.tsx` | Exported component props, required labels, slots, and defaults |
+| `chat/hooks/use-chat-scroll.ts` | Scroll options and controller methods |
+| `ui/composer.tsx` | Shared Composer exports; see the [Composer API](/ui/docs/components/composer) for its complete contract |
+| `chat-demo/chat-demo.tsx` | Main/nested drawers, quote navigation, confirmations, and reply enter/exit lifecycle |
+| `chat-demo/chat-demo-message.tsx` | Grouping, message slots, reaction anchors, long text, and deleted-message presentation |
+| `chat-demo/chat-demo-composer.tsx` | Responsive row limits, mention items, submit button, and tooltip composition |
+| `chat-demo/chat-demo-reply-focus.tsx` | Measured reply target and expanded-text snapshot |
+| `chat-demo/chat-demo-message-info.tsx` | Message preview and recipient groups |
+| `chat-demo/chat-demo-scenarios.tsx` | Loading, empty, and access-state presentations |
+| `chat-demo/chat-demo-state.ts`, `chat-demo/chat-demo-receipts.ts` | Synthetic fixtures and demo policy; replace with your application model |
+
+## Messages and actions
+
+`ChatMessage` requires `side` and `children`. It accepts `author` and `avatar`, plus `actions`, `reactions`, and `footer` slots. Set `grouped` for consecutive messages from the same sender; it hides repeated incoming authors/avatars while preserving the avatar column. The first bubble uses a smaller upper corner on its sender's side; grouped bubbles use equal corners. Pass a bubble ref or native attributes through `bubbleProps`.
+
+Grouping and vertical spacing belong to the composition. The drawer breaks groups at date changes and deleted messages. It uses `pt-5` between senders, `pt-1` within a group, and `pt-3` after a grouped message with delivery metadata. Omit that padding immediately after a date or unread separator. Show incoming timestamps at the end of a group; outgoing delivery feedback remains per message. `ChatDeliveryIndicator` exposes a labelled image rather than a live region. Announce important send failures through a single application-owned status region.
+
+String children render through `ChatMessageText`. For mention emphasis, supply `ChatMessageText` with `mentions` containing known handles. Custom React content passes through unchanged.
+
+`ChatCollapsibleMessage` requires `text`, `side`, `showMoreLabel`, and `showLessLabel`. Its default `maxPreviewLength` is 500; shorter text has no expansion control. Use `renderText` to preserve mention formatting in both views. Choose uncontrolled `defaultOpen` or controlled `open`/`onOpenChange`, and keep that choice stable. Keep images and attachments outside this text-only component.
+
+Use `bubble={false}` for a deleted-message placeholder. Your application decides whether historical messages remain after membership changes.
+
+The toolbar reserves its width beside the bubble and appears on hover, keyboard focus, or coarse pointers. Popups dismiss on user scroll input in their scroll container. Automatic scrolling as messages arrive does not dismiss them.
+
+### Reactions
+
+`ChatReactionPicker` takes `options` (`{ emoji, label }[]`), `selectedEmojis`, `onSelect`, and the accessible strings `triggerLabel`, `triggerTooltip`, and `popupLabel`. When composing it through `ChatMessageActionToolbar.reactionPicker`, set `inToolbar` and pass the callback's ref to `popupAnchor`.
+
+| Surface | Incoming message | Outgoing message |
+| --- | --- | --- |
+| Picker anchored to the toolbar | `popupAlign="end"` | `popupAlign="start"` |
+| Reactor popup anchored to its chip | `popupAlign="start"` | `popupAlign="end"` |
+
+`ChatReactionChip` is controlled through `selected`, `count`, and `onClick`; it does not update your reaction data. Supply `emoji` and an accessible `label` describing the action and count. Clicking or pressing Enter/Space toggles the reaction. With `reactorContent`, delayed hover, keyboard focus, or a long touch opens the list; also provide `reactorLabel`. The caller renders names, avatars, and a “You” marker, with a bounded scroll area for long lists. Set `animateEntrance` only for newly added chips.
+
+## Composer and mentions
+
+Use the shared [Composer](/ui/docs/components/composer) with a controlled `ComposerValue`, `onValueChange`, and `onSubmit`. Convert accepted drafts with `getComposerText(value).trim()` and clear them with `[]`. The minimal example uses `ComposerInput render={<textarea />}` for plain text. Mentions require the default contenteditable input.
+
+The drawer uses `layout="adaptive"` and sets these variables on `Composer`:
+
+| Viewport | Minimum rows | Maximum rows |
+| --- | --- | --- |
+| Below `md` | `--composer-min-rows: 1` | `--composer-max-rows: 4` |
+| `md` and wider | `--composer-min-rows: 2` | `--composer-max-rows: 6` |
+
+These are chat composition choices, not the Composer defaults. The draft scrolls after reaching its maximum; keep the action row outside that scroll area. The drawer's send button is round. If adding its tooltip, use `TooltipTrigger render={<ComposerSubmit render={<Button ... />} />}` so the submit control retains its disabled behavior. Empty drafts disable `ComposerSubmit` automatically.
+
+Set `submitOnEnter="desktop"` so touch Return inserts a newline. Keep the keyboard hint hidden for coarse pointers. `disabled` blocks editing and sending; the drawer also dims the field and hint. Opening the drawer preserves its default focus and does not open the software keyboard.
+
+For mentions, pass an `@` trigger containing stable member IDs and handle labels. Compose `ComposerPopup`, `ComposerList`, and `ComposerItem` to display each member's avatar and full name. The shared editor handles keyboard selection, token insertion, IME input, and empty matches. Keep the structured draft until submission; a displayed mention is not authorization.
+
+## Scrolling and replies
+
+Pass the same `useChatScroll` result to `ChatConversation`. Update `itemCount` when messages change and `layoutKey` for other size changes such as a typing row. Set `active` to the drawer's open state. Set `paused` while a nested drawer or focused reply owns the interaction.
+
+End following runs only while the reader is at the bottom. Set `scroll.atBottomRef.current = true` before appending a locally sent message. Incoming messages should preserve a reader's position when they are reviewing history. The hook does not fetch, paginate, virtualize, or compensate for prepended history; preserve the visible anchor in your data integration. Use `resetScroll` when changing rooms, not on every message update. `onReachEnd` reports scrolling near the bottom, not proof that a recipient read each message.
+
+`ChatConversation` supplies a labeled `role="log"`. Set `live="off"` if your application announces new arrivals separately, particularly when inserting older history.
+
+`ChatReplyReference.onClick` delegates quote navigation to the caller: locate the source, scroll it into view, focus a labeled message container with `tabIndex={-1}`, then apply `highlighted` after scrolling settles. Cancel pending navigation when another quote or reply is selected.
+
+For focused replies, read `chat-demo.tsx`, `chat-demo-message.tsx`, and `chat-demo-reply-focus.tsx` together:
+
+1. Measure the bubble through `bubbleProps.ref`. `ChatReplyTarget` contains its DOM element (`source`), measured `width`, and `firstInGroup`. Snapshot the long-message expansion state too.
+2. Render `ChatReplyPreview` inside the conversation's `overlay` slot and `AnimatePresence`. Supply the message content, author, reply/cancel labels, `onCancel`, and a `dismissalRef` containing `"cancel"` or `"send"`.
+3. Pause the scroll controller, set the conversation `inactive`, and keep the source mounted with `lifted`. Focus the composer for the explicit reply action.
+4. Set the dismissal reason before removing the preview from the presence tree. Cancel returns it to the source; send dismisses it. Retain the measured target and paused/inactive state until `onExitComplete`, then clear them. Preserve the source's expansion state when cancelling.
+
+## Drawer and mobile keyboard
+
+Compose the chat inside the regular coss [Drawer](/ui/docs/components/drawer). Keep its header, conversation, and composer as separate flex children. The conversation needs `min-h-0` and a bounded available height.
+
+The example uses a right inset drawer on larger screens and a bottom drawer below `md`. The bottom `DrawerPopup` already supplies Base UI's virtual keyboard provider; do not add another. Keep `[--drawer-height:100dvh]`, keyboard/safe-area bottom padding, and the portal viewport's mobile `pt-2` together. The composer becomes a single-row field with a bounded scroll area on narrow screens.
+
+Keep the drawer’s default initial focus. Focus the composer only after an explicit reply, join, rejoin, or successful reconnect. Nested members and message-info drawers return focus to their trigger. Preserve the default modal behavior so the page cannot scroll behind an open drawer.
+
+## State and moderation examples
+
+The showcase's feature tiles and tabbed states are focused examples; the drawer combines them with membership and message actions. Its default conversation has no pin; select **Pinned message** to try it. **First message** begins with a join introduction and opens an empty conversation with a composer after joining.
+
+| State | Timeline and composer | Recovery |
+| --- | --- | --- |
+| Not joined | Join introduction; no history or composer | Join after eligibility succeeds |
+| Joined, empty | Empty conversation with composer | Send the first message |
+| Loading | Skeleton and disabled composer | Wait for history |
+| Disconnected | Cached history and disabled composer | Reconnect with pending feedback |
+| History error | Empty state; no composer | Retry history |
+| Access lost | Empty state; no history or composer | No automatic restoration |
+| Removed | Empty state; no history or composer | Eligible explicit rejoin |
+| Banned | Empty state; no history or composer | No rejoin while banned |
+| Left | Empty state; no history or composer | Eligible explicit rejoin |
+
+These are isolated previews, not a state-precedence resolver. In your integration, access denial takes precedence over cached history, a ban over rejoin, and mute over enabling send after reconnect. The muted member's own view is not demonstrated; implement readable history with sending and typing disabled if your product supports mute.
+
+The drawer demonstrates confirmation before leaving, removal, banning, and deletion. Its role rules and rejoin/unban behavior are sample application policy. Deleting a message replaces its body, clears reactions and any pin, and updates quoted previews. Keep those surfaces consistent when applying server events.
+
+Message info uses a nested drawer with the same outgoing message content and mutually exclusive Read by, Delivered to, and Pending delivery groups. Returning from nested drawers preserves the draft and reading position.
+
+## Animation
+
+Message and reaction-chip entrance animations are opt-in through `animateEntrance`; enable them for new arrivals rather than loaded history. Use `highlighted` to draw attention to a quoted message. Chat animations respect `prefers-reduced-motion`.
+
+## Connect your application
+
+1. **Map data:** stable message IDs, sender IDs, display names, timestamps, grouping, and attachment content.
+2. **Own delivery:** track sending, sent, delivered, read, and failed states from your transport. Pass the derived state to `ChatDeliveryIndicator`. Successful retries must replace stale recipient receipts as well as the aggregate status.
+3. **Own mutations:** wire send, retry, react, reply, pin, delete, and membership actions to your server. Preserve drafts on failures.
+4. **Authorize on the server:** the demo's host/co-host/guest rules are examples. Hide unavailable UI actions and recheck every mutation server-side.
+5. **Define access:** distinguish leaving/removal from bans according to your product. The example permits rejoining after removal, blocks rejoining while banned, and restores membership on unban. These are deliberate demo choices, not component-enforced rules.
+6. **Handle subscriptions:** remove listeners and pending operations when the room changes. Do not send or emit typing while muted or without access.
+7. **Supply copy:** localize component labels, descriptions, timestamps, and empty-state content in your application.
+
+## Before shipping
+
+Check keyboard-only operation, IME input, mentions in reply mode, reduced motion, long drafts, narrow layouts, and a real mobile virtual keyboard. Test send/retry failures, removed reply targets, duplicate delivery events, reconnect, and history pagination with your own backend. The showcase uses local state and timers; it does not persist or transmit messages.

@@ -1,0 +1,125 @@
+[
+  {
+    "name": "c-textarea-1",
+    "title": "Basic textarea.",
+    "label": "Basic",
+    "description": "Basic textarea.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The bare multi line box with placeholder text and no label, Field or hint around it",
+      "agentNotes": [
+        "Only the `placeholder` names this `Textarea`, and it clears once typing starts; add a visible label as `c-textarea-3` does"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A box drawn in its red error state after a failed check",
+          "instead": "c-textarea-2"
+        },
+        {
+          "when": "A message box that carries its own Cancel and Post Comment buttons",
+          "instead": "input-group"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-textarea-2",
+    "title": "Invalid textarea.",
+    "label": "Invalid",
+    "description": "Invalid textarea.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "The red invalid state set by aria-invalid alone, with no label or message saying what is wrong",
+      "agentNotes": [
+        "`aria-invalid` is fixed to true and no text says why; set it from your validation and print the reason under the box"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A neutral box with no error to report yet",
+          "instead": "c-textarea-1"
+        },
+        {
+          "when": "An error message printed under the box along with the red state",
+          "instead": "field"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-textarea-3",
+    "title": "Textarea with label.",
+    "label": "With Label",
+    "description": "Textarea with label.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "A Your Message label above the box, tied to it by htmlFor and id, with nothing printed below",
+      "whenNotToUse": [
+        {
+          "when": "A label that also needs a line of help text under the box",
+          "instead": "c-textarea-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-textarea-4",
+    "title": "Textarea with description.",
+    "label": "With Description",
+    "description": "Textarea with description.",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A Feedback label above the box and one line of help text printed below it",
+      "agentNotes": [
+        "The `FieldDescription` hint says Enter sends, but no key handler exists, so Enter only adds a new line",
+        "`FieldDescription` is not tied to the `Textarea`; give it an id and list that id in aria-describedby"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A labeled box with nothing printed under it",
+          "instead": "c-textarea-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-textarea-5",
+    "title": "Disabled textarea.",
+    "label": "Disabled",
+    "description": "Disabled textarea.",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A labeled box locked by the disabled attribute, dimmed to half opacity with a not allowed cursor",
+      "agentNotes": [
+        "`Field` carries no data-disabled, so `FieldLabel` stays at full strength beside the dimmed box; give `Field` data-disabled true along with `disabled`",
+        "A `disabled` box is skipped by Tab and left out of form data; switch to readOnly when the text must still submit"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A box the user can still type in, with its name shown above",
+          "instead": "c-textarea-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-textarea-6",
+    "title": "Auto-resize textarea with character count",
+    "label": "Auto-Resize Counter",
+    "description": "Auto-resize textarea with character count",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A 280 character Bio whose live count by the label turns to the warning tone 20 short of the cap and red at it",
+      "agentNotes": [
+        "`handleChange` drops any edit that would pass `MAX_CHARS`, so a long paste is lost whole; set the maxLength attribute to cut it to fit",
+        "Height is set inline from `scrollHeight` only in `handleChange`, so clearing `value` from code leaves the box at its last height",
+        "`text-warning` needs a warning color in your theme; this item installs none, so near the cap the count falls back to the inherited text color"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A character count kept in a row inside the border, under the text",
+          "instead": "input-group"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,242 @@
+{
+  "items": [
+    {
+      "name": "c-gantt-1",
+      "type": "registry:block",
+      "title": "Gantt chart with settings menu and schedulable rows",
+      "categories": [
+        "gantt"
+      ],
+      "description": "Gantt chart with settings menu and schedulable rows",
+      "descriptionLong": "Gantt chart with settings menu and schedulable rows. Built by composing Button, Card, Gantt, Gantt I18n, Gantt Nav and 8 more. Uses date-fns alongside the shadcn primitives. A free, open source shadcn gantt example you can install with npx shadcn@latest add @reui/c-gantt-1 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "card",
+        "gantt",
+        "gantt-i18n",
+        "gantt-nav",
+        "gantt-types",
+        "gantt-view",
+        "label",
+        "popover",
+        "radio-group",
+        "select",
+        "switch",
+        "tabs"
+      ],
+      "dependencies": [
+        "date-fns"
+      ],
+      "files": [
+        {
+          "path": "components/gantt/c-gantt-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-gantt-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "gridSize": 1,
+        "label": "Settings Menu"
+      }
+    },
+    {
+      "name": "c-gantt-2",
+      "type": "registry:block",
+      "title": "Gantt chart with drag-to-reorder tree rows",
+      "categories": [
+        "gantt"
+      ],
+      "description": "Gantt chart with drag-to-reorder tree rows",
+      "descriptionLong": "Gantt chart with drag-to-reorder tree rows. Built by composing Card, Gantt, Gantt Nav, Gantt Types, Gantt View. Uses date-fns alongside the shadcn primitives. A free, open source shadcn gantt example you can install with npx shadcn@latest add @reui/c-gantt-2 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "gantt",
+        "gantt-nav",
+        "gantt-types",
+        "gantt-view"
+      ],
+      "dependencies": [
+        "date-fns"
+      ],
+      "files": [
+        {
+          "path": "components/gantt/c-gantt-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-gantt-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "gridSize": 1,
+        "label": "Drag Reorder"
+      }
+    },
+    {
+      "name": "c-gantt-3",
+      "type": "registry:block",
+      "title": "Gantt chart with quarter roadmap and rollups",
+      "categories": [
+        "gantt"
+      ],
+      "description": "Gantt chart with quarter roadmap and rollups",
+      "descriptionLong": "Gantt chart with quarter roadmap and rollups. Built by composing Button, Card, Gantt, Gantt Nav, Gantt Types and 1 more. Uses date-fns alongside the shadcn primitives. A free, open source shadcn gantt example you can install with npx shadcn@latest add @reui/c-gantt-3 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "card",
+        "gantt",
+        "gantt-nav",
+        "gantt-types",
+        "gantt-view"
+      ],
+      "dependencies": [
+        "date-fns"
+      ],
+      "files": [
+        {
+          "path": "components/gantt/c-gantt-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-gantt-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "gridSize": 1,
+        "label": "Quarter Roadmap"
+      }
+    },
+    {
+      "name": "c-gantt-4",
+      "type": "registry:block",
+      "title": "Gantt chart with weekly capacity board",
+      "categories": [
+        "gantt"
+      ],
+      "description": "Gantt chart with weekly capacity board",
+      "descriptionLong": "Gantt chart with weekly capacity board. Built by composing Avatar, Button, Card, Gantt, Gantt Nav and 2 more. Uses date-fns alongside the shadcn primitives. A free, open source shadcn gantt example you can install with npx shadcn@latest add @reui/c-gantt-4 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button",
+        "card",
+        "gantt",
+        "gantt-nav",
+        "gantt-types",
+        "gantt-view"
+      ],
+      "dependencies": [
+        "date-fns"
+      ],
+      "files": [
+        {
+          "path": "components/gantt/c-gantt-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-gantt-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "gridSize": 1,
+        "label": "Capacity Board"
+      }
+    },
+    {
+      "name": "c-gantt-5",
+      "type": "registry:block",
+      "title": "Gantt chart with task table and progress",
+      "categories": [
+        "gantt"
+      ],
+      "description": "Gantt chart with task table and progress",
+      "descriptionLong": "Gantt chart with task table and progress. Built by composing Avatar, Badge, Button, Card, Gantt and 3 more. Uses date-fns alongside the shadcn primitives. A free, open source shadcn gantt example you can install with npx shadcn@latest add @reui/c-gantt-5 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "badge",
+        "button",
+        "card",
+        "gantt",
+        "gantt-nav",
+        "gantt-types",
+        "gantt-view"
+      ],
+      "dependencies": [
+        "date-fns"
+      ],
+      "files": [
+        {
+          "path": "components/gantt/c-gantt-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-gantt-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "gridSize": 1,
+        "label": "Task Table"
+      }
+    },
+    {
+      "name": "c-gantt-6",
+      "type": "registry:block",
+      "title": "Gantt chart with as-built baseline tracking",
+      "categories": [
+        "gantt"
+      ],
+      "description": "Gantt chart with as-built baseline tracking",
+      "descriptionLong": "Gantt chart with as-built baseline tracking. Built by composing Card, Gantt, Gantt Nav, Gantt Types, Gantt View. Uses date-fns alongside the shadcn primitives. A free, open source shadcn gantt example you can install with npx shadcn@latest add @reui/c-gantt-6 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "gantt",
+        "gantt-nav",
+        "gantt-types",
+        "gantt-view"
+      ],
+      "dependencies": [
+        "date-fns"
+      ],
+      "files": [
+        {
+          "path": "components/gantt/c-gantt-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-gantt-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "gridSize": 1,
+        "label": "Baseline Tracking"
+      }
+    },
+    {
+      "name": "c-gantt-7",
+      "type": "registry:block",
+      "title": "Gantt chart with dependency arrows and milestones",
+      "categories": [
+        "gantt"
+      ],
+      "description": "Gantt chart with dependency arrows and milestones",
+      "descriptionLong": "Gantt chart with dependency arrows and milestones. Built by composing Card, Gantt, Gantt Nav, Gantt Types, Gantt View. Uses date-fns alongside the shadcn primitives. A free, open source shadcn gantt example you can install with npx shadcn@latest add @reui/c-gantt-7 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "gantt",
+        "gantt-nav",
+        "gantt-types",
+        "gantt-view"
+      ],
+      "dependencies": [
+        "date-fns"
+      ],
+      "files": [
+        {
+          "path": "components/gantt/c-gantt-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-gantt-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "gridSize": 1,
+        "label": "Dependencies & Milestones"
+      }
+    }
+  ]
+}

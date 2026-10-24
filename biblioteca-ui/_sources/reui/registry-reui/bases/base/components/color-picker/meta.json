@@ -1,0 +1,216 @@
+[
+  {
+    "name": "c-color-picker-1",
+    "title": "Inline color panel",
+    "label": "Inline Panel",
+    "description": "Saturation area, hue and opacity sliders, format fields and preset swatches rendered in place.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The default panel left open in a card, with opacity and 8 presets switched on through 2 root props",
+      "whenNotToUse": [
+        {
+          "when": "A compact settings row where the controls open only on demand",
+          "instead": "c-color-picker-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-color-picker-2",
+    "title": "Popover picker",
+    "label": "Popover",
+    "description": "Outline trigger in a labelled field that opens the full picker with an eye dropper and format fields.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A root with no children, so it draws its own trigger and popover, uncontrolled from a default value in a Field",
+      "whenNotToUse": [
+        {
+          "when": "People who know the code already and would rather type or paste it",
+          "instead": "c-color-picker-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-color-picker-3",
+    "title": "Color input",
+    "label": "Color Input",
+    "description": "Typable field that reads hex, rgb(), hsl(), oklch() or a CSS name, with a swatch that opens the picker.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "Typed color codes in an uncontrolled ColorPickerInput, whose swatch button opens the default popover",
+      "whenNotToUse": [
+        {
+          "when": "A required value that posts with a native form and shows an error",
+          "instead": "c-color-picker-15"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-color-picker-4",
+    "title": "Opacity",
+    "label": "Opacity",
+    "description": "A banner overlay with an opacity slider and field, written as rgb() with alpha.",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A translucent scrim laid over a gradient banner and previewed live through an inline style"
+    }
+  },
+  {
+    "name": "c-color-picker-5",
+    "title": "Preset swatches",
+    "label": "Preset Swatches",
+    "description": "Round label colors to pick from, a plus that opens the full picker, and a live label preview.",
+    "order": 5,
+    "guidance": {
+      "bestFor": "An issue label editor with 9 named preset chips, a custom color fallback and Badge ink chosen for contrast",
+      "agentNotes": [
+        "`custom` compares `color` with each `LABEL_COLORS` value as a string, and the picker writes lowercase hex, so keep the presets lowercase"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Toolbar palettes that close on a pick and offer no custom shade",
+          "instead": "c-color-picker-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-color-picker-6",
+    "title": "OKLCH theme token",
+    "label": "OKLCH Token",
+    "description": "Lightness, chroma and hue sliders for a --primary token, with a live Button and Badge preview.",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A theme token editor in OKLCH that flags colors outside sRGB and prints the CSS line, its copy button taking the bare value",
+      "agentNotes": [
+        "`theme` re-points the primary tokens on the preview row only; write `primary` into your theme stylesheet to restyle the app",
+        "`ColorPickerCopy` beside the CSS line copies only the oklch value, not the whole declaration the field shows"
+      ]
+    }
+  },
+  {
+    "name": "c-color-picker-7",
+    "title": "Format converter",
+    "label": "Format Converter",
+    "description": "One color as HEX, RGB, HSL, HSB and OKLCH, each with a copy button.",
+    "order": 7,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A custom readout built on useColorPicker and formatColor that moves beside the area once its card is wide enough",
+      "agentNotes": [
+        "`FormatList` reads the color through `useColorPicker`, so it must render inside `ColorPicker` or it throws"
+      ]
+    }
+  },
+  {
+    "name": "c-color-picker-8",
+    "title": "Hue wheel",
+    "label": "Hue Wheel",
+    "description": "A hue ring around a saturation and brightness square, with HEX, RGB and HSL fields.",
+    "order": 8,
+    "guidance": {
+      "bestFor": "A ring layout for a brush, with the area filling the wheel's hole and the format menu cut to 3 entries"
+    }
+  },
+  {
+    "name": "c-color-picker-9",
+    "title": "Recent colors",
+    "label": "Recent Colors",
+    "description": "Each pick is saved to a Recent row once a drag is released, not on every move.",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A hand composed popover whose history row dedupes picks and keeps the latest 8, newest first",
+      "agentNotes": [
+        "`recent` starts as 4 sample colors in `useState` and resets on reload; store it per user to keep the history"
+      ]
+    }
+  },
+  {
+    "name": "c-color-picker-10",
+    "title": "Text and highlight colors",
+    "label": "Text & Highlight",
+    "description": "Editor toolbar buttons with preset palettes and a way back to the default color.",
+    "order": 10,
+    "guidance": {
+      "bestFor": "A pair of ghost icon triggers whose underline bar mirrors the choice, each palette closing on a pick via controlled open state",
+      "agentNotes": [
+        "The toolbar only restyles a static paragraph from `ink` and `highlight`; route both to your editor's text color and highlight commands",
+        "A `null` in `ink` or `highlight` means the default ink or no highlight, which `ColorPickerClear` sets"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A palette that must also accept any shade beyond its presets",
+          "instead": "c-color-picker-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-color-picker-11",
+    "title": "Channel sliders",
+    "label": "Channel Sliders",
+    "description": "Red, green, blue and opacity sliders with numeric fields, each track redrawn from the others.",
+    "order": 11,
+    "guidance": {
+      "bestFor": "Channel by channel RGB mixing headed by a round preview chip and the live rgb string in monospace",
+      "whenNotToUse": [
+        {
+          "when": "Perceptual lightness, chroma and hue tracks for a theme token",
+          "instead": "c-color-picker-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-color-picker-12",
+    "title": "Design inspector",
+    "label": "Design Inspector",
+    "description": "Fill, stroke and shadow rows that open a compact picker with vertical hue and opacity tracks.",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A card of 3 independent, uncontrolled pickers whose triggers print the hex apart from its opacity percent",
+      "agentNotes": [
+        "Each row is uncontrolled through `defaultValue` from `PROPERTIES`; pass `value` and `onValueChange` to read edits back"
+      ]
+    }
+  },
+  {
+    "name": "c-color-picker-13",
+    "title": "Contrast checker",
+    "label": "Contrast Checker",
+    "description": "Text and background pickers with a live preview, the WCAG ratio and AA and AAA results.",
+    "order": 13,
+    "guidance": {
+      "bestFor": "A swappable pair of default pickers scored by getContrastRatio against 3 WCAG thresholds for body and large text"
+    }
+  },
+  {
+    "name": "c-color-picker-14",
+    "title": "Brand scale",
+    "label": "Brand Scale",
+    "description": "11 shades from 50 to 950 generated in OKLCH from one base color, copied as CSS variables.",
+    "order": 14,
+    "guidance": {
+      "bestFor": "One typed base color expanded into a palette of standalone ColorPickerSwatch chips, each named for screen readers",
+      "agentNotes": [
+        "`buildScale` pins the base color to step 500 and bends Tailwind blue's `LIGHTNESS` and `CHROMA` curves around it",
+        "Copy CSS writes the scale from `css` as hex custom properties with a brand prefix; rename them to your own tokens"
+      ]
+    }
+  },
+  {
+    "name": "c-color-picker-15",
+    "title": "Form field with validation",
+    "label": "Form Validation",
+    "description": "Native form field with a required check, an error, reset and the submitted value.",
+    "order": 15,
+    "guidance": {
+      "bestFor": "A plain HTML form read through FormData, where the picker posts under name and Field swaps its hint for the error",
+      "agentNotes": [
+        "`onSubmit` only reads `brandColor` from `FormData` into local `saved` state; send it to your API there"
+      ]
+    }
+  }
+]

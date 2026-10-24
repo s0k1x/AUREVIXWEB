@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Attachment lists, upload queues and file browser rows, each icon resolved from a name or MIME type",
+      "Export format pickers and legends of the formats a product accepts or produces",
+      "Version tags, document codes and marks such as a lock or star drawn on a document"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A drop zone or picker that collects documents before they are sent",
+        "instead": "file-upload"
+      },
+      {
+        "when": "Documents carried by a chat message as chips with idle, uploading and error states",
+        "instead": "attachment"
+      },
+      {
+        "when": "A complete drive page with a folder tree, list and grid views and bulk actions",
+        "instead": "solutions/files"
+      }
+    ],
+    "agentNotes": [
+      "`type` takes an extension, not a file name: report.pdf passed straight in draws a neutral page labeled REPORT.PDF, so run names through `getFileType`",
+      "`FileType` is not focusable and has no keyboard behavior, so an action goes on a wrapping `Button` or link with its own accessible name"
+    ]
+  }
+}

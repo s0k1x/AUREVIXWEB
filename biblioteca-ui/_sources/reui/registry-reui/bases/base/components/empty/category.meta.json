@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "First run screens and card sections that add the first record, invite a team or connect a data source",
+      "Search with no matches, a not found page with a search field, or a prompt shown before the first search",
+      "Caught up notices with nothing left to act on, such as inbox zero or no new notifications"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A complete first run page with finished copy, artwork and actions, ready to drop in",
+        "instead": "application/empty-state"
+      },
+      {
+        "when": "A screen shown while a fetch is still running and no result is known yet",
+        "instead": "spinner"
+      },
+      {
+        "when": "A square container for one glyph in a list row, feature card or settings item",
+        "instead": "icon-tile"
+      }
+    ],
+    "agentNotes": [
+      "Adding `border` to `Empty` draws a dashed outline, since every style sets a dashed border style on it; add border-solid for a solid line",
+      "`EmptyMedia` with `variant` icon puts the glyph in a small muted tile; the default variant has no fill, so drawings go there",
+      "`Empty` takes `flex-1` and centers its children, so in a flex column with a set height it fills the free space"
+    ]
+  }
+}

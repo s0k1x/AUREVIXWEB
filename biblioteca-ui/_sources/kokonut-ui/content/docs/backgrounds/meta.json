@@ -1,0 +1,17 @@
+{
+  "title": "Backgrounds",
+  "pages": [
+    "dot-field",
+    "background-paths",
+    "shape-hero",
+    "flow-field",
+    "topo-background",
+    "drape-background",
+    "halftone-background",
+    "ink-background",
+    "caustics-background",
+    "rain-glass-background",
+    "rhythm-hero",
+    "dither-reveal-hero"
+  ]
+}

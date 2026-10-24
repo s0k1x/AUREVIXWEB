@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Chat and assistant transcripts in a bounded panel that open on the newest turn and offer a jump back to it",
+      "Streaming replies that follow the bottom until the reader scrolls up, with sent questions lifted near the top",
+      "Saved threads that reopen at a chosen turn, load older history above the reader or step between questions"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "The layout of a single turn, its avatar, sender name and timestamp around the body",
+        "instead": "message"
+      },
+      {
+        "when": "A sidebar, settings list or panel that overflows but never grows at the bottom",
+        "instead": "scroll-area"
+      },
+      {
+        "when": "A finished assistant screen with composer, thread list, citations and docked panels",
+        "instead": "ai-agents/ai-chat"
+      }
+    ],
+    "agentNotes": [
+      "The parts and hooks throw outside `MessageScrollerProvider`, so a header or footer control that calls a hook needs the provider above it too",
+      "`MessageScroller` fills its parent through `size-full`, so bound the parent height or the page scrolls instead of the transcript",
+      "Render `MessageScrollerButton` as a sibling of `MessageScrollerViewport`; placed inside it, the control scrolls away with the rows"
+    ]
+  }
+}

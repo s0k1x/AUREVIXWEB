@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Form fields that pick one value from a short fixed list through the browser's own picker",
+      "Option lists sorted under group headings, with single options shown but locked",
+      "Fields at a smaller height, under a label and hint, or shown disabled or invalid"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Option rows that carry icons, avatars, badges or descriptions in the open list",
+        "instead": "select"
+      },
+      {
+        "when": "A long list the user narrows by typing before picking one",
+        "instead": "combobox"
+      },
+      {
+        "when": "Choices nested more than one level deep, such as region, then country, then city",
+        "instead": "cascader"
+      }
+    ],
+    "agentNotes": [
+      "`className` on `NativeSelect` lands on its wrapper `div`; every other prop, such as `id`, `disabled` or `aria-invalid`, goes to the inner `select`",
+      "The first option's text never names the control; tie a `FieldLabel` to the `NativeSelect` `id` as `c-native-select-4` does, or pass an aria-label",
+      "No example passes a name to `NativeSelect`, so a native form submit leaves the choice out; add one inside your form"
+    ]
+  }
+}

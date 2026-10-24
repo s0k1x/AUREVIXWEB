@@ -1,0 +1,62 @@
+---
+title: Short Slide Right
+description: "The whole phrase glides in from the left as one compact move, while the words themselves are revealed in sequence only through opacity."
+author: pixelpoint
+---
+
+<ComponentPreview name="text-short-slide-right--primary" />
+
+## Installation
+
+### CLI
+
+<RegistryInstall category="text" name="short-slide-right" />
+
+The CLI installs the preset, `text-animator.tsx`, and `text-animator.css` in one step.
+
+### Manual
+
+<Steps>
+
+<Step>Install the shared runtime</Step>
+
+Every preset in the text category shares its WAAPI loop with the same
+`text-animator` runtime and co-located `text-animator.css`. Skip this step if you already added them for another text preset.
+
+```bash
+mkdir -p components/animata/text && touch components/animata/text/text-animator.tsx components/animata/text/text-animator.css
+```
+
+<Step>Paste the runtime</Step>
+
+Paste into `text-animator.css` and `text-animator.tsx`:
+
+```jsx file=<rootDir>/animata/text/text-animator.css
+
+```
+
+```tsx file=<rootDir>/animata/text/text-animator.tsx
+
+```
+
+<Step>Run the following command</Step>
+
+It will create a new file called `short-slide-right.tsx` inside the `components/animata/text` directory.
+
+```bash
+mkdir -p components/animata/text && touch components/animata/text/short-slide-right.tsx
+```
+
+<Step>Paste the code</Step>
+
+Open the newly created file and paste the following code:
+
+```jsx file=<rootDir>/animata/text/short-slide-right.tsx
+
+```
+
+</Steps>
+
+## Credits
+
+Based on [pixel-point/animate-text](https://github.com/pixel-point/animate-text)

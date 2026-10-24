@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "p-avatar-17",
+  "description": "Avatar rendered as a button",
+  "registryDependencies": [
+    "@coss/avatar"
+  ],
+  "files": [
+    {
+      "path": "registry/default/particles/p-avatar-17.tsx",
+      "content": "import {\n  Avatar,\n  AvatarFallback,\n  AvatarImage,\n} from \"@/registry/default/ui/avatar\";\n\nexport default function Particle() {\n  return (\n    <Avatar\n      className=\"cursor-pointer outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring\"\n      render={<button aria-label=\"Open Frida Kahlo's profile\" type=\"button\" />}\n    >\n      <AvatarImage\n        alt=\"Frida Kahlo\"\n        src=\"https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=96&h=96&dpr=2&q=80\"\n      />\n      <AvatarFallback>FK</AvatarFallback>\n    </Avatar>\n  );\n}\n",
+      "type": "registry:block"
+    }
+  ],
+  "categories": [
+    "avatar"
+  ],
+  "type": "registry:block"
+}

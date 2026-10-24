@@ -1,0 +1,18 @@
+---
+title: Command Button
+description: A button with its shortcut drawn as keycaps that sink as you press the real keys.
+keywords: ["cmd k", "hotkey", "kbd", "keycap", "shortcut key", "search trigger"]
+icon: Command
+full: false
+---
+
+
+import CommandButton from "@/components/kokonutui/command-button";
+
+<Preview link="command-button">
+    <div className="flex flex-wrap items-center justify-center gap-3">
+        <CommandButton global={false} />
+        <CommandButton shortcut="c">New issue</CommandButton>
+        <CommandButton shortcut="shift+n">New project</CommandButton>
+    </div>
+</Preview>

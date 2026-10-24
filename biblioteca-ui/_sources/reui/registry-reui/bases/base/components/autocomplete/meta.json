@@ -1,0 +1,199 @@
+[
+  {
+    "name": "c-autocomplete-1",
+    "title": "Basic autocomplete control",
+    "label": "Basic",
+    "description": "Basic autocomplete control",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The minimal uncontrolled setup, with 41 tag and component names matched by the built in filter",
+      "whenNotToUse": [
+        {
+          "when": "A shorter field sized for dense rows of controls",
+          "instead": "c-autocomplete-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-autocomplete-2",
+    "title": "Disabled state",
+    "label": "Disabled",
+    "description": "Disabled state",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A field locked from the root, so the input takes no focus and its list never opens"
+    }
+  },
+  {
+    "name": "c-autocomplete-3",
+    "title": "Auto highlight option as you type",
+    "label": "Auto Highlight",
+    "description": "Auto highlight option as you type",
+    "order": 3,
+    "guidance": {
+      "bestFor": "The first match highlighted as soon as the user types, so Enter fills the input without arrow keys"
+    }
+  },
+  {
+    "name": "c-autocomplete-4",
+    "title": "Control with label",
+    "label": "Labeled",
+    "description": "Control with label",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A shadcn Label stacked above the input and tied to it by a shared id, with auto highlight on",
+      "whenNotToUse": [
+        {
+          "when": "A labelled field that also validates and shows an error message on submit",
+          "instead": "c-autocomplete-12"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-autocomplete-5",
+    "title": "With clear button",
+    "label": "Clear Button",
+    "description": "With clear button",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A query held in React state, with an X inside the input that appears once text is typed and empties it",
+      "agentNotes": [
+        "`filteredItems` repeats the built in matching; set `filter` to null on `Autocomplete` before matching on fields other than `value`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A field that also needs a button to open the whole list",
+          "instead": "c-autocomplete-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-autocomplete-6",
+    "title": "With trigger button",
+    "label": "Trigger Button",
+    "description": "With trigger button",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A chevron button at the end of the input that opens the full list before anything is typed",
+      "agentNotes": [
+        "Matching runs twice, in `filteredItems` and in the default filter, so pass `filter` as null when you replace the match logic"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A field that also needs a button to empty the typed text",
+          "instead": "c-autocomplete-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-autocomplete-7",
+    "title": "With clear and trigger buttons",
+    "label": "Clear & Trigger",
+    "description": "With clear and trigger buttons",
+    "order": 7,
+    "guidance": {
+      "bestFor": "Both end buttons at the default h-8 size in one spot: the chevron opens the list while empty, the X takes over once text is typed",
+      "agentNotes": [
+        "The default filter still runs over `filteredItems`; null out `filter` first if your own matching reads other fields"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Suggestions that come from a request with loading and error states",
+          "instead": "c-autocomplete-9"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-autocomplete-8",
+    "title": "With groups and labels",
+    "label": "Groups & Labels",
+    "description": "With groups and labels",
+    "order": 8,
+    "guidance": {
+      "bestFor": "A people directory of 26 users in 6 teams under sticky labels, matched on name, team or job title",
+      "agentNotes": [
+        "Replace `usersData`, whose `avatar` URLs load from randomuser.me, with your own directory",
+        "`groupUsers` keeps only the teams listed in its `order` array, so users of any other team silently drop out",
+        "`filter` is null, so `filteredItems` alone decides matches over name, team and position; add any new field there"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "People found by a server query rather than a list loaded up front",
+          "instead": "c-autocomplete-9"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-autocomplete-9",
+    "title": "With search results",
+    "label": "Search Results",
+    "description": "With search results",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A debounced lookup of 25 developers with a spinner, error text and result count in a status line",
+      "agentNotes": [
+        "Replace `searchDevelopers` with your request; it waits 200 to 1000ms at random and throws on 2% of calls or when the query is \"error\"",
+        "Keep the `ignore` flag when you swap in a real fetch, since it discards a response that lands after the query changed",
+        "`shouldRenderPopup` keeps the popup unmounted while `searchValue` is empty, so the chevron opens nothing before typing"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Options known up front in the page, with no request, loading or error states",
+          "instead": "c-autocomplete-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-autocomplete-10",
+    "title": "Small autocomplete",
+    "label": "Small",
+    "description": "Small autocomplete",
+    "order": 10,
+    "guidance": {
+      "bestFor": "The sm size at h-7 with the clear X and chevron, for dense filter bars and toolbars",
+      "whenNotToUse": [
+        {
+          "when": "A taller field for a prominent search bar",
+          "instead": "c-autocomplete-11"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-autocomplete-11",
+    "title": "Large autocomplete",
+    "label": "Large",
+    "description": "Large autocomplete",
+    "order": 11,
+    "guidance": {
+      "bestFor": "The lg size at h-9, keeping the chevron and clear X, for a search bar that leads a page",
+      "whenNotToUse": [
+        {
+          "when": "A compact field that fits a crowded filter row",
+          "instead": "c-autocomplete-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-autocomplete-12",
+    "title": "Form integration",
+    "label": "Form Integration",
+    "description": "Form integration",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A React Hook Form field checked by zod that rejects text matching no item, with the error shown on submit",
+      "agentNotes": [
+        "`onSubmit` only raises a `toast` with `data.feature` and resets the form; save the value there and mount the Sonner toaster",
+        "`FormSchema` accepts only text equal to an `items` value; drop its `refine` to let users submit free text"
+      ]
+    }
+  }
+]

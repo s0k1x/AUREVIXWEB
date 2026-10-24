@@ -1,0 +1,9 @@
+El repositorio original no incluye archivo LICENSE.
+- Su README.md (sección "License") indica: los archivos de los loaders se publican bajo CC0
+  (se agradece, sin ser obligatorio, un enlace a https://loading.io/css/) y el resto del código
+  fuente bajo MIT. Se conserva en _sources/loading-io-css-spinner/README.md.
+- Su package.json y el paquete oficial de npm @loadingio/css-spinner@2.0.2 declaran "CC0-1.0".
+- Su web de demostración (web/static/assets/lib/) incluye librerías de terceros con licencias
+  propias (MIT o BSD); algunas versiones no traen archivo de licencia.
+Repositorio: https://github.com/loadingio/css-spinner
+La web loading.io no se pudo consultar (inaccesible desde el entorno de descarga). Comprobado el 2026-10-24.

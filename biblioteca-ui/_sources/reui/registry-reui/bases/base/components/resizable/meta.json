@@ -1,0 +1,162 @@
+[
+  {
+    "name": "c-resizable-1",
+    "title": "Horizontal resizable layout",
+    "label": "Horizontal Layout",
+    "description": "Horizontal resizable layout",
+    "order": 1,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A header pane stacked over a content pane, split 25 to 75, with a plain line dragged up and down",
+      "whenNotToUse": [
+        {
+          "when": "Panes set side by side with a divider dragged left and right",
+          "instead": "c-resizable-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-resizable-2",
+    "title": "Vertical resizable layout.",
+    "label": "Vertical Layout",
+    "description": "Vertical resizable layout.",
+    "order": 2,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A sidebar beside a content pane, split 25 to 75, with a plain 1px divider dragged left and right",
+      "whenNotToUse": [
+        {
+          "when": "A header pane stacked above the content, dragged up and down",
+          "instead": "c-resizable-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-resizable-3",
+    "title": "Nested mixed-direction resizable layout.",
+    "label": "Mixed Directions",
+    "description": "Nested mixed-direction resizable layout.",
+    "order": 3,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A side pane beside a column that splits again into top and bottom, 3 panes in 2 directions on plain line dividers",
+      "whenNotToUse": [
+        {
+          "when": "Nested panes whose dividers carry a grip that marks where to drag",
+          "instead": "c-resizable-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-resizable-4",
+    "title": "Nested resizable",
+    "label": "Nested Grips",
+    "description": "Nested resizable",
+    "order": 4,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Equal halves where the right half splits 25 to 75 top and bottom, on grip dividers with sizes written as percent strings"
+    }
+  },
+  {
+    "name": "c-resizable-5",
+    "title": "Handle with animated pill indicator",
+    "label": "Animated Pill",
+    "description": "Handle with animated pill indicator",
+    "order": 5,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A short pill on a 30 to 70 split that lengthens on hover, then grows longer and turns primary while pressed",
+      "agentNotes": [
+        "The pill on `ResizableHandle` is drawn upright and does not rotate like the `withHandle` grip, so a stacked group needs its h and w classes swapped"
+      ]
+    }
+  },
+  {
+    "name": "c-resizable-6",
+    "title": "Handle pill with spring scale on drag",
+    "label": "Spring Pill",
+    "description": "Handle pill with spring scale on drag",
+    "order": 6,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A pill drawn at 75 percent scale that eases to full scale on hover, then stretches and turns primary while pressed",
+      "agentNotes": [
+        "The pill rests at 75 percent through a scale-y class and grows to full on hover, so a stacked `ResizableHandle` needs scale-x and swapped h and w"
+      ]
+    }
+  },
+  {
+    "name": "c-resizable-7",
+    "title": "Handle with large capsule expansion on drag",
+    "label": "Capsule Expansion",
+    "description": "Handle with large capsule expansion on drag",
+    "order": 7,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "The longest press state: a pill that widens on hover and reaches 5rem while pressed, as the whole divider line tints primary",
+      "agentNotes": [
+        "The tall pill on `ResizableHandle` fits a side by side split only, while the primary tint the line takes on press works in either direction"
+      ]
+    }
+  },
+  {
+    "name": "c-resizable-8",
+    "title": "Nested layout with animated pill handles",
+    "label": "Nested Pills",
+    "description": "Nested layout with animated pill handles",
+    "order": 8,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Nav beside a toolbar over an editor, with an upright pill on the outer divider and a wide pill on the inner one",
+      "agentNotes": [
+        "`verticalPillClasses` belongs on a divider in a horizontal group and `horizontalPillClasses` on one in a vertical group; match them by `orientation`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A row of 3 panes with no pane split top and bottom",
+          "instead": "c-resizable-9"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-resizable-9",
+    "title": "Three-panel layout with animated pill handles",
+    "label": "Three Panels",
+    "description": "Three-panel layout with animated pill handles",
+    "order": 9,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Files, editor and preview in one row split 25, 50 and 25, with 2 pill handles and a minimum size on every pane",
+      "agentNotes": [
+        "Both handles share `pillClasses`, an upright pill; under a vertical `orientation` it needs its h and w swapped, as in `c-resizable-8`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A 3 pane layout where one column also splits into top and bottom",
+          "instead": "c-resizable-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-resizable-10",
+    "title": "State-tracked resizable layout.",
+    "label": "Size Tracking",
+    "description": "State-tracked resizable layout.",
+    "order": 10,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Live percentage readouts in each pane, fed from the group layout callback into React state as the divider moves",
+      "agentNotes": [
+        "`setSizes` stores the whole `layout`, keyed by each panel `id`, so rename `left` and `right` in the ids and the readouts together",
+        "`onLayoutChange` runs `setSizes` on every pointer move of a drag; save a layout from onLayoutChanged, which fires once the pointer is released",
+        "The `sizes` seed and the readout fallbacks repeat the 30 and 70 of `defaultSize`, so change all 3 places together"
+      ]
+    }
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Labeled bars that report how far an upload, a download or a workspace setup has got, as a percent",
+      "File transfer rows with time left, and setup checklists whose bar counts the steps done",
+      "Compact bars in dense list rows, and bars pinned to a set height or filled in a color of their own"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A drop zone or picker where people choose the documents and images to send",
+        "instead": "file-upload"
+      },
+      {
+        "when": "Numbered steps the user can open or move between, each with its own panel",
+        "instead": "stepper"
+      },
+      {
+        "when": "A wait of unknown length, where no share of the work done can be shown",
+        "instead": "spinner"
+      }
+    ],
+    "agentNotes": [
+      "`ProgressLabel` and `ProgressValue` exist in the base twin only; radix `Progress` drops its children, so print the label and percent beside it",
+      "Set bar height on the `progress-track` slot in base, as `c-progress-2` does, and with a height class on `Progress` in radix, whose root is the track",
+      "Only a base `ProgressLabel` names the bar for screen readers; give every other bar, radix ones included, an aria-label naming the task"
+    ]
+  }
+}

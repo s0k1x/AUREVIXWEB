@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Onboarding and setup flows that ask one single or multiple answer question per screen",
+      "Short intake surveys, such as how a visitor heard about you or what they are moving off",
+      "Question flows with an optional step, a branch that joins on an earlier answer or a rule across answers"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Steps that each hold a whole screen of mixed fields rather than one question",
+        "instead": "stepper"
+      },
+      {
+        "when": "A bar that reports how far an upload, a goal or a task has got, with no questions",
+        "instead": "progress"
+      },
+      {
+        "when": "A complete first-run screen that also collects a profile, a timezone and teammate invites",
+        "instead": "application/onboarding"
+      }
+    ],
+    "agentNotes": [
+      "A `QuestionnaireItem` whose `name` is missing from the root `items` list is left out of the flow and the count, with only a dev warning",
+      "`handleSubmit` reads the answers with `FormData` and only renders a local confirmation; send them to your API from there",
+      "`QuestionnaireActions` is a 3 column grid placed for Previous, Skip and Next or Submit, so keep any other button outside it"
+    ]
+  }
+}

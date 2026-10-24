@@ -1,0 +1,57 @@
+"use client";
+
+import { useInView } from "motion/react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+
+import GibberishText from "@/animata/text/gibberish-text";
+import ComponentLinkWrapper from "@/components/component-link-wrapper";
+import { GitHubStarLink } from "@/components/github-star-link";
+import RemountOnMouseIn from "@/components/remount-on-mouse-in";
+
+export default function CallToActionSection() {
+  const headerRef = useRef<HTMLHeadingElement>(null);
+  const isInView = useInView(headerRef);
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    if (isInView) {
+      setKey((prev) => prev + 1);
+    }
+  }, [isInView]);
+
+  return (
+    <section className="border-t border-border py-20 sm:py-24 lg:py-32">
+      <div className="mx-auto flex max-w-2xl flex-col items-center px-6 text-center">
+        <ComponentLinkWrapper link="/docs/text/gibberish-text" className="mx-auto">
+          <h2
+            ref={headerRef}
+            className="px-0 py-2 text-center text-[clamp(22px,4vw,32px)] font-semibold tracking-tight text-foreground"
+          >
+            <RemountOnMouseIn>
+              <GibberishText key={`in_${key}`} text="Start building now" />
+            </RemountOnMouseIn>
+          </h2>
+        </ComponentLinkWrapper>
+
+        <p className="mt-4 max-w-md text-balance text-[15px] leading-relaxed text-muted-foreground">
+          Free forever. One command to add any component. The polish your users notice — without the
+          weeks of work.
+        </p>
+
+        <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
+          <Link
+            href="/docs"
+            className="inline-flex w-full items-center justify-center rounded-full bg-[hsl(var(--accent))] px-8 py-3.5 text-[16px] font-semibold text-white transition-opacity hover:opacity-90 sm:w-auto"
+          >
+            Get started now
+          </Link>
+          <GitHubStarLink
+            source="cta"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-background px-8 py-3.5 text-[15px] font-semibold text-foreground transition-colors hover:border-foreground/25 hover:bg-foreground/3 sm:w-auto"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}

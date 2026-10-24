@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "A table of contents that marks which section of a long scrolling panel is in view",
+      "Jump links that scroll their content to the chosen section and keep that link highlighted"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A bounded panel that only needs its own scrollbar, with no links following the content",
+        "instead": "scroll-area"
+      },
+      {
+        "when": "A chat transcript that opens on the newest turn and follows replies as they stream",
+        "instead": "message-scroller"
+      },
+      {
+        "when": "Account pages whose side links swap in one panel at a time, hiding the rest",
+        "instead": "application/profile"
+      }
+    ],
+    "agentNotes": [
+      "Without `targetRef` the spy tracks nothing and a click only marks its link without scrolling, so always pass one",
+      "`targetRef` can sit on a wrapper around a `ScrollArea`: the spy finds its `scroll-area-viewport` slot and tracks and scrolls that",
+      "`history` is on by default, so mount and every section change rewrite the URL hash with `replaceState`; pass false to leave it alone"
+    ]
+  }
+}

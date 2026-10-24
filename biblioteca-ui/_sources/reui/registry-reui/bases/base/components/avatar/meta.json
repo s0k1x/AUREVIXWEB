@@ -1,0 +1,493 @@
+[
+  {
+    "name": "c-avatar-1",
+    "title": "Basic avatar",
+    "label": "Basic",
+    "description": "Basic avatar",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The minimal markup: 1 photo at the default size with 2 letter initials kept as the fallback",
+      "whenNotToUse": [
+        {
+          "when": "A person with no photo on file, shown only by initials or an icon",
+          "instead": "c-avatar-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-2",
+    "title": "Avatar with fallback",
+    "label": "Fallbacks",
+    "description": "Avatar with fallback",
+    "order": 2,
+    "guidance": {
+      "bestFor": "Photo free placeholders: 2 letter initials and a user icon, both on the muted fallback fill",
+      "whenNotToUse": [
+        {
+          "when": "Initials that need a tinted color per person rather than the muted gray",
+          "instead": "c-avatar-14"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-3",
+    "title": "Avatars with different sizes",
+    "label": "Sizes",
+    "description": "Avatars with different sizes",
+    "order": 3,
+    "guidance": {
+      "bestFor": "The 3 built-in steps of the size prop, sm, default and lg, shown side by side on 1 photo",
+      "whenNotToUse": [
+        {
+          "when": "Dimensions outside the 3 presets, such as 16 or 64 pixels",
+          "instead": "c-avatar-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-4",
+    "title": "Avatars with different border radiuses",
+    "label": "Border Radius",
+    "description": "Avatars with different border radiuses",
+    "order": 4,
+    "guidance": {
+      "bestFor": "Square and soft cornered photos with md, lg and xl radius set next to the default circle",
+      "agentNotes": [
+        "The 3 cornered avatars leave `AvatarFallback` at its round default, so a photo that fails to load shows a circle inside the cornered border"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-5",
+    "title": "Avatars with custom sizes",
+    "label": "Custom Sizes",
+    "description": "Avatars with custom sizes",
+    "order": 5,
+    "guidance": {
+      "bestFor": "Free sizing through className at 16, 32, 48 and 64 pixels, beyond the 3 presets of the size prop",
+      "agentNotes": [
+        "Sizes set through `className` leave `data-size` at default, so the fallback text and any `AvatarBadge` keep their default size"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Sizes that should scale the badge and fallback text along with the photo",
+          "instead": "c-avatar-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-6",
+    "title": "Avatar with an online status badge",
+    "label": "Status Dots",
+    "description": "Avatar with an online status badge",
+    "order": 6,
+    "guidance": {
+      "bestFor": "Plain presence dots in the default bottom right spot, colored primary, green, yellow and destructive",
+      "agentNotes": [
+        "Each `AvatarBadge` is an empty span whose color alone marks status; map your presence values to its classes and give each a screen reader label"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-7",
+    "title": "Avatar with badge icon",
+    "label": "Badge Icons",
+    "description": "Avatar with badge icon",
+    "order": 7,
+    "guidance": {
+      "bestFor": "Corner badges holding a plus, check, star or shield icon on primary, success, warning and info fills",
+      "agentNotes": [
+        "`AvatarBadge` hides its icon when the parent `Avatar` has `size` sm, so keep icon badges at default or lg"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-8",
+    "title": "Avatar with different badge positions",
+    "label": "Round Badge Corners",
+    "description": "Avatar with different badge positions",
+    "order": 8,
+    "guidance": {
+      "bestFor": "Round photos with the dot moved to each of the 4 corners, sitting on the edge of the circle"
+    }
+  },
+  {
+    "name": "c-avatar-9",
+    "title": "Avatar with different badge positions",
+    "label": "Square Badge Corners",
+    "description": "Avatar with different badge positions",
+    "order": 9,
+    "guidance": {
+      "bestFor": "Square photos with the dot pushed 4 pixels past each of the 4 corners",
+      "agentNotes": [
+        "Only `rounded-md` is set, so the border layer of each `Avatar` stays a circle over the square photo; add after:rounded-md as `c-avatar-4` does"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-10",
+    "title": "Basic avatar group",
+    "label": "Avatar Group",
+    "description": "Basic avatar group",
+    "order": 10,
+    "guidance": {
+      "bestFor": "A stack of 3 overlapping photos with a background ring and no count chip at the end",
+      "whenNotToUse": [
+        {
+          "when": "More people than fit in the row, so the hidden rest needs a +N tally",
+          "instead": "c-avatar-11"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-11",
+    "title": "Avatar group with numerical count",
+    "label": "Group With Count",
+    "description": "Avatar group with numerical count",
+    "order": 11,
+    "guidance": {
+      "bestFor": "A 3 photo stack closed by a muted chip from the group count part that reads +3",
+      "agentNotes": [
+        "`AvatarGroupCount` holds a typed +3; compute it from your member total minus the photos shown"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-12",
+    "title": "Avatar group with an icon count",
+    "label": "Plus Chip Group",
+    "description": "Avatar group with an icon count",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A 3 photo stack ending in a round plus chip in place of a number",
+      "agentNotes": [
+        "`AvatarGroupCount` renders a plain div, so the plus chip takes no focus or click until you wrap it in a button"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-13",
+    "title": "Avatar with a distinct border ring",
+    "label": "Border Rings",
+    "description": "Avatar with a distinct border ring",
+    "order": 13,
+    "guidance": {
+      "bestFor": "Offset outer rings in 4 colors, primary, destructive, violet and yellow, around each photo"
+    }
+  },
+  {
+    "name": "c-avatar-14",
+    "title": "Avatar with light background color fallback",
+    "label": "Soft Fallbacks",
+    "description": "Avatar with light background color fallback",
+    "order": 14,
+    "guidance": {
+      "bestFor": "Initials on soft tinted fills with a matching border, including dark mode shades for green and fuchsia",
+      "whenNotToUse": [
+        {
+          "when": "Initials on strong solid fills with white text",
+          "instead": "c-avatar-15"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-15",
+    "title": "Avatar with a solid background color fallback",
+    "label": "Solid Fallbacks",
+    "description": "Avatar with a solid background color fallback",
+    "order": 15,
+    "guidance": {
+      "bestFor": "Initials in white or primary foreground text on full strength primary, destructive, green and blue fills",
+      "whenNotToUse": [
+        {
+          "when": "Quieter initials on pale tints for a dense list of people",
+          "instead": "c-avatar-14"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-16",
+    "title": "Avatar with user details and badge",
+    "label": "User Details",
+    "description": "Avatar with user details and badge",
+    "order": 16,
+    "guidance": {
+      "bestFor": "A name line with a small Pro badge and a job title stacked beside the photo"
+    }
+  },
+  {
+    "name": "c-avatar-17",
+    "title": "Avatar with grayscale image filter",
+    "label": "Grayscale",
+    "description": "Avatar with grayscale image filter",
+    "order": 17,
+    "guidance": {
+      "bestFor": "A single photo turned black and white by the grayscale class on the image only"
+    }
+  },
+  {
+    "name": "c-avatar-18",
+    "title": "Avatar group with online status on one",
+    "label": "Group Presence",
+    "description": "Avatar group with online status on one",
+    "order": 18,
+    "guidance": {
+      "bestFor": "A 3 person stack where only the first photo carries a success colored presence dot"
+    }
+  },
+  {
+    "name": "c-avatar-19",
+    "title": "Avatar inside small outline button",
+    "label": "Outline Button",
+    "description": "Avatar inside small outline button",
+    "order": 19,
+    "guidance": {
+      "bestFor": "A 20 pixel photo next to an @ handle inside a small outline button"
+    }
+  },
+  {
+    "name": "c-avatar-20",
+    "title": "Avatar social proof with text label",
+    "label": "Social Proof Pill",
+    "description": "Avatar social proof with text label",
+    "order": 20,
+    "guidance": {
+      "bestFor": "A bordered pill with 4 small stacked photos and a bold 100K+ figure in its caption",
+      "agentNotes": [
+        "The caption next to `AvatarGroup` hard-codes Trusted by 100K+ users; bind the figure to a real count before shipping"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-21",
+    "title": "Compact social proof with initials",
+    "label": "Compact Social Proof",
+    "description": "Compact social proof with initials",
+    "order": 21,
+    "guidance": {
+      "bestFor": "A Frame panel holding 4 developer photos and a Joined by 500+ developers caption",
+      "agentNotes": [
+        "The 500+ developers count inside `FramePanel` is typed by hand; feed it from your real member total"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "People with no photo who need colored initials in place of a picture",
+          "instead": "c-avatar-14"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-22",
+    "title": "Avatar group with hover tooltips and lift effect",
+    "label": "Lift Tooltips",
+    "description": "Avatar group with hover tooltips and lift effect",
+    "order": 22,
+    "guidance": {
+      "bestFor": "A hand built overlap where the hovered photo rises 4 pixels with a shadow and a name tooltip",
+      "agentNotes": [
+        "Replace `avatars` with your people; each entry's `name` feeds both the photo `alt` and the tooltip text"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-23",
+    "title": "Avatar group with hover effect",
+    "label": "Hover Fan",
+    "description": "Avatar group with hover effect",
+    "order": 23,
+    "guidance": {
+      "bestFor": "A stack that fans apart on hover, each photo sliding by its index and the hovered one growing 10 percent",
+      "agentNotes": [
+        "Swap `avatars` for your people; the spread and `zIndex` both come from each item's `index` in the map, so array order sets the overlap"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Names that should appear on hover over each person",
+          "instead": "c-avatar-24"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-24",
+    "title": "Avatar group with hover effect and tooltips",
+    "label": "Fan With Tooltips",
+    "description": "Avatar group with hover effect and tooltips",
+    "order": 24,
+    "guidance": {
+      "bestFor": "The fan out hover stack with a name tooltip on each photo, the Avatar itself rendered as the trigger",
+      "agentNotes": [
+        "`TooltipTrigger` hands its role to the `Avatar` span on both twins, and a span takes no keyboard focus, so names show on hover only"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Keyboard users who must reach each name by tabbing to it",
+          "instead": "c-avatar-22"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-25",
+    "title": "Avatar group with numerical count",
+    "label": "Bordered Count Pill",
+    "description": "Avatar group with numerical count",
+    "order": 25,
+    "guidance": {
+      "bestFor": "A bordered pill of 4 small photos split by background borders, with a plain +3 text tally",
+      "agentNotes": [
+        "The stack skips `AvatarGroup` and its count part, so the +3 is plain text you must compute yourself"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A count chip that matches the photo size and ring, built from the group parts",
+          "instead": "c-avatar-11"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-26",
+    "title": "Pilled small outline button with avatar",
+    "label": "Pill Outline Button",
+    "description": "Pilled small outline button with avatar",
+    "order": 26,
+    "guidance": {
+      "bestFor": "A pill shaped outline button whose 24 pixel photo hugs its left edge inside a background border"
+    }
+  },
+  {
+    "name": "c-avatar-27",
+    "title": "Pilled small button with avatar",
+    "label": "Pill Primary Button",
+    "description": "Pilled small button with avatar",
+    "order": 27,
+    "guidance": {
+      "bestFor": "A solid primary pill button with a thin primary border around the 24 pixel photo at its left"
+    }
+  },
+  {
+    "name": "c-avatar-28",
+    "title": "Avatar inside an empty state example",
+    "label": "Empty State",
+    "description": "Avatar inside an empty state example",
+    "order": 28,
+    "guidance": {
+      "bestFor": "A no collaborators prompt with 3 grayscale photos, an add person chip and invite copy below",
+      "agentNotes": [
+        "`AvatarGroupCount` carries an aria-label but stays a non focusable div, so wrap it in a button before wiring the invite"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A blank page or panel state with its own icon, title and action buttons",
+          "instead": "empty"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-29",
+    "title": "Avatar group with icon count and button",
+    "label": "Group Add Button",
+    "description": "Avatar group with icon count and button",
+    "order": 29,
+    "guidance": {
+      "bestFor": "A 3 photo stack with a +5 chip beside a round add user button that shows a tooltip",
+      "agentNotes": [
+        "`TooltipTrigger` wraps the `Button` without composing it, so both twins nest a button inside a button; pass it through render or asChild"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-30",
+    "title": "Avatar with loading state demonstration",
+    "label": "Loading State",
+    "description": "Avatar with loading state demonstration",
+    "order": 30,
+    "guidance": {
+      "bestFor": "A spinner over a 60 percent background veil on the photo, switched on and off by a demo timer",
+      "agentNotes": [
+        "`setInterval` flips `loading` every 2 seconds for the demo; drive `loading` from your real request state"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A pulsing placeholder shape held until the photo and name arrive",
+          "instead": "skeleton"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-31",
+    "title": "Avatar with custom badge",
+    "label": "Custom Badge",
+    "description": "Avatar with custom badge",
+    "order": 31,
+    "guidance": {
+      "bestFor": "A blue verified rosette drawn as inline SVG, placed at a different corner on each of 4 large photos",
+      "agentNotes": [
+        "`CustomBadge` is an inline svg with no title or label, so screen readers never hear the verified status"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-32",
+    "title": "Avatar with ring animation",
+    "label": "Pulsing Ring",
+    "description": "Avatar with ring animation",
+    "order": 32,
+    "guidance": {
+      "bestFor": "A photo and green offset ring pulsing together, with a green dot drawn as a plain span past the bottom right",
+      "agentNotes": [
+        "`animate-pulse` sits on the `Avatar` root, so the whole photo fades with the ring and keeps pulsing under reduced motion"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-33",
+    "title": "Avatar with gradient animated ring",
+    "label": "Gradient Ring",
+    "description": "Avatar with gradient animated ring",
+    "order": 33,
+    "guidance": {
+      "bestFor": "A story style ring: a blurred yellow to violet gradient spinning behind the photo, brighter on hover",
+      "agentNotes": [
+        "`alt` reads User story rather than a name; pass the person's display name so screen readers say who it is"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-34",
+    "title": "Avatar with multiple badges",
+    "label": "Multiple Badges",
+    "description": "Avatar with multiple badges",
+    "order": 34,
+    "guidance": {
+      "bestFor": "A presence dot at the bottom right and a red count of 3 at the top right of one photo",
+      "agentNotes": [
+        "The red count is a plain span with a typed 3 beside `AvatarBadge`; bind it to your real count and hide it at zero"
+      ]
+    }
+  },
+  {
+    "name": "c-avatar-35",
+    "title": "Compact avatar dropdown menu",
+    "label": "Dropdown Menu",
+    "description": "Compact avatar dropdown menu",
+    "order": 35,
+    "guidance": {
+      "bestFor": "A pill trigger with photo, name and up down chevron that opens Profile, Settings, Teams, Invite and Log out",
+      "agentNotes": [
+        "Every `DropdownMenuItem` is a stub with no handler; wire Profile, Settings, Teams, Invite and Log out to your routes"
+      ]
+    }
+  }
+]

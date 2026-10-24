@@ -1,0 +1,615 @@
+---
+title: File Type
+description: A shadcn file type icon in brand and family colors, outline, solid, light and mono variants, 6 sizes and resolution from a file name, path, URL or MIME type.
+component: true
+base: radix
+---
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-file-type-1"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[190px]"
+/>
+
+## Installation
+
+```bash component
+npx shadcn@latest add @reui/file-type
+```
+
+## Usage
+
+```tsx
+import { FileType, getFileType } from "@/components/reui/file-type"
+```
+
+```tsx
+<FileType type="pdf" />
+<FileType type={getFileType("Q3 report.xlsx")} variant="solid" />
+```
+
+## Examples
+
+Every built-in format by family, an attachment list, an upload queue, custom
+labels, custom colors and unknown types, an export format picker, custom icons,
+custom badges and dotfile names are on the [File Type](/components/file-type)
+page.
+
+### Outline, solid, light and mono
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-file-type-2"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[410px]"
+/>
+
+### Sizes
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-file-type-3"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[180px]"
+/>
+
+### Family glyphs
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-file-type-4"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[320px]"
+/>
+
+### Data grid file browser
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-file-type-6"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[680px]"
+/>
+
+### Resolve from a file name
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-file-type-9"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[390px]"
+/>
+
+### Dotfiles and build names
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-file-type-15"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[380px]"
+/>
+
+## API Reference
+
+`FileType` renders a single `span` with `role="img"`. Inside it, an inline SVG
+draws the page, its folded corner and the family glyph, and an HTML band in
+front of the page carries the label (in `solid`, the label sits on the page
+with no band). There are no sub-components and no Base
+UI or Radix part, so both bases install the same file, and the only
+dependencies are `class-variance-authority` and `cn`. It has no state, no
+hooks and no `"use client"` directive, so it renders in a Server Component,
+and the helpers run on the server or the client.
+
+### Types and colors
+
+`type` takes 1 of 171 built-in extensions, 1 of 13 family names, or any other
+string. It ignores case, surrounding spaces and leading dots, so `"PDF"`,
+`".pdf"` and `"pdf"` render the same icon.
+
+- An extension shows its label in upper case, in its color. A long key shows
+  a short label: `dockerfile` DOCK, `makefile` MAKE, `graphql` GQL, `parquet`
+  PARQ, `safetensors` SAFE and `numbers` NUM.
+- A family name shows the family glyph and no label, in the family color.
+- `"empty"`, or no `type`, shows a blank page.
+- Any other string, such as `"dwg"`, shows a neutral page (`text-zinc-500`)
+  labelled with the string in upper case. Its family is `file`, which has no
+  glyph.
+
+| Family         | Extensions | Color             | Accessible name |
+| :------------- | :--------- | :---------------- | :-------------- |
+| `document`     | 14         | `text-blue-600`   | Document        |
+| `spreadsheet`  | 10         | `text-green-600`  | Spreadsheet     |
+| `presentation` | 4          | `text-red-600`    | Presentation    |
+| `image`        | 14         | `text-violet-600` | Image           |
+| `video`        | 9          | `text-blue-600`   | Video           |
+| `audio`        | 8          | `text-pink-600`   | Audio file      |
+| `code`         | 74         | `text-blue-600`   | Code file       |
+| `archive`      | 15         | `text-zinc-500`   | Archive         |
+| `design`       | 8          | `text-purple-600` | Design file     |
+| `executable`   | 11         | `text-zinc-500`   | Application     |
+| `font`         | 4          | `text-zinc-500`   | Font file       |
+| `folder`       | 0          | `text-violet-600` | Folder          |
+| `empty`        | 0          | `text-zinc-500`   | File            |
+
+The family color paints a family type's glyph, and an extension without a
+color of its own.
+
+A format takes its brand's color (Word blue, Excel green, PowerPoint red, the
+GitHub language colors for code), else its family's color, and a format with
+neither, such as an archive, plain text, data, config, an installer or a font, is neutral (`text-zinc-500`). The `mono` variant sets every type in the theme
+gray instead. Every brand and family color is the 600 step, so
+the set reads as one palette and the white label text holds 3:1 or better on
+all of them.
+Yellow (`png`, `svg`, JavaScript and `mdx`) is the exception: white text on it stays
+under 3:1 until the 700 step, so it is `text-yellow-500` with dark label text,
+as the JavaScript logo is.
+
+| Extensions                    | Family         | Color              |
+| :---------------------------- | :------------- | :----------------- |
+| `pdf`                         | `document`     | `text-orange-600`  |
+| `doc`, `docx`                 | `document`     | `text-blue-600`    |
+| `odt`                         | `document`     | `text-blue-600`    |
+| `rtf`                         | `document`     | `text-blue-600`    |
+| `pages`                       | `document`     | `text-amber-600`   |
+| `txt`                         | `document`     | `text-zinc-500`    |
+| `md`                          | `document`     | `text-zinc-500`    |
+| `log`                         | `document`     | `text-zinc-500`    |
+| `mdx`                         | `document`     | `text-yellow-500`  |
+| `mdc`                         | `document`     | `text-zinc-500`    |
+| `eml`                         | `document`     | `text-zinc-500`    |
+| `srt`, `vtt`                  | `document`     | `text-zinc-500`    |
+| `xls`, `xlsx`, `xlsm`         | `spreadsheet`  | `text-green-600`   |
+| `ods`                         | `spreadsheet`  | `text-green-600`   |
+| `csv`                         | `spreadsheet`  | `text-green-600`   |
+| `tsv`                         | `spreadsheet`  | `text-green-600`   |
+| `numbers`                     | `spreadsheet`  | `text-green-600`   |
+| `parquet`                     | `spreadsheet`  | `text-zinc-500`    |
+| `sqlite`                      | `spreadsheet`  | `text-sky-600`     |
+| `db`                          | `spreadsheet`  | `text-zinc-500`    |
+| `ppt`, `pptx`                 | `presentation` | `text-red-600`     |
+| `odp`                         | `presentation` | `text-red-600`     |
+| `key`                         | `presentation` | `text-blue-600`    |
+| `png`                         | `image`        | `text-yellow-500`  |
+| `jpg`, `jpeg`                 | `image`        | `text-violet-600`  |
+| `gif`                         | `image`        | `text-violet-600`  |
+| `webp`                        | `image`        | `text-violet-600`  |
+| `avif`                        | `image`        | `text-violet-600`  |
+| `heic`                        | `image`        | `text-violet-600`  |
+| `bmp`                         | `image`        | `text-violet-600`  |
+| `tif`, `tiff`                 | `image`        | `text-violet-600`  |
+| `ico`                         | `image`        | `text-violet-600`  |
+| `raw`                         | `image`        | `text-zinc-500`    |
+| `svg`                         | `image`        | `text-yellow-500`  |
+| `jxl`                         | `image`        | `text-violet-600`  |
+| `mp4`                         | `video`        | `text-blue-600`    |
+| `mov`                         | `video`        | `text-blue-600`    |
+| `avi`                         | `video`        | `text-blue-600`    |
+| `mkv`                         | `video`        | `text-blue-600`    |
+| `webm`                        | `video`        | `text-blue-600`    |
+| `mpeg`, `mpg`                 | `video`        | `text-blue-600`    |
+| `wmv`                         | `video`        | `text-blue-600`    |
+| `m3u8`                        | `video`        | `text-blue-600`    |
+| `mp3`                         | `audio`        | `text-pink-600`    |
+| `wav`                         | `audio`        | `text-pink-600`    |
+| `aac`                         | `audio`        | `text-pink-600`    |
+| `flac`                        | `audio`        | `text-pink-600`    |
+| `ogg`                         | `audio`        | `text-pink-600`    |
+| `m4a`                         | `audio`        | `text-pink-600`    |
+| `aiff`                        | `audio`        | `text-pink-600`    |
+| `opus`                        | `audio`        | `text-pink-600`    |
+| `js`, `mjs`                   | `code`         | `text-yellow-500`  |
+| `jsx`                         | `code`         | `text-yellow-500`  |
+| `ts`                          | `code`         | `text-blue-600`    |
+| `tsx`                         | `code`         | `text-blue-600`    |
+| `html`, `htm`                 | `code`         | `text-orange-600`  |
+| `css`                         | `code`         | `text-purple-600`  |
+| `scss`                        | `code`         | `text-pink-600`    |
+| `json`                        | `code`         | `text-zinc-500`    |
+| `xml`                         | `code`         | `text-zinc-500`    |
+| `yaml`, `yml`                 | `code`         | `text-zinc-500`    |
+| `sql`                         | `code`         | `text-zinc-500`    |
+| `py`                          | `code`         | `text-blue-600`    |
+| `java`                        | `code`         | `text-orange-600`  |
+| `php`                         | `code`         | `text-indigo-600`  |
+| `rb`                          | `code`         | `text-red-600`     |
+| `go`                          | `code`         | `text-cyan-600`    |
+| `rs`                          | `code`         | `text-orange-600`  |
+| `c`                           | `code`         | `text-zinc-500`    |
+| `cpp`                         | `code`         | `text-blue-600`    |
+| `h`                           | `code`         | `text-zinc-500`    |
+| `cs`                          | `code`         | `text-purple-600`  |
+| `sh`                          | `code`         | `text-green-600`   |
+| `rss`                         | `code`         | `text-orange-600`  |
+| `cjs`                         | `code`         | `text-yellow-500`  |
+| `mts`                         | `code`         | `text-blue-600`    |
+| `vue`                         | `code`         | `text-emerald-600` |
+| `svelte`, `astro`             | `code`         | `text-orange-600`  |
+| `graphql`, `gql`              | `code`         | `text-pink-600`    |
+| `prisma`                      | `code`         | `text-sky-600`     |
+| `wasm`                        | `code`         | `text-indigo-600`  |
+| `map`                         | `code`         | `text-zinc-500`    |
+| `kt`, `kts`                   | `code`         | `text-violet-600`  |
+| `swift`                       | `code`         | `text-red-600`     |
+| `dart`                        | `code`         | `text-teal-600`    |
+| `lua`                         | `code`         | `text-blue-600`    |
+| `r`                           | `code`         | `text-sky-600`     |
+| `scala`                       | `code`         | `text-rose-600`    |
+| `ex`, `exs`                   | `code`         | `text-purple-600`  |
+| `hpp`, `cc`                   | `code`         | `text-blue-600`    |
+| `cu`                          | `code`         | `text-green-600`   |
+| `ps1`                         | `code`         | `text-blue-600`    |
+| `bat`, `bash`, `zsh`          | `code`         | `text-green-600`   |
+| `gradle`                      | `code`         | `text-cyan-600`    |
+| `ipynb`                       | `code`         | `text-orange-600`  |
+| `env`, `toml`, `ini`, `conf`  | `code`         | `text-zinc-500`    |
+| `jsonc`, `lock`, `ignore`     | `code`         | `text-zinc-500`    |
+| `git`                         | `code`         | `text-red-600`     |
+| `dockerfile`                  | `code`         | `text-blue-600`    |
+| `makefile`                    | `code`         | `text-green-600`   |
+| `tf`, `tfvars`, `hcl`         | `code`         | `text-purple-600`  |
+| `proto`                       | `code`         | `text-blue-600`    |
+| `jsonl`, `ndjson`             | `code`         | `text-zinc-500`    |
+| `diff`, `patch`               | `code`         | `text-zinc-500`    |
+| `pem`, `crt`                  | `code`         | `text-zinc-500`    |
+| `zip`                         | `archive`      | `text-zinc-500`    |
+| `rar`                         | `archive`      | `text-zinc-500`    |
+| `7z`                          | `archive`      | `text-zinc-500`    |
+| `tar`                         | `archive`      | `text-zinc-500`    |
+| `gz`, `tgz`                   | `archive`      | `text-zinc-500`    |
+| `bz2`                         | `archive`      | `text-zinc-500`    |
+| `xz`, `zst`                   | `archive`      | `text-zinc-500`    |
+| `jar`                         | `archive`      | `text-orange-600`  |
+| `whl`                         | `archive`      | `text-blue-600`    |
+| `safetensors`, `gguf`, `onnx` | `archive`      | `text-zinc-500`    |
+| `pt`                          | `archive`      | `text-red-600`     |
+| `fig`                         | `design`       | `text-purple-600`  |
+| `sketch`                      | `design`       | `text-amber-600`   |
+| `psd`                         | `design`       | `text-sky-600`     |
+| `ai`                          | `design`       | `text-orange-600`  |
+| `eps`                         | `design`       | `text-purple-600`  |
+| `indd`                        | `design`       | `text-pink-600`    |
+| `aep`                         | `design`       | `text-violet-600`  |
+| `xd`                          | `design`       | `text-fuchsia-600` |
+| `exe`                         | `executable`   | `text-zinc-500`    |
+| `msi`                         | `executable`   | `text-zinc-500`    |
+| `dmg`                         | `executable`   | `text-zinc-500`    |
+| `apk`                         | `executable`   | `text-green-600`   |
+| `deb`                         | `executable`   | `text-rose-600`    |
+| `iso`                         | `executable`   | `text-zinc-500`    |
+| `app`                         | `executable`   | `text-zinc-500`    |
+| `pkg`, `ipa`                  | `executable`   | `text-zinc-500`    |
+| `aab`                         | `executable`   | `text-green-600`   |
+| `rpm`                         | `executable`   | `text-red-600`     |
+| `ttf`                         | `font`         | `text-zinc-500`    |
+| `otf`                         | `font`         | `text-zinc-500`    |
+| `woff`, `woff2`               | `font`         | `text-zinc-500`    |
+
+Config, build and infrastructure files (`env`, `toml`, `dockerfile`, `tf`)
+and data formats such as `jsonl` are `code`, as `json` and `yaml` are. Model
+weights (`safetensors`, `gguf`, `onnx`, `pt`) are packed binaries, so they
+take the archive glyph, and `parquet`, `sqlite` and `db` take the spreadsheet
+grid.
+
+Both lists are exported: `FILE_TYPE_EXTENSION_NAMES` holds the 171 extensions
+and `FILE_TYPE_CATEGORIES` the 13 families. `FileTypeName` is the union of
+both, and `type` accepts any string beside it, so an editor still
+autocompletes the built-in names.
+
+### FileType
+
+| Prop             | Type                                                  | Default     | Description                                                                                                                                       |
+| :--------------- | :---------------------------------------------------- | :---------- | :------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `type`           | `FileTypeName \| (string & {})`                       | -           | An extension, a family, `"empty"`, or any other string for a neutral labelled page. Unset shows a blank page. `getFileType` resolves a file name. |
+| `variant`        | `"outline" \| "solid" \| "light" \| "mono"`           | `"outline"` | How the page is painted. See Variants.                                                                                                            |
+| `size`           | `"mini" \| "xs" \| "sm" \| "default" \| "lg" \| "xl"` | `"default"` | A preset box, 18px to 56px. A Tailwind `size-*` class in `className` overrides it.                                                                |
+| `label`          | `ReactNode`                                           | -           | Replaces the extension text, for a version tag or a document code. `null` or `""` hides it. See Label and glyph.                                  |
+| `glyph`          | `boolean`                                             | `false`     | Shows the family glyph instead of the label.                                                                                                      |
+| `icon`           | `ReactNode`                                           | -           | A custom icon drawn on the page in place of the glyph and the label, in the glyph's color. See Label and glyph.                                   |
+| `labelClassName` | `string`                                              | -           | Classes for the label badge, merged last. See Customization.                                                                                      |
+| `className`      | `string`                                              | -           | A `text-*` class recolors the type, and a `size-*` class resizes it. See Customization.                                                           |
+
+All `span` props are supported, except `children`: the component takes none.
+
+### Variants
+
+| Variant   | Page                                                                   | Label badge                                                                     | Glyph                                                |
+| :-------- | :--------------------------------------------------------------------- | :------------------------------------------------------------------------------ | :--------------------------------------------------- |
+| `outline` | Transparent, with a grey outline and fold                              | The type color, `--file-type-foreground` text                                   | The type color, lifted 30% toward white in dark mode |
+| `solid`   | Filled with the type color, with a white 30% corner and a lighter fold | No badge: the text sits on the page in the glyph's color, white by default      | `--file-type-foreground`, white by default           |
+| `light`   | A soft grey `muted` fill, with the grey outline and fold               | The type color, `--file-type-foreground` text                                   | The type color, lifted 30% toward white in dark mode |
+| `mono`    | Transparent, with the grey outline and fold                            | The theme's `muted-foreground` gray for every type, with text in the page color | The same gray, with no dark-mode lift                |
+
+`--file-type-foreground` is white by default (the page color in `mono`), and the
+grey outline is `--file-type-border`. In dark mode the outline and light glyph mixes 30% white
+into the type color so a 1px line stays visible on a dark page, while the
+badge keeps the shade its white text needs. A neutral type fills its solid
+page 55% lighter (`--file-type-fill`) and draws its glyph and label in dark
+gray (`--file-type-glyph`), so it does not read as a dark slab next to the
+colored ones.
+
+`mono` ignores the type color and draws every type in the theme's
+`muted-foreground`, for a list where color would compete with the content. A
+`text-*` class in `className` still recolors it.
+
+```tsx
+<FileType type="xlsx" variant="solid" />
+```
+
+### Sizing
+
+Every size draws the same design: the page and the label band with its text.
+The root is an inline-size container and everything inside is measured in
+`cqw` against its width, so the band, its text, padding and corners and the
+line all scale with the box.
+
+| Size      | Box  | Label text | Label band height | Line  |
+| :-------- | :--- | :--------- | :---------------- | :---- |
+| `mini`    | 18px | 5.8px      | 8.1px             | 1px   |
+| `xs`      | 24px | 5.8px      | 8.4px             | 1px   |
+| `sm`      | 32px | 7.7px      | 11.2px            | 1px   |
+| `default` | 40px | 9.6px      | 14px              | 1px   |
+| `lg`      | 48px | 11.5px     | 16.8px            | 1.2px |
+| `xl`      | 56px | 13.4px     | 19.6px            | 1.4px |
+
+The band has the same geometry on every type: 45% from the top, 5% from the
+left, 35% of the box high and at most 95% of it wide, with 7% padding on each
+side, 10.5% in Maia, Luma and Rhea so the pill's round ends clear the text. Its
+text is 24% of the width, so its capitals fill half the band, and shrinks only
+when the characters would run past the band: at 40px `WOFF2` renders at 9px and
+`SKETCH` at 7.5px (8.2px and 6.9px with the pill's padding). The capitals are centered on their own
+height rather than the font's line, and the band moves by up to half a pixel
+so that browsers, which draw text on whole pixels, keep them centered. The
+line is 1px up to 40px, then 2.5% of the width.
+
+In `solid` there is no band: the text sits on the page, two thirds of the box
+wide, and every label up to 4 characters is 20.5% of the width (8.2px at
+40px), so a row of mixed types reads even. A longer label shrinks to fit the
+page: at 40px `WOFF2` renders at 6.6px and `SKETCH` at 5.5px. Up to 20px each
+label fits the page on its own, semibold: `PDF` at 4.4px and `DOCX` at 3.3px
+at 18px.
+
+Up to 20px the icon is tuned to stay legible in a table row: the band is 45%
+of the box from 40% down, its text is semibold at a third of the box (5.8px at 18px),
+the outline is darker, and a glyph is drawn at full size instead of 75%.
+
+For a size off the scale, put a plain Tailwind size class in `className`. It
+replaces the preset box, and the label and the line scale with it.
+
+```tsx
+<FileType type="pdf" className="size-20" />
+<FileType type="pdf" className="size-[72px]" />
+<div className="size-24">
+  <FileType type="pdf" className="size-full" />
+</div>
+```
+
+`fileTypeVariants({ size })` returns the root's classes for a size, for a
+wrapper that needs to match them.
+
+### Label and glyph
+
+The label band is HTML text, the extension in upper case by default (the
+short form for the 6 long keys, such as DOCK for `dockerfile`). `label`
+replaces it with any node, such as a version tag (`"V3"`) or a document code
+(`"CA-1042"`). A string longer than 4 characters shrinks to fit the band, so
+keep it short. A label that is not a string is sized as 4 characters and
+truncated if it runs past the band.
+
+```tsx
+<FileType type="docx" label="V3" />
+<FileType type="empty" variant="light" label="CA-1042" />
+<FileType type="pdf" label={null} />
+<FileType type="pdf" glyph />
+```
+
+- A string `label` joins the accessible name: `type="docx" label="V3"` reads
+  "V3, DOCX file", and `type="empty" label="CA-1042"` reads "CA-1042, File". A
+  label that only repeats the extension is not read twice, and a label that is
+  not a string leaves the name as it is.
+- `label={null}` or `label=""` hides the band. The family glyph shows in its
+  place when the type has one; an unknown type or `"empty"` shows a blank page.
+- `glyph` shows the family glyph instead of the label at any size. A family
+  type, or a type with no label text, shows its glyph without it.
+
+There are 12 glyphs, one per family except `empty`: document, spreadsheet,
+presentation, image, video, audio, code, archive, design, executable, font
+and folder. They share one 10-unit box under the fold on the 24-unit page
+grid, drawn at 75% of it, and draw with the page's line, so every family sits
+at the same weight. The document glyph is 3 uneven, left-aligned lines.
+
+`icon` draws any icon on the page in place of the glyph and the label, in the
+glyph's color: the type color in `outline` and `light`, the foreground in
+`solid`, the theme gray in `mono`. It is sized like a glyph and decorative, so the type still names the
+icon; pass an `aria-label` when the icon adds meaning ("Locked PDF file").
+
+```tsx
+<FileType type="pdf" icon={<LockIcon />} aria-label="Locked PDF file" />
+```
+
+### getFileType
+
+Resolves a file name, path, URL, bare extension, family name or MIME type to
+a `type`, always in lower case. It returns `FileTypeName | (string & {})`.
+A URL's query and hash are dropped first. Outside a URL a `?` or `#` can be
+part of the name, so `"invoice #12.pdf"` is a PDF, and they start a query
+only when the value does not already end in an extension or a slash
+(`"/uploads/scan.png?v=3"`).
+
+| Input                                | Returns                     | Rule                                                                                                                 |
+| :----------------------------------- | :-------------------------- | :------------------------------------------------------------------------------------------------------------------- |
+| `"Q3 report.pdf"`                    | `"pdf"`                     | The text after the last dot.                                                                                         |
+| `"photos/IMG_2041.HEIC"`             | `"heic"`                    | The last segment of a path, either slash, in any case.                                                               |
+| `"archive.tar.gz"`                   | `"gz"`                      | Only the last extension counts.                                                                                      |
+| `"https://example.com/data.csv?v=2"` | `"csv"`                     | A URL with a scheme is read by its path, so its host never counts as a file name.                                    |
+| `"https://example.com"`              | `"empty"`                   | A bare host, or a URL whose path is `/`, has no type.                                                                |
+| `"assets/"`                          | `"folder"`                  | A value ending in `/` or `\` is a folder, a URL path included.                                                       |
+| `"pdf"`, `".pdf"`, `"image"`         | `"pdf"`, `"pdf"`, `"image"` | A bare extension or family resolves to itself.                                                                       |
+| `"Dockerfile"`, `".env.local"`       | `"dockerfile"`, `"env"`     | A well-known name resolves to its type, with no extension or one no type owns. See below.                            |
+| `"notes"`, `".hidden"`               | `"empty"`                   | Any other name with no extension has no type.                                                                        |
+| `"plan.dwg"`                         | `"dwg"`                     | An unknown extension comes back as is and renders neutral.                                                           |
+| `"application/pdf"`                  | `"pdf"`                     | 94 exact MIME types map first. See below.                                                                            |
+| `"image/photo.png"`                  | `"png"`                     | A subtype with a dot whose last part is a built-in extension is a storage key, not a MIME type.                      |
+| `"image/webp"`, `"font/woff2"`       | `"webp"`, `"woff2"`         | A subtype that is a built-in extension in the same family. Under `application/` and `text/`, any built-in extension. |
+| `"audio/webm"`, `"video/ogg"`        | `"audio"`, `"video"`        | A subtype from another family does not count: WebM is a video format, so `audio/webm` is audio.                      |
+| `"video/x-flv"`                      | `"video"`                   | Any other `image/`, `video/`, `audio/` or `font/` type is its family.                                                |
+| `"text/plain; charset=utf-8"`        | `"txt"`                     | Parameters are ignored, and any other `text/` type is `txt`.                                                         |
+| `"application/octet-stream"`         | `"empty"`                   | Any other MIME type has no type.                                                                                     |
+
+The exact MIME map covers the types whose subtype does not name the extension:
+PDF, Word, Excel (macro-enabled included), PowerPoint, OpenDocument, RTF and
+Keynote; ZIP, RAR, 7-Zip, tar, gzip and bzip2, with their `x-` forms
+(`application/x-gzip`, `application/x-rar-compressed`, `application/x-bzip2`);
+JSON, XML, YAML, RSS, JavaScript, PHP and shell scripts; Windows, Android and
+Debian packages, Apple disk images and ISO images; TTF and WOFF fonts;
+Photoshop, PostScript, JPEG, SVG and icons; QuickTime, AVI, Matroska and WMV;
+MP3, WAV, M4A, FLAC and AIFF; and plain text, Markdown, Python, C, CSV, TSV,
+HTML and CSS. It also covers Node's CommonJS type, Jupyter notebooks, NDJSON,
+SQLite, HLS playlists, SubRip subtitles and email (`message/rfc822`); Java
+archives, RPM packages, PEM files and X.509 certificates, Zstandard and XZ;
+and C++, Kotlin, Swift, R, Lua, Scala, diffs, patches and makefiles.
+
+Well-known names resolve before the extension. `.env` and every `.env.*` file
+(`.env.local`, `.env.example`) are `env`; `Dockerfile`, `Containerfile` and
+`Dockerfile.*` are `dockerfile`; `Makefile` and `*.mk` are `makefile`;
+`.gitignore`, `.gitattributes` and the other Git files are `git`, and any other
+`.*ignore` file is `ignore`; `bun.lockb` and `go.sum` are `lock`, and `go.mod`
+is `go`; `Gemfile`, `Podfile` and the other Ruby build files are `rb`; shell
+profiles (`.bashrc`, `.zshrc`, `.envrc`) take their shell; `.editorconfig` and
+`.npmrc` are `ini`; and `README`, `LICENSE`, `CHANGELOG`, `CODEOWNERS` and
+version pins such as `.nvmrc` are `txt`. A name pattern holds only while the
+file ends in no known extension of its own, so `Dockerfile.md` is Markdown.
+`.cer` reads as `crt`, and `.sqlite3` as `sqlite`.
+
+```tsx
+import { FileType, getFileType } from "@/components/reui/file-type"
+
+function AttachmentRow({ file }: { file: File }) {
+  return (
+    <div className="flex items-center gap-2">
+      <FileType type={getFileType(file.name)} size="mini" aria-hidden="true" />
+      <span className="truncate">{file.name}</span>
+    </div>
+  )
+}
+```
+
+A browser `File` also carries a MIME type in `file.type`, which can be empty
+or a generic `application/octet-stream`, so the name is usually the better
+input. A folder name is not a file name: `"v2.1 exports"` would resolve to a
+`"1 exports"` extension, so pass `"folder"` for folders yourself.
+
+### getFileTypeCategory
+
+Returns the family of a `type`, for grouping or filtering a file list: 1 of
+the 13 families, `"file"` for an unknown type, or `"empty"` for none. The
+return type, `FileTypeCategory`, is those 14 values. It takes a type, not a
+file name, so resolve the name with `getFileType` first.
+
+```ts
+getFileTypeCategory("xlsx") // "spreadsheet"
+getFileTypeCategory(getFileType("Q3 report.pdf")) // "document"
+getFileTypeCategory("dwg") // "file"
+getFileTypeCategory() // "empty"
+```
+
+### Customization
+
+The type color is the root's text color, and the label band, the glyph and
+the solid fill all follow it, so a single `text-*` class in `className`
+replaces the type's color. For white label text at 4.5:1, every Tailwind 700
+shade works. At 600, orange, amber, yellow, lime, green, emerald, teal, cyan
+and sky fall short, and most 500 shades are too light. For a light color, set
+`--file-type-foreground` to a dark one instead.
+
+```tsx
+<FileType type="xlsx" className="text-green-700" />
+<FileType type="pdf" className="text-lime-400 [--file-type-foreground:black]" />
+<FileType
+  type="sketch"
+  variant="solid"
+  className="text-amber-400 [--file-type-foreground:black]"
+/>
+```
+
+The variables below are read from the root, and a class in `className`
+replaces any of them.
+
+| Variable                 | Default                                                                 | Description                                                      |
+| :----------------------- | :---------------------------------------------------------------------- | :--------------------------------------------------------------- |
+| `--file-type-size`       | `--spacing(10)`, from `size`                                            | Box width and height. A `size-*` class replaces the box instead. |
+| `--file-type-stroke`     | Unset, which means `max(1px, 2.5cqw)`                                   | Line width of the page, the fold and the glyph.                  |
+| `--file-type-border`     | Unset, which means `muted-foreground` at 40%, 65% up to 20px            | Page outline and fold in `outline`, `light` and `mono`.          |
+| `--file-type-fill`       | Unset, which means the type color; 55% lighter on neutral types         | The page in `solid`.                                             |
+| `--file-type-glyph`      | Unset, which means `--file-type-foreground`; dark gray on neutral types | The glyph, the label and a custom `icon` in `solid`.             |
+| `--file-type-foreground` | `white`, the page color in `mono`                                       | Label text, and the glyph in `solid`.                            |
+| `--file-type-radius`     | Unset, which means the style's label radius                             | Label band corners.                                              |
+
+The label band's corners follow the installed style in the ReUI Badge's
+proportions: `10cqw` (4px at 40px) in Vega, Nova and Mira, a pill in Maia,
+Luma and Rhea, and square in Lyra and Sera. `--file-type-radius` sets them for
+every style. In Lyra and Sera the page, its folded corner and the solid flap are
+square too, so the whole icon follows the style.
+
+`labelClassName` is merged last onto the badge, so any of its styles can be
+replaced: background, radius, padding, font size and weight, or position. The
+text is a child of the badge, so recolor it with `*:text-*`.
+
+```tsx
+<FileType type="pdf" labelClassName="rounded-full" />
+<FileType type="docx" label="DRAFT" labelClassName="bg-amber-400 *:text-amber-950" />
+<FileType type="xlsx" labelClassName="bg-foreground *:text-background" />
+```
+
+```tsx
+<FileType type="pdf" className="[--file-type-radius:9999px]" />
+<FileType
+  type="pdf"
+  className="[--file-type-border:var(--border)] [--file-type-stroke:1.5px]"
+/>
+```
+
+### Data Attributes
+
+| Attribute       | On   | Values                                                                       |
+| :-------------- | :--- | :--------------------------------------------------------------------------- |
+| `data-type`     | root | The type in lower case without a leading dot: `pdf`, `image`, `empty`, `dwg` |
+| `data-category` | root | The family, `file` for an unknown type, `empty` for none                     |
+| `data-variant`  | root | `outline`, `solid`, `light`, `mono`                                          |
+| `data-size`     | root | The `size` prop, `default` when unset, even when a class resizes the box     |
+
+| Part      | `data-slot`                                                                        |
+| :-------- | :--------------------------------------------------------------------------------- |
+| The root  | `file-type`                                                                        |
+| The SVG   | `file-type-icon`                                                                   |
+| The glyph | `file-type-glyph`, a group in the SVG, when the glyph shows and the family has one |
+| The icon  | `file-type-custom-icon`, a span over the page, when `icon` is set                  |
+| The label | `file-type-label`, when there is label text and `glyph` is not set                 |
+
+### Accessibility
+
+- The root is an image named after its type: "PDF file" for an extension,
+  unknown ones included ("DWG file"), the family's name for a family type (see
+  Types and colors), and "File" when there is no type. A short label is
+  spelled out in the name: DOCK reads "DOCKERFILE file". The SVG inside is
+  hidden.
+- A string `label` joins the name ("V3, DOCX file"). Pass `aria-label` to name
+  the icon yourself; it replaces the generated one.
+- Pass `aria-hidden="true"` when the text next to the icon already names the
+  type, such as a file name in a list row or a family caption, so it is not
+  read twice.
+- The label text is small, so WCAG AA asks 4.5:1 for it. In `outline` and
+  `light`, 135 of the 171 extensions meet that, and every one has 3:1 or
+  better. The 600 shades of orange, amber, green, emerald, teal, cyan and sky
+  fall between 3:1 and 4.5:1 with white text: `pdf`, `html`, `htm`, `java`,
+  `rs`, `rss`, `svelte`, `astro`, `ipynb`, `jar` and `ai` (3.6:1), `go` and
+  `gradle` (3.6:1), `vue` and `dart` (3.7:1), `pages` and `sketch` (3.2:1),
+  the green spreadsheets, the shells, `cu`, `makefile`, `apk` and `aab`
+  (3.2:1), and `psd`, `sqlite`, `prisma` and `r` (4.0:1). `solid` puts the
+  same white text on the type color, so the same ratios hold, except the 54 neutral
+  types: their dark gray label on the lighter page is 4.1:1. Yellow types
+  take dark text, 7.6:1. The ratios are for Tailwind's default palette. In `mono` the label is the page color on
+  `muted-foreground`: 4.7:1 in light mode and 7.6:1 in dark with the default
+  neutral theme.
+- To raise the contrast, use a darker `text-*` class (`text-green-700` on
+  `xlsx` reaches 4.9:1). See Customization.
+- A glyph is a line in the type color, so a yellow `png` or `svg` glyph sits
+  under 3:1 on a white page. In dark mode the outline and light glyph is
+  lifted toward white to stay visible on a dark page.
+- At `mini` and `xs` the label text is 5.8px, so keep the file name or
+  the extension in text next to the icon.
+- The icon is not focusable and has no keyboard behavior. Wrap it in a link or
+  a button for an action, and give that control its own name.

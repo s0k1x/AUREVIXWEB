@@ -1,0 +1,41 @@
+import { h, nextTick } from 'vue';
+import DefaultTheme from 'vitepress/theme';
+import './style.css';
+import 'virtual:group-icons.css';
+import { Theme } from 'vitepress';
+import IconsSidebarNavAfter from './layouts/IconsSidebarNavAfter.vue';
+import HomeHeroIconsCard from './components/home/HomeHeroIconsCard.vue';
+import HomeHeroAfter from './components/home/HomeHeroAfter.vue';
+import HomeHeroInfoBefore from './components/home/HomeHeroInfoBefore.vue';
+import { ICON_STYLE_CONTEXT, iconStyleContext } from './composables/useIconStyle';
+import { CATEGORY_VIEW_CONTEXT, categoryViewContext } from './composables/useCategoryView';
+import { EXTERNAL_LIBS_CONTEXT, externalLibContext } from './composables/useExternalLibs';
+import SideBarNavBefore from './layouts/SideBarNavBefore.vue';
+import SnackPlayer from './components/editors/SnackPlayer.vue';
+import { op } from './utils/openpanel';
+
+const theme: Partial<Theme> = {
+  extends: DefaultTheme,
+  Layout() {
+    return h(DefaultTheme.Layout, null, {
+      'sidebar-nav-before': () => h(SideBarNavBefore),
+      'home-hero-info-before': () => h(HomeHeroInfoBefore),
+      'sidebar-nav-after': () => h(IconsSidebarNavAfter),
+      'home-hero-image': () => h(HomeHeroIconsCard),
+      'home-hero-actions-after': () => h(HomeHeroAfter),
+      // Keep this here for now, we might want to add more things to the top bar in the future
+      // 'layout-top': () => h(LayoutTop),
+    });
+  },
+  enhanceApp({ app, router }) {
+    app.provide(ICON_STYLE_CONTEXT, iconStyleContext);
+    app.provide(CATEGORY_VIEW_CONTEXT, categoryViewContext);
+    app.provide(EXTERNAL_LIBS_CONTEXT, externalLibContext);
+    app.component('SnackPlayer', SnackPlayer);
+
+    // Wait for VitePress to update the document title before tracking the page view.
+    router.onAfterRouteChange = () => nextTick(() => op?.screenView());
+  },
+};
+
+export default theme;

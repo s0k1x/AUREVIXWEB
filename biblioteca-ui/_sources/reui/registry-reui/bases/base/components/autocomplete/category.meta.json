@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Search and filter fields that suggest matching options while the user types",
+      "People and record lookups, grouped by team or fetched from a server as the query changes",
+      "Form fields whose typed or picked text is validated with the rest of the form on submit"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A selection that stores the chosen option rather than typed text, or several as chips",
+        "instead": "combobox"
+      },
+      {
+        "when": "Options nested in levels that the user drills into one level at a time",
+        "instead": "cascader"
+      },
+      {
+        "when": "A palette of app actions and keyboard shortcuts, often opened in a dialog",
+        "instead": "command"
+      }
+    ],
+    "agentNotes": [
+      "`value` and `onValueChange` carry the input text as a string; picking an item only fills that text and stores no item object",
+      "Both twins are built on `@base-ui/react`, so installing it in a radix project adds Base UI as a dependency",
+      "A Server Component cannot create the function child of `AutocompleteList`, so the file that renders it needs a use client directive"
+    ]
+  }
+}

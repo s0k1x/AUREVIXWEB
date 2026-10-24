@@ -1,0 +1,82 @@
+[
+  {
+    "name": "c-icon-stack-1",
+    "title": "Isometric icon stack",
+    "label": "Isometric",
+    "description": "Layered isometric icon",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The minimal pattern with no classes on the stack: default size, neutral tones and one small layers glyph"
+    }
+  },
+  {
+    "name": "c-icon-stack-2",
+    "title": "Icon stack sizes",
+    "label": "Sizes",
+    "description": "Responsive icon stack sizes",
+    "order": 2,
+    "guidance": {
+      "bestFor": "Small, Default and Large stacks side by side with captions, the glyph growing from size-3.5 to size-6"
+    }
+  },
+  {
+    "name": "c-icon-stack-3",
+    "title": "Icon stack colors",
+    "label": "Colors",
+    "description": "Semantic icon stack colors",
+    "order": 3,
+    "guidance": {
+      "bestFor": "Neutral, primary, success and warning tints in a captioned row, set on the stack and the glyph separately",
+      "agentNotes": [
+        "`text-success` and `text-warning` need success and warning color tokens in your theme; this item installs none, so without them those 2 stacks stay untinted"
+      ]
+    }
+  },
+  {
+    "name": "c-icon-stack-4",
+    "title": "Icon badge stack",
+    "label": "Badge Overlay",
+    "description": "Icon stack with badge overlay",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A round bordered chip with a check mark in place of a bare glyph, on a larger primary stack"
+    }
+  },
+  {
+    "name": "c-icon-stack-5",
+    "title": "Empty state illustration",
+    "label": "Empty State",
+    "description": "Shadcn empty state illustration",
+    "order": 5,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A first run workspace screen with the stack above a title, description and Invite team and Connect source buttons",
+      "agentNotes": [
+        "The Invite team and Connect source `Button` elements have no handler; wire them to your invite and data source flows"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A flat glyph in a square bordered surface above the no data message",
+          "instead": "icon-tile"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-icon-stack-6",
+    "title": "Item media stack",
+    "label": "Item Media",
+    "description": "Icon stack in shadcn item",
+    "order": 6,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "The smallest stack in the set, 44 by 48 pixels, as media in an outlined row with a title and description",
+      "whenNotToUse": [
+        {
+          "when": "A list row whose media is a plain glyph, avatar or image",
+          "instead": "item"
+        }
+      ]
+    }
+  }
+]

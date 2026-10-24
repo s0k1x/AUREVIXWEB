@@ -1,0 +1,115 @@
+[
+  {
+    "name": "c-separator-1",
+    "title": "Horizontal separator for content sections.",
+    "label": "Horizontal",
+    "description": "Horizontal separator for content sections.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "A heading with a muted subtitle, set off from a muted paragraph of body copy by one full width rule",
+      "whenNotToUse": [
+        {
+          "when": "A break that carries a short caption in the middle of the rule",
+          "instead": "c-separator-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-separator-2",
+    "title": "Vertical separator for inline elements.",
+    "label": "Vertical",
+    "description": "Vertical separator for inline elements.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A single line of 3 one word labels, Blog, Docs and Source, split by 2 rules as tall as the row",
+      "agentNotes": [
+        "Blog, Docs and Source are plain `div` text, not links; wrap each in an anchor with a real target before using the row as navigation"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Side by side entries that each stack a title over a caption",
+          "instead": "c-separator-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-separator-3",
+    "title": "Vertical separator groups related menu items.",
+    "label": "Grouped Menu Items",
+    "description": "Vertical separator groups related menu items.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "Side by side entries, each a medium weight title over a muted caption, split by short rules centered in the row",
+      "agentNotes": [
+        "Keep the forced `self-auto` beside `h-8` on each vertical `Separator`, or its built in `self-stretch` pins the short rule to the top of the row"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "One word labels on a single line with rules the full height of the row",
+          "instead": "c-separator-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-separator-4",
+    "title": "Horizontal separator between items in a list.",
+    "label": "List Rows",
+    "description": "Horizontal separator between items in a list.",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A stack of 3 label and value rows with a rule between every row, labels on the left and muted values on the right",
+      "whenNotToUse": [
+        {
+          "when": "Priced line items with one rule under the heading and another above the total",
+          "instead": "c-separator-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-separator-5",
+    "title": "Separator with centered text label",
+    "label": "Centered Label",
+    "description": "Separator with centered text label",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A lone rule with a small muted caption, or continue with, sitting on a background patch at its middle",
+      "agentNotes": [
+        "The caption `span` hides the rule behind it with `bg-background`; on a card or muted surface swap in that surface color"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A named phase break inside an agent run log or chat transcript",
+          "instead": "marker"
+        },
+        {
+          "when": "A captioned break between groups of inputs inside a form",
+          "instead": "field"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-separator-6",
+    "title": "Order summary with separators",
+    "label": "Order Summary",
+    "description": "Order summary with separators",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A price breakdown of subtotal, discount and tax, ruled off from its heading above and from a medium weight total below",
+      "agentNotes": [
+        "The discount takes `text-success`, a color this item does not install; without a success token in your theme it prints in the default text color",
+        "Every amount is a typed string and the total is not summed from the rows; compute each `dd` from your order data"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Label and value rows of equal weight with a rule between every row",
+          "instead": "c-separator-4"
+        }
+      ]
+    }
+  }
+]
