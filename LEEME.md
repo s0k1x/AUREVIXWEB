@@ -276,4 +276,4 @@ quita algún archivo grande o desactiva la revisión automática (puedes lanzarl
   contenido que cambia. Una sola curva y tiempos cortos. Se apagan solas con «Reducir movimiento» (Ajustes → Apariencia o el ajuste del móvil).
 - **Safari (no la app instalada)**: la web ya no se mete por detrás de la hora, así que la cabecera queda pegada arriba sin hueco.
   En la app instalada sigue ocupando toda la pantalla como antes.
-- Service worker v28. Sube el zip a GitHub y recarga con la caché limpia.
+- Service worker v30. La cabecera del móvil va fija (position: fixed) para que Safari pinte bien la zona de la hora al subir y bajar. Sube el zip a GitHub y recarga con la caché limpia.

@@ -1115,3 +1115,14 @@ section[id],[id].ancla{scroll-margin-top:84px}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
 }
+
+/* v28 · Safari: tapa el hueco que queda sobre la cabecera (por detrás de la hora) */
+.header::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:var(--hueco,0px);background:var(--bg);pointer-events:none}
+
+/* v29 · móvil: la cabecera va fija arriba del todo.
+   Safari del iPhone tiñe la zona de la hora con el color de lo que está fijo arriba; con la cabecera
+   «pegajosa» al subir y bajar la barra de Safari se veía la web por detrás de la hora. */
+@media (max-width:900px){
+  .header{position:fixed;top:0;left:0;right:0;width:100%}
+  body{padding-top:calc(67px + env(safe-area-inset-top))}
+}
