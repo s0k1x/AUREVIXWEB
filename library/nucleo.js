@@ -7,7 +7,7 @@
    - Cabecera de autor, licencia y origen para copiar y descargar.
    - Selección compartida con «Crear la web con IA» (localStorage).
    Las rutas se calculan desde este archivo, así que funciona igual
-   desde /library/ que desde panel.html.
+   desde /library/ que desde panel.
    ========================================================== */
 
 export const URL_LIBRERIA = new URL('./', import.meta.url);

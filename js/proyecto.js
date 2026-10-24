@@ -51,7 +51,7 @@ export function barraEtapas(p, { editable = false } = {}) {
 const urlVistaPrevia = p => {
   if (p.urlVista) return p.urlVista;
   const r = p.respuestas || {};
-  return p.plantilla ? `plantilla.html?t=${encodeURIComponent(p.plantilla)}&n=${encodeURIComponent(r.negocio || '')}&c=${encodeURIComponent(r.color || '')}` : '';
+  return p.plantilla ? `diseno?t=${encodeURIComponent(p.plantilla)}&n=${encodeURIComponent(r.negocio || '')}&c=${encodeURIComponent(r.color || '')}` : '';
 };
 const dominioTexto = d => d ? (d.tipo === 'propio' ? `${d.nombre} (ya es suyo)` : d.nombre) : '';
 

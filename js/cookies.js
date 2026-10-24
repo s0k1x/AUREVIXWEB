@@ -41,7 +41,7 @@ function pintar(configurar = false) {
   nodo.innerHTML = `
     <div class="ck-top"><span class="ck-ic">${ICONO}</span>
       <div><b>Cookies y privacidad</b>
-      <p>Solo usamos el almacenamiento imprescindible para que la web funcione (sesión y seguridad) y, si lo aceptas, para recordar tus preferencias. No usamos cookies de publicidad ni de seguimiento. <a href="terminos.html#cookies">Más información</a></p></div></div>
+      <p>Solo usamos el almacenamiento imprescindible para que la web funcione (sesión y seguridad) y, si lo aceptas, para recordar tus preferencias. No usamos cookies de publicidad ni de seguimiento. <a href="terminos-y-privacidad#cookies">Más información</a></p></div></div>
     <div class="ck-cfg">
       <label class="ck-row"><span><b>Necesarias</b><small>Inicio de sesión, seguridad y tu elección sobre cookies. Siempre activas.</small></span><input type="checkbox" checked disabled></label>
       <label class="ck-row"><span><b>Preferencias</b><small>Tema, tamaño de letra, borradores del cuestionario y vista del panel.</small></span><input type="checkbox" id="ckPref" ${c?.preferencias === false ? '' : 'checked'}></label>

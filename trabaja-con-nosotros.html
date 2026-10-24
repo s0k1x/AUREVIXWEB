@@ -1,0 +1,368 @@
+<!doctype html>
+<!-- © AurevixWeb. Todos los derechos reservados. Prohibida la copia, reproducción o reutilización
+     total o parcial de este diseño y de su código sin autorización escrita. Ver LICENSE. -->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta id="vp" name="viewport" content="width=device-width, initial-scale=1">
+  <script>/* La zona de la hora solo se usa como parte de la web dentro de la app instalada; en Safari queda limpia */try{if(navigator.standalone||matchMedia('(display-mode: standalone)').matches)document.getElementById('vp').content+=', viewport-fit=cover'}catch(e){}</script>
+  <title>Trabaja con nosotros · AurevixWeb</title>
+  <meta name="description" content="Vende webs con inteligencia artificial y redes sociales y llévate el 30 % de cada venta. Remoto, sin horarios y sin inversión.">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0c0c0e">
+  <meta name="copyright" content="© AurevixWeb. Todos los derechos reservados.">
+  <script>try{var a=JSON.parse(localStorage.getItem('tm_apariencia')||'{}'),d=document.documentElement;if(a.tema==='claro'||(a.tema==='sistema'&&matchMedia('(prefers-color-scheme: light)').matches))d.dataset.tema='claro';if(a.texto&&a.texto!=='normal')d.dataset.texto=a.texto;if(a.movimiento==='reducido')d.dataset.movimiento='reducido';if(a.contraste)d.dataset.contraste='alto'}catch(e){}try{if(sessionStorage.getItem('tm_intro')!=='1'&&!location.hash&&!location.search&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('intro');setTimeout(function(){document.documentElement.classList.remove('intro')},5000)}}catch(e){}</script>
+  <link rel="preload" as="image" href="icons/logo-a.png">
+  <link rel="preload" as="image" href="icons/nombre.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="componentes.css">
+  <link rel="stylesheet" href="animaciones.css">
+  <link rel="stylesheet" href="trabaja.css">
+  <link rel="stylesheet" href="funciones.css">
+  <link rel="stylesheet" href="tema-claro.css">
+</head>
+<body>
+<div class="splash listo" id="splash0" aria-hidden="true"><div class="brand-card splash-card"><div class="border"></div><div class="content"><div class="logo"><div class="logo1"><img src="icons/logo-a.png" alt=""></div><div class="logo2"><img src="icons/nombre.png" alt="AurevixWeb"></div></div><span class="logo-bottom-text">Webs profesionales</span></div><span class="bottom-text">Diseño web</span></div></div>
+<script>(function(){var s=document.getElementById('splash0'),h=document.documentElement;if(!s)return;if(!h.classList.contains('intro')){s.remove();return}try{sessionStorage.setItem('tm_intro','1')}catch(e){}s.classList.add('vivo');var c=s.querySelector('.brand-card');setTimeout(function(){c&&c.classList.add('on')},200);var t0=Date.now(),done=false;function fin(){if(done)return;done=true;h.classList.remove('intro');s.classList.add('out');setTimeout(function(){s.remove()},600)}function tick(){var e=Date.now()-t0;if(e>=2300&&(document.readyState==='complete'||e>=4500))fin();else setTimeout(tick,100)}tick();s.addEventListener('click',fin)})();</script>
+  <header id="header"></header>
+
+  <main>
+    <!-- ===== PORTADA ===== -->
+    <section class="t-hero">
+      <div class="hero-bg bg-stripes" aria-hidden="true"></div>
+      <div class="wrap t-hero-grid">
+        <div>
+          <span class="eyebrow">Trabaja con nosotros</span>
+          <h1>Comercial de páginas web con un <span class="pct"><em class="num" data-count="30">30</em> %</span> de comisión.</h1>
+          <p class="lead">Buscamos personas con experiencia en <b>inteligencia artificial</b>, <b>redes sociales</b> o <b>ventas</b> para presentar nuestras webs a negocios. Nosotros diseñamos y entregamos cada proyecto; tú captas al cliente y cobras tu comisión. ¿Lo tuyo son los vídeos? También <b>pagamos por cada vídeo</b> que publiques.</p>
+          <div class="t-ctas">
+            <a href="#candidatura" class="btn btn-primary" data-magnet><span>Enviar candidatura</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a href="#calculadora" class="btn btn-ghost">Calcular comisiones</a>
+            <a href="#videos" class="btn btn-ghost"><span>Pago por vídeo</span></a>
+          </div>
+        </div>
+        <div class="t-stats">
+          <div><b><em class="num" data-count="30">30</em> %</b><span>de comisión por web vendida</span></div>
+          <div><b><em class="num" data-count="0">0</em> €</b><span>de inversión inicial</span></div>
+          <div><b>100 %</b><span>en remoto, horario libre</span></div>
+          <div><b><em class="num" data-count="15" id="statVideo">15</em> €</b><span>por cada vídeo aprobado</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== LO QUE BUSCAMOS ===== -->
+    <section class="alt">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>01</b>Lo que buscamos</span>
+          <h2>Perfiles que buscamos</h2>
+        </div>
+        <div class="perfiles">
+          <article class="perfil reveal" style="--c:#b98cff">
+            <span class="pf-ic"><i data-i="brain"></i></span>
+            <h3>Inteligencia artificial</h3>
+            <ul>
+              <li>Usas herramientas de IA (ChatGPT, Claude, Gemini…) en tu día a día</li>
+              <li>Preparas textos, imágenes y propuestas con ellas</li>
+              <li>Sabes adaptar una propuesta a cada cliente</li>
+            </ul>
+          </article>
+          <article class="perfil reveal" style="--c:#ff5a8a">
+            <span class="pf-ic"><i data-i="phone"></i></span>
+            <h3>Redes sociales</h3>
+            <ul>
+              <li>Creas contenido para Instagram, TikTok u otras redes</li>
+              <li>Has conseguido clientes o contactos a través de redes</li>
+              <li>Analizas qué publicaciones funcionan mejor</li>
+            </ul>
+          </article>
+          <article class="perfil reveal" style="--c:#c8f560">
+            <span class="pf-ic"><i data-i="handshake"></i></span>
+            <h3>Ventas</h3>
+            <ul>
+              <li>Te comunicas con soltura con negocios, en persona o por mensaje</li>
+              <li>Identificas lo que necesita el cliente y le propones la opción adecuada</li>
+              <li>Haces seguimiento hasta cerrar la venta</li>
+            </ul>
+          </article>
+        </div>
+        <p class="nota reveal"><i data-i="bulb"></i> No es necesario saber programar ni diseñar. El diseño y el desarrollo de las webs son cosa nuestra.</p>
+      </div>
+    </section>
+
+    <!-- ===== CALCULADORA ===== -->
+    <section id="calculadora">
+      <div class="wrap calc-grid">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>02</b>Tus ganancias</span>
+          <h2>Calculadora de comisiones</h2>
+          <p class="lead">Recibes el <b data-comision></b> % del importe que paga el cliente por cada web vendida, sin límite de ventas.</p>
+          <div class="calc-ej" id="calcEj"></div>
+        </div>
+        <div class="calc card reveal">
+          <span class="q-label">¿Qué webs venderías sobre todo?</span>
+          <div id="calcTipo"></div>
+          <div class="rango">
+            <div class="rango-h"><span>Ventas al mes</span><b id="calcN">4</b></div>
+            <input type="range" id="calcRange" min="1" max="20" value="4" aria-label="Ventas al mes">
+            <div class="rango-m"><span>1</span><span>10</span><span>20</span></div>
+          </div>
+          <div class="calc-res">
+            <div><small>Al mes</small><b id="calcMes">0 €</b></div>
+            <div><small>Al año</small><b id="calcAno">0 €</b></div>
+          </div>
+          <p class="calc-nota">Cálculo orientativo. La comisión se calcula sobre el importe que paga el cliente por la web.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ===== CREADORES DE VÍDEO ===== -->
+    <section class="alt" id="videos">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>03</b>Creadores de vídeo</span>
+          <h2>Te pagamos por cada vídeo</h2>
+          <p class="lead">Si creas contenido para TikTok, Instagram o YouTube, puedes cobrar un precio fijo por cada vídeo que publiques sobre nuestras webs, vendas o no. Y si alguien compra desde tu enlace, además te llevas tu comisión.</p>
+        </div>
+        <div class="vp-grid">
+          <div class="vp-cards">
+            <div class="vp reveal"><span class="vp-n" data-v="precio">15 €</span><b>Por vídeo aprobado</b><p>Vídeo propio de 20 a 60 segundos, publicado en tu cuenta, que nombre a AurevixWeb.</p></div>
+            <div class="vp reveal"><span class="vp-n" data-v="bonus">+25 €</span><b>Bonus por alcance</b><p>Si el vídeo supera las <span data-v="visitas">10.000</span> visualizaciones en sus primeros 14 días.</p></div>
+            <div class="vp reveal"><span class="vp-n"><span data-comision></span> %</span><b>Y comisión por venta</b><p>Pon tu enlace en la bio: cada web que se venda desde ahí es tuya.</p></div>
+          </div>
+          <div class="calc card reveal vp-calc">
+            <div class="rango">
+              <div class="rango-h"><span>Vídeos al mes</span><b id="vcN">8</b></div>
+              <input type="range" id="vcRange" min="1" max="12" value="8" aria-label="Vídeos al mes">
+            </div>
+            <div class="rango">
+              <div class="rango-h"><span>De ellos, con bonus</span><b id="vcB">2</b></div>
+              <input type="range" id="vcBonus" min="0" max="8" value="2" aria-label="Vídeos con bonus">
+            </div>
+            <div class="calc-res">
+              <div><small>Al mes</small><b id="vcMes">0 €</b></div>
+              <div><small>Al año</small><b id="vcAno">0 €</b></div>
+            </div>
+            <p class="calc-nota">Sin contar las comisiones por ventas. Hasta <span data-v="maxMes">12</span> vídeos pagados al mes; cada vídeo se revisa antes de aprobarlo.</p>
+          </div>
+        </div>
+        <ul class="vp-reglas reveal">
+          <li><i data-i="check"></i>Te enviamos ideas y diseños de ejemplo para grabar</li>
+          <li><i data-i="check"></i>Envías el enlace desde tu panel y te avisamos al revisarlo</li>
+          <li><i data-i="check"></i>Cobras a final de mes por Bizum o transferencia</li>
+          <li><i data-i="check"></i>Sin exclusividad: sigues con tu contenido de siempre</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== VENTAJAS ===== -->
+    <section>
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="eyebrow"><b>04</b>Condiciones</span>
+          <h2>Qué te ofrecemos</h2>
+        </div>
+        <div class="ventajas">
+          <div class="vj reveal"><span><i data-i="euro"></i></span><b><span data-comision></span> % de cada venta</b><p>Sin límite de ventas ni objetivos mínimos.</p></div>
+          <div class="vj reveal"><span><i data-i="video"></i></span><b>Pago por vídeo</b><p><span data-v="precio">15 €</span> por cada vídeo aprobado, aunque no venda.</p></div>
+          <div class="vj reveal"><span><i data-i="link"></i></span><b>Tu enlace de ventas</b><p>Los pedidos que llegan a través de tu enlace se asignan a tu nombre de forma automática.</p></div>
+          <div class="vj reveal"><span><i data-i="chart"></i></span><b>Panel de ventas</b><p>Consulta tus ventas y el estado de cada comisión en cualquier momento.</p></div>
+          <div class="vj reveal"><span><i data-i="tool"></i></span><b>Material de venta</b><p>Catálogo con precios cerrados, diseños de ejemplo y vista previa con el nombre del cliente.</p></div>
+          <div class="vj reveal"><span><i data-i="brain"></i></span><b>Formación en IA</b><p>Te mostramos cómo usamos la IA para preparar propuestas y contenido.</p></div>
+          <div class="vj reveal"><span><i data-i="home"></i></span><b>Remoto y sin horarios</b><p>Organizas tu tiempo y trabajas desde donde quieras.</p></div>
+          <div class="vj reveal"><span><i data-i="ban"></i></span><b>Sin inversión</b><p>No hay cuotas, compras mínimas ni costes de alta.</p></div>
+          <div class="vj reveal"><span><i data-i="sprout"></i></span><b>Acompañamiento inicial</b><p>Te explicamos los productos, los precios y cómo presentar las webs a los clientes.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CÓMO EMPIEZAS + FORMULARIO ===== -->
+    <section class="alt" id="candidatura">
+      <div class="wrap t-grid">
+        <div>
+          <div class="sec-head reveal">
+            <span class="eyebrow"><b>05</b>Proceso</span>
+            <h2>Cómo empezar</h2>
+          </div>
+          <ol class="t-pasos">
+            <li class="reveal"><b>Envía tu candidatura</b><span>La revisamos y te respondemos en un plazo máximo de una semana.</span></li>
+            <li class="reveal"><b>Acceso al panel</b><span>Te damos acceso a tu panel y a tu enlace de ventas personal.</span></li>
+            <li class="reveal"><b>Presentación a clientes</b><span>En persona, por redes sociales o por mensaje. El cliente hace el pedido desde tu enlace.</span></li>
+            <li class="reveal"><b>Cobro de la comisión</b><span>Cuando el cliente completa el pago, tu <span data-comision></span> % queda disponible para cobrar.</span></li>
+          </ol>
+          <div class="faq t-faq reveal">
+            <details><summary>¿Necesito saber programar o diseñar?</summary><p>No. Nosotros diseñamos y desarrollamos las webs. Tu función es captar clientes, presentarles las opciones y acompañarles hasta que hagan el pedido.</p></details>
+            <details><summary>¿Cuándo cobro mi comisión?</summary><p>Cuando el cliente ha completado el pago de su web. En tu panel ves qué comisiones están pendientes y cuáles están disponibles.</p></details>
+            <details><summary>¿Cómo funciona el pago por vídeo?</summary><p>Publicas el vídeo en tu cuenta y pegas el enlace en tu panel («Mis vídeos»). Lo revisamos y, si cumple las condiciones, queda aprobado y lo cobras a final de mes. Si supera las visualizaciones del bonus, te sumamos el extra.</p></details>
+            <details><summary>¿Hay un mínimo de ventas?</summary><p>No. No hay objetivos mínimos.</p></details>
+            <details><summary>¿Qué tipo de relación es?</summary><p>Es una colaboración independiente. Al incorporarte te explicamos cómo se facturan las comisiones.</p></details>
+          </div>
+        </div>
+
+        <div class="card form-card" id="formCard">
+          <h2>Envía tu candidatura</h2>
+          <p>Respondemos a todas las candidaturas en un plazo máximo de una semana.</p>
+          <form id="candForm" novalidate>
+            <div id="candCampos"></div>
+            <button class="btn btn-primary w100" type="submit" id="cSend"><span>Enviar candidatura</span></button>
+            <p class="muted" style="font-size:13px;text-align:center;margin-top:12px">Te pediremos iniciar sesión para que puedas consultar el estado de tu candidatura.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer"></footer>
+
+  <script type="module">
+    import { CONFIG, PLANES } from './config.js';
+    import * as store from './js/store.js';
+    import { iniciarChat } from './js/asistente.js';
+    import { $, $$, esc, euros, icono, toast, arrancar, conSesion, fecha, campo, desplegable, opciones, aceptarTerminos, terminosAceptados, ocupado, etiquetas } from './js/ui.js';
+
+    const PCT = CONFIG.comision ?? 30;
+    $$('[data-comision]').forEach(e => (e.textContent = PCT));
+    $$('.pct .num').forEach(e => { e.dataset.count = PCT; e.textContent = PCT; });
+    $$('.t-stats .num').forEach((e, i) => { if (i === 0) { e.dataset.count = PCT; e.textContent = PCT; } });
+
+    // Campos del formulario
+    $('#candCampos').innerHTML = `
+      ${campo({ id: 'cNombre', name: 'nombre', label: 'Nombre y apellidos', required: true, attrs: 'autocomplete="name"' })}
+      ${campo({ id: 'cTel', name: 'telefono', label: 'Teléfono', type: 'tel', required: true, attrs: 'inputmode="tel" autocomplete="tel"' })}
+      ${desplegable({ id: 'cPuesto', name: 'puesto', label: 'Área en la que tienes más experiencia', opciones: ['Ventas', 'Redes sociales', 'Creación de vídeos', 'Inteligencia artificial', 'Un poco de todo'] })}
+      <span class="q-label">¿Qué sabes usar? <span class="muted" style="font-weight:400">(marca todo lo que quieras)</span></span>
+      ${opciones('habilidades', ['ChatGPT / Claude', 'Imágenes con IA', 'Canva', 'Edición de vídeo (CapCut…)', 'Instagram', 'TikTok', 'YouTube', 'Vender en persona', 'Vender por mensajes'], [], 'checkbox')}
+      <span class="q-label">Experiencia vendiendo o en redes</span>
+      ${opciones('experiencia', ['Ninguna, pero tengo ganas', 'Algo', 'Bastante'])}
+      ${campo({ id: 'cPort', name: 'portfolio', label: 'Tus redes o algo que hayas hecho', hint: 'Opcional: tu Instagram, TikTok o un enlace' })}
+      ${campo({ id: 'cMsg', name: 'mensaje', label: 'Cuéntanos tu experiencia', type: 'textarea', required: true })}
+      <div class="cand-terms">${aceptarTerminos('cTerms', 'Acepto la <a href="terminos-y-privacidad#privacidad" target="_blank">política de privacidad</a> y que guardéis mis datos para este proceso')}</div>`;
+
+    await arrancar('trabaja');
+    iniciarChat();
+    etiquetas();
+
+    /* ---------- Pago por vídeo (valores de Ajustes → Negocio) ---------- */
+    const VC = CONFIG.videos || { precio: 15, bonus: 25, visitas: 10000, maxMes: 12 };
+    const fmt = n => n.toLocaleString('es-ES');
+    $$('[data-v=precio]').forEach(e => (e.textContent = euros(VC.precio)));
+    $$('[data-v=bonus]').forEach(e => (e.textContent = '+' + euros(VC.bonus)));
+    $$('[data-v=visitas]').forEach(e => (e.textContent = fmt(VC.visitas)));
+    $$('[data-v=maxMes]').forEach(e => (e.textContent = VC.maxMes));
+    $$('[data-comision]').forEach(e => (e.textContent = PCT));
+    const sv = $('#statVideo'); if (sv) { sv.dataset.count = VC.precio; sv.textContent = VC.precio; }
+    $('#vcRange').max = VC.maxMes;
+    if (+$('#vcRange').value > VC.maxMes) $('#vcRange').value = VC.maxMes;
+    function calcVideos() {
+      const n = +$('#vcRange').value;
+      $('#vcBonus').max = n;
+      if (+$('#vcBonus').value > n) $('#vcBonus').value = n;
+      const b = +$('#vcBonus').value;
+      const mes = n * VC.precio + b * VC.bonus;
+      $('#vcN').textContent = n; $('#vcB').textContent = b;
+      $('#vcRange').style.setProperty('--p', `${VC.maxMes > 1 ? (n - 1) / (VC.maxMes - 1) * 100 : 100}%`);
+      $('#vcBonus').style.setProperty('--p', `${n ? b / n * 100 : 0}%`);
+      const pon = (el, v) => { const t = $(el); const nuevo = euros(v); if (t.textContent !== nuevo) { t.textContent = nuevo; t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump'); } };
+      pon('#vcMes', mes); pon('#vcAno', mes * 12);
+    }
+    $('#vcRange').addEventListener('input', calcVideos);
+    $('#vcBonus').addEventListener('input', calcVideos);
+    calcVideos();
+
+    /* ---------- Calculadora de ganancias ---------- */
+    const tipos = PLANES.filter(p => p.id !== 'medida');
+    $('#calcTipo').innerHTML = opciones('calcTipo', tipos.map(p => `${p.nombre} · ${p.precio} €`), tipos.find(p => p.popular) ? `${tipos.find(p => p.popular).nombre} · ${tipos.find(p => p.popular).precio} €` : '');
+    $('#calcEj').innerHTML = tipos.map(p => `<div><span>${esc(p.nombre)}</span><b>${euros(p.precio * PCT / 100)}</b></div>`).join('') + '<small>lo que ganas por cada venta</small>';
+    function calcular() {
+      const sel = $('input[name=calcTipo]:checked')?.value || '';
+      const plan = tipos.find(p => sel.startsWith(p.nombre)) || tipos[0];
+      const n = +$('#calcRange').value;
+      const mes = plan.precio * PCT / 100 * n;
+      $('#calcN').textContent = n;
+      $('#calcRange').style.setProperty('--p', `${(n - 1) / 19 * 100}%`);
+      const pon = (el, v) => { const t = $(el); const nuevo = euros(v); if (t.textContent !== nuevo) { t.textContent = nuevo; t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump'); } };
+      pon('#calcMes', mes); pon('#calcAno', mes * 12);
+    }
+    $('#calcTipo').addEventListener('change', calcular);
+    $('#calcRange').addEventListener('input', calcular);
+    calcular();
+
+    /* ---------- Formulario de candidatura ---------- */
+    const card = $('#formCard');
+    const formHTML = card.innerHTML;
+
+    function mostrarEstado(c) {
+      const t = {
+        pendiente: ['inbox', 'Candidatura recibida', 'La estamos revisando. Te avisaremos muy pronto.'],
+        aceptada: ['party', 'Candidatura aceptada', 'Ya tienes acceso a tu panel y a tu enlace de ventas.'],
+        rechazada: ['heart', 'Gracias por tu interés', 'En este momento no podemos incorporarte. Conservamos tu candidatura por si surge una oportunidad.']
+      }[c.estado] || ['inbox', 'Candidatura recibida', ''];
+      card.innerHTML = `<div class="estado-cand"><div class="big">${icono(t[0])}</div><h3>${t[1]}</h3><p>${t[2]}</p>
+        <p style="font-size:14px">${esc(c.puesto)} · enviada el ${fecha(c.createdAt)}</p>
+        ${c.estado === 'aceptada' ? '<a class="btn btn-primary" href="panel">Ir a mi panel</a>' : '<a class="btn btn-ghost" href="./">Volver al inicio</a>'}</div>`;
+    }
+
+    let enviando = false;
+    const ponerFormulario = () => { if (!$('#candForm')) { card.innerHTML = formHTML; etiquetas(card); enlazar(); } };
+
+    async function comprobar(u) {
+      if (enviando) return;
+      if (!u) return ponerFormulario();
+      if (u.role === 'worker' || u.role === 'owner') {
+        card.innerHTML = `<div class="estado-cand"><div class="big">${icono('briefcase')}</div><h3>Ya formas parte del equipo</h3><p>En tu panel tienes tu enlace de ventas y tus comisiones.</p><a class="btn btn-primary" href="panel">Ir a mi panel</a></div>`;
+        return;
+      }
+      try {
+        const c = await store.miCandidatura();
+        if (c) return mostrarEstado(c);
+      } catch (e) { console.warn(e); }
+      ponerFormulario();
+      const n = $('#cNombre'); if (n && !n.value) n.value = u.name;
+    }
+    enlazar();
+    store.alCambiarUsuario(comprobar);
+
+    function enlazar() {
+      const form = $('#candForm');
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        let ok = true;
+        [['#cNombre', v => v.trim().length > 1], ['#cTel', v => v.replace(/\D/g, '').length >= 9], ['#cMsg', v => v.trim().length > 4]].forEach(([s, f]) => {
+          const el = $(s); const mal = !f(el.value);
+          el.closest('.fc').classList.toggle('error', mal);
+          if (mal && ok) { el.focus(); ok = false; }
+        });
+        if (!ok) return toast('Revisa los campos marcados', 'err');
+        if (!terminosAceptados('cTerms')) return;
+        const fd = new FormData(form);
+        const datos = Object.fromEntries(fd);
+        const habilidades = fd.getAll('habilidades');
+        enviando = true;
+        const u = await conSesion('Inicia sesión para enviar tu candidatura y ver su estado.');
+        if (!u) { enviando = false; return; }
+        const btn = $('#cSend'); ocupado(btn, true);
+        try {
+          const previa = await store.miCandidatura();
+          if (previa) { enviando = false; toast('Ya habías enviado una candidatura'); return mostrarEstado(previa); }
+          const c = await store.enviarCandidatura({
+            nombre: datos.nombre.trim(), telefono: datos.telefono.trim(), puesto: datos.puesto, habilidades,
+            experiencia: datos.experiencia, portfolio: (datos.portfolio || '').trim(), mensaje: datos.mensaje.trim()
+          });
+          toast('Candidatura enviada', 'ok');
+          mostrarEstado(c);
+        } catch (err) {
+          toast(err.message || 'No se pudo enviar', 'err');
+          ocupado(btn, false);
+        }
+        enviando = false;
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 /* ==========================================================
-   Diseños de ejemplo (se pintan en plantilla.html?t=ID&n=Nombre&c=%23color)
+   Diseños de ejemplo (se pintan en diseno?t=ID&n=Nombre&c=%23color)
    Fotos: Pexels (uso gratuito). Cambia los números de "img" por otras fotos de pexels.com
    Para añadir un diseño: copia un bloque y cambia textos, colores y fotos.
    ========================================================== */
@@ -118,7 +118,7 @@ export const PLANTILLAS = [
 export const plantillaPorId = id => PLANTILLAS.find(p => p.id === id);
 
 /* ==========================================================
-   PINTADO (plantilla.html)
+   PINTADO (diseno)
    ========================================================== */
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const hexValido = h => /^#[0-9a-f]{6}$/i.test(h || '');

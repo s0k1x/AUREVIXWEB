@@ -91,7 +91,7 @@ function sinSesion() {
 function sinPermiso() {
   cabeceraVacia('Panel', 'Zona del equipo');
   body.innerHTML = `<div class="card gate"><div class="em">${icono('briefcase')}</div><h3>Este panel es para el equipo</h3><p class="muted">Tu cuenta es de cliente. Puedes ver tus pedidos o unirte al equipo.</p>
-    <div class="gate-btns"><a class="btn btn-primary" href="index.html#mis-pedidos">Mis proyectos</a><a class="btn btn-ghost" href="trabaja.html">Trabaja con nosotros</a></div></div>`;
+    <div class="gate-btns"><a class="btn btn-primary" href="./#mis-pedidos">Mis proyectos</a><a class="btn btn-ghost" href="trabaja-con-nosotros">Trabaja con nosotros</a></div></div>`;
 }
 
 async function cargar(silencioso = false) {
@@ -430,7 +430,7 @@ function misVideos() {
   const mes = vidMes(V).length;
   const porCobrar = V.filter(v => v.estado === 'aprobado').reduce((a, v) => a + importeVideo(v), 0);
   const cobrado = V.filter(v => v.estado === 'pagado').reduce((a, v) => a + importeVideo(v), 0);
-  const enlace = new URL(`index.html?ref=${encodeURIComponent(U.uid)}`, location.href).href;
+  const enlace = new URL(`./?ref=${encodeURIComponent(U.uid)}`, location.href).href;
   const ideas = [
     ['Antes y después', `Enseña la web antigua (o la ficha de Google) de un negocio y cómo quedaría con un diseño de ${CONFIG.marca}.`],
     ['Web en 30 segundos', 'Graba la pantalla recorriendo uno de nuestros diseños de ejemplo con el nombre de un negocio real de tu zona.'],
@@ -585,7 +585,7 @@ function equipo() {
 /* ---------- TRABAJADOR: Mis ventas (enlace propio + comisiones) ---------- */
 function ventas() {
   const V = ventasDe(U.uid);
-  const enlace = new URL(`index.html?ref=${encodeURIComponent(U.uid)}`, location.href).href;
+  const enlace = new URL(`./?ref=${encodeURIComponent(U.uid)}`, location.href).href;
   const generado = V.reduce((a, p) => a + (p.total || 0), 0);
   const listas = V.filter(p => p.pagoEstado === 'pagado' && !p.comisionPagada).reduce((a, p) => a + comision(p), 0);
   const cobradas = V.filter(p => p.comisionPagada).reduce((a, p) => a + comision(p), 0);
@@ -1123,7 +1123,7 @@ async function exportarHTML(p, btn) {
   ocupado(btn, true);
   const f = document.createElement('iframe');
   f.style.cssText = 'position:fixed;left:-9999px;top:0;width:1280px;height:800px;opacity:0;pointer-events:none';
-  f.src = `plantilla.html?t=${encodeURIComponent(p.plantilla)}&n=${encodeURIComponent(r.negocio || '')}&c=${encodeURIComponent(r.color || '')}&x=1`;
+  f.src = `diseno?t=${encodeURIComponent(p.plantilla)}&n=${encodeURIComponent(r.negocio || '')}&c=${encodeURIComponent(r.color || '')}&x=1`;
   document.body.appendChild(f);
   try {
     await new Promise((ok, mal) => { f.onload = ok; setTimeout(() => mal(new Error('El diseño ha tardado demasiado en cargar')), 15000); });
