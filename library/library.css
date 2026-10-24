@@ -261,3 +261,11 @@ html[data-tema=claro] .hl-p{color:#0369a1}
 /* Reducir movimiento (ajuste de la web o del móvil) */
 html[data-movimiento=reducido] .lb-card,html[data-movimiento=reducido] .lb-sk{animation:none}
 @media (prefers-reduced-motion:reduce){.lb-card,.lb-sk,.lb-caja,dialog.lb-dlg[open]{animation:none}.lb-card:hover{transform:none}}
+
+/* Sin zoom ni gestos raros: nada de doble toque, resaltado al tocar ni menú al mantener pulsado */
+html{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{-webkit-touch-callout:none}
+img,svg,a{-webkit-user-drag:none}
+input,textarea,select{touch-action:manipulation}
+/* iOS hace zoom al enfocar un campo con letra menor de 16 px */
+@media (pointer:coarse){input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),textarea,select{font-size:16px!important}}

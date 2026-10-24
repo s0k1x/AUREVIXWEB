@@ -551,3 +551,9 @@ Las páginas ya no acaban en `.html`:
 - **Pendiente de revisar en Supabase** (Authentication → URL Configuration): si las «Redirect URLs» están listadas una a una
   con `.html`, hay que añadir `https://aurevixweb.es/**`. Si ya está así, no hay que tocar nada.
 - Probado con un servidor que imita a GitHub Pages: enlaces, redirecciones, uso sin conexión y todas las pruebas anteriores.
+
+## 27. Versión v37 — sin zoom y franja de Safari
+
+- **Sin zoom:** no hay zoom por doble toque (`touch-action: manipulation`) ni por pellizco (`gesturestart`), y el viewport lleva `maximum-scale=1`. Los campos de formulario miden 16 px en pantallas táctiles para que iOS no haga zoom al enfocarlos. Tampoco hay resaltado al tocar ni menú al mantener pulsado (`-webkit-touch-callout`). Aplica a todas las páginas, incluida la librería.
+- **Franja de la hora en Safari:** la web usa `viewport-fit=cover` también en Safari, como ya hacía en la app instalada. Así la web ocupa toda la pantalla y la cabecera (fija, con fondo sólido y `padding-top: env(safe-area-inset-top)`) tapa la zona de la hora. Antes se veía el contenido de la página por detrás. Igual en la librería.
+- **No probado:** Safari real en iPhone, solo Chromium.
