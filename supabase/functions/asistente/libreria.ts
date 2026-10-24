@@ -120,7 +120,7 @@ function urlComponente(lib: Lib, ruta: string) {
 const origen = (c: Comp, lib: Lib) => c.o || (lib.repo ? `${lib.repo}/blob/${lib.commit || 'main'}/${segmentos(c.a[0])}` : lib.web || 'añadido a mano (sin origen indicado)');
 const EJECUTABLES = new Set(['html', 'css', 'js', 'svg']);
 /* Neutraliza lo que podría romper los delimitadores o esconder texto (caracteres de control de dirección) */
-const limpiarDatos = (s: string) => s.replace(/<<<|>>>/g, '‹‹‹').replace(/[‪-‮⁦-⁩​-‏]/g, '');
+const limpiarDatos = (s: string) => s.replace(/<<<|>>>/g, '‹‹‹').replace(/[\u202A-\u202E\u2066-\u2069\u200B-\u200F]/g, '');
 const sinGuiones = (s: string) => s.replace(/-{2,}/g, '—').replace(/>/g, '›');
 function fragmentoFlowbite(md: string, x: number) {
   const re = /\{\{<\s*example\b[\s\S]*?>\}\}\n?([\s\S]*?)\{\{<\s*\/example\s*>\}\}/g;
