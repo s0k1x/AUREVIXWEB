@@ -587,3 +587,7 @@ Medido en un móvil con la CPU 4 veces más lenta (Chromium, no iPhone real). En
 ### v41 — etiquetas de los campos ya rellenos (Ajustes)
 - En Ajustes, los campos que ya traían texto (por ejemplo «Texto de la píldora de la portada») dejaban la etiqueta encima del texto. La etiqueta subía solo por `:placeholder-shown`, que en Safari no siempre se actualiza en campos rellenados al pintar la página. Ahora cada campo con texto lleva la clase `.lleno` (`marcarLleno` y `revisarCampos` en `js/ui.js`) y la etiqueta sube por esa clase. Se actualiza al escribir, al vaciar, al abrir un diálogo y al limpiar un formulario. `sw.js` v41.
 - Comprobado en las 4 secciones de Ajustes con campos (Negocio, Perfil, Facturación y Trabajo y cobros): ningún campo con texto sin subir y ningún vacío que suba. Safari real: sin probar.
+
+### v42 — sin fundido entre páginas (arregla el parpadeo al recargar en Chrome)
+- Se quita `@view-transition { navigation: auto }` y el `view-transition-name` de la cabecera (`animaciones.css`). Es una función solo de Chrome que hace un fundido entre la página anterior y la nueva; al recargar dejaba a medias un fundido entre el tema claro y el oscuro, con trozos de la página anterior y recuadros grises en el logo. Safari no la usa, así que se vuelve a ver igual en todos los navegadores. `sw.js` v42.
+- Medidas de fluidez en las demás vistas (Chromium con CPU ×4): panel de propietario, de trabajador y de cliente, ajustes e inicio con sesión, sin fotogramas lentos.
