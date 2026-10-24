@@ -216,6 +216,25 @@ const RESET = 'html,body{margin:0;background:transparent}body{min-height:100vh;d
 /* Mide lo que ocupa el componente y se lo dice a la página (para encajarlo en la tarjeta) */
 const medir = id => `<script>(function(){var ID=${JSON.stringify(id)};function s(){try{var b=document.body;if(!b)return;var r={l:1e9,t:1e9,r:-1e9,b:-1e9},n=0;for(var i=0;i<b.children.length;i++){var e=b.children[i];if(/^(SCRIPT|STYLE|LINK|META|TEMPLATE)$/.test(e.tagName))continue;var q=e.getBoundingClientRect();if(!q.width&&!q.height)continue;n++;r.l=Math.min(r.l,q.left);r.t=Math.min(r.t,q.top);r.r=Math.max(r.r,q.right);r.b=Math.max(r.b,q.bottom)}var d=document.documentElement;parent.postMessage({lbFit:ID,w:Math.ceil(n?r.r-Math.min(0,r.l):d.scrollWidth),h:Math.ceil(n?r.b-Math.min(0,r.t):d.scrollHeight)},'*')}catch(e){}}addEventListener('load',function(){s();setTimeout(s,300);setTimeout(s,1200)});try{new ResizeObserver(s).observe(document.documentElement)}catch(e){}})();</script>`;
 
+/* Los componentes son de muestra: sus enlaces y formularios no navegan (un <a href="/"> abriría la web
+   entera dentro de la tarjeta). Los enlaces «#id» solo desplazan. El resto (hover, animaciones, JS) funciona igual. */
+const SIN_NAVEGAR = `<script>(function(){function no(e){var a=e.target&&e.target.closest&&e.target.closest('a[href],area[href]');if(!a)return;e.preventDefault();var h=a.getAttribute('href')||'';if(h.charAt(0)==='#'&&h.length>1){try{var t=document.getElementById(decodeURIComponent(h.slice(1)));if(t)t.scrollIntoView({block:'nearest'})}catch(x){}}}addEventListener('click',no,true);addEventListener('auxclick',no,true);addEventListener('submit',function(e){e.preventDefault()},true)})();</script>`;
+
+/**
+ * Si aun así la vista previa navega (por ejemplo, un script que cambia location),
+ * se vuelve a poner el componente; si insiste, se muestra un aviso en su lugar.
+ */
+export function vigilarNavegacion(ifr, doc) {
+  let cargas = 0, vueltas = 0, parado = false;
+  ifr.addEventListener('load', () => {
+    if (parado || ++cargas === 1) return;
+    cargas = 0;
+    if (vueltas++ < 2) { ifr.srcdoc = `${doc}<!--${vueltas}-->`; return; }
+    parado = true;
+    ifr.srcdoc = '<!doctype html><meta charset="utf-8"><body style="margin:0;height:100vh;display:grid;place-items:center;font:13px system-ui;color:#8a887f;text-align:center;padding:12px;box-sizing:border-box">Este componente intenta abrir otra página. Mira su código.</body>';
+  });
+}
+
 /**
  * Documento HTML para <iframe sandbox="allow-scripts" srcdoc>.
  * El iframe no tiene el mismo origen que la web: el código del componente
@@ -225,7 +244,7 @@ export async function docVista(c, { id = c.i, fondo = '' } = {}) {
   const dir = c.a[0].includes('/') ? c.a[0].slice(0, c.a[0].lastIndexOf('/') + 1) : '';
   const base = `<base href="${carpeta(c, dir)}">`;
   const bg = fondo === 'claro' ? 'body{background:#f4f4f1;color:#16161b}' : fondo === 'oscuro' ? 'body{background:#16161b;color:#f3f1ea}' : '';
-  const cab = extra => `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${base}<style>${RESET}${bg}</style>${extra || ''}</head><body>`;
+  const cab = extra => `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${base}<style>${RESET}${bg}</style>${SIN_NAVEGAR}${extra || ''}</head><body>`;
   const fin = `${medir(id)}</body></html>`;
   const html1 = async () => texto(urlArchivo(c, c.a.find(a => /\.html?$/i.test(a)) || c.a[0]));
   switch (c.p) {
@@ -250,7 +269,7 @@ export async function docVista(c, { id = c.i, fondo = '' } = {}) {
         d = d.replace(/href="\/component\.css"/g, `href="${new URL('_sources/hyperui/public/component.css', URL_BIBLIOTECA).href}"`)
           .replace(/src="\/component\.js"/g, `src="${new URL('_sources/hyperui/public/component.js', URL_BIBLIOTECA).href}"`);
       }
-      const extra = `${base}<style>html,body{background:transparent}${bg}</style>`;
+      const extra = `${base}<style>html,body{background:transparent}${bg}</style>${SIN_NAVEGAR}`;
       d = /<head[^>]*>/i.test(d) ? d.replace(/<head([^>]*)>/i, `<head$1>${extra}`) : extra + d;
       return /<\/body>/i.test(d) ? d.replace(/<\/body>/i, `${medir(id)}</body>`) : d + medir(id);
     }
@@ -379,7 +398,9 @@ export async function montarVista(caja, c, { fondo = '' } = {}) {
   ifr.setAttribute('sandbox', 'allow-scripts');
   ifr.setAttribute('tabindex', '-1');
   ifr.title = `Vista previa de ${c.n}`;
-  ifr.srcdoc = await docVista(c, { id, fondo: fondo || fondoPreferido(c) });
+  const doc = await docVista(c, { id, fondo: fondo || fondoPreferido(c) });
+  ifr.srcdoc = doc;
+  vigilarNavegacion(ifr, doc);
   caja.appendChild(ifr);
   vistas.set(id, { ifr, caja });
   return () => { ifr.remove(); vistas.delete(id); };
