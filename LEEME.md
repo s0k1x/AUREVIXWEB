@@ -333,7 +333,7 @@ Los cambios están en GitHub en la rama `claude/download-ui-libraries-yktubi` (n
    publican los 62.000 archivos de `biblioteca-ui/` (unos 200 MB, por debajo del límite de 1 GB): la publicación tarda más que antes.
 2. En GitHub → *Actions*, espera a que «pages build and deployment» salga en verde. Abre `https://aurevixweb.es/library` y recarga con la
    caché limpia (el service worker pasa a v31).
-3. **Supabase (cuando lo decidas):** sigue `supabase/functions/asistente/INTEGRAR-LIBRERIA.md`. Resumen: copia de seguridad del código
+3. **Supabase — hecho el 24/10/2026 (versión 3 de la función, con tu autorización).** Para repetirlo o revisarlo: sigue `supabase/functions/asistente/INTEGRAR-LIBRERIA.md`. Resumen: copia de seguridad del código
    desplegado → añade `libreria.ts` → sustituye `index.ts` por el de GitHub (es el desplegado **más** `web-recursos`; el chat y «Te ayudo a
    elegir» no cambian) → *Deploy*. No hace falta ninguna clave nueva ni ningún SQL. Solo si la web **no** está en `aurevixweb.es`, añade en
    *Secrets* `BIBLIOTECA_URL` con la dirección donde esté publicada (por ejemplo `https://s0k1x.github.io/AUREVIXWEB/`).

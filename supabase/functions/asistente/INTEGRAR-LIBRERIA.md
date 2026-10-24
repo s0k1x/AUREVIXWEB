@@ -16,6 +16,10 @@
   es el que falta. **No se ha reconstruido ni sustituido**: hace falta el
   original.
 
+> **Desplegado el 24/10/2026 (versión 3 de la función):** `index.ts` y `libreria.ts` de esta carpeta, con
+> `verify_jwt` desactivado como antes. La versión 2 (la anterior) es el `index.ts` del commit `7654751`:
+> para volver a ella, pégala en `index.ts`, borra `libreria.ts` y pulsa **Deploy**.
+
 ## Qué cambia en esta versión (v31)
 
 `index.ts` = el desplegado **sin tocar `chat` ni `elegir`** + 4 líneas:
