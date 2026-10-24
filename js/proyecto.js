@@ -94,6 +94,10 @@ export function accionCliente(p, botonPagoHTML) {
       ${campo({ id: `redes-${id}`, name: 'redes', label: 'Redes sociales', hint: 'Instagram, Facebook, TikTok…', value: c.redes || '' })}
       ${campo({ id: `fotos-${id}`, name: 'fotos', label: 'Enlace a tus fotos (opcional)', type: 'url', hint: 'También puedes subirlas en la pestaña «Archivos»', value: c.fotos || '' })}
       ${campo({ id: `logo-${id}`, name: 'logo', label: 'Enlace al logotipo', type: 'url', hint: 'Si ya tienes uno', value: c.logo || '' })}
+      <details class="ac-mas"${MAS_CONTENIDO.some(([k]) => c[k]) ? ' open' : ''}>
+        <summary>${icono('sparkle')}<span><b>Más detalles para una web a tu medida</b><small>Opcional, pero cuanto más nos cuentes, mejor sale tu web (y antes)</small></span></summary>
+        <div class="ac-grid">${MAS_CONTENIDO.map(([k, label, hint, type]) => campo({ id: `${k}-${id}`, name: k, label, hint, type: type || 'textarea', value: c[k] || '' })).join('')}</div>
+      </details>
       <div class="ac-btns">
         <button class="btn btn-primary" type="submit"><span>Enviar contenido</span>${icono('arrow')}</button>
         <button class="btn btn-ghost" type="button" data-ir-pestana="archivos"><span>Subir fotos y logotipo</span>${icono('upload')}</button>
@@ -141,6 +145,22 @@ export function accionCliente(p, botonPagoHTML) {
   </div>`;
 }
 
+/* Preguntas extra del contenido (todas opcionales): lo que más mejora una web y casi nunca se cuenta */
+export const MAS_CONTENIDO = [
+  ['publico', '¿A quién te diriges?', 'Edad, zona, qué buscan, por qué te eligen'],
+  ['diferencia', '¿Qué te diferencia de la competencia?', 'Experiencia, especialidad, garantía, trato, precio…'],
+  ['accion', '¿Qué quieres que haga quien visita tu web?', 'Llamarte, escribirte por WhatsApp, reservar, comprar, pedir presupuesto…', 'text'],
+  ['contactoWeb', 'Teléfono, email y WhatsApp que se publican en la web', 'Pueden ser distintos de los del pedido', 'text'],
+  ['zona', 'Dirección exacta y zona donde trabajas', 'Calle, número, ciudad y si vas a domicilio o a qué zonas'],
+  ['opiniones', 'Opiniones reales de tus clientes', 'Copia algunas (con su nombre o inicial, y con su permiso) o el enlace a tus reseñas de Google'],
+  ['faq', 'Preguntas que te hacen siempre tus clientes', 'Y lo que les respondes: precios, plazos, formas de pago, aparcamiento…'],
+  ['referencias', 'Webs que te gustan (y por qué)', 'De tu sector o de cualquier otro'],
+  ['marca', 'Colores, tipografías o estilo de tu marca', 'Si ya los usas en tu local, cartelería o redes'],
+  ['tono', '¿Cómo quieres hablar a tus clientes?', 'De tú o de usted; cercano, elegante, divertido…', 'text'],
+  ['legal', 'Datos para el aviso legal', 'Nombre o razón social, NIF/CIF y dirección fiscal (obligatorios por ley)'],
+  ['otros', 'Algo más que debamos saber', 'Promociones, idiomas, certificados, premios, colaboraciones…']
+];
+
 /** Valida y devuelve los cambios a guardar para cada formulario del cliente */
 export function leerFormulario(form, p) {
   const f = new FormData(form);
@@ -150,7 +170,7 @@ export function leerFormulario(form, p) {
     return { dominio: { nombre: nombre + f.get('ext'), tipo: f.get('tipo'), t: Date.now() }, etapa: 'contenido' };
   }
   if (form.dataset.form === 'contenido') {
-    const c = Object.fromEntries(['sobre', 'servicios', 'horario', 'redes', 'fotos', 'logo'].map(k => [k, String(f.get(k) || '').trim()]));
+    const c = Object.fromEntries(['sobre', 'servicios', 'horario', 'redes', 'fotos', 'logo', ...MAS_CONTENIDO.map(([k]) => k)].map(k => [k, String(f.get(k) || '').trim().slice(0, 4000)]));
     if (!c.sobre && !c.servicios) throw new Error('Cuéntanos al menos algo sobre tu negocio o tus servicios.');
     return { contenido: { ...c, t: Date.now() }, etapa: 'diseno' };
   }
@@ -176,7 +196,7 @@ export function entregasCliente(p) {
     </div>
     <div class="ent">
       <div class="ent-h">${icono('folder')}<b>Contenido</b>${c ? `<small>${fecha(c.t)}</small>` : '<small>Pendiente</small>'}</div>
-      ${c ? `${bloque('Sobre el negocio', c.sobre)}${bloque('Servicios y precios', c.servicios)}${bloque('Horario y dirección', c.horario)}
+      ${c ? `${bloque('Sobre el negocio', c.sobre)}${bloque('Servicios y precios', c.servicios)}${bloque('Horario y dirección', c.horario)}${MAS_CONTENIDO.map(([k, label]) => bloque(label, c[k])).join('')}
         ${c.redes || c.fotos || c.logo ? `<div class="kvs">${kv('Redes', c.redes)}${kv('Fotos', c.fotos, true)}${kv('Logotipo', c.logo, true)}</div>` : ''}` : ''}
     </div>
     <div class="ent">

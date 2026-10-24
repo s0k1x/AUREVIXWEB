@@ -30,7 +30,11 @@ export async function reunir(p) {
     plan: { nombre: p.planNombre, incluye: plan?.incluye || [], descripcion: plan?.desc || '', plazo: plan?.entrega || '', urgente: !!p.urgente },
     extras: (p.extras || []).map(x => x.nombre + (x.mensual ? ' (mensual)' : '')),
     diseno: { base: pl ? `${pl.nombre} (${pl.sector})` : 'A medida', estilo: r.estilo, colorPrincipal: r.color, logo: r.logo },
-    contenido: { estadoSegunCuestionario: r.contenido, sobreElNegocio: c.sobre, serviciosYPrecios: c.servicios, horarioYDireccion: c.horario, redes: c.redes, enlaceFotos: c.fotos, enlaceLogo: c.logo },
+    contenido: {
+      estadoSegunCuestionario: r.contenido, sobreElNegocio: c.sobre, serviciosYPrecios: c.servicios, horarioYDireccion: c.horario, redes: c.redes, enlaceFotos: c.fotos, enlaceLogo: c.logo,
+      publicoObjetivo: c.publico, diferenciacion: c.diferencia, accionDeseada: c.accion, contactoPublico: c.contactoWeb, direccionYZona: c.zona,
+      opinionesReales: c.opiniones, preguntasFrecuentes: c.faq, websDeReferencia: c.referencias, marca: c.marca, tono: c.tono, datosLegales: c.legal, otros: c.otros
+    },
     dominio: p.dominio ? `${p.dominio.nombre} (${p.dominio.tipo === 'propio' ? 'ya es del cliente' : 'registrar nuevo'})` : '',
     comentariosDelCliente: r.comentarios,
     cambiosPedidos: (p.revision?.comentarios || []).map(x => x.texto),
@@ -65,6 +69,12 @@ function promptLocal(d) {
   linea('Sobre el negocio', pend(d.contenido.sobreElNegocio)); linea('Servicios y precios', pend(d.contenido.serviciosYPrecios));
   linea('Horario y dirección', d.contenido.horarioYDireccion); linea('Redes sociales', d.contenido.redes);
   linea('Fotos (enlace)', d.contenido.enlaceFotos); linea('Logotipo (enlace)', d.contenido.enlaceLogo);
+  linea('A quién se dirige', d.contenido.publicoObjetivo); linea('Qué le diferencia', d.contenido.diferenciacion);
+  linea('Acción que quiere en la web', d.contenido.accionDeseada); linea('Contacto que se publica', d.contenido.contactoPublico);
+  linea('Dirección y zona', d.contenido.direccionYZona); linea('Opiniones reales', d.contenido.opinionesReales);
+  linea('Preguntas frecuentes', d.contenido.preguntasFrecuentes); linea('Webs de referencia', d.contenido.websDeReferencia);
+  linea('Marca (colores, tipografías)', d.contenido.marca); linea('Tono', d.contenido.tono);
+  linea('Datos legales', d.contenido.datosLegales); linea('Otros', d.contenido.otros);
   lista('Archivos subidos por el cliente', d.archivosSubidos);
   if (limpio(d.dominio)) { add('\n## Dominio'); add(`- ${d.dominio}`); }
   if (limpio(d.comentariosDelCliente)) { add('\n## Lo que pidió el cliente con sus palabras'); add(limpio(d.comentariosDelCliente)); }

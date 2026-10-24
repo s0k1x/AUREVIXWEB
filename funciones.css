@@ -1186,3 +1186,10 @@ button.gw-ico.ya{opacity:.45;cursor:default}
 .gw-bloqueo svg{width:16px;height:16px;color:var(--warn);flex:none}
 .gw-bloqueo span{flex:1;min-width:200px}
 .gw-inf-ico small{word-break:break-word}
+
+/* v33 · Preguntas para el cliente (generador) */
+.gw-preg{margin:0 0 10px;padding-left:22px;display:grid;gap:8px}
+.gw-preg li{padding-left:2px}
+.gw-preg b{display:block;font-weight:600;font-size:14.5px}
+.gw-preg small{display:block;color:var(--muted);font-size:12.5px;line-height:1.4}
+h4 small.muted{font-weight:400;font-size:12px;text-transform:none;letter-spacing:0}
