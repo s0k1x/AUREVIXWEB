@@ -269,3 +269,11 @@ No hace falta ejecutar ningún SQL nuevo.
 Cada paso es una llamada separada y la respuesta llega en directo, pero en el plan gratuito de Supabase una función
 puede durar como mucho 150 s (400 s en el de pago). Si un paso se corta, pulsa **Reintentar**; si pasa a menudo,
 quita algún archivo grande o desactiva la revisión automática (puedes lanzarla luego con «Revisar otra vez»).
+
+## 20. Versión v28 — animaciones suaves y zona de la hora en Safari
+- **Animaciones suaves en toda la web**: menús de la cabecera y de navegación (aparecen deslizándose y sus filas entran una a una),
+  ventanas (fondo que se funde y caja que sube; en el móvil, hoja desde abajo), desplegables propios, botones, tarjetas, campos y
+  contenido que cambia. Una sola curva y tiempos cortos. Se apagan solas con «Reducir movimiento» (Ajustes → Apariencia o el ajuste del móvil).
+- **Safari (no la app instalada)**: la web ya no se mete por detrás de la hora, así que la cabecera queda pegada arriba sin hueco.
+  En la app instalada sigue ocupando toda la pantalla como antes.
+- Service worker v28. Sube el zip a GitHub y recarga con la caché limpia.

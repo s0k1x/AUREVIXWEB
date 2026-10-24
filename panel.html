@@ -4,7 +4,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta id="vp" name="viewport" content="width=device-width, initial-scale=1">
+  <script>/* La zona de la hora solo se usa como parte de la web dentro de la app instalada; en Safari queda limpia */try{if(navigator.standalone||matchMedia('(display-mode: standalone)').matches)document.getElementById('vp').content+=', viewport-fit=cover'}catch(e){}</script>
   <title>Panel · AurevixWeb</title>
   <meta name="robots" content="noindex">
   <link rel="manifest" href="manifest.json">

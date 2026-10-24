@@ -1045,3 +1045,73 @@ dialog.dlg-web .web-v{width:100%;height:100%;max-width:1200px;max-height:100%;ma
 .web-v-f p{margin:0;font-size:13.5px;color:var(--muted)}
 @media (min-width:641px){dialog.dlg-web{padding:24px}}
 @media (max-width:640px){dialog.dlg-web .web-v{border-radius:0;border:0}.web-v-f .btn{flex:none}}
+
+/* ==========================================================
+   v28 · Animaciones suaves en toda la web
+   Una sola curva y tiempos cortos; todo se apaga con «reducir movimiento».
+   ========================================================== */
+:root{--suave:cubic-bezier(.22,.8,.24,1);--t-rapido:.16s;--t-medio:.26s}
+
+/* Botones, enlaces, tarjetas y campos: cambios de color y tamaño sin saltos */
+.btn,.tabs button,.chip,.filtros button,.user-menu a,.user-menu button,.av-menu a,.av-menu button,.menu-btn,.nav a,
+.dd-op,.pill,.card,.plan,.tarjeta,.brand-card,.od-ia,.aj-nav a,.aj-nav button{transition:background-color var(--t-medio) var(--suave),border-color var(--t-medio) var(--suave),color var(--t-medio) var(--suave),box-shadow var(--t-medio) var(--suave),transform var(--t-rapido) var(--suave),opacity var(--t-medio) var(--suave)}
+.field input,.field select,.field textarea,.fc-select select{transition:border-color var(--t-medio) var(--suave),box-shadow var(--t-medio) var(--suave),background-color var(--t-medio) var(--suave)}
+.btn:active,.tabs button:active,.chip:active,.menu-btn:active,.dd-op:active{transform:scale(.97)}
+@media (hover:hover){
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(200,245,96,.22)}
+  .btn-primary:active{transform:scale(.97)}
+  .plan:hover,.tarjeta:hover,.brand-card:hover{transform:translateY(-3px)}
+}
+
+/* Menús de la cabecera: aparecen deslizándose y sus filas entran una a una */
+.user-menu,.av-menu{transform:translateY(-8px) scale(.98);transform-origin:top right;transition:opacity .2s var(--suave),transform .26s var(--suave),visibility .2s}
+.user-menu.open,.av-menu.open{transform:none}
+.user-menu.open > *,.av-menu.open .av-list > *{animation:menuFila .3s var(--suave) both}
+.user-menu.open > *:nth-child(2){animation-delay:.03s}.user-menu.open > *:nth-child(3){animation-delay:.06s}
+.user-menu.open > *:nth-child(4){animation-delay:.09s}.user-menu.open > *:nth-child(5){animation-delay:.12s}
+.user-menu.open > *:nth-child(6){animation-delay:.15s}.user-menu.open > *:nth-child(7){animation-delay:.18s}
+.av-menu.open .av-list > *:nth-child(2){animation-delay:.03s}.av-menu.open .av-list > *:nth-child(3){animation-delay:.06s}
+.av-menu.open .av-list > *:nth-child(4){animation-delay:.09s}.av-menu.open .av-list > *:nth-child(5){animation-delay:.12s}
+.av-menu.open .av-list > *:nth-child(n+6){animation-delay:.15s}
+@keyframes menuFila{from{opacity:0;transform:translateY(6px)}}
+.menu-velo{transition:opacity .28s var(--suave),visibility .28s}
+
+/* Menú de navegación del móvil */
+@media (max-width:900px){
+  .nav a{transition:background-color var(--t-medio) var(--suave),color var(--t-medio) var(--suave),opacity .3s var(--suave),transform .3s var(--suave)}
+  .header:not(.open) .nav a{opacity:0;transform:translateY(-6px)}
+  .header.open .nav a{opacity:1;transform:none}
+  .header.open .nav a:nth-child(2){transition-delay:.03s}.header.open .nav a:nth-child(3){transition-delay:.06s}
+  .header.open .nav a:nth-child(4){transition-delay:.09s}.header.open .nav a:nth-child(5){transition-delay:.12s}
+  .header.open .nav a:nth-child(n+6){transition-delay:.15s}
+}
+.menu-btn span{transition:transform .3s var(--suave),opacity .2s var(--suave)}
+
+/* Ventanas: el fondo se funde y la caja sube con suavidad (hoja desde abajo en el móvil) */
+dialog.dlg[open]{animation:dlgFondo .24s var(--suave)}
+dialog.dlg[open]::backdrop{animation:dlgFondo .24s var(--suave)}
+.dlg-box{animation:dlgCaja .34s var(--suave)}
+@keyframes dlgFondo{from{opacity:0}}
+@keyframes dlgCaja{from{opacity:0;transform:translateY(18px) scale(.985)}}
+@media (max-width:640px){.dlg-box{animation:dlgHoja .38s var(--suave)}@keyframes dlgHoja{from{opacity:.6;transform:translateY(60px)}}}
+
+/* Menús desplegables propios y avisos */
+dialog.dd .dd-caja{animation-timing-function:var(--suave)}
+dialog.dd.saliendo .dd-caja{opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s}
+dialog.dd-hoja.saliendo .dd-caja{transform:translateY(100%);opacity:1;transition:transform .16s ease-in}
+.toast{transition:opacity .32s var(--suave),transform .4s var(--suave)}
+
+/* Contenido que cambia (pestañas, pasos, listas): entra con un fundido corto */
+.tabpanel,.tab-contenido,[role=tabpanel],.od-body > *,.panel-vista > *{animation:vistaIn .32s var(--suave) both}
+@keyframes vistaIn{from{opacity:0;transform:translateY(8px)}}
+.lista-anim > *{animation:vistaIn .34s var(--suave) both}
+.lista-anim > *:nth-child(2){animation-delay:.03s}.lista-anim > *:nth-child(3){animation-delay:.06s}
+.lista-anim > *:nth-child(4){animation-delay:.09s}.lista-anim > *:nth-child(n+5){animation-delay:.12s}
+
+/* Desplazamiento suave al ir a un apartado (sin tapar con la cabecera) */
+html{scroll-behavior:smooth}
+section[id],[id].ancla{scroll-margin-top:84px}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+}

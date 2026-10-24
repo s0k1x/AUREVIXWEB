@@ -7,7 +7,7 @@
    - Fotos de los diseños: se guardan la primera vez y después
      salen al instante.
    ========================================================== */
-const VERSION = 'v27';
+const VERSION = 'v28';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
