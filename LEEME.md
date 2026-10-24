@@ -333,7 +333,7 @@ Los cambios están en GitHub en la rama `claude/download-ui-libraries-yktubi` (n
    publican los 62.000 archivos de `biblioteca-ui/` (unos 200 MB, por debajo del límite de 1 GB): la publicación tarda más que antes.
 2. En GitHub → *Actions*, espera a que «pages build and deployment» salga en verde. Abre `https://aurevixweb.es/library` y recarga con la
    caché limpia (el service worker pasa a v31).
-3. **Supabase (cuando lo decidas):** sigue `supabase/functions/asistente/INTEGRAR-LIBRERIA.md`. Resumen: copia de seguridad del código
+3. **Supabase — hecho el 24/10/2026 (versión 3 de la función, con tu autorización).** Para repetirlo o revisarlo: sigue `supabase/functions/asistente/INTEGRAR-LIBRERIA.md`. Resumen: copia de seguridad del código
    desplegado → añade `libreria.ts` → sustituye `index.ts` por el de GitHub (es el desplegado **más** `web-recursos`; el chat y «Te ayudo a
    elegir» no cambian) → *Deploy*. No hace falta ninguna clave nueva ni ningún SQL. Solo si la web **no** está en `aurevixweb.es`, añade en
    *Secrets* `BIBLIOTECA_URL` con la dirección donde esté publicada (por ejemplo `https://s0k1x.github.io/AUREVIXWEB/`).
@@ -431,3 +431,34 @@ con tamaño y color del CSS) → retoque que añade otro icono → `.zip` con la
 SVG de cada uno de los 19 sets y de un SVG malicioso, y la parte de la función (ids inventados o con rutas raras, máximo 24, «uso» sin
 etiquetas, índice de iconos caído).
 **No probado:** con Gemini real (si obedece siempre los marcadores; si no lo hace, los iconos inventados se quitan igualmente).
+
+## 23. Versión v32 — crear la web con IA funcionando, precio del paso 3 y tema claro
+
+- **Crear la web con IA y Mega prompt con IA ya funcionan** (antes fallaban con «Petición incompleta» porque la
+  función desplegada solo tenía el chat). Son instrucciones nuevas en `supabase/functions/asistente/web.ts`
+  (la versión v23/v26 no se conservó). Solo el equipo puede usarlos.
+  - **Modelo:** de momento el mismo del chat, `gemini-3.5-flash-lite` (básico y barato). Para usar uno mejor sin
+    tocar código: Supabase → *Edge Functions → Secrets* → añade `GEMINI_MODEL_WEB` con el nombre del modelo
+    (por ejemplo `gemini-3.8-flash`) y guarda; no hace falta volver a desplegar.
+  - Si un modelo no acepta algún ajuste, la función repite la petición una vez con una configuración más sencilla.
+  - El chat y «Te ayudo a elegir» no cambian (mismas instrucciones y mismos ajustes que antes).
+- **Paso 3 del pedido (Estilo):** «No, necesito uno» (logotipo) y «Necesito ayuda» (textos) suman su extra y,
+  si cambias de opción, ahora se quita y el precio baja. Si el cliente marcó el extra él mismo en «Extras», se respeta.
+  Un aviso dice qué se ha añadido o quitado. El estilo y el color no cambian el precio.
+- **Tema claro:** la nota «Para empezar pagas la señal…» del resumen ya se lee (antes, verde claro sobre verde claro).
+  Comprobado el contraste de todos los textos de la portada y de los 6 pasos del pedido en tema claro y oscuro.
+- **Librería, vistas previas a prueba de toques:** muchos componentes son enlaces (`<a href="/">`, `<a href="#">`) o
+  formularios; al tocarlos, la vista previa abría la web dentro de la tarjeta o un «404 File not found». Ahora sus
+  enlaces y formularios no navegan (los «#id» solo desplazan) y, si un script intenta cambiar de página, la vista se
+  restaura sola y, si insiste, muestra «Este componente intenta abrir otra página». Se han probado **todas** las vistas
+  previas pulsando cada enlace, botón y formulario: antes fallaban 367 de los 711 componentes que pueden navegar.
+- **5 plantillas de Preline** (ai-chat-interface, cms-admin, coffee-shop, digital-agency, personal-portfolio) saltan nada más
+  abrirse a un archivo `index-preview.html` que no está en su repositorio: ahora se enseñan como código (sin vista previa
+  rota). `scripts/generar-indice.mjs` lo detecta solo si vuelve a pasar.
+- **Probado (simulado):**
+  - modos nuevos 29/29: solo el equipo, peticiones incompletas, plan con fotos, web con iconos, revisión, retoques,
+    reintento y Gemini caído;
+  - chat y «Te ayudo a elegir» idénticos a la versión anterior;
+  - precio del paso 3: 7/7;
+  - contraste en los dos temas.
+- **No probado:** con Gemini real (calidad del resultado con el modelo básico).

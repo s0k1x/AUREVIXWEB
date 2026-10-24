@@ -334,6 +334,7 @@ async function montar(caja) {
     ifr.setAttribute('loading', 'lazy');
     ifr.setAttribute('tabindex', '-1');
     ifr.srcdoc = doc;
+    N.vigilarNavegacion(ifr, doc);
     ifr.addEventListener('load', () => caja.querySelector('.lb-sk')?.remove(), { once: true });
     caja.appendChild(ifr);
     marcos.set(id, { ifr, caja });
@@ -548,7 +549,9 @@ async function vistaPanel(c) {
     const ifr = document.createElement('iframe');
     ifr.title = `Vista previa de ${c.n}`;
     ifr.setAttribute('sandbox', 'allow-scripts');
-    ifr.srcdoc = await N.docVista(c, { id, fondo: fondoPanel === 'puntos' ? '' : fondoPanel });
+    const doc = await N.docVista(c, { id, fondo: fondoPanel === 'puntos' ? '' : fondoPanel });
+    ifr.srcdoc = doc;
+    N.vigilarNavegacion(ifr, doc);
     ifr.addEventListener('load', () => $('.lb-sk', caja)?.remove(), { once: true });
     caja.appendChild(ifr);
     marcos.set(id, { ifr, caja });

@@ -438,6 +438,8 @@ function guardarBorrador() {
   }, 300);
 }
 function restaurarBorrador(b) {
+  const v = k => ([].concat(b.campos[k] || []))[0];
+  const marcado = id => [].concat(b.campos.extra || []).includes(id);
   $$('input[name], select[name], textarea[name]', form).forEach(el => {
     const v = b.campos[el.name];
     if (v === undefined) { if (el.type === 'radio' || el.type === 'checkbox') el.checked = false; return; }
@@ -446,6 +448,7 @@ function restaurarBorrador(b) {
   });
   W.colorCustom = b.colorCustom || '';
   W.plantilla = b.plantilla || W.plantilla;
+  W.auto = { logo: v('logo') === 'No, necesito uno' && marcado('logo'), textos: v('contenido') === 'Necesito ayuda' && marcado('textos') };
   W.max = b.max || 0;
 }
 
@@ -570,9 +573,24 @@ form.addEventListener('change', e => {
   if (!W) return;
   if (e.target.name === 'color') W.colorCustom = '';
   if (e.target.name === 'plantilla') W.plantilla = e.target.value;
-  const marcarExtra = id => { const x = form.querySelector(`input[name=extra][value=${id}]`); if (x) x.checked = true; };
-  if (e.target.name === 'logo' && e.target.value === 'No, necesito uno') marcarExtra('logo');
-  if (e.target.name === 'contenido' && e.target.value === 'Necesito ayuda') marcarExtra('textos');
+  // «Necesito un logo» y «Necesito ayuda con los textos» añaden su extra; si se cambia de opción, se quita
+  // (solo si lo añadió esta respuesta: si el cliente lo marcó él mismo en Extras, se respeta)
+  const enlazarExtra = (campo, valor, id) => {
+    if (e.target.name !== campo) return;
+    const x = form.querySelector(`input[name=extra][value=${id}]`);
+    if (!x) return;
+    const nombre = EXTRAS.find(z => z.id === id);
+    if (e.target.value === valor) {
+      if (!x.checked) { x.checked = true; W.auto[id] = true; if (nombre) toast(`Añadido «${nombre.nombre}» (+${euros(nombre.precio)})`, 'ok'); }
+    } else if (W.auto[id] && x.checked) {
+      x.checked = false; W.auto[id] = false;
+      if (nombre) toast(`Quitado «${nombre.nombre}»`, 'ok');
+    }
+  };
+  W.auto ??= {};
+  if (e.target.name === 'extra') W.auto[e.target.value] = false;
+  enlazarExtra('logo', 'No, necesito uno', 'logo');
+  enlazarExtra('contenido', 'Necesito ayuda', 'textos');
   actualizarTotal();
   guardarBorrador();
 });
@@ -701,7 +719,7 @@ function pintarResumen() {
       <div class="cupon">
         ${W.cupon
           ? `<p class="cupon-ok">${icono('tag')} Cupón <b>${esc(W.cupon.codigo)}</b> aplicado <button type="button" class="link-btn" id="cuponQuitar">Quitar</button></p>`
-          : `${bienvenidaOK() ? `<button type="button" class="cupon-bv" id="cuponBv">${icono('gift')}<span><b>¿Es tu primera web? −${CONFIG.bienvenida.pct} %</b><small>Aplica el código ${esc(CONFIG.bienvenida.codigo)}</small></span><i>Aplicar</i></button>` : ''}<details><summary>${icono('tag')} ¿Tienes un código de descuento?</summary><div class="cupon-fila"><input id="cuponIn" maxlength="30" placeholder="CÓDIGO" autocomplete="off" aria-label="Código de descuento"><button type="button" class="btn btn-sm btn-ghost" id="cuponOk">Aplicar</button></div></details>`}
+          : `${bienvenidaOK() ? `<button type="button" class="cupon-bv" id="cuponBv">${icono('gift')}<span><b>¿Es tu primera web? <span class="nw">−${CONFIG.bienvenida.pct}&nbsp;%</span></b><small>Aplica el código ${esc(CONFIG.bienvenida.codigo)}</small></span><i>Aplicar</i></button>` : ''}<details><summary>${icono('tag')} ¿Tienes un código de descuento?</summary><div class="cupon-fila"><input id="cuponIn" maxlength="30" placeholder="CÓDIGO" autocomplete="off" aria-label="Código de descuento"><button type="button" class="btn btn-sm btn-ghost" id="cuponOk">Aplicar</button></div></details>`}
       </div>
       <div class="rs-row"><span>Entrega prevista</span><b>${esc(W.plan.entrega)}${d.urgente ? ' (urgente: antes)' : ''}</b></div>
       ${d.mensual ? `<div class="rs-row"><span>Cuota mensual</span><b>${euros(d.mensual)}/mes</b></div>` : ''}

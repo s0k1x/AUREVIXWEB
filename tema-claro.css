@@ -85,6 +85,7 @@ html[data-tema=claro] .plan-card.popular.foco::before{background:radial-gradient
 }
 html[data-tema=claro] .toast.ok .t-ic{background:#d8eeac;color:#2e4f0a}
 /* --- inicio.css --- */
+html[data-tema=claro] .rs-note{color:#2f4f08}
 html[data-tema=claro] .hero::before{background:radial-gradient(circle,rgba(79,133,12,.15),transparent 65%)}
 html[data-tema=claro] .status{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .popular .pc-ic{background:rgba(246,245,240,.1)}
