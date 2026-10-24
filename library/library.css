@@ -269,3 +269,6 @@ img,svg,a{-webkit-user-drag:none}
 input,textarea,select{touch-action:manipulation}
 /* iOS hace zoom al enfocar un campo con letra menor de 16 px */
 @media (pointer:coarse){input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),textarea,select{font-size:16px!important}}
+
+/* Zona de la hora (iPhone): una pieza fija con el color de la web la tapa siempre, haya o no cabecera a la vista */
+@media (max-width:900px){body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:var(--bg);z-index:49;pointer-events:none}}
