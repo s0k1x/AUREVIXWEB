@@ -184,6 +184,8 @@ function filaPedido(p, { coger = false } = {}) {
 
 /* ---------- PROPIETARIO: Resumen ---------- */
 const cobradoDe = p => (p.pagoEstado === 'pagado' ? p.total || 0 : p.pagoEstado === 'senal' ? (p.total || 0) * CONFIG.senal / 100 : 0);
+// Gráfico de meses: importes cortos para que quepan en la columna (2050,50 € → 2,1 k€)
+const eurosCorto = n => n >= 1000 ? (n / 1000).toLocaleString('es-ES', { maximumFractionDigits: 1 }) + ' k€' : euros(Math.round(n));
 function ultimosMeses(n = 6) {
   const hoy = new Date();
   return Array.from({ length: n }, (_, k) => {
@@ -228,17 +230,17 @@ function resumen() {
       ${kpi('Pagos por verificar', P.filter(p => p.pagoEstado === 'verificando').length, 'revisa Bizum / banco', 'pedidos')}
       ${kpi('Retrasados', tarde.length, 'pasada la fecha de entrega', 'agenda', tarde.length ? 'mal' : '')}
       ${kpi('Consultas sin responder', abiertas.length, 'soporte y contacto', 'soporte', abiertas.length ? 'aviso' : '')}
-      ${kpi('Ticket medio', euros(ticketMedio), `${vivos.length} pedidos`)}
+      ${kpi('Ticket medio', euros(ticketMedio), `${vivos.length} pedido${vivos.length === 1 ? '' : 's'}`)}
       ${kpi('Mensualidades', euros(mensual) + '<small>/mes</small>', 'webs publicadas con mantenimiento')}
-      ${kpi('Valoración', pub.length ? media.toFixed(1).replace('.', ',') + ' / 5' : '—', `${pub.length} publicadas`, 'resenas')}
-      ${kpi('Comisiones por pagar', euros(trabajadores().reduce((s, w) => s + porPagar(w.uid).reduce((a, p) => a + comision(p), 0), 0)), `${trabajadores().length} vendedores`, 'equipo')}
+      ${kpi('Valoración', pub.length ? media.toFixed(1).replace('.', ',') + ' / 5' : '—', `${pub.length} publicada${pub.length === 1 ? '' : 's'}`, 'resenas')}
+      ${kpi('Comisiones por pagar', euros(trabajadores().reduce((s, w) => s + porPagar(w.uid).reduce((a, p) => a + comision(p), 0), 0)), `${trabajadores().length} vendedor${trabajadores().length === 1 ? '' : 'es'}`, 'equipo')}
     </div>
     <div class="cols">
       <div class="card">
         <div class="card-h"><h3>Ingresos por mes</h3><span class="muted leyenda"><i class="lg-a"></i>Vendido <i class="lg-b"></i>Cobrado</span></div>
-        <div class="meses">${meses.map(m => `<div class="mes" title="${m.n} pedidos · ${euros(m.total)} vendido · ${euros(m.cobrado)} cobrado">
+        <div class="meses">${meses.map(m => `<div class="mes" title="${m.n} pedido${m.n === 1 ? '' : 's'} · ${euros(m.total)} vendido · ${euros(m.cobrado)} cobrado">
           <div class="mes-barras"><i class="a" style="--h:${(m.total / maxMes) * 100}%"></i><i class="b" style="--h:${(m.cobrado / maxMes) * 100}%"></i></div>
-          <b>${m.total ? euros(m.total) : '—'}</b><small>${m.txt}</small></div>`).join('')}</div>
+          <b>${m.total ? eurosCorto(m.total) : '—'}</b><small>${m.txt}</small></div>`).join('')}</div>
         <div class="card-h" style="margin-top:26px"><h3>Últimos pedidos</h3><button class="link-btn" data-go="pedidos">Ver todos</button></div>
         <div class="rows">${P.slice(0, 5).map(p => filaPedido(p)).join('') || vacio('inbox', 'Aún no hay pedidos')}</div>
       </div>
@@ -360,7 +362,7 @@ function exportarCSV(lista) {
   a.download = `pedidos-${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  toast(`${lista.length} pedidos exportados`, 'ok');
+  toast(`${lista.length} pedido${lista.length === 1 ? '' : 's'} exportado${lista.length === 1 ? '' : 's'}`, 'ok');
 }
 
 /* Atajo: pulsa «/» para buscar */
@@ -729,7 +731,7 @@ function clientes() {
   $('#csvCli').addEventListener('click', () => {
     const filas = [['Nombre', 'Email', 'Teléfono', 'Proyectos', 'Total', 'Cobrado'], ...todos.map(c => [c.nombre, c.email, c.tel, c.pedidos.length, String(c.total).replace('.', ','), String(c.pagado).replace('.', ',')])];
     descargar(`clientes-${new Date().toISOString().slice(0, 10)}.csv`, '﻿' + filas.map(f => f.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(';')).join('\r\n'), 'text/csv;charset=utf-8');
-    toast(`${todos.length} clientes exportados`, 'ok');
+    toast(`${todos.length} cliente${todos.length === 1 ? '' : 's'} exportado${todos.length === 1 ? '' : 's'}`, 'ok');
   });
 }
 

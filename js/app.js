@@ -190,7 +190,7 @@ $('#disenosGrid').innerHTML = PLANTILLAS.map(p => `
   <article class="dz reveal" data-ver="${p.id}" data-grupo="${GRUPO[p.id] || 'local'}" tabindex="0" role="button" aria-label="Ver diseño ${esc(p.nombre)}" style="--c:${p.c.accent}">
     <div class="dz-win">
       <div class="dz-bar"><i></i><i></i><i></i><span>${esc(p.dominio)}</span></div>
-      <div class="dz-view"><div class="thumb-load">${spinner()}</div><iframe src="${urlPlantilla(p.id, '', '', true)}" loading="lazy" tabindex="-1" aria-hidden="true" title=""></iframe></div>
+      <div class="dz-view" style="background:${p.c.bg}"><div class="thumb-load">${spinner()}</div><iframe src="${urlPlantilla(p.id, '', '', true)}" width="1280" height="2600" loading="lazy" tabindex="-1" aria-hidden="true" title=""></iframe></div>
       <span class="dz-scroll" aria-hidden="true">${icono('move')} recorre la web</span>
     </div>
     <div class="dz-info">
@@ -200,18 +200,31 @@ $('#disenosGrid').innerHTML = PLANTILLAS.map(p => `
     <p>${esc(p.desc)}</p>
     <div class="dz-cta"><span>Ver en vivo</span>${icono('arrow')}</div>
   </article>`).join('');
-// Escala de cada ventana y distancia que recorre al hacer "scroll" automático
-const roDz = new ResizeObserver(es => es.forEach(({ target: v }) => {
+/* Escala de cada ventana y «scroll» automático. El transform se escribe directamente en el iframe:
+   Safari (iPhone) no siempre vuelve a aplicar un transform que depende de variables CSS que cambian,
+   y la web se quedaba pequeña con un hueco blanco. */
+function colocarDz(card, animar = true) {
+  const v = card.querySelector('.dz-view'), ifr = v?.querySelector('iframe');
+  if (!ifr || !v.clientWidth) return;
   const s = v.clientWidth / 1280;
-  v.style.setProperty('--s', s);
-  v.style.setProperty('--d', `${-(2600 * s - v.clientHeight)}px`);
-}));
+  const d = card.classList.contains('recorre') ? Math.min(0, -(2600 * s - v.clientHeight)) : 0;
+  // Al cambiar de tamaño la escala se aplica al momento; solo se anima el recorrido
+  if (!animar) ifr.style.transition = 'none';
+  ifr.style.transform = `translateY(${d.toFixed(1)}px) scale(${s.toFixed(5)})`;
+  if (!animar) { void ifr.offsetWidth; ifr.style.transition = ''; }
+}
+const roDz = new ResizeObserver(es => es.forEach(({ target: v }) => colocarDz(v.closest('.dz'), false)));
 $$('#disenosGrid .dz-view').forEach(v => roDz.observe(v));
-// En el móvil (sin ratón) la web se recorre sola cuando la tarjeta está en el centro de la pantalla
-if (!matchMedia('(hover: hover)').matches) {
-  const ioDz = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('recorre', e.isIntersecting)), { rootMargin: '-35% 0px -35% 0px' });
+const recorrer = (card, si) => { card.classList.toggle('recorre', si); colocarDz(card); };
+if (matchMedia('(hover: hover)').matches) {
+  $$('#disenosGrid .dz').forEach(c => { c.addEventListener('mouseenter', () => recorrer(c, true)); c.addEventListener('mouseleave', () => recorrer(c, false)); });
+} else {
+  // En el móvil (sin ratón) la web se recorre sola cuando la tarjeta está en el centro de la pantalla
+  const ioDz = new IntersectionObserver(es => es.forEach(e => recorrer(e.target, e.isIntersecting)), { rootMargin: '-35% 0px -35% 0px' });
   $$('#disenosGrid .dz').forEach(c => ioDz.observe(c));
 }
+// Al volver a la pestaña o girar el móvil, se recoloca todo
+addEventListener('pageshow', () => $$('#disenosGrid .dz').forEach(c => colocarDz(c, false)));
 
 /* ==========================================================
    OPINIONES
