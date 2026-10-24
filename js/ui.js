@@ -255,9 +255,18 @@ export function pintarCabecera(activa = '') {
     $('.user-menu')?.classList.remove('open');
   });
   $$('#nav a').forEach(a => a.addEventListener('click', cerrarMenu));
-  const onScroll = () => h.classList.toggle('scrolled', scrollY > 8);
+  // Safari del iPhone: a veces la cabecera se queda pegada unos píxeles más abajo que el borde
+  // de la pantalla y la web se ve por detrás de la hora. Se mide ese hueco y se tapa con el color de la cabecera.
+  let hueco = 0;
+  const medirHueco = () => {
+    if (scrollY < 4) return;
+    const t = Math.round(h.getBoundingClientRect().top);
+    if (t >= 0 && t < 120 && t !== hueco) { hueco = t; document.documentElement.style.setProperty('--hueco', t + 'px'); }
+  };
+  const onScroll = () => { h.classList.toggle('scrolled', scrollY > 8); medirHueco(); };
   onScroll();
   addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', () => { hueco = -1; medirHueco(); });
   store.alCambiarUsuario(pintarSesion);
   document.title = document.title.replace(/AurevixWeb/g, CONFIG.marca);
   $$('[data-marca]').forEach(el => (el.innerHTML = marcaHTML()));
