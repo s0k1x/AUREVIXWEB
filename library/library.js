@@ -644,7 +644,7 @@ async function abrirSeleccion() {
     <p class="muted" style="margin-top:6px;font-size:14px">Estos componentes e iconos aparecen en «Componentes sugeridos» del generador (ficha del pedido → Crear la web con IA). Los elegidos a mano se envían siempre a la IA: no se recortan por el límite de candidatos.</p>
     ${l.length ? `<ul class="lb-sel-l">${l.map(x => { const c = datos.get(x.id); return `<li><span>${esc(c ? nombreDe(c) : x.id)}<small>${esc(c ? `${c.lib.nombre} · ${c.lib.spdx}` : 'Ya no está en el índice')}</small></span><button type="button" class="lb-ic-btn" data-quitar="${esc(x.id)}" aria-label="Quitar">${icono('trash')}</button></li>`; }).join('')}</ul>`
       : '<p class="lb-estado" style="margin:16px 0">Todavía no has elegido ninguno. Abre un componente o un icono y pulsa «Usar en mi pedido».</p>'}
-    <div style="display:flex;gap:8px;flex-wrap:wrap">${l.length ? `<button type="button" class="btn btn-sm btn-ghost" id="lbVaciar">${icono('trash')}<span>Vaciar</span></button>` : ''}<a class="btn btn-sm btn-primary" href="../panel.html">${icono('panel')}<span>Ir al panel</span></a></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">${l.length ? `<button type="button" class="btn btn-sm btn-ghost" id="lbVaciar">${icono('trash')}<span>Vaciar</span></button>` : ''}<a class="btn btn-sm btn-primary" href="../panel">${icono('panel')}<span>Ir al panel</span></a></div>
   </div>`;
   if (!dlg.open) { dlg.showModal(); document.documentElement.classList.add('no-scroll'); }
   $('[data-cerrar]', dlg).addEventListener('click', () => dlg.close());
@@ -785,9 +785,9 @@ function pintarPie() {
     </div></div>
     <div class="wrap footer-inner">
       <div class="footer-links">
-        <a href="../index.html#webs">Precios</a><a href="../index.html#disenos">Diseños</a><a href="./">Librería</a>
-        <a href="../trabaja.html">Trabaja con nosotros</a><a href="../index.html#contacto">Contacto</a>
-        <a href="../biblioteca-ui/LICENSE-TERCEROS.md">Licencias de terceros</a><a href="../terminos.html">Términos y privacidad</a>
+        <a href="../#webs">Precios</a><a href="../#disenos">Diseños</a><a href="./">Librería</a>
+        <a href="../trabaja-con-nosotros">Trabaja con nosotros</a><a href="../#contacto">Contacto</a>
+        <a href="../biblioteca-ui/LICENSE-TERCEROS.md">Licencias de terceros</a><a href="../terminos-y-privacidad">Términos y privacidad</a>
       </div>
       <p class="copy">© ${new Date().getFullYear()} AurevixWeb. El diseño y el código de esta página son de AurevixWeb.<small>Los componentes de la librería son de sus autores y se rigen por la licencia original de cada biblioteca, que se muestra en cada uno. Colección privada de consulta: no se indexa en buscadores.</small></p>
     </div>`;

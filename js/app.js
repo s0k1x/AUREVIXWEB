@@ -38,7 +38,7 @@ const urlPlantilla = (id, nombre = '', color = '', mini = false) => {
   if (nombre) q.set('n', nombre);
   if (color) q.set('c', color);
   if (mini) q.set('m', '1'); // miniatura: sin animaciones de scroll
-  return `plantilla.html?${q}`;
+  return `diseno?${q}`;
 };
 const ro = new ResizeObserver(es => es.forEach(en => en.target.style.setProperty('--s', en.contentRect.width / 1280)));
 const miniatura = (id, nombre, color, lazy = true) =>
@@ -901,7 +901,7 @@ function pestanaHTML(p) {
       ${p.descuento ? `<p class="ac-nota">${icono('tag')} Cupón ${esc(p.cupon || '')}: −${euros(p.descuento)} ya descontados del total.</p>` : ''}
       <div class="pg-pie"><div class="mp-pay">${botonPago(p)}</div>
         <button type="button" class="btn btn-sm btn-ghost" data-recibo="${p.id}" data-fase="">${icono('printer')}<span>Resumen del pedido</span></button></div>
-      <p class="ac-nota">${icono('file')} ¿Necesitas factura a nombre de tu empresa? Añade tus datos fiscales en <a class="link-btn" href="ajustes.html#facturacion">Ajustes → Facturación</a>.</p>
+      <p class="ac-nota">${icono('file')} ¿Necesitas factura a nombre de tu empresa? Añade tus datos fiscales en <a class="link-btn" href="ajustes#facturacion">Ajustes → Facturación</a>.</p>
     </div>`;
   }
   return `<div class="mp-cuerpo">
@@ -1106,7 +1106,7 @@ function pintarContacto() {
     ${campo({ id: 'ctAsunto', name: 'asunto', label: 'Asunto', required: true, attrs: 'maxlength="120"' })}
     ${campo({ id: 'ctMsg', name: 'mensaje', label: 'Cuéntanos tu proyecto o tu duda', type: 'textarea', required: true, attrs: 'maxlength="3000"' })}
     <input type="text" name="web" tabindex="-1" autocomplete="off" class="trampa" aria-hidden="true">
-    ${aceptarTerminos('ctTerms', 'He leído y acepto la <a href="terminos.html#privacidad" target="_blank">política de privacidad</a>')}
+    ${aceptarTerminos('ctTerms', 'He leído y acepto la <a href="terminos-y-privacidad#privacidad" target="_blank">política de privacidad</a>')}
     <div class="ct-btns"><button class="btn btn-primary" type="submit"><span>Enviar mensaje</span>${icono('send')}</button>
     <a class="btn btn-ghost" id="ctCorreo" href="${mailLink('Consulta desde la web')}">${icono('mail')}<span>Abrir mi correo</span></a></div>
     <p class="form-err" id="ctErr" role="alert"></p>`;

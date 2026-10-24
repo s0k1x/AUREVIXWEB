@@ -25,10 +25,10 @@ let dejar = () => {};
 /** Dónde lleva cada aviso */
 export function enlaceAviso(a, u = store.usuarioActual()) {
   const equipo = u && u.role !== 'client';
-  if (a.tipo === 'video') return 'panel.html#videos';
-  if (a.tipo === 'soporte') return equipo ? 'panel.html#soporte' : 'index.html#soporte';
-  if (a.pedido) return equipo ? `panel.html#pedido-${a.pedido}` : `index.html#proyecto-${a.pedido}`;
-  return equipo ? 'panel.html' : 'index.html#mis-pedidos';
+  if (a.tipo === 'video') return 'panel#videos';
+  if (a.tipo === 'soporte') return equipo ? 'panel#soporte' : './#soporte';
+  if (a.pedido) return equipo ? `panel#pedido-${a.pedido}` : `./#proyecto-${a.pedido}`;
+  return equipo ? 'panel' : './#mis-pedidos';
 }
 
 function pintarLista() {
@@ -49,7 +49,7 @@ export function campanaHTML() {
     <div class="av-menu" id="avMenu" role="menu">
       <div class="av-h"><b>Avisos</b><button class="link-btn" id="avLimpiar" type="button">Borrar todo</button></div>
       <div class="av-list" id="avList"></div>
-      <a class="av-pie" href="ajustes.html#notificaciones">${icono('tool')} Ajustes de avisos</a>
+      <a class="av-pie" href="ajustes#notificaciones">${icono('tool')} Ajustes de avisos</a>
     </div>
   </div>`;
 }

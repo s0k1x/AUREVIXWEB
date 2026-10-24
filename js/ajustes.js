@@ -135,7 +135,7 @@ async function cuenta() {
   });
   $('#salirTodo').addEventListener('click', async () => {
     if (!confirm('¿Cerrar la sesión en todos tus dispositivos, también en este?')) return;
-    try { await store.cerrarSesionTodas(); location.href = 'index.html'; }
+    try { await store.cerrarSesionTodas(); location.href = './'; }
     catch (err) { toast(err.message, 'err'); }
   });
 }
@@ -267,9 +267,9 @@ async function privacidad() {
   const c = consentimiento();
   body.innerHTML = bloque('Cookies', 'No usamos cookies de publicidad ni de seguimiento.', `
       <div class="kvs"><div class="kv"><span>Necesarias</span><b>Siempre activas</b></div><div class="kv"><span>Preferencias</span><b>${c ? (c.preferencias ? 'Aceptadas' : 'Rechazadas') : 'Sin elegir'}</b></div><div class="kv"><span>Estadísticas</span><b>No se usan</b></div></div>
-      <div class="aj-acc"><button class="btn btn-ghost" data-cookies>${icono('cookie')}<span>Cambiar mi elección</span></button><a class="btn btn-ghost" href="terminos.html#cookies">Política de cookies</a></div>`)
+      <div class="aj-acc"><button class="btn btn-ghost" data-cookies>${icono('cookie')}<span>Cambiar mi elección</span></button><a class="btn btn-ghost" href="terminos-y-privacidad#cookies">Política de cookies</a></div>`)
     + (U ? bloque('Tus datos', 'Puedes descargar una copia de todo lo que guardamos sobre ti: cuenta, proyectos, mensajes y consultas.', `
-      <div class="aj-acc"><button class="btn btn-ghost" id="exportar">${icono('download')}<span>Descargar mis datos</span></button><a class="btn btn-ghost" href="terminos.html#privacidad">Política de privacidad</a></div>`) : '')
+      <div class="aj-acc"><button class="btn btn-ghost" id="exportar">${icono('download')}<span>Descargar mis datos</span></button><a class="btn btn-ghost" href="terminos-y-privacidad#privacidad">Política de privacidad</a></div>`) : '')
     + bloque('Este dispositivo', 'Borra borradores del cuestionario, la conversación con el asistente y tus preferencias guardadas en este navegador.', `
       <div class="aj-acc"><button class="btn btn-ghost" id="limpiar">${icono('trash')}<span>Borrar datos de este dispositivo</span></button></div>`)
     + (U && U.role !== 'owner' ? bloque('Eliminar la cuenta', 'Borraremos tu cuenta y tus datos personales. Conservaremos solo lo que la ley nos obliga a guardar (por ejemplo, los pagos).', `

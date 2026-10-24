@@ -10,6 +10,12 @@ import { iniciarCookies } from './cookies.js';
 import { aplicarApariencia, guardarApariencia } from './apariencia.js';
 import { campanaHTML, iniciarAvisos } from './avisos.js';
 import { iniciarDesplegables } from './desplegable.js';
+
+// Direcciones limpias: si alguien entra con «.html» (enlaces antiguos), la barra muestra la dirección bonita
+try {
+  if (/^https?:$/.test(location.protocol) && /\.html$/.test(location.pathname) && !location.pathname.includes('/library/'))
+    history.replaceState(null, '', (location.pathname.replace(/(\/index)?\.html$/, '') || '/') + location.search + location.hash);
+} catch {}
 export { icono, pintarIconos };
 
 /* ---------- Utilidades ---------- */
@@ -128,7 +134,7 @@ export const interruptor = ({ id, name = id, titulo, texto = '', checked = false
     <span class="switch"><input type="checkbox" id="${id}" name="${name}" ${checked ? 'checked' : ''}><span class="slider"></span></span></label>`;
 
 /** Aceptar términos */
-export const aceptarTerminos = (id, texto = 'Acepto los <a href="terminos.html" target="_blank">términos y condiciones</a> y la <a href="terminos.html#privacidad" target="_blank">política de privacidad</a>') =>
+export const aceptarTerminos = (id, texto = 'Acepto los <a href="terminos-y-privacidad" target="_blank">términos y condiciones</a> y la <a href="terminos-y-privacidad#privacidad" target="_blank">política de privacidad</a>') =>
   `<label class="gl-checkbox" id="${id}Wrap">
     <input class="gl-checkbox__input" type="checkbox" id="${id}" name="${id}">
     <span class="gl-checkbox__box"><svg class="gl-checkbox__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
@@ -232,18 +238,18 @@ document.addEventListener('click', e => {
    ========================================================== */
 export function pintarCabecera(activa = '') {
   const h = $('#header');
-  const ir = ancla => (activa === 'inicio' ? ancla : 'index.html' + ancla);
+  const ir = ancla => (activa === 'inicio' ? ancla : './' + ancla);
   h.className = 'header';
   h.innerHTML = `
     <div class="wrap">
-      <a href="index.html" class="logo"><img class="logo-img" src="icons/logo-a.png" alt="" width="34" height="34"><span data-marca>${marcaHTML()}</span></a>
+      <a href="./" class="logo"><img class="logo-img" src="icons/logo-a.png" alt="" width="34" height="34"><span data-marca>${marcaHTML()}</span></a>
       <nav class="nav" id="nav" aria-label="Principal">
         <a href="${ir('#webs')}">Webs y precios</a>
         <a href="${ir('#disenos')}">Diseños</a>
         <a href="library/">Librería</a>
         <a href="${ir('#opiniones')}">Opiniones</a>
         <a href="${ir('#contacto')}">Contacto</a>
-        <a href="trabaja.html" class="${activa === 'trabaja' ? 'act' : ''}">Trabaja con nosotros</a>
+        <a href="trabaja-con-nosotros" class="${activa === 'trabaja' ? 'act' : ''}">Trabaja con nosotros</a>
       </nav>
       <div class="head-right">
         <div id="authSlot" class="auth-slot"></div>
@@ -283,17 +289,17 @@ export function pintarPie() {
     <div class="footer-brand bg-bands"><div class="wrap">${tarjetaMarca('in-view')}</div></div>
     <div class="wrap footer-inner">
       <div class="footer-links">
-        <a href="index.html#webs">Precios</a>
-        <a href="index.html#disenos">Diseños</a>
+        <a href="./#webs">Precios</a>
+        <a href="./#disenos">Diseños</a>
         <a href="library/">Librería</a>
-        <a href="index.html#opiniones">Opiniones</a>
-        <a href="trabaja.html">Trabaja con nosotros</a>
-        <a href="index.html#contacto">Contacto</a>
+        <a href="./#opiniones">Opiniones</a>
+        <a href="trabaja-con-nosotros">Trabaja con nosotros</a>
+        <a href="./#contacto">Contacto</a>
         <a href="${mailLink('Consulta desde la web')}">${esc(CONFIG.email)}</a>
-        <a href="terminos.html">Términos y privacidad</a>
-        <a href="terminos.html#propiedad">Licencia y derechos</a>
+        <a href="terminos-y-privacidad">Términos y privacidad</a>
+        <a href="terminos-y-privacidad#propiedad">Licencia y derechos</a>
         <a href="#" data-cookies>Cookies</a>
-        <a href="ajustes.html">Ajustes</a>
+        <a href="ajustes">Ajustes</a>
         ${Object.entries(CONFIG.redes || {}).filter(([, v]) => v).map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener" aria-label="${k}">${icono(k === 'linkedin' ? 'briefcase' : k)}</a>`).join('')}
         <button class="link-btn" data-install hidden>${icono('download')} Instalar app</button>
       </div>
@@ -318,11 +324,11 @@ function pintarSesion(u) {
       </button>
       <div class="user-menu" role="menu">
         <div class="um-head">${avatar(u, 'lg')}<div><b>${esc(u.name)}</b><small>${esc(u.email)}</small><span class="role-tag r-${u.role}">${ROLES[u.role]}</span></div></div>
-        ${panel ? `<a href="panel.html" role="menuitem">${icono('panel')} ${panel}</a>` : ''}
-        <a href="index.html#mis-pedidos" role="menuitem" data-mis-pedidos>${icono("bag")} Mis proyectos</a>
-        <a href="index.html#soporte" role="menuitem" data-soporte>${icono('help')} Ayuda y soporte</a>
-        <a href="ajustes.html" role="menuitem">${icono('gear')} Ajustes</a>
-        ${u.role === 'client' ? `<a href="trabaja.html" role="menuitem">${icono('briefcase')} Trabaja con nosotros</a>` : ''}
+        ${panel ? `<a href="panel" role="menuitem">${icono('panel')} ${panel}</a>` : ''}
+        <a href="./#mis-pedidos" role="menuitem" data-mis-pedidos>${icono("bag")} Mis proyectos</a>
+        <a href="./#soporte" role="menuitem" data-soporte>${icono('help')} Ayuda y soporte</a>
+        <a href="ajustes" role="menuitem">${icono('gear')} Ajustes</a>
+        ${u.role === 'client' ? `<a href="trabaja-con-nosotros" role="menuitem">${icono('briefcase')} Trabaja con nosotros</a>` : ''}
         <button role="menuitem" data-logout>${icono('logout')} Cerrar sesión</button>
       </div>
     </div>`;
@@ -343,7 +349,7 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-logout]')) {
     store.cerrarSesion().then(() => {
       toast('Has cerrado sesión');
-      if (location.pathname.endsWith('panel.html')) location.href = 'index.html';
+      if (location.pathname.endsWith('panel')) location.href = './';
     });
   }
 });

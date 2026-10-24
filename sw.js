@@ -12,16 +12,16 @@
    - Librería (/library/ y /biblioteca-ui/): NO se guarda (son miles de
      archivos); va siempre por internet con la caché normal del navegador.
    ========================================================== */
-const VERSION = 'v35';
+const VERSION = 'v36';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
 const ARCHIVOS = [
-  './', 'index.html', 'trabaja.html', 'panel.html', 'plantilla.html', 'terminos.html', 'offline.html',
+  './', 'trabaja-con-nosotros', 'panel', 'diseno', 'terminos-y-privacidad', 'sin-conexion',
   'style.css', 'componentes.css', 'animaciones.css', 'inicio.css', 'panel.css', 'trabaja.css', 'config.js',
   'js/app.js', 'js/ui.js', 'js/store.js', 'js/plantillas.js', 'js/panel.js', 'js/pago.js', 'js/efectos.js',
   'js/vendor/supabase.js', 'js/iconos.js', 'js/asistente.js', 'js/proyecto.js', 'js/sitio.js', 'js/cookies.js', 'js/apariencia.js', 'js/avisos.js', 'js/colabora.js', 'js/ajustes.js', 'js/megaprompt.js', 'js/generador.js', 'js/desplegable.js', 'js/zip.js',
-  'ajustes.html', 'funciones.css', 'tema-claro.css', 'icons/nombre-oscuro.png',
+  'ajustes', 'funciones.css', 'tema-claro.css', 'icons/nombre-oscuro.png',
   'manifest.json', 'icons/logo-a.png', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
 ];
 
@@ -54,7 +54,7 @@ async function redPrimero(req) {
   } catch {
     const guardado = await cache.match(req, { ignoreSearch: req.mode === 'navigate' });
     if (guardado) return guardado;
-    if (req.mode === 'navigate') return (await cache.match('index.html')) || cache.match('offline.html');
+    if (req.mode === 'navigate') return (await cache.match('./')) || cache.match('sin-conexion');
     return fetch(req);
   }
 }

@@ -527,3 +527,27 @@ etiquetas, índice de iconos caído).
 - Las etiquetas animadas largas («Teléfono, email y WhatsApp que se publican en la web»…) se aplastaban en iPhone porque
   cada letra podía encogerse. Ahora las letras no se encogen y la etiqueta salta de línea entre palabras (`etiquetas()` en
   `js/ui.js`, `.fc-w` en `componentes.css`). Se acortaron dos etiquetas de «Más detalles». `sw.js` v35.
+
+## 26. Versión v36 — direcciones limpias
+
+Las páginas ya no acaban en `.html`:
+
+| Antes | Ahora |
+|---|---|
+| `/index.html` | `/` |
+| `/trabaja.html` | `/trabaja-con-nosotros` |
+| `/terminos.html` | `/terminos-y-privacidad` |
+| `/plantilla.html?t=…` | `/diseno?t=…` |
+| `/offline.html` | `/sin-conexion` |
+| `/panel.html` | `/panel` |
+| `/ajustes.html` | `/ajustes` |
+| `/library/` | sin cambios |
+
+- GitHub Pages sirve `/nombre` desde `nombre.html`, así que el archivo se llama como la dirección más `.html`.
+- Los archivos viejos (`trabaja.html`, `terminos.html`, `plantilla.html`, `offline.html`) quedan como redirecciones, para
+  que los enlaces guardados sigan funcionando. Entrar con `.html` en `panel`, `ajustes` y las demás cambia la barra a la
+  dirección limpia.
+- Todos los enlaces internos, el service worker (v36), el manifiesto y la caché sin conexión usan las direcciones nuevas.
+- **Pendiente de revisar en Supabase** (Authentication → URL Configuration): si las «Redirect URLs» están listadas una a una
+  con `.html`, hay que añadir `https://aurevixweb.es/**`. Si ya está así, no hay que tocar nada.
+- Probado con un servidor que imita a GitHub Pages: enlaces, redirecciones, uso sin conexión y todas las pruebas anteriores.
