@@ -10,11 +10,20 @@
         SEO, accesibilidad, rendimiento y legal, y aplica las mejoras
    Cada versión se guarda (tabla webs_ia) y se descarga en .zip con
    las fotos del cliente ya colocadas en la carpeta img/.
+   v31 · Librería (/library): antes de crear la web se pueden elegir
+   componentes de la librería (a mano o con «Sugerir con IA», modelo
+   barato). La IA los adapta a la marca del cliente y conserva sus avisos
+   de licencia; el .zip lleva LICENSES-TERCEROS.txt.
    ========================================================== */
 import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from './store.js';
-import { $, $$, esc, icono, toast, abrir, copiar, descargar, ocupado, refPedido, cargandoHTML, haceCuanto } from './ui.js';
+import { $, $$, esc, icono, toast, abrir, copiar, descargar, ocupado, refPedido, cargandoHTML, haceCuanto, errorCargaHTML } from './ui.js';
 import { reunir } from './megaprompt.js';
+import { crearZip } from './zip.js';
+/* La librería se carga solo al abrir el generador: /library/ no se guarda para usar sin conexión
+   y, si no está disponible, el generador funciona igual sin componentes. */
+let L = null;
+const cargarLibreria = async () => (L ??= await import('../library/nucleo.js'));
 import { ETAPAS, etapaDe, estadoParaEtapa } from './proyecto.js';
 
 /* ---------- Utilidades ---------- */
@@ -117,32 +126,8 @@ export function aplicarCambios(html, cambios = []) {
   return { html, aplicados, fallidos };
 }
 
-/* ---------- ZIP (sin compresión, compatible con todo) ---------- */
-const TABLA = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
-const crc32 = b => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = TABLA[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
-export function crearZip(archivos) {
-  const enc = new TextEncoder(), partes = [], central = [];
-  let pos = 0;
-  const d = new Date(), hora = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1), dia = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
-  for (const f of archivos) {
-    const nombre = enc.encode(f.nombre), datos = typeof f.datos === 'string' ? enc.encode(f.datos) : new Uint8Array(f.datos);
-    const crc = crc32(datos);
-    const loc = new DataView(new ArrayBuffer(30));
-    [[0, 0x04034b50, 4], [4, 20, 2], [6, 0x0800, 2], [8, 0, 2], [10, hora, 2], [12, dia, 2], [14, crc, 4], [18, datos.length, 4], [22, datos.length, 4], [26, nombre.length, 2], [28, 0, 2]]
-      .forEach(([o, v, n]) => (n === 4 ? loc.setUint32(o, v, true) : loc.setUint16(o, v, true)));
-    partes.push(loc.buffer, nombre, datos);
-    const cen = new DataView(new ArrayBuffer(46));
-    [[0, 0x02014b50, 4], [4, 20, 2], [6, 20, 2], [8, 0x0800, 2], [10, 0, 2], [12, hora, 2], [14, dia, 2], [16, crc, 4], [20, datos.length, 4], [24, datos.length, 4], [28, nombre.length, 2], [30, 0, 2], [32, 0, 2], [34, 0, 2], [36, 0, 2], [38, 0, 4], [42, pos, 4]]
-      .forEach(([o, v, n]) => (n === 4 ? cen.setUint32(o, v, true) : cen.setUint16(o, v, true)));
-    central.push(cen.buffer, nombre);
-    pos += 30 + nombre.length + datos.length;
-  }
-  const tamCentral = central.reduce((s, b) => s + (b.byteLength ?? b.length), 0);
-  const fin = new DataView(new ArrayBuffer(22));
-  [[0, 0x06054b50, 4], [4, 0, 2], [6, 0, 2], [8, archivos.length, 2], [10, archivos.length, 2], [12, tamCentral, 4], [16, pos, 4], [20, 0, 2]]
-    .forEach(([o, v, n]) => (n === 4 ? fin.setUint32(o, v, true) : fin.setUint16(o, v, true)));
-  return new Blob([...partes, ...central, fin.buffer], { type: 'application/zip' });
-}
+/* ---------- ZIP: está en js/zip.js (también lo usa la librería) ---------- */
+export { crearZip };
 
 /* ---------- Ventana ---------- */
 let dlg, estado = null, cancelar = null;
@@ -171,6 +156,7 @@ export async function abrirGeneradorWeb(p) {
   const sub = `${p.respuestas?.negocio || p.planNombre || 'Proyecto'} · ${refPedido(p.id)}`;
   cuerpo().innerHTML = cabecera(sub) + cargandoHTML('Reuniendo el pedido, los mensajes y los archivos del cliente…');
   abrir(dlg);
+  await cargarLibreria().catch(e => console.warn('Librería no disponible:', e));
   try {
     const [datos, lista, versiones] = await Promise.all([
       reunir(p),
@@ -178,7 +164,7 @@ export async function abrirGeneradorWeb(p) {
       store.websIA(p.id).catch(() => [])
     ]);
     const pl = plantillaPorId(p.plantilla);
-    estado = { p, sub, datos, pl, archivos: await prepararArchivos(lista), versiones, actual: versiones[0] || null };
+    estado = { p, sub, datos, pl, archivos: await prepararArchivos(lista), versiones, actual: versiones[0] || null, presupuesto: leerPresupuesto() };
   } catch (e) {
     cuerpo().innerHTML = cabecera(sub) + `<p class="muted">No se han podido reunir los datos: ${esc(e.message)}</p>`;
     return;
@@ -211,6 +197,7 @@ function pintarInicio() {
           </label>`).join('')}</div>`
         : `<p class="muted">El cliente aún no ha subido archivos. La IA usará fotos de ejemplo del diseño y marcará como [PENDIENTE] lo que falte.</p>`}
       </section>
+      <section class="gw-card gw-lib" id="gwLib" aria-live="polite"></section>
       <section class="gw-card">
         <h3>${icono('pen')} Indicaciones para la IA <small class="muted">(opcional)</small></h3>
         <textarea id="gwInd" rows="3" placeholder="Ej.: que la portada tenga vídeo de fondo, tono más juvenil, añade sección de preguntas frecuentes…"></textarea>
@@ -226,7 +213,197 @@ function pintarInicio() {
   $$('.gw-a input', cuerpo()).forEach(c => c.addEventListener('change', () => { estado.archivos[+c.dataset.i].incluir = c.checked; }));
   $('#gwVolver', cuerpo())?.addEventListener('click', () => { estado.actual = estado.versiones[0]; pintarResultado(); });
   $('#gwIr', cuerpo()).addEventListener('click', () => crear({ indicaciones: $('#gwInd', cuerpo()).value.trim(), revisar: $('#gwRev', cuerpo()).checked }));
+  pintarComponentes();
 }
+
+/* ---------- Componentes de la librería (antes de crear la web) ---------- */
+const PRESUPUESTOS = [30000, 60000, 100000, 150000];
+const PRECIO_ENTRADA = 0.75; // $ por millón de tokens de entrada del modelo avanzado (ver LEEME, sección 19)
+function leerPresupuesto() {
+  try { const n = Number(localStorage.getItem('tm_lib_presupuesto')); return PRESUPUESTOS.includes(n) ? n : 60000; } catch { return 60000; }
+}
+/* Las sugerencias de la IA son de cada pedido; las elegidas a mano en la librería se comparten */
+const selDelPedido = pid => (L ? L.leerSeleccion().filter(x => x.origen === 'manual' || x.pedido === pid) : []);
+const num = n => Math.round(n).toLocaleString('es-ES');
+
+const MAX_COMP = 25; // componentes por web (igual que en la función «asistente»)
+const leerAutoIconos = () => { try { return localStorage.getItem('tm_lib_iconos_auto') !== '0'; } catch { return true; } };
+
+/**
+ * Lo que se enviará a la IA para este pedido. Los elegidos a mano van primero
+ * y nunca se recortan en silencio: si no caben, se avisa antes de gastar nada.
+ */
+async function recursosDelPedido() {
+  estado.iconosAuto ??= leerAutoIconos();
+  const ind = await L.cargarIndice();
+  const sel = selDelPedido(estado.p.id);
+  const compsSel = sel.filter(x => !L.esIcono(x.id)).map(x => ({ ...x, c: ind.porId.get(x.id) })).filter(x => x.c);
+  const validos = compsSel.filter(x => L.paraIA(x.c)).sort((a, z) => (a.origen === 'manual' ? 0 : 1) - (z.origen === 'manual' ? 0 : 1));
+  const icSel = sel.filter(x => L.esIcono(x.id));
+  let iconos = [], errorIconos = '';
+  if (icSel.length || estado.iconosAuto) {
+    try {
+      const lista = await L.cargarIconos(ind), mapa = await L.cargarMapaIconos();
+      iconos = icSel.map(x => ({ ...x, c: mapa.get(x.id) })).filter(x => x.c && L.paraIA(x.c));
+      if (estado.iconosAuto) {
+        for (const { c, uso } of L.iconosAuto(lista, estado.datos, { max: Math.max(0, L.MAX_ICONOS - iconos.length), excluir: iconos.map(x => x.id) })) {
+          iconos.push({ id: c.i, seccion: 'iconos', motivo: uso, origen: 'auto', c });
+        }
+      }
+    } catch (e) { errorIconos = e.message || 'No se han podido leer los iconos'; }
+  }
+  const manuales = validos.filter(x => x.origen === 'manual');
+  const tokComp = validos.reduce((t, x) => t + L.tokens(x.c), 0);
+  const tokManual = manuales.reduce((t, x) => t + L.tokens(x.c), 0);
+  const tokIconos = iconos.length * L.TOKENS_ICONO;
+  const necesario = tokManual + tokIconos;
+  // Bloqueo: lo elegido a mano no cabe (en tokens o en número). Se ofrece subir el presupuesto o quitar alguno.
+  const bloqueo = manuales.length > MAX_COMP ? `Has elegido a mano ${manuales.length} componentes y el máximo por web es ${MAX_COMP}. Quita alguno.`
+    : necesario > estado.presupuesto ? `Lo elegido a mano (≈ ${num(necesario)} tokens con los iconos) no cabe en el presupuesto de ${num(estado.presupuesto)} tokens. No se recorta en silencio: sube el presupuesto o quita alguno.` : '';
+  const subirA = bloqueo && manuales.length <= MAX_COMP ? PRESUPUESTOS.find(n => n >= necesario) || 0 : 0;
+  return { ind, compsSel, validos, manuales, iconos, errorIconos, tokComp, tokIconos, tokens: tokComp + tokIconos, bloqueo, subirA };
+}
+
+async function pintarComponentes() {
+  const caja = $('#gwLib', cuerpo());
+  if (!caja) return;
+  const cab = `<h3>${icono('panel')} Componentes e iconos sugeridos <small class="muted">(librería · opcional)</small></h3>`;
+  caja.innerHTML = cab + `<p class="muted gw-nota">Cargando la librería…</p>`;
+  let r;
+  try { await cargarLibreria(); r = await recursosDelPedido(); }
+  catch (e) {
+    caja.innerHTML = cab + errorCargaHTML(e.message, 'No se ha podido cargar la librería');
+    caja.querySelector('[data-reintentar]')?.addEventListener('click', pintarComponentes, { once: true });
+    return;
+  }
+  if (!caja.isConnected) return;
+  const sel = r.compsSel;
+  const coste = r.tokens / 1e6 * PRECIO_ENTRADA;
+  const grupos = L.SECCIONES.map(sx => [sx, sel.filter(x => x.seccion === sx)]).filter(([, l]) => l.length);
+  caja.innerHTML = `${cab}
+    <p class="muted gw-nota">La IA los adapta a la marca del cliente (colores, tipografías, textos y fotos) y conserva su aviso de licencia. Solo se usan licencias permisivas o con atribución; los JSX/TSX los traduce a HTML/CSS/JS o los descarta. Los elegidos a mano van siempre primero.</p>
+    ${sel.length ? grupos.map(([sx, l]) => `<div class="gw-comp-g"><h4>${esc(L.NOMBRE_SECCION[sx])}</h4><ul class="gw-comps">${l.map(x => `
+      <li class="gw-comp ${L.paraIA(x.c) ? '' : 'no'}">
+        <div class="gw-comp-v" data-vista="${esc(x.id)}"></div>
+        <div class="gw-comp-t"><b>${esc(x.c.n)}</b>
+          <small>${esc(x.c.lib.nombre)} · <span class="gw-lic ${esc(x.c.lib.clase)}">${esc(x.c.lib.spdx)}</span> · ${esc(x.c.f.join('+').toUpperCase())} · ${num(L.tokens(x.c))} tokens${x.origen === 'manual' ? ' · <b class="gw-manual">a mano</b>' : ''}</small>
+          ${!L.paraIA(x.c) ? `<small class="gw-comp-m">${icono('alert')} No se enviará a la IA: su licencia o su formato no lo permiten</small>` : x.motivo ? `<small class="gw-comp-m">${esc(x.motivo)}</small>` : ''}
+        </div>
+        <button type="button" class="dlg-x gw-comp-x" data-quitar-comp="${esc(x.id)}" aria-label="Quitar ${esc(x.c.n)}">${icono('x')}</button>
+      </li>`).join('')}</ul></div>`).join('')
+      : `<p class="muted">No hay componentes elegidos. Pulsa «${store.iaDisponible() ? 'Sugerir con IA' : 'Sugerir (sin IA)'}» o añádelos desde la librería con «Usar en mi pedido».</p>`}
+    <div class="gw-comp-g gw-icos" id="gwIcos"></div>
+    ${r.bloqueo ? `<p class="gw-bloqueo" role="alert">${icono('alert')} <span>${esc(r.bloqueo)}</span>${r.subirA ? ` <button type="button" class="btn btn-sm btn-primary" id="gwSubir">Subir a ${num(r.subirA)} tokens</button>` : ''}</p>` : ''}
+    <div class="gw-lib-pie">
+      <span class="gw-coste">${r.validos.length} de ${sel.length} componentes y ${r.iconos.length} iconos se usarán · ≈ ${num(r.tokens)} tokens · ≈ ${coste.toLocaleString('es-ES', { maximumFractionDigits: 3, minimumFractionDigits: 3 })} $ de entrada${!r.bloqueo && r.tokens > estado.presupuesto ? ` · <b>pasa del presupuesto: se recortarán los sugeridos de menos prioridad (nunca los elegidos a mano)</b>` : ''}</span>
+      <label class="fc-select gw-presu"><span>Presupuesto</span>
+        <select id="gwPresu">${PRESUPUESTOS.map(n => `<option value="${n}" ${n === estado.presupuesto ? 'selected' : ''}>${num(n)} tokens</option>`).join('')}</select></label>
+    </div>
+    <div class="gw-acc">
+      ${sel.length ? `<button type="button" class="btn btn-ghost" id="gwVaciar">${icono('trash')}<span>Quitar todos</span></button>` : ''}
+      <a class="btn btn-ghost" href="library/#uso=1" target="_blank" rel="noopener">${icono('external')}<span>Abrir la librería</span></a>
+      <button type="button" class="btn btn-ghost" id="gwSugerir">${icono('sparkle')}<span>${store.iaDisponible() ? 'Sugerir con IA' : 'Sugerir (sin IA)'}</span></button>
+    </div>`;
+  for (const el of $$('[data-vista]', caja)) {
+    const c = r.ind.porId.get(el.dataset.vista);
+    if (c) L.montarVista(el, c).catch(() => { el.innerHTML = `<span class="lbv-fmt">${esc(c.f.join(' · ').toUpperCase())}</span>`; });
+  }
+  pintarIconos(r);
+  $$('[data-quitar-comp]', caja).forEach(b => b.addEventListener('click', () => { L.alternarSeleccion(b.dataset.quitarComp); pintarComponentes(); }));
+  $('#gwVaciar', caja)?.addEventListener('click', () => { L.guardarSeleccion(L.leerSeleccion().filter(x => L.esIcono(x.id) || !selDelPedido(estado.p.id).some(y => y.id === x.id))); pintarComponentes(); });
+  $('#gwSugerir', caja).addEventListener('click', e => sugerirComponentes(e.currentTarget));
+  $('#gwSubir', caja)?.addEventListener('click', () => cambiarPresupuesto(r.subirA));
+  $('#gwPresu', caja).addEventListener('change', e => cambiarPresupuesto(Number(e.target.value) || 60000));
+}
+function cambiarPresupuesto(n) {
+  estado.presupuesto = n;
+  try { localStorage.setItem('tm_lib_presupuesto', String(n)); } catch { /* sin almacenamiento */ }
+  pintarComponentes();
+}
+
+/* Iconos: los elegidos a mano, los automáticos y un buscador (en español o en inglés) */
+function pintarIconos(r) {
+  const caja = $('#gwIcos', cuerpo());
+  if (!caja) return;
+  const chip = (x, quitar) => `<li class="gw-ico ${x.origen === 'manual' ? 'manual' : ''}" title="${esc(`${L.fichaIcono(x.c).nombre} · ${x.c.lib.nombre} ${x.c.variante} · ${x.c.lib.spdx}${x.motivo ? ` · ${x.motivo}` : ''}`)}">
+      <img src="${esc(L.urlArchivo(x.c))}" alt="" width="20" height="20" loading="lazy"><span>${esc(L.fichaIcono(x.c).nombre)}</span>
+      ${quitar ? `<button type="button" data-quitar-ico="${esc(x.id)}" aria-label="Quitar el icono ${esc(L.fichaIcono(x.c).nombre)}">${icono('x')}</button>` : ''}</li>`;
+  const man = r.iconos.filter(x => x.origen === 'manual'), aut = r.iconos.filter(x => x.origen !== 'manual');
+  caja.innerHTML = `<h4>Iconos <small class="muted">(${r.iconos.length} de máx. ${L.MAX_ICONOS} · la IA solo puede usar estos: no inventa ni dibuja iconos)</small></h4>
+    ${r.errorIconos ? `<p class="muted">${icono('alert')} ${esc(r.errorIconos)}</p>` : ''}
+    ${man.length ? `<ul class="gw-icos-l" aria-label="Iconos elegidos a mano">${man.map(x => chip(x, true)).join('')}</ul>` : ''}
+    ${aut.length ? `<ul class="gw-icos-l auto" aria-label="Iconos automáticos">${aut.map(x => chip(x, false)).join('')}</ul>` : ''}
+    <label class="gw-sw gw-sw-sm"><input type="checkbox" id="gwIcoAuto" ${estado.iconosAuto ? 'checked' : ''}><span><b>Añadir iconos automáticamente</b><small>Menú, contacto, horario y los del sector del cliente (un solo estilo: Lucide/Tabler; marcas de Simple Icons)</small></span></label>
+    <div class="gw-ico-bus"><input type="search" id="gwIcoQ" placeholder="Buscar iconos: teléfono, tijeras, coche…" aria-label="Buscar iconos" value="${esc(estado.icoQ || '')}" autocomplete="off"></div>
+    <ul class="gw-icos-l res" id="gwIcoRes" aria-live="polite"></ul>`;
+  $('#gwIcoAuto', caja).addEventListener('change', e => {
+    estado.iconosAuto = e.target.checked;
+    try { localStorage.setItem('tm_lib_iconos_auto', e.target.checked ? '1' : '0'); } catch { /* sin almacenamiento */ }
+    pintarComponentes();
+  });
+  $$('[data-quitar-ico]', caja).forEach(b => b.addEventListener('click', () => { L.alternarSeleccion(b.dataset.quitarIco); pintarComponentes(); }));
+  const q = $('#gwIcoQ', caja), res = $('#gwIcoRes', caja);
+  let t = 0;
+  const buscar = async () => {
+    estado.icoQ = q.value;
+    if (!q.value.trim()) { res.innerHTML = ''; return; }
+    const lista = await L.cargarIconos(r.ind).catch(() => null);
+    if (!lista) { res.innerHTML = `<li class="muted">No se han podido leer los iconos</li>`; return; }
+    const ya = new Set(r.iconos.map(x => x.id));
+    const encontrados = L.buscarIconos(lista, q.value, { max: 24 });
+    res.innerHTML = encontrados.length ? encontrados.map(c => `<li><button type="button" class="gw-ico ${ya.has(c.i) ? 'ya' : ''}" data-poner-ico="${esc(c.i)}" ${ya.has(c.i) ? 'disabled' : ''} title="${esc(`${c.lib.nombre} ${c.variante} · ${c.lib.spdx}`)}">
+        <img src="${esc(L.urlArchivo(c))}" alt="" width="20" height="20" loading="lazy"><span>${esc(L.fichaIcono(c).nombre)}</span></button></li>`).join('')
+      : `<li class="muted">Sin resultados. Prueba con otra palabra (en español o en inglés).</li>`;
+    $$('[data-poner-ico]', res).forEach(b => b.addEventListener('click', () => {
+      try { L.alternarSeleccion(b.dataset.ponerIco, { seccion: 'iconos', origen: 'manual' }); }
+      catch (e) { toast(e.message, 'err'); return; }
+      estado.icoFoco = true;
+      pintarComponentes();
+    }));
+  };
+  q.addEventListener('input', () => { clearTimeout(t); t = setTimeout(buscar, 160); });
+  if (q.value.trim()) buscar();
+  if (estado.icoFoco) { estado.icoFoco = false; q.focus(); }
+}
+
+/** Elige componentes: con IA (modo web-recursos, modelo barato) o, en el modo demo, por categoría y estilo */
+async function sugerirComponentes(btn) {
+  ocupado(btn, true);
+  let aviso = '';
+  try {
+    await cargarLibreria();
+    const ind = await L.cargarIndice();
+    let elegidos;
+    if (!store.iaDisponible()) elegidos = L.seleccionLocal(ind, estado.datos);
+    else {
+      // Los elegidos a mano no compiten con los candidatos: se quitan de la lista y se descuentan del máximo
+      const aMano = new Set(L.leerSeleccion().filter(x => x.origen === 'manual').map(x => x.id));
+      const max = Math.max(0, MAX_COMP - [...aMano].filter(id => !L.esIcono(id)).length);
+      if (!max) throw new Error(`Ya tienes ${MAX_COMP} componentes elegidos a mano: no caben más sugerencias.`);
+      const cands = L.preseleccionar(ind, estado.datos, { max: 400 }).filter(c => !aMano.has(c.i));
+      try {
+        const r = await store.iaWeb({ modo: 'web-recursos', pedido: estado.datos, candidatos: cands.map(c => L.fichaIA(c, ind.categorias)), max, indicaciones: $('#gwInd', cuerpo())?.value.trim() || '' });
+        const j = leerJSON(r.texto);
+        const validos = new Set(cands.map(c => c.i));
+        elegidos = (j.elegidos || []).filter(x => validos.has(x?.id)).slice(0, max).map(x => ({ id: x.id, seccion: x.seccion, motivo: x.motivo || '', origen: 'ia' }));
+        if (!elegidos.length) throw new Error('La IA no ha elegido ningún componente válido.');
+      } catch (e) {
+        // Si la función desplegada todavía no tiene «web-recursos» (o falla), se eligen sin IA
+        console.warn('web-recursos no disponible:', e);
+        elegidos = L.seleccionLocal(ind, estado.datos).filter(x => !aMano.has(x.id)).slice(0, max);
+        aviso = `La IA no ha podido elegir (${e.message}). Se han elegido sin IA, por categoría y estilo.`;
+      }
+    }
+    // Se sustituyen solo las sugerencias anteriores de este pedido; lo elegido a mano y lo de otros pedidos se queda
+    const quedan = L.leerSeleccion().filter(x => (x.origen === 'manual' || x.pedido !== estado.p.id) && !elegidos.some(y => y.id === x.id));
+    L.guardarSeleccion([...quedan, ...elegidos.map(x => ({ ...x, pedido: estado.p.id }))]);
+    toast(aviso || `${elegidos.length} componente${elegidos.length === 1 ? '' : 's'} sugerido${elegidos.length === 1 ? '' : 's'}`, aviso ? 'err' : undefined);
+  } catch (e) { toast(e.message || 'No se han podido sugerir componentes', 'err'); }
+  ocupado(btn, false);
+  pintarComponentes();
+}
+// Si se añaden componentes desde la librería en otra pestaña, se ven aquí al momento
+addEventListener('storage', e => { if (e.key === 'tm_lib_sel' && dlg?.open && $('#gwLib', cuerpo())) pintarComponentes(); });
 
 /* ---------- 2. Progreso ---------- */
 function pintarProgreso(pasos) {
@@ -254,6 +431,16 @@ function pensando(t) {
 
 async function crear({ indicaciones = '', revisar = true } = {}) {
   const { p, datos, pl } = estado;
+  // Componentes e iconos de la librería para este pedido. Si lo elegido a mano no cabe, se para ANTES de gastar nada.
+  let rec = null;
+  if (L) {
+    rec = await recursosDelPedido().catch(e => { console.warn('Librería no disponible:', e); return null; });
+    if (rec?.bloqueo) {
+      toast(rec.bloqueo, 'err');
+      $('#gwLib', cuerpo())?.scrollIntoView({ block: 'center' });
+      return;
+    }
+  }
   cancelar = new AbortController();
   const senal = cancelar.signal;
   const pasos = PASOS.filter(([k]) => revisar || k !== 'revisar');
@@ -261,6 +448,10 @@ async function crear({ indicaciones = '', revisar = true } = {}) {
   const plantilla = plantillaParaIA(pl)?.diseno || null;
   const ejemplos = fotosEjemplo(pl);
   const elegidos = estado.archivos.filter(x => x.incluir);
+  const ind = rec?.ind || null;
+  const comps = rec?.validos || [];
+  const iconos = rec?.iconos || [];
+  let compLista = [], compInfo = null, icoLista = [], icoSvgs = [];
   try {
     // 1. Plan
     paso('plan', 'activo', 'Preparando fotos y documentos…');
@@ -272,24 +463,75 @@ async function crear({ indicaciones = '', revisar = true } = {}) {
     paso('plan', 'hecho', `${plan.secciones?.length || 0} secciones · ${plan.perspectivas?.length || 0} puntos de vista · ${plan.pendientes?.length || 0} pendientes`);
 
     // 2. Web
-    paso('html', 'activo', 'Empezando…');
+    paso('html', 'activo', comps.length || iconos.length ? `Leyendo ${comps.length} componente${comps.length === 1 ? '' : 's'} y ${iconos.length} icono${iconos.length === 1 ? '' : 's'} de la librería…` : 'Empezando…');
+    // SVG original de cada icono (se lee ahora; la IA solo recibe id, nombre y uso)
+    icoSvgs = await Promise.all(iconos.map(async x => ({ id: x.id, svg: await L.svgIcono(x.c).catch(() => null) })));
+    const icoEnviar = iconos.filter((x, i) => icoSvgs[i].svg);
     const imagenes = (plan.imagenes?.length ? plan.imagenes : elegidos.filter(x => x.ruta).map(x => ({ ruta: x.ruta, muestra: x.a.nombre })));
     const negocio = { ...datos.negocio, dominio: datos.dominio, contenido: datos.contenido };
-    const r2 = await store.iaWeb({ modo: 'web-html', plan, negocio, plantilla, imagenes, fotosEjemplo: ejemplos, indicaciones },
+    const r2 = await store.iaWeb({ modo: 'web-html', plan, negocio, plantilla, imagenes, fotosEjemplo: ejemplos, indicaciones,
+      componentes: comps.map(x => ({ id: x.id, seccion: x.seccion, motivo: x.motivo, origen: x.origen === 'manual' ? 'manual' : 'ia' })),
+      iconos: icoEnviar.map(x => ({ ...L.fichaIcono(x.c, x.motivo), origen: x.origen === 'manual' ? 'manual' : 'auto' })), presupuesto: estado.presupuesto },
       { senal, alPensar: pensando, alTexto: (_, todo) => paso('html', 'activo', `Escribiendo la web · ${kb(todo.length)}`) });
     let html = leerHTML(r2.texto);
     if (!/<\/html>/i.test(html)) throw new Error('La web ha salido cortada. Vuelve a intentarlo (o quita algún archivo).');
-    paso('html', 'hecho', `${kb(html.length)} · ${r2.modelo || ''}`);
+    // Iconos: cada marcador <svg data-icono> se cambia por el SVG original; los ids inventados se quitan
+    if (L && iconos.length) {
+      const confirmados = r2.iconos?.enviados ? new Set(r2.iconos.enviados.map(x => x.id)) : null;
+      const ri = L.rellenarIconos(html, icoSvgs.filter(x => x.svg && (!confirmados || confirmados.has(x.id))));
+      html = ri.html;
+      const rechazados = new Map((r2.iconos?.descartados || []).map(x => [x.id, x.motivo]));
+      icoLista = [
+        ...iconos.map((x, i) => ({ ...L.infoIcono(x.c), uso: x.motivo || '', eleccion: x.origen === 'manual' ? 'manual' : 'auto',
+          estado: ri.usados.includes(x.id) ? 'usado' : !icoSvgs[i].svg ? 'descartado' : rechazados.has(x.id) ? 'descartado' : confirmados || r2.iconos ? 'sin usar' : 'no enviado',
+          motivo: ri.usados.includes(x.id) ? '' : !icoSvgs[i].svg ? 'No se ha podido leer su SVG' : rechazados.get(x.id) || (r2.iconos ? 'La IA no lo ha usado' : 'La función «asistente» desplegada no ha recibido los iconos (falta integrar libreria.ts)') })),
+        ...ri.inventados.map(id => ({ id, nombre: id.split('/').pop(), biblioteca: '', licencia: '', autor: '', origen: '', estado: 'inventado', motivo: 'La IA puso un icono que no estaba en la lista: se ha quitado' }))
+      ];
+    }
+    // Licencias: qué componentes conservan su aviso y comentario final con la lista real
+    compInfo = r2.componentes;
+    const icoUsados = () => icoLista.filter(x => x.estado === 'usado');
+    if (L && (compInfo || comps.length || icoLista.length)) {
+      const enviados = compInfo?.usados || [];
+      const av = L.avisosTerceros(html, enviados, { iconos: icoUsados() });
+      html = av.html;
+      compLista = [
+        ...enviados.map(x => ({ ...x, estado: av.usados.includes(x.id) ? 'usado' : 'descartado', motivo: av.usados.includes(x.id) ? '' : 'La IA no lo ha usado' })),
+        ...(compInfo?.descartados || []).map(x => ({ ...infoLocal(ind, x.id), estado: 'descartado', motivo: x.motivo })),
+        ...(compInfo?.recortados || []).map(id => ({ ...infoLocal(ind, id), estado: 'recortado', motivo: 'No cabía en el presupuesto de tokens' })),
+        ...(compInfo ? [] : comps.map(x => ({ ...infoLocal(ind, x.id), estado: 'descartado', motivo: 'La función «asistente» no ha devuelto los componentes (¿falta volver a desplegarla?)' })))
+      ];
+    }
+    const nUsados = compLista.filter(x => x.estado === 'usado').length;
+    const nIco = icoUsados().length;
+    paso('html', 'hecho', `${kb(html.length)} · ${r2.modelo || ''}${comps.length ? ` · ${nUsados} de ${comps.length} componentes` : ''}${iconos.length ? ` · ${nIco} de ${iconos.length} iconos${r2.iconos ? '' : ' (la función desplegada no los ha recibido)'}` : ''}`);
 
     // 3. Revisión
     let revision = null, aplicados = 0, fallidos = [];
     if (revisar) {
       paso('revisar', 'activo', 'Revisando…');
       try {
-        const r3 = await store.iaWeb({ modo: 'web-revisar', pedido: datos, plan, html, indicaciones },
+        const r3 = await store.iaWeb({ modo: 'web-revisar', pedido: datos, plan, html, indicaciones,
+          componentes: compLista.map(x => ({ id: x.id, nombre: x.nombre, biblioteca: x.biblioteca, licencia: x.licencia, enLaWeb: x.estado === 'usado' })),
+          iconos: icoUsados().map(x => ({ id: x.id, nombre: x.nombre })) },
           { senal, alPensar: pensando, alTexto: (_, todo) => paso('revisar', 'activo', `Anotando mejoras · ${kb(todo.length)}`) });
         revision = leerJSON(r3.texto);
         ({ html, aplicados, fallidos } = aplicarCambios(html, revision.cambios));
+        if (L && icoLista.length) {
+          // La revisión no puede colar iconos nuevos: se vuelven a poner los originales y se quitan los desconocidos
+          html = L.rellenarIconos(html, icoSvgs.filter(x => x.svg && icoLista.some(y => y.id === x.id && y.estado !== 'descartado'))).html;
+          for (const x of icoLista) if (x.estado === 'usado' && !html.includes(`data-icono="${x.id}"`)) { x.estado = 'sin usar'; x.motivo = 'Quitado en la revisión'; }
+        }
+        if (L && (compLista.length || icoLista.length)) {
+          const av2 = L.avisosTerceros(html, compLista.filter(x => x.estado === 'usado'), { iconos: icoUsados() });
+          html = av2.html;
+          for (const x of compLista) if (x.estado === 'usado' && av2.descartados.includes(x.id)) { x.estado = 'descartado'; x.motivo = 'Quitado en la revisión'; }
+          for (const r of revision.componentes || []) {
+            const x = compLista.find(y => y.id === r.id);
+            if (x && x.estado === 'usado' && r.estado === 'adaptado') { x.estado = 'adaptado'; x.motivo = r.motivo || ''; }
+            else if (x && x.estado === 'usado' && r.motivo) x.motivo = r.motivo;
+          }
+        }
         paso('revisar', 'hecho', `Nota ${revision.notas?.general ?? '—'}/10 · ${aplicados} mejora${aplicados === 1 ? '' : 's'} aplicada${aplicados === 1 ? '' : 's'}`);
       } catch (e) {
         if (senal.aborted) throw e;
@@ -302,7 +544,9 @@ async function crear({ indicaciones = '', revisar = true } = {}) {
     const version = {
       html, plan, modelo: r2.modelo, indicaciones, conRevision: !!revision,
       revision: revision ? { notas: revision.notas, informe: revision.informe, pendientes: revision.pendientes, aplicados, fallidos } : null,
-      imagenes: elegidos.filter(x => x.ruta).map(x => ({ ruta: x.ruta, archivo: x.a.ruta, nombre: x.a.nombre }))
+      imagenes: elegidos.filter(x => x.ruta).map(x => ({ ruta: x.ruta, archivo: x.a.ruta, nombre: x.a.nombre })),
+      componentes: compLista.length ? { lista: compLista, tokens: compInfo?.tokens || 0, presupuesto: compInfo?.presupuesto || estado.presupuesto } : null,
+      iconos: icoLista.length ? { lista: icoLista, recibidos: !!r2.iconos } : null
     };
     let guardada;
     try { guardada = await store.guardarWebIA(p.id, version); }
@@ -423,7 +667,8 @@ function pintarPestana() {
       ${rev ? `<p class="muted gw-apl">${rev.aplicados || 0} ${rev.aplicados === 1 ? 'mejora aplicada' : 'mejoras aplicadas'}${rev.fallidos?.length ? ` · ${rev.fallidos.length} sin aplicar (abajo)` : ''}.</p>` : ''}
       ${pend.length ? `<h4>${icono('alert')} Pedir al cliente</h4><ul class="gw-lista">${pend.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
       ${rev?.informe?.length ? `<h4>${icono('shield')} Lo que ha revisado</h4><ul class="gw-inf">${rev.informe.map(x => `<li><span class="gw-tag">${esc(x.perspectiva)}</span><b>${esc(x.problema)}</b>${x.solucion ? `<small>${esc(x.solucion)}</small>` : ''}</li>`).join('')}</ul>` : ''}
-      ${rev?.fallidos?.length ? `<h4>No aplicadas (revísalas a mano)</h4><ul class="gw-lista">${rev.fallidos.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}`;
+      ${rev?.fallidos?.length ? `<h4>No aplicadas (revísalas a mano)</h4><ul class="gw-lista">${rev.fallidos.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+      ${informeComponentes(v)}`;
     return;
   }
   if (pestana === 'plan') {
@@ -444,6 +689,33 @@ function pintarPestana() {
   caja.innerHTML = `<textarea class="gw-codigo" id="gwCodigo" spellcheck="false" aria-label="Código HTML">${esc(v.html)}</textarea>
     <div class="gw-acc"><button type="button" class="btn btn-ghost" id="gwGuardarCod">${icono('check')}<span>Guardar como versión nueva</span></button></div>`;
   $('#gwGuardarCod', caja).addEventListener('click', e => nuevaVersion(e.currentTarget, { ...v, html: $('#gwCodigo', caja).value, retoque: 'Editado a mano' }));
+}
+
+/* Componentes de terceros de esta versión: usados, adaptados y descartados, con su licencia */
+const ESTADO_COMP = { usado: 'Usado', adaptado: 'Adaptado', descartado: 'Descartado', recortado: 'Recortado' };
+function infoLocal(ind, id) {
+  const c = ind?.porId.get(id);
+  return c && L ? { id, nombre: c.n, biblioteca: c.lib.nombre, licencia: c.lib.spdx, autor: L.autorDe(c), origen: c.o || L.urlOrigen(c) } : { id, nombre: id, biblioteca: '', licencia: '', autor: '', origen: '' };
+}
+const ESTADO_ICO = { usado: 'Usado', 'sin usar': 'Sin usar', descartado: 'Descartado', inventado: 'Inventado', 'no enviado': 'No enviado' };
+function informeComponentes(v) {
+  return informeComps(v) + informeIconos(v);
+}
+function informeIconos(v) {
+  const l = v.iconos?.lista || [];
+  if (!l.length) return '';
+  const n = k => l.filter(x => x.estado === k).length;
+  return `<h4>${icono('star')} Iconos</h4>
+    <p class="muted gw-apl">${n('usado')} de ${l.filter(x => x.estado !== 'inventado').length} usados${n('inventado') ? ` · ${n('inventado')} inventados por la IA y quitados` : ''}${v.iconos.recibidos ? '' : ' · la función «asistente» desplegada no los ha recibido (ver LEEME, sección 22)'}. Son los SVG originales de la colección, con su licencia en LICENSES-TERCEROS.txt.</p>
+    <ul class="gw-inf gw-inf-ico">${l.map(x => `<li><span class="gw-tag">${ESTADO_ICO[x.estado] || esc(x.estado)}</span><b>${esc(x.nombre)}${x.biblioteca ? ` · ${esc(x.biblioteca)}` : ''}</b><small>${esc(x.licencia || '—')}${x.eleccion === 'manual' ? ' · elegido a mano' : ''}${x.uso ? ` · ${esc(x.uso)}` : ''}${x.motivo ? ` · ${esc(x.motivo)}` : ''}</small></li>`).join('')}</ul>`;
+}
+function informeComps(v) {
+  const l = v.componentes?.lista || [];
+  if (!l.length) return '';
+  const n = k => l.filter(x => x.estado === k).length;
+  return `<h4>${icono('panel')} Componentes de terceros</h4>
+    <p class="muted gw-apl">${n('usado') + n('adaptado')} usados (${n('adaptado')} adaptados) · ${n('descartado')} descartados${n('recortado') ? ` · ${n('recortado')} recortados por el presupuesto` : ''}. Los usados llevan su aviso en el HTML y su licencia en LICENSES-TERCEROS.txt del .zip.</p>
+    <ul class="gw-inf">${l.map(x => `<li><span class="gw-tag">${ESTADO_COMP[x.estado] || esc(x.estado)}</span><b>${esc(x.nombre)}${x.biblioteca ? ` · ${esc(x.biblioteca)}` : ''}</b><small>${esc(x.licencia || 'licencia desconocida')}${x.autor ? ` · ${esc(x.autor)}` : ''}${x.origen ? ` · <a href="${esc(x.origen)}" target="_blank" rel="noopener">origen</a>` : ''}${x.motivo ? ` · ${esc(x.motivo)}` : ''}</small></li>`).join('')}</ul>`;
 }
 
 async function nuevaVersion(btn, version) {
@@ -467,16 +739,33 @@ async function retocar(btn, tipo) {
   ocupado(btn, true);
   $$('.gw-cambios .btn', cuerpo()).forEach(b => { if (b !== btn) b.disabled = true; });
   try {
+    // Iconos que se pueden usar en esta versión (los mismos que recibió la IA al crearla)
+    const icos = (v.iconos?.lista || []).filter(x => x.estado !== 'descartado' && x.estado !== 'inventado');
+    const icoFichas = icos.map(x => ({ id: x.id, nombre: x.nombre, uso: x.uso || '' }));
     const r = await store.iaWeb(tipo === 'retocar'
-      ? { modo: 'web-retocar', html: v.html, peticion }
-      : { modo: 'web-revisar', pedido: estado.datos, plan: v.plan, html: v.html },
+      ? { modo: 'web-retocar', html: v.html, peticion, ...(icoFichas.length ? { iconos: icoFichas } : {}) }
+      : { modo: 'web-revisar', pedido: estado.datos, plan: v.plan, html: v.html, componentes: (v.componentes?.lista || []).map(x => ({ id: x.id, nombre: x.nombre, biblioteca: x.biblioteca, licencia: x.licencia, enLaWeb: x.estado === 'usado' || x.estado === 'adaptado' })), ...(icoFichas.length ? { iconos: icoFichas } : {}) },
       { senal: cancelar.signal, alPensar: t => { vivo.textContent = 'Pensando: ' + t.replace(/\*\*/g, '').slice(0, 200); }, alTexto: (_, todo) => { vivo.textContent = `Escribiendo cambios · ${kb(todo.length)}`; } });
     const j = leerJSON(r.texto);
     const res = aplicarCambios(v.html, j.cambios);
     if (!res.aplicados) throw new Error('La IA no ha encontrado dónde aplicar los cambios. Prueba a explicarlo de otra forma.');
+    let iconosV = v.iconos;
+    if (L && icos.length) {
+      // Los marcadores nuevos o cambiados se rellenan con el SVG original; los ids desconocidos se quitan
+      const svgs = await Promise.all(icos.map(async x => ({ id: x.id, svg: await L.buscarElemento(x.id).then(c => c && L.svgIcono(c)).catch(() => null) })));
+      const ri = L.rellenarIconos(res.html, svgs.filter(x => x.svg));
+      res.html = ri.html;
+      iconosV = { ...v.iconos, lista: [
+        ...v.iconos.lista.filter(x => x.estado !== 'inventado').map(x => (x.estado === 'descartado' ? x : { ...x, estado: res.html.includes(`data-icono="${x.id}"`) ? 'usado' : 'sin usar', motivo: res.html.includes(`data-icono="${x.id}"`) ? '' : 'No está en esta versión' })),
+        ...ri.inventados.map(id => ({ id, nombre: id.split('/').pop(), biblioteca: '', licencia: '', autor: '', origen: '', estado: 'inventado', motivo: 'La IA puso un icono que no estaba en la lista: se ha quitado' }))
+      ] };
+    }
+    if (L && (v.componentes?.lista?.length || iconosV?.lista?.length)) {
+      res.html = L.avisosTerceros(res.html, (v.componentes?.lista || []).filter(x => x.estado === 'usado' || x.estado === 'adaptado'), { iconos: (iconosV?.lista || []).filter(x => x.estado === 'usado') }).html;
+    }
     const nueva = tipo === 'retocar'
-      ? { ...v, html: res.html, retoque: peticion, revision: v.revision }
-      : { ...v, html: res.html, conRevision: true, revision: { notas: j.notas, informe: j.informe, pendientes: j.pendientes, aplicados: res.aplicados, fallidos: res.fallidos } };
+      ? { ...v, html: res.html, iconos: iconosV, retoque: peticion, revision: v.revision }
+      : { ...v, html: res.html, iconos: iconosV, conRevision: true, revision: { notas: j.notas, informe: j.informe, pendientes: j.pendientes, aplicados: res.aplicados, fallidos: res.fallidos } };
     await nuevaVersion(btn, nueva);
     toast(`${res.aplicados} cambio${res.aplicados === 1 ? '' : 's'} aplicado${res.aplicados === 1 ? '' : 's'}${res.fallidos.length ? ` · ${res.fallidos.length} sin aplicar` : ''}`);
   } catch (e) {
@@ -499,10 +788,19 @@ async function bajarZip(btn) {
       catch { /* sin acceso a ese archivo */ }
     }
     const pend = [...new Set([...(v.plan?.pendientes || []), ...(v.revision?.pendientes || [])])];
+    const terceros = [
+      ...(v.componentes?.lista || []).filter(x => (x.estado === 'usado' || x.estado === 'adaptado') && v.html.includes(x.id)),
+      ...(v.iconos?.lista || []).filter(x => x.estado === 'usado' && v.html.includes(`data-icono="${x.id}"`))
+    ];
+    if (terceros.length) {
+      const txt = await cargarLibreria().then(m => m.licenciasTerceros(terceros)).catch(() => '');
+      archivos.push({ nombre: `${nombre}/LICENSES-TERCEROS.txt`, datos: txt || `Componentes de terceros usados:\n${terceros.map(x => `- ${x.nombre} · ${x.biblioteca} · ${x.licencia} · ${x.origen}`).join('\n')}\n` });
+    }
     archivos.push({ nombre: `${nombre}/LEEME.txt`, datos: [
       `Web de «${estado.p.respuestas?.negocio || ''}» · ${refPedido(estado.p.id)}`,
       `Creada con IA (${v.modelo || 'Gemini'}) el ${new Date(v.createdAt || Date.now()).toLocaleString('es-ES')}.`,
       '', 'Contenido:', '- index.html: la web completa (CSS y JS dentro).', '- img/: fotos y logotipo del cliente.',
+      ...(terceros.length ? ['- LICENSES-TERCEROS.txt: licencias del código de terceros que usa la web. No lo borres ni quites los avisos del código.'] : []),
       '', 'Antes de publicar:', '- Busca [PENDIENTE] en index.html y complétalo.', ...pend.map(x => `  · ${x}`),
       '- Revisa aviso legal, privacidad y cookies con los datos del titular.',
       '', 'Para publicarla, sube la carpeta tal cual (GitHub Pages, Netlify, el hosting del cliente…).'

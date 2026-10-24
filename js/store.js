@@ -500,7 +500,8 @@ export async function preguntarIA(cuerpo) {
 /* ---------- Crear la web del cliente con IA (solo equipo) ----------
    Cada paso llama a la función «asistente» y la respuesta llega en
    directo: alTexto(trozo) con lo que va escribiendo y alPensar(trozo)
-   con lo que va pensando. Devuelve { texto, modelo, motivo }. */
+   con lo que va pensando. Devuelve { texto, modelo, motivo, uso, componentes, iconos }
+   (componentes e iconos: los de la librería que la función ha pasado a la IA). */
 export async function iaWeb(cuerpo, { alTexto, alPensar, senal } = {}) {
   if (modoDemo) throw new Error('La IA no está disponible en el modo demo');
   const { data } = await limite(sb.auth.getSession(), 10000);
@@ -553,7 +554,7 @@ export async function iaWeb(cuerpo, { alTexto, alPensar, senal } = {}) {
   } finally { clearTimeout(quieto); }
   if (fallo) throw new Error(fallo);
   if (!fin) throw new Error('La IA no ha terminado (puede que la función de Supabase llegara a su tiempo máximo). Vuelve a intentarlo.');
-  return { texto, modelo: fin.modelo, motivo: fin.motivo, uso: fin.uso };
+  return { texto, modelo: fin.modelo, motivo: fin.motivo, uso: fin.uso, componentes: fin.componentes || null, iconos: fin.iconos || null };
 }
 
 /* Versiones de la web creada con IA (tabla webs_ia, solo equipo) */

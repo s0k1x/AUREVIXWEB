@@ -238,6 +238,7 @@ export function pintarCabecera(activa = '') {
       <nav class="nav" id="nav" aria-label="Principal">
         <a href="${ir('#webs')}">Webs y precios</a>
         <a href="${ir('#disenos')}">Diseños</a>
+        <a href="library/">Librería</a>
         <a href="${ir('#opiniones')}">Opiniones</a>
         <a href="${ir('#contacto')}">Contacto</a>
         <a href="trabaja.html" class="${activa === 'trabaja' ? 'act' : ''}">Trabaja con nosotros</a>
@@ -282,6 +283,7 @@ export function pintarPie() {
       <div class="footer-links">
         <a href="index.html#webs">Precios</a>
         <a href="index.html#disenos">Diseños</a>
+        <a href="library/">Librería</a>
         <a href="index.html#opiniones">Opiniones</a>
         <a href="trabaja.html">Trabaja con nosotros</a>
         <a href="index.html#contacto">Contacto</a>

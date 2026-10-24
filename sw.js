@@ -6,8 +6,10 @@
      archivos viejos con nuevos.
    - Fotos de los diseños: se guardan la primera vez y después
      salen al instante.
+   - Librería (/library/ y /biblioteca-ui/): NO se guarda (son miles de
+     archivos); va siempre por internet con la caché normal del navegador.
    ========================================================== */
-const VERSION = 'v30';
+const VERSION = 'v31';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
@@ -15,7 +17,7 @@ const ARCHIVOS = [
   './', 'index.html', 'trabaja.html', 'panel.html', 'plantilla.html', 'terminos.html', 'offline.html',
   'style.css', 'componentes.css', 'animaciones.css', 'inicio.css', 'panel.css', 'trabaja.css', 'config.js',
   'js/app.js', 'js/ui.js', 'js/store.js', 'js/plantillas.js', 'js/panel.js', 'js/pago.js', 'js/efectos.js',
-  'js/iconos.js', 'js/asistente.js', 'js/proyecto.js', 'js/sitio.js', 'js/cookies.js', 'js/apariencia.js', 'js/avisos.js', 'js/colabora.js', 'js/ajustes.js', 'js/megaprompt.js', 'js/generador.js', 'js/desplegable.js',
+  'js/iconos.js', 'js/asistente.js', 'js/proyecto.js', 'js/sitio.js', 'js/cookies.js', 'js/apariencia.js', 'js/avisos.js', 'js/colabora.js', 'js/ajustes.js', 'js/megaprompt.js', 'js/generador.js', 'js/desplegable.js', 'js/zip.js',
   'ajustes.html', 'funciones.css', 'tema-claro.css', 'icons/nombre-oscuro.png',
   'manifest.json', 'icons/logo-a.png', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
 ];
@@ -75,6 +77,7 @@ self.addEventListener('fetch', e => {
   if (url.hostname === 'images.pexels.com') { e.respondWith(fotoRapida(req)); return; }
   if (/^fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) { e.respondWith(fotoRapida(req)); return; }
   if (url.origin !== self.location.origin) return; // Supabase, Gemini, CDN: siempre en vivo
+  if (/\/(library|biblioteca-ui)\//.test(url.pathname)) return; // la librería no se guarda en el móvil
 
   e.respondWith(redPrimero(req));
 });
