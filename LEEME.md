@@ -562,3 +562,14 @@ Las páginas ya no acaban en `.html`:
 - Una pieza fija con el color de la web (`body::before`, alto `env(safe-area-inset-top)`) tapa siempre la zona de la hora del iPhone, haya o no cabecera a la vista. También en la librería.
 - Las vistas previas (iframes con `srcdoc`: librería, generador y web del cliente) llevan su propio bloqueo de zoom (`js/sinzoom.js`), porque son documentos aparte y el doble toque dentro de ellas hacía zoom a toda la página. `sw.js` v38.
 - Si la franja sigue viéndose en Safari tras recargar, haz una captura con la barra de direcciones visible: puede ser una versión guardada anterior.
+
+## 28. Versión v39 — más iconos, imágenes al compartir y recarga sin saltos
+
+- **Recarga sin saltos.** Al recargar la página (o volver atrás), la web aparece ya montada: sin títulos que suben, botones que se encienden ni desenfoques (clase `sin-entrada` en `<html>`, puesta por un script del `<head>`). La primera visita sí conserva la animación de entrada.
+- **Más iconos de la app** (`python3 scripts/generar-iconos.py` los vuelve a generar desde `icons/logo-a.png`):
+  - iconos de 48 a 512 px, maskable de 192, 384 y 512, monocromo para Android tematizado e icono verde alternativo;
+  - favicon (`favicon.ico` y PNG de 16, 32 y 48) e iconos de iPhone y iPad de 120, 152, 167 y 180;
+  - pantallas de arranque de iPhone y iPad (`icons/arranque/`), que se ven al abrir la app instalada;
+  - iconos propios para los 4 atajos de la app (pedir una web, mis proyectos, soporte y panel).
+- **Una imagen distinta al compartir cada página** (`node scripts/generar-imagenes.js`, 1200×630): inicio (`og.png`), trabaja con nosotros, términos y privacidad, diseños, panel y ajustes, y librería. Cada página lleva su título, descripción, imagen y dirección canónica. Para renovar la imagen en WhatsApp o Telegram puede hacer falta compartir el enlace con `?v=2` al final, porque guardan la anterior unos días.
+- **No se puede cambiar por sección:** la imagen es por página, no por ancla (`/#disenos` enseña la de inicio), y `/diseno` enseña la misma para los seis diseños.
