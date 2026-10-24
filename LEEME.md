@@ -231,3 +231,41 @@ No hace falta ejecutar ningún SQL nuevo.
 - La franja de aviso (y la de modo demo) ahora va **debajo** de la cabecera. Antes iba pegada arriba del todo, detrás de la hora del iPhone, y la cabecera dejaba un hueco vacío enorme debajo.
 - Pantallas de 360 px: el titular de portada y dos textos pequeños ya no se salen.
 - Sube todo y recarga con caché limpia (el service worker pasa a v25).
+
+## 19. Versión v26 — crear la web del cliente con IA y desplegables nuevos
+
+### Qué hay de nuevo
+- **Crear la web con IA** (ficha del pedido → botón verde, solo equipo). La IA:
+  1. Mira **todo** lo que pidió el cliente: cuestionario, plan, extras, diseño elegido, contenido, dominio,
+     mensajes, cambios pedidos, notas del equipo y **sus archivos** (fotos, logotipo, PDF y textos, uno a uno).
+  2. Hace un plan desde **9 puntos de vista**: el cliente, su visitante en el móvil, diseñador, experto en
+     conversión, redactor, SEO local, accesibilidad, rendimiento y legal (RGPD).
+  3. Escribe la web completa en **un solo HTML**. Si eligió un diseño predeterminado, lo respeta y lo adapta a
+     su marca; si es a medida, la crea desde cero a su gusto.
+  4. La **revisa** otra vez desde esos 9 puntos de vista, aplica las mejoras y le pone nota.
+  - Cada versión se guarda. Puedes verla en móvil y ordenador, leer el informe y el plan, editar el código,
+    **pedir cambios** («pon el botón de reservar más grande»), descargarla en **.zip** (con las fotos del cliente en
+    `img/`) o **enviarla al cliente**: la ve dentro de «Mis proyectos», recibe un aviso y la aprueba o pide cambios.
+    Cuando pide cambios, en el generador aparece un botón para pasárselos a la IA.
+  - Lo que falte (horario, dirección, datos legales…) queda como **[PENDIENTE: …]** y en la lista del informe.
+- **Modelo de IA**: solo para crear webs se usa **Gemini 3.8 Flash** (el mejor calidad-precio de Google ahora mismo:
+  0,75 $ por millón de tokens de entrada y 3,75 $ de salida hasta el 31/12/2026; luego sube a 1,50 $ y 7,50 $).
+  Una web completa (plan + web + revisión) sale aproximadamente por **0,30-0,60 $** según fotos y tamaño. El chat, «Te ayudo a elegir» y el mega prompt siguen con
+  `gemini-3.5-flash-lite`. Para la máxima calidad (unas 3-5 veces más caro) añade el secreto
+  `GEMINI_MODEL_WEB` = `gemini-4-argon`.
+- **Desplegables propios**: los menús de Estado, Asignado, Pago, Motivo, Tipo… ya no abren el menú gris del iPhone:
+  en el móvil sale una hoja desde abajo con el estilo de la web y en el ordenador un menú flotante.
+- **Menús de la cabecera** (avisos y tu cuenta): fondo oscurecido detrás, lista completa y «Cerrar sesión» en rojo.
+- **Pestañas del panel** en cuadrícula de 5 × 2 (ya no queda «Equipo» sola), filtros que llenan sus filas,
+  campos de Ajustes más compactos y barra «Guardar cambios» en una sola fila.
+
+### Qué tienes que hacer
+1. Sube todo el contenido del zip a GitHub y recarga con caché limpia (el service worker pasa a v26).
+2. Supabase → **SQL Editor** → pega `supabase/actualizacion-v26.sql` → **Run** (crea la tabla de versiones).
+3. Supabase → **Edge Functions → asistente** → pega el nuevo `supabase/functions/asistente/index.ts` → **Deploy**.
+   No hace falta ninguna clave nueva: usa tu `GEMINI_API_KEY`.
+
+### Tiempo máximo
+Cada paso es una llamada separada y la respuesta llega en directo, pero en el plan gratuito de Supabase una función
+puede durar como mucho 150 s (400 s en el de pago). Si un paso se corta, pulsa **Reintentar**; si pasa a menudo,
+quita algún archivo grande o desactiva la revisión automática (puedes lanzarla luego con «Revisar otra vez»).
