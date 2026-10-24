@@ -28,9 +28,10 @@
 .fc label .fc-w{display:flex;flex:none;white-space:nowrap}
 .fc label .fc-sp{flex:none;width:.28em}
 .fc label .fc-w > span{display:inline-block;flex:none;font-size:17px;color:var(--muted);transition:.3s cubic-bezier(.68,-.55,.265,1.55)}
-.fc input:focus,.fc input:not(:placeholder-shown),.fc textarea:focus,.fc textarea:not(:placeholder-shown){border-bottom-color:var(--accent)}
+.fc input:focus,.fc input:not(:placeholder-shown),.fc textarea:focus,.fc textarea:not(:placeholder-shown),.fc.lleno input,.fc.lleno textarea{border-bottom-color:var(--accent)}
 .fc input:focus + label .fc-w > span,.fc input:not(:placeholder-shown) + label .fc-w > span,
-.fc textarea:focus + label .fc-w > span,.fc textarea:not(:placeholder-shown) + label .fc-w > span{color:var(--accent);transform:translateY(-30px);font-size:14px}
+.fc textarea:focus + label .fc-w > span,.fc textarea:not(:placeholder-shown) + label .fc-w > span,
+.fc.lleno label .fc-w > span{color:var(--accent);transform:translateY(-30px);font-size:14px}
 .fc-hint{display:block;font-size:12.5px;color:var(--dim);margin-top:6px}
 .fc.error input,.fc.error textarea{border-bottom-color:var(--danger)}
 .fc.error label .fc-w > span,.fc.error input + label .fc-w > span,.fc.error textarea + label .fc-w > span{color:var(--danger)}
