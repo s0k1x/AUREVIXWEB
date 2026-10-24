@@ -447,7 +447,14 @@ etiquetas, índice de iconos caído).
   Un aviso dice qué se ha añadido o quitado. El estilo y el color no cambian el precio.
 - **Tema claro:** la nota «Para empezar pagas la señal…» del resumen ya se lee (antes, verde claro sobre verde claro).
   Comprobado el contraste de todos los textos de la portada y de los 6 pasos del pedido en tema claro y oscuro.
-- **Librería:** las vistas previas ya no abren la web dentro de la tarjeta al tocar un componente que es un enlace.
+- **Librería, vistas previas a prueba de toques:** muchos componentes son enlaces (`<a href="/">`, `<a href="#">`) o
+  formularios; al tocarlos, la vista previa abría la web dentro de la tarjeta o un «404 File not found». Ahora sus
+  enlaces y formularios no navegan (los «#id» solo desplazan) y, si un script intenta cambiar de página, la vista se
+  restaura sola y, si insiste, muestra «Este componente intenta abrir otra página». Se han probado **todas** las vistas
+  previas pulsando cada enlace, botón y formulario: antes fallaban 367 de los 711 componentes que pueden navegar.
+- **5 plantillas de Preline** (ai-chat-interface, cms-admin, coffee-shop, digital-agency, personal-portfolio) saltan nada más
+  abrirse a un archivo `index-preview.html` que no está en su repositorio: ahora se enseñan como código (sin vista previa
+  rota). `scripts/generar-indice.mjs` lo detecta solo si vuelve a pasar.
 - **Probado (simulado):**
   - modos nuevos 29/29: solo el equipo, peticiones incompletas, plan con fotos, web con iconos, revisión, retoques,
     reintento y Gemini caído;

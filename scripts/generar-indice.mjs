@@ -170,8 +170,17 @@ const catalogo = json(join(BIB, '_catalogo', 'componentes.json'));
 const items = [];
 const avisos = [];
 
+/* Si el HTML salta nada más abrirse a otro archivo que no está en la colección (o a otra web),
+   su vista previa no puede funcionar: se enseña solo el código (p. ej. las plantillas de Preline
+   que cargan un «index-preview.html» que no se publica en su repositorio). */
+function saltaAFaltante(archivos, textos) {
+  return archivos.some((r, i) => /\.html?$/i.test(r) && [...String(textos[i] || '').matchAll(/location\.(?:replace|assign)\(\s*['"]([^'"#?]+)/g)]
+    .some(m => /^([a-z]+:)?\/\//i.test(m[1]) || !existsSync(join(BIB, dirname(r), m[1]))));
+}
+
 function previewDe(lib, archivos, textos) {
   const html = textos.find((_, i) => /\.html?$/i.test(archivos[i])) || '';
+  if (saltaAFaltante(archivos, textos)) return 'code';
   switch (lib) {
     case 'uiverse-galaxy': return /<style/i.test(html) ? 'html' : 'tw';
     case 'hyperui': return 'hyperui';

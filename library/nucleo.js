@@ -218,7 +218,7 @@ const medir = id => `<script>(function(){var ID=${JSON.stringify(id)};function s
 
 /* Los componentes son de muestra: sus enlaces y formularios no navegan (un <a href="/"> abriría la web
    entera dentro de la tarjeta). Los enlaces «#id» solo desplazan. El resto (hover, animaciones, JS) funciona igual. */
-const SIN_NAVEGAR = `<script>(function(){function no(e){var a=e.target&&e.target.closest&&e.target.closest('a[href],area[href]');if(!a)return;e.preventDefault();var h=a.getAttribute('href')||'';if(h.charAt(0)==='#'&&h.length>1){try{var t=document.getElementById(decodeURIComponent(h.slice(1)));if(t)t.scrollIntoView({block:'nearest'})}catch(x){}}}addEventListener('click',no,true);addEventListener('auxclick',no,true);addEventListener('submit',function(e){e.preventDefault()},true)})();</script>`;
+const SIN_NAVEGAR = `<script>(function(){function no(e){var a=e.target&&e.target.closest&&e.target.closest('a,area');if(!a||!(a.hasAttribute('href')||a.hasAttribute('xlink:href')))return;e.preventDefault();var h=a.getAttribute('href')||a.getAttribute('xlink:href')||'';if(h.charAt(0)==='#'&&h.length>1){try{var t=document.getElementById(decodeURIComponent(h.slice(1)));if(t)t.scrollIntoView({block:'nearest'})}catch(x){}}}addEventListener('click',no,true);addEventListener('auxclick',no,true);addEventListener('submit',function(e){e.preventDefault()},true)})();</script>`;
 
 /**
  * Si aun así la vista previa navega (por ejemplo, un script que cambia location),
