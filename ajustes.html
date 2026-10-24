@@ -4,8 +4,7 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta id="vp" name="viewport" content="width=device-width, initial-scale=1">
-  <script>/* La zona de la hora solo se usa como parte de la web dentro de la app instalada; en Safari queda limpia */try{if(navigator.standalone||matchMedia('(display-mode: standalone)').matches)document.getElementById('vp').content+=', viewport-fit=cover'}catch(e){}</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <title>Ajustes · AurevixWeb</title>
   <meta name="robots" content="noindex">
   <link rel="manifest" href="manifest.json">
@@ -37,6 +36,7 @@
   <link rel="modulepreload" href="js/cookies.js">
   <link rel="modulepreload" href="js/avisos.js">
   <link rel="modulepreload" href="js/desplegable.js">
+  <script>/* Sin zoom (ni doble toque ni pellizco) */document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});document.addEventListener('gesturechange',function(e){e.preventDefault()},{passive:false})</script>
 </head>
 <body class="panel-body">
 <div class="splash listo" id="splash0" aria-hidden="true"><div class="brand-card splash-card"><div class="border"></div><div class="content"><div class="logo"><div class="logo1"><img src="icons/logo-a.png" alt=""></div><div class="logo2"><img src="icons/nombre.png" alt="AurevixWeb"></div></div><span class="logo-bottom-text">Webs profesionales</span></div><span class="bottom-text">Diseño web</span></div></div>

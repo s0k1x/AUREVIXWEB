@@ -4,8 +4,7 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta id="vp" name="viewport" content="width=device-width, initial-scale=1">
-  <script>try{if(navigator.standalone||matchMedia('(display-mode: standalone)').matches)document.getElementById('vp').content+=', viewport-fit=cover'}catch(e){}</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <title>Librería de componentes · AurevixWeb</title>
   <meta name="robots" content="noindex,nofollow">
   <meta name="description" content="Colección privada de componentes web de terceros, con su licencia y su origen.">
@@ -22,6 +21,7 @@
   <link rel="stylesheet" href="../funciones.css">
   <link rel="stylesheet" href="../tema-claro.css">
   <link rel="stylesheet" href="library.css">
+  <script>/* Sin zoom (ni doble toque ni pellizco) */document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});document.addEventListener('gesturechange',function(e){e.preventDefault()},{passive:false})</script>
 </head>
 <body class="lb">
   <a class="lb-saltar" href="#lbGrid">Saltar a los componentes</a>

@@ -280,3 +280,11 @@ dialog.dlg::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit
 .wordmark{height:15px;width:auto;max-width:100%;display:block}
 .logo .wordmark{margin-top:1px}
 @media(max-width:380px){.wordmark{height:13px}}
+
+/* Sin zoom ni gestos raros: nada de doble toque, resaltado al tocar ni menú al mantener pulsado */
+html{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{-webkit-touch-callout:none}
+img,svg,a{-webkit-user-drag:none}
+input,textarea,select{touch-action:manipulation}
+/* iOS hace zoom al enfocar un campo con letra menor de 16 px */
+@media (pointer:coarse){input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),textarea,select{font-size:16px!important}}
