@@ -573,3 +573,13 @@ Las páginas ya no acaban en `.html`:
   - iconos propios para los 4 atajos de la app (pedir una web, mis proyectos, soporte y panel).
 - **Una imagen distinta al compartir cada página** (`node scripts/generar-imagenes.js`, 1200×630): inicio (`og.png`), trabaja con nosotros, términos y privacidad, diseños, panel y ajustes, y librería. Cada página lleva su título, descripción, imagen y dirección canónica. Para renovar la imagen en WhatsApp o Telegram puede hacer falta compartir el enlace con `?v=2` al final, porque guardan la anterior unos días.
 - **No se puede cambiar por sección:** la imagen es por página, no por ancla (`/#disenos` enseña la de inicio), y `/diseno` enseña la misma para los seis diseños.
+
+## 29. Versión v40 — más rápida y fluida
+
+Medido en un móvil con la CPU 4 veces más lenta (Chromium, no iPhone real). En el inicio, al hacer scroll, **85 de 263 fotogramas iban lentos** (media 22 ms). Ahora **0-1 de 155** (media 16,7 ms, es decir, 60 fps).
+
+- **Secciones que no se ven no se dibujan** (`content-visibility: auto` en `inicio.css`): webs, diseños, cómo funciona, opiniones, preguntas, contacto y pie. Cada una lleva su alto real medido en móvil, tablet y escritorio, para que la barra de scroll no salte. Al saltar a un apartado (menú, botones, `#faq` en la dirección) `efectos.js → anclas()` las dibuja todas un momento para que el salto caiga justo; comprobado en 390 y 1440 px.
+- **Los latidos infinitos ya no repintan.** El botón del chat, el de WhatsApp y el puntito de «Plazas abiertas» animaban `box-shadow` sin parar (repintado en cada fotograma). Ahora animan `transform` y `opacity`, que hace la tarjeta gráfica.
+- **Menos trabajo al cargar:** los formateadores de euros y fechas se crean una vez (`ui.js`), y las miniaturas de diseños leen todas las medidas antes de escribir (no fuerzan el diseño varias veces). `sw.js` v40.
+- Sin cambios en el resto de páginas: ya iban a 60 fps (trabaja, ajustes, vista previa y librería).
+- No medido: iPhone real. En los datos del servidor de pruebas no cuenta la compresión de GitHub Pages.

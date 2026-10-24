@@ -204,17 +204,21 @@ $('#disenosGrid').innerHTML = PLANTILLAS.map(p => `
 /* Escala de cada ventana y «scroll» automático. El transform se escribe directamente en el iframe:
    Safari (iPhone) no siempre vuelve a aplicar un transform que depende de variables CSS que cambian,
    y la web se quedaba pequeña con un hueco blanco. */
-function colocarDz(card, animar = true) {
+function colocarDz(card, animar = true, ancho, alto) {
   const v = card.querySelector('.dz-view'), ifr = v?.querySelector('iframe');
-  if (!ifr || !v.clientWidth) return;
-  const s = v.clientWidth / 1280;
-  const d = card.classList.contains('recorre') ? Math.min(0, -(2600 * s - v.clientHeight)) : 0;
+  ancho ??= v?.clientWidth; alto ??= v?.clientHeight;
+  if (!ifr || !ancho) return;
+  const s = ancho / 1280;
+  const d = card.classList.contains('recorre') ? Math.min(0, -(2600 * s - alto)) : 0;
   // Al cambiar de tamaño la escala se aplica al momento; solo se anima el recorrido
   if (!animar) ifr.style.transition = 'none';
   ifr.style.transform = `translateY(${d.toFixed(1)}px) scale(${s.toFixed(5)})`;
   if (!animar) { void ifr.offsetWidth; ifr.style.transition = ''; }
 }
-const roDz = new ResizeObserver(es => es.forEach(({ target: v }) => colocarDz(v.closest('.dz'), false)));
+const roDz = new ResizeObserver(es => {
+  const medidas = es.map(({ target: v }) => [v.closest('.dz'), v.clientWidth, v.clientHeight]); // leer todo antes de escribir
+  medidas.forEach(([c, w, h]) => colocarDz(c, false, w, h));
+});
 $$('#disenosGrid .dz-view').forEach(v => roDz.observe(v));
 const recorrer = (card, si) => { card.classList.toggle('recorre', si); colocarDz(card); };
 if (matchMedia('(hover: hover)').matches) {

@@ -219,7 +219,20 @@ function arriba() {
   act();
 }
 
+/* Saltos a un apartado (enlaces con #, scrollIntoView): se dibujan todas las secciones durante el salto
+   (ver content-visibility en inicio.css) y se vuelve a lo normal al terminar. */
+function anclas() {
+  let t;
+  const activar = () => { document.documentElement.classList.add('ancla'); clearTimeout(t); t = setTimeout(() => document.documentElement.classList.remove('ancla'), 1600); };
+  document.addEventListener('click', e => { if (e.target.closest?.('a[href*="#"]')) activar(); }, true);
+  addEventListener('hashchange', activar);
+  if (location.hash) activar();
+  const orig = Element.prototype.scrollIntoView;
+  Element.prototype.scrollIntoView = function (...a) { activar(); return orig.apply(this, a); };
+}
+
 export function iniciarEfectos() {
+  anclas();
   saltar();
   arriba();
   ondas();
