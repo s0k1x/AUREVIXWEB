@@ -291,3 +291,9 @@ input,textarea,select{touch-action:manipulation}
 
 /* Zona de la hora (iPhone): una pieza fija con el color de la web la tapa siempre, haya o no cabecera a la vista */
 @media (max-width:900px){body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:var(--bg);z-index:49;pointer-events:none}}
+
+/* Al recargar la página (o volver atrás) la web aparece ya montada: sin títulos que suben, botones que se encienden ni desenfoques */
+html.sin-entrada .hero-copy > *,html.sin-entrada .hero-art{animation:none!important}
+html.sin-entrada .js .reveal,html.sin-entrada.js .reveal{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}
+html.sin-entrada .split .w > span{transform:none!important;transition:none!important}
+html.sin-entrada .scribble path{stroke-dashoffset:0!important;animation:none!important}
