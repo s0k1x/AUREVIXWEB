@@ -1,0 +1,4 @@
+# AurevixWeb · la librería de componentes es una colección privada de consulta: no se indexa
+User-agent: *
+Disallow: /library/
+Disallow: /biblioteca-ui/

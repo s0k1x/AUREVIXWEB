@@ -2,9 +2,13 @@
 //  ASISTENTE CON IA (Gemini) · función de Supabase
 //  - modo "chat":   atención al cliente en la web
 //  - modo "elegir": recomienda tipo de web y diseño
+//  - modo "web-recursos" (v31): elige componentes de la librería
+//    para un pedido (solo equipo). Está en libreria.ts.
 //  La clave de Gemini se guarda como secreto en Supabase
 //  (GEMINI_API_KEY). Nunca va dentro de la web.
 // ==========================================================
+
+import * as Libreria from './libreria.ts';
 
 const MODELO = Deno.env.get('GEMINI_MODEL') || 'gemini-3.5-flash-lite';
 const CLAVE = Deno.env.get('GEMINI_API_KEY') || '';
@@ -71,7 +75,10 @@ Deno.serve(async req => {
   if (!CLAVE) return json({ error: 'Falta GEMINI_API_KEY' }, 500);
 
   try {
-    const { modo, mensajes, catalogo } = await req.json() as { modo: string; mensajes: Mensaje[]; catalogo: Catalogo };
+    const cuerpo: Record<string, unknown> = await req.json();
+    const { modo, mensajes, catalogo } = cuerpo as { modo: string; mensajes: Mensaje[]; catalogo: Catalogo };
+    // v31 · Librería: la IA elige componentes (comprueba que es del equipo; ver libreria.ts)
+    if (modo === 'web-recursos') return await Libreria.responderRecursos(req, cuerpo, { clave: CLAVE, modelo: MODELO });
     if (!catalogo?.planes?.length || !Array.isArray(mensajes) || !mensajes.length) return json({ error: 'Petición incompleta' }, 400);
     // Límites para evitar abusos
     const hilo = mensajes.slice(-16).map(m => ({

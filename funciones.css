@@ -1126,3 +1126,63 @@ section[id],[id].ancla{scroll-margin-top:84px}
   .header{position:fixed;top:0;left:0;right:0;width:100%}
   body{padding-top:calc(67px + env(safe-area-inset-top))}
 }
+
+/* ==========================================================
+   v31 · «Crear la web con IA»: componentes de la librería
+   ========================================================== */
+.gw-lib .gw-nota{margin:0}
+.gw-comp-g h4{font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:4px 0 6px}
+.gw-comps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.gw-comp{position:relative;display:flex;align-items:center;gap:10px;padding:8px 44px 8px 8px;border:1px solid var(--line);border-radius:14px;min-width:0;transition:border-color var(--t-medio) var(--suave)}
+.gw-comp:hover{border-color:var(--line2)}
+.gw-comp.no{opacity:.6}
+.gw-comp-v{position:relative;flex:none;width:84px;height:64px;border-radius:10px;overflow:hidden;background:var(--card2);background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1.2px);background-size:12px 12px;display:grid;place-items:center}
+html[data-tema=claro] .gw-comp-v{background-image:radial-gradient(rgba(20,20,26,.12) 1px,transparent 1.2px)}
+.gw-comp-v iframe{position:absolute;left:0;top:0;width:100%;height:100%;border:0;color-scheme:normal;transform-origin:0 0;pointer-events:none}
+.lbv-fmt{font-family:var(--fm);font-size:11px;color:var(--muted);border:1px solid var(--line2);border-radius:7px;padding:2px 6px}
+.gw-comp-t{min-width:0;display:grid;gap:2px}
+.gw-comp-t b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gw-comp-t small{font-size:12px;color:var(--muted);line-height:1.35}
+.gw-comp-m{display:flex;gap:4px;align-items:flex-start}
+.gw-comp-m svg{width:13px;height:13px;flex:none;margin-top:2px;color:var(--warn)}
+.gw-comp-x{position:absolute;top:50%;right:6px;transform:translateY(-50%);width:34px;height:34px}
+.gw-lic{font-family:var(--fm);font-size:10.5px;border-radius:999px;padding:1px 7px;border:1px solid}
+.gw-lic.permisiva{color:var(--ok);border-color:rgba(74,222,128,.35)}
+.gw-lic.atribucion{color:var(--warn);border-color:rgba(251,191,36,.38)}
+.gw-lic.restringida{color:var(--danger);border-color:rgba(248,113,113,.38)}
+html[data-tema=claro] .gw-lic.permisiva{color:#15803d}
+html[data-tema=claro] .gw-lic.atribucion{color:#a16207}
+html[data-tema=claro] .gw-lic.restringida{color:#b91c1c}
+.gw-lib-pie{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.gw-coste{font-size:13px;color:var(--muted);font-family:var(--fm);min-width:0}
+.gw-coste b{color:var(--warn);font-weight:500}
+.gw-presu{min-width:190px}
+@media (max-width:640px){
+  .gw-comps{grid-template-columns:1fr}
+  .gw-presu{width:100%}
+  .gw-lib .gw-acc{grid-template-columns:1fr}
+  .gw-lib .gw-acc .btn{width:100%}
+}
+
+/* v31 · Iconos para la IA (generador) */
+.gw-manual{color:inherit;font-weight:600}
+.gw-icos h4 small{text-transform:none;letter-spacing:0;font-family:inherit}
+.gw-icos-l{list-style:none;margin:0 0 8px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.gw-ico{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:4px 6px 4px 8px;border:1px solid var(--line);border-radius:999px;font-size:13px;background:transparent;color:inherit;max-width:100%}
+.gw-ico span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gw-ico img{width:18px;height:18px;flex:none}
+html:not([data-tema=claro]) .gw-ico img{filter:invert(1)}
+.gw-ico.manual{border-color:var(--line2)}
+.gw-icos-l.auto .gw-ico{padding-right:10px;opacity:.85}
+.gw-ico button{display:grid;place-items:center;width:28px;height:28px;border:0;border-radius:50%;background:transparent;color:var(--muted);cursor:pointer}
+.gw-ico button:hover{color:inherit;background:var(--card2)}
+.gw-ico button svg{width:14px;height:14px}
+button.gw-ico{cursor:pointer;padding-right:10px}
+button.gw-ico:hover:not(:disabled){border-color:var(--line2)}
+button.gw-ico.ya{opacity:.45;cursor:default}
+.gw-ico-bus input{width:100%;min-height:44px}
+.gw-sw-sm{margin:4px 0 8px}
+.gw-bloqueo{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;padding:10px 12px;border:1px solid rgba(251,191,36,.38);border-radius:12px;font-size:14px}
+.gw-bloqueo svg{width:16px;height:16px;color:var(--warn);flex:none}
+.gw-bloqueo span{flex:1;min-width:200px}
+.gw-inf-ico small{word-break:break-word}

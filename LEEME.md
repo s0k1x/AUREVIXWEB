@@ -22,7 +22,13 @@
 | `js/store.js` | Login y base de datos (Supabase o modo demo) |
 | `supabase/esquema.sql` | Tablas y permisos de la base de datos |
 | `supabase/functions/asistente/index.ts` | Función que habla con Gemini (la clave nunca va en la web) |
+| `supabase/functions/asistente/libreria.ts` | Librería para la IA (v31): modo `web-recursos` y componentes e iconos para `web-html`. Cómo desplegarlo: `INTEGRAR-LIBRERIA.md` |
 | `manifest.json`, `sw.js`, `icons/` | Lo que la hace instalable como app (PWA) |
+| `library/` | Librería de componentes en `aurevixweb.es/library` (v31): página, índice y núcleo compartido con el generador |
+| `library/extra.json`, `library/extra/` | Componentes que añades tú a mano desde el móvil (ver sección 21) |
+| `scripts/generar-indice.mjs` | Regenera `library/indice.json` y `library/iconos.json` a partir de `biblioteca-ui/` (necesita ordenador con Node) |
+| `js/zip.js` | Crea archivos .zip (lo usan el generador y la librería) |
+| `robots.txt`, `.nojekyll` | Que los buscadores no indexen la librería · que GitHub Pages publique `biblioteca-ui/` tal cual |
 
 ## 1. Cambia tus datos
 Abre `config.js` y cambia:
@@ -277,3 +283,151 @@ quita algún archivo grande o desactiva la revisión automática (puedes lanzarl
 - **Safari (no la app instalada)**: la web ya no se mete por detrás de la hora, así que la cabecera queda pegada arriba sin hueco.
   En la app instalada sigue ocupando toda la pantalla como antes.
 - Service worker v30. La cabecera del móvil va fija (position: fixed) para que Safari pinte bien la zona de la hora al subir y bajar. Sube el zip a GitHub y recarga con la caché limpia.
+
+## 21. Versión v31 — Librería de componentes (aurevixweb.es/library) y componentes en «Crear la web con IA»
+
+### Qué hay de nuevo
+- **Librería** en `https://aurevixweb.es/library` (enlace «Librería» en el menú y en el pie). Al estilo de uiverse.io con el diseño de la web:
+  buscador (atajo «/»), pestañas por categoría con contador, filtros por biblioteca (con buscador), formato, licencia y
+  «Usable en webs de clientes» (activado por defecto para el equipo), orden (Recomendados, Más nuevos, A–Z), chips para quitar filtros,
+  favoritos (corazón) con la vista «Mis favoritos» y todo guardado en la dirección para compartir enlaces (también un componente concreto).
+  - Cada tarjeta enseña el componente **en vivo** (aislado en un iframe: su código no puede leer tu sesión ni tus datos), su biblioteca y su
+    licencia en color (verde permisiva, ámbar con atribución, rojo restringida). Los JSX/TSX, SCSS y TypeScript no se ejecutan sin compilar:
+    se ve su código resaltado.
+  - Al abrir un componente: vista grande con fondo claro/oscuro/puntos, pestañas por archivo, «Copiar», «Descargar» (.zip con su licencia),
+    «Pantalla completa», aviso de licencia con autor y origen, «Anterior/Siguiente» (también con ← →) y, para el equipo, «Usar en mi pedido».
+  - **9.901 componentes de 29 bibliotecas + 26.180 iconos de 19 sets.** El índice pesa 2,8 MB (unos 350 KB comprimido) y el código de cada
+    componente solo se descarga al verlo. No se indexa en buscadores (`noindex` y `robots.txt`).
+- **Licencias** (regla obligatoria): cada componente lleva su biblioteca, su licencia (SPDX), su autor y su origen.
+  - *Permisiva* (MIT, Apache-2.0, BSD, ISC, 0BSD, Unlicense, CC0): se puede usar en webs de clientes conservando el aviso.
+  - *Con atribución* (CC-BY y licencias que la exigen, como Preline): solo conservando la atribución.
+  - *Restringida* (GPL/AGPL/LGPL, CC-BY-NC/SA, solo uso personal, de pago o desconocida): solo consulta; la IA no la usa.
+  - Hoy: 9.770 permisivas, 33 con atribución (Preline) y **98 restringidas (Animate.css, Hippocratic License)**, que se pueden consultar
+    pero no entran en la IA ni en webs de clientes.
+  - «Copiar» y «Descargar» añaden siempre la cabecera con autor, licencia y origen.
+- **Crear la web con IA** usa la librería en dos etapas:
+  1. **Componentes sugeridos** (antes de crear): «Sugerir con IA» (modo nuevo `web-recursos`, modelo barato) recibe la ficha del cliente y
+     hasta 400 candidatos ya filtrados aquí (solo licencias utilizables, por sector, estilo y palabras) y elige como máximo 25, por secciones
+     (menú, portada, servicios, galería, precios, opiniones, contacto, pie, extras) con su motivo. Ves la vista previa, puedes quitar o añadir
+     desde la librería («Usar en mi pedido»; se comparte entre pestañas), el número de tokens, el coste aproximado y el presupuesto
+     (30.000 / 60.000 / 100.000 / 150.000 tokens; por defecto 60.000). Si se pasa, se recortan **solo los sugeridos** de menos
+     prioridad; **lo elegido a mano nunca se recorta**: si no cabe, el panel lo avisa antes de gastar nada y ofrece «Subir a …»
+     (o quitar alguno). Los elegidos a mano tampoco compiten con los 400 candidatos ni cuentan contra los que elige la IA.
+  2. **Crear la web** (el `web-html` de siempre, modelo avanzado) recibe además el código de los elegidos: la función lo lee de
+     `aurevixweb.es`, lo trata como datos (nunca como órdenes), y la IA lo adapta a la marca del cliente, unifica estilos y traduce o descarta
+     los JSX/TSX (la web final es un único HTML).
+  - La web generada conserva el aviso de licencia de cada componente y lleva al final `<!-- Componentes de terceros: … -->` con la lista real.
+    El **informe** dice cuáles se han usado, adaptado, descartado o recortado, con su licencia, y el **.zip** incluye `LICENSES-TERCEROS.txt`.
+  - En el modo demo funciona «Sugerir (sin IA)» (elige por categoría y estilo) para ver el panel. Si la función desplegada todavía no
+    tiene `web-recursos`, «Sugerir con IA» avisa y elige igual sin IA.
+  - **Iconos**: ver la sección 22.
+- **Service worker v31**: la librería (`/library/` y `/biblioteca-ui/`) no se guarda en el móvil (son miles de archivos).
+
+### Qué tienes que hacer
+Los cambios están en GitHub en la rama `claude/download-ui-libraries-yktubi` (no en `main`): la web publicada no cambia hasta que la unas.
+1. **Publicar la web** (GitHub, también desde el móvil): *Pull requests → New pull request* → base `main`, compare
+   `claude/download-ui-libraries-yktubi` → *Create pull request* → revisa los archivos → *Merge pull request*.
+   Incluye `.nojekyll` (archivo vacío en la raíz). **Por qué hace falta:** GitHub Pages pasa la web por Jekyll, y Jekyll no publica las
+   carpetas que empiezan por «_», que es donde está el código (`biblioteca-ui/_sources`). Sin `.nojekyll` la librería se ve vacía y la IA no
+   puede leer los componentes ni los iconos. La web no usa ninguna función de Jekyll, así que no cambia nada más. A partir de entonces se
+   publican los 62.000 archivos de `biblioteca-ui/` (unos 200 MB, por debajo del límite de 1 GB): la publicación tarda más que antes.
+2. En GitHub → *Actions*, espera a que «pages build and deployment» salga en verde. Abre `https://aurevixweb.es/library` y recarga con la
+   caché limpia (el service worker pasa a v31).
+3. **Supabase (cuando lo decidas):** sigue `supabase/functions/asistente/INTEGRAR-LIBRERIA.md`. Resumen: copia de seguridad del código
+   desplegado → añade `libreria.ts` → sustituye `index.ts` por el de GitHub (es el desplegado **más** `web-recursos`; el chat y «Te ayudo a
+   elegir» no cambian) → *Deploy*. No hace falta ninguna clave nueva ni ningún SQL. Solo si la web **no** está en `aurevixweb.es`, añade en
+   *Secrets* `BIBLIOTECA_URL` con la dirección donde esté publicada (por ejemplo `https://s0k1x.github.io/AUREVIXWEB/`).
+   - **Importante:** la función desplegada hoy **solo tiene el chat y «Te ayudo a elegir»** (comprobado el 24/10/2026: es idéntica al
+     `index.ts` anterior de GitHub). La versión con «Mega prompt con IA» y «Crear la web con IA» (secciones 16 y 19) no llegó a subirse ni a
+     desplegarse, así que esos dos botones hoy no usan la IA. Si conservas el zip de la v23/v26, su `supabase/functions/asistente/index.ts`
+     es el que falta: pásalo y se integra con `libreria.ts` (ver la guía). No se ha reconstruido para no inventar sus instrucciones.
+4. Cuando quieras, `biblioteca-ui/index.html` (la página vacía antigua) se puede cambiar por una redirección a la librería:
+   `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0; url=../library/"><a href="../library/">Librería</a>`
+   No se ha tocado nada de `biblioteca-ui/` (su `README.md` dice que las carpetas «_» no se publican: con `.nojekyll` eso deja de ser así).
+
+### Añadir componentes desde el móvil (sin ordenador)
+1. En GitHub entra en `library/extra` → *Add file → Create new file* → nombre, por ejemplo, `boton-neon.html` → pega el código
+   (HTML con su `<style>`) → *Commit*. Puedes subir también varios archivos (`.css`, `.js`) con *Upload files*.
+2. Abre `library/extra.json` → lápiz (*Edit*) → añade una ficha por componente, separadas por comas, dentro de los corchetes:
+   ```json
+   [
+     { "nombre": "Botón neón", "archivo": "boton-neon.html", "categoria": "buttons", "licencia": "MIT",
+       "autor": "Nombre del autor", "origen": "https://dirección-de-donde-lo-sacaste", "etiquetas": ["neon", "animado"] }
+   ]
+   ```
+   - `categoria`: buttons, cards, forms, inputs, toggles, checkboxes, radios, loaders, tooltips, navigation, backgrounds, layouts,
+     feedback, modals, data-display, animations, text-effects u otros.
+   - `licencia`: el identificador SPDX (MIT, Apache-2.0, ISC, CC0-1.0, CC-BY-4.0…). Si no la sabes, `desconocida` (solo consulta).
+   - Para varios archivos usa `"archivos": ["tarjeta.html", "tarjeta.css"]`. `"vista": "tw"` si usa Tailwind; `"vista": "code"` si no se puede ejecutar.
+3. *Commit*. Al recargar la librería aparece en «Añadidos a mano (licencia)», y la IA ya puede usarlo si su licencia lo permite.
+
+### Añadir una biblioteca entera (necesita ordenador o una sesión de Claude Code)
+Hay que descargarla, catalogarla y regenerar el índice. En un ordenador con Git, Python y Node:
+`bash biblioteca-ui/_scripts/descargar.sh` (después de añadir la biblioteca a su lista), `python3 -I biblioteca-ui/_scripts/construir_catalogo.py`
+y `node scripts/generar-indice.mjs`; luego sube `biblioteca-ui/`, `library/indice.json` y `library/iconos.json`. Antes, comprueba su licencia:
+si no permite redistribuirla (como React Bits, Float UI, Hover.css, Remix Icon o Tailwind UI), no la añadas. También puedes pedírselo a
+Claude Code en una sesión nueva: no sube nada por su cuenta.
+
+### Regenerar los índices
+Si cambia `biblioteca-ui/` (bibliotecas nuevas, iconos nuevos), en un ordenador con Node 18 o más: `node scripts/generar-indice.mjs`.
+Reescribe `library/indice.json` y `library/iconos.json` (no toca `biblioteca-ui/`); sube los dos. Los añadidos a mano de
+`library/extra.json` no necesitan regenerar nada.
+
+### Volver atrás
+- **Web:** en GitHub abre el pull request ya unido → *Revert* → *Merge*. Se quita todo lo de la v31 (la librería deja de verse y el
+  generador vuelve a la v30). También se puede borrar solo `.nojekyll` para dejar de publicar `biblioteca-ui/_sources`.
+- **Supabase:** pega la copia de seguridad en `index.ts`, borra `libreria.ts` y *Deploy* (detalles en `INTEGRAR-LIBRERIA.md`).
+
+### Qué se ha probado y qué no
+Todo en una **copia de prueba** (modo demo, IA falsa inyectada solo en esa copia), nunca contra Supabase ni Gemini reales:
+- Galería en 360 px, 390 px y escritorio con la biblioteca real y con 2.000 componentes falsos: búsqueda, filtros, chips, enlaces, favoritos,
+  scroll infinito (máximo 40 vistas montadas), código, copiar, descargar, iconos, tema claro, «reducir movimiento», teclado y añadidos a mano.
+- Generador con IA falsa: componentes, presupuesto, licencias, informe, `.zip` con `LICENSES-TERCEROS.txt`, y el recorrido completo de los
+  iconos (sección 22). También: función sin `web-recursos`, error del proveedor y petición vacía.
+- Función: el `index.ts` nuevo responde **igual** que el desplegado en chat, «Te ayudo a elegir», errores y límites (misma petición a
+  Gemini, misma respuesta), y `libreria.ts` con Gemini, Supabase y la web simulados (permisos, presupuesto, rutas, tamaños, tiempos,
+  inyección de instrucciones, iconos inventados). `tsc --strict` sin errores.
+- Vistas previas con Tailwind 3.4.16 y Alpine 3.14.8: los CDN están bloqueados en el entorno de pruebas, así que se usaron los paquetes
+  oficiales de npm (Alpine: el mismo archivo que sirve el CDN; Tailwind: su compilador oficial para las clases de los componentes probados).
+  40 de 40 componentes con Tailwind y 47 de 47 de Pines con Alpine se ven con sus estilos y Alpine arrancado. Dos de Pines (`combobox` y
+  `video`) dan un error de JavaScript propio dentro de su vista aislada.
+- **No probado:** Supabase y Gemini reales (la calidad real de lo que escribe la IA), un iPhone real y el CDN «Play» de Tailwind en sí.
+
+## 22. Versión v31 — Iconos para la IA
+
+**El problema:** los iconos de la librería (26.180, de 19 sets) no llegaban nunca a la IA. La librería los excluía de todo lo que se enviaba
+(`paraIA` en `library/nucleo.js`), el botón «Usar en mi pedido» estaba desactivado en los iconos, el generador no los mandaba y la función
+los descartaba («Los iconos no se envían a la IA»). La IA, si ponía iconos, se los inventaba (SVG dibujados a mano o nombres que no existen).
+
+**Cómo funciona ahora:**
+1. **Buscar:** en la librería (pestaña «Iconos») y en el generador hay un buscador que entiende español («teléfono», «tijeras», «coche») e
+   inglés. No repite el mismo icono en varios sets.
+2. **Elegir:** a mano («Usar en mi pedido» en cualquier icono, o «+» en el buscador del generador) y/o **automáticamente** (casilla
+   «Añadir iconos automáticamente», activada por defecto): menú, cerrar, teléfono, email, dirección, horario, ventajas, flecha, estrella y
+   los del sector, extras y redes del pedido (por ejemplo, peluquería → tijeras; reservas → calendario; WhatsApp, Instagram). Un solo
+   estilo para toda la web (Lucide y, si falta, Tabler); las marcas salen de Simple Icons (CC0; son marcas registradas: solo para enlazar
+   a sus perfiles). Máximo 24 por web, sin repetir; **los elegidos a mano van siempre primero y nunca se quedan fuera**.
+3. **Enviar:** la IA recibe solo id, nombre y para qué sirve cada icono (unos 25 tokens por icono; con 24 iconos, unos 600 tokens:
+   cabe de sobra en el presupuesto, que se calcula con los componentes y los iconos juntos).
+4. **Generar:** la IA escribe marcadores vacíos `<svg data-icono="icono/lucide/default/phone" class="…"></svg>`. El panel cambia cada
+   marcador por el **SVG original** del archivo de la colección, saneado (sin scripts, estilos globales, enlaces ni ids; colores negros →
+   `currentColor`, así se pintan con el color del texto). Conserva `class`, tamaño, `style` y `aria-label`. **Los ids que no estaban en la
+   lista se quitan** y aparecen en el informe como «Inventado». La revisión y los retoques pasan por el mismo filtro.
+5. **Licencias:** el comentario final «Componentes de terceros» añade una línea por set («Iconos de Lucide (12): phone, mail… · Licencia
+   ISC · Autor · Origen») y `LICENSES-TERCEROS.txt` del `.zip` incluye el texto completo de cada licencia y la lista de iconos.
+
+**Comprobar que funciona** (después de desplegar en Supabase la función con `libreria.ts` y la parte de `web-html`):
+panel → pedido → «Crear la web con IA» → mira la lista «Iconos» → *Crear la web* → **Informe → Iconos** debe decir «N de M usados» **sin**
+«la función desplegada no los ha recibido». En **Código**, cada icono es un `<svg data-icono="…">` con su dibujo dentro.
+
+**Qué falta para que funcione en producción:** que `web-html` de la función envíe la lista a Gemini (`Libreria.prepararWebHtml`, ver
+`INTEGRAR-LIBRERIA.md`). Ese modo está en la función v26, que hoy no está desplegada (sección 21, paso 3). Mientras tanto, el informe lo
+indica («No enviado») y la web se crea igual, sin iconos de la librería.
+
+**Probado** (simulado): recorrido completo en 1440, 390 y 360 px. El recorrido es: búsqueda en la librería → «Usar en mi pedido» → iconos manuales y automáticos en el
+generador → búsqueda y «+» → petición `web-html` con la lista (manuales primero, sin repetidos, sin SVG) → marcadores rellenados con el
+SVG original, inventado quitado, `<i>`/`<span>` convertidos, `aria-label` conservado → **render** en la vista previa (24 iconos dibujados,
+con tamaño y color del CSS) → retoque que añade otro icono → `.zip` con las licencias de Lucide (ISC) y Tabler (MIT). Además, saneado de un
+SVG de cada uno de los 19 sets y de un SVG malicioso, y la parte de la función (ids inventados o con rutas raras, máximo 24, «uso» sin
+etiquetas, índice de iconos caído).
+**No probado:** con Gemini real (si obedece siempre los marcadores; si no lo hace, los iconos inventados se quitan igualmente).
