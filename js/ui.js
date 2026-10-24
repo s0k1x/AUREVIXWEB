@@ -9,6 +9,7 @@ import { aplicarCache, cargarAjustesWeb } from './sitio.js';
 import { iniciarCookies } from './cookies.js';
 import { aplicarApariencia, guardarApariencia } from './apariencia.js';
 import { campanaHTML, iniciarAvisos } from './avisos.js';
+import { iniciarDesplegables } from './desplegable.js';
 export { icono, pintarIconos };
 
 /* ---------- Utilidades ---------- */
@@ -502,6 +503,23 @@ function pintarAnuncio() {
   colocarFranja(b);
 }
 
+/* Fondo oscurecido detrás de los menús de la cabecera (avisos, cuenta, navegación) en el móvil */
+function iniciarVelo() {
+  const velo = document.createElement('div');
+  velo.className = 'menu-velo';
+  document.body.appendChild(velo);
+  const raiz = document.documentElement;
+  const revisar = () => raiz.classList.toggle('menu-abierto', !!document.querySelector('.av-menu.open, .user-menu.open, #header.open'));
+  new MutationObserver(revisar).observe(document.getElementById('header') || document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  velo.addEventListener('click', () => {
+    document.querySelectorAll('.av-menu.open, .user-menu.open').forEach(m => m.classList.remove('open'));
+    document.getElementById('userBtn')?.classList.remove('open');
+    const h = document.getElementById('header');
+    if (h?.classList.contains('open')) document.getElementById('menuBtn')?.click();
+  });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && raiz.classList.contains('menu-abierto')) velo.click(); });
+}
+
 let ultimoFallo = 0;
 export async function arrancar(pagina) {
   document.documentElement.classList.add('js');
@@ -520,6 +538,8 @@ export async function arrancar(pagina) {
   pintarPie();
   iniciarEfectos();
   iniciarCookies();
+  iniciarDesplegables();
+  iniciarVelo();
   console.info('%c© AurevixWeb', 'font:700 14px sans-serif;color:#9fd23a', '— Todos los derechos reservados. Prohibida la copia o reutilización del diseño y del código sin autorización.');
   if (store.modoDemo) {
     const b = document.createElement('div');

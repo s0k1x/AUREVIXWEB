@@ -12,6 +12,7 @@ import {
 } from './ui.js';
 import { montarHilo, montarArchivos, abrirRecibo } from './colabora.js';
 import { abrirMegaPrompt } from './megaprompt.js';
+import { abrirGeneradorWeb } from './generador.js';
 
 await arrancar('panel');
 
@@ -51,6 +52,8 @@ store.alCambiarUsuario(async u => {
   const pedidoHash = pedida.startsWith('pedido-') ? pedida.slice(7) : '';
   tab = tabs.some(t => t[0] === pedida) ? pedida : pedidoHash ? (u.role === 'owner' ? 'pedidos' : 'mios') : tabs[0][0];
   tabsEl.innerHTML = tabs.map(([id, t, ic]) => `<button role="tab" data-tab="${id}">${icono(ic)}<span>${t}</span><i class="badge" data-badge="${id}"></i></button>`).join('');
+  // Cuadrícula sin huecos: 10 pestañas → 5 × 2, 4 → 4 × 1, 6 → 3 × 2…
+  tabsEl.style.setProperty('--cols', tabs.length <= 5 ? tabs.length : Math.ceil(tabs.length / 2));
   $('#pnAjustes').hidden = false;
   await cargar();
   if (pedidoHash) abrirPedido(pedidoHash);
@@ -64,6 +67,11 @@ addEventListener('hashchange', () => {
 document.addEventListener('aviso', () => { if (!dlg.open) cargar(true); });
 // Al volver a la web tras un rato en otra app, se actualizan los datos sin tocar lo que estés escribiendo
 let ocultoDesde = 0;
+// El generador de webs con IA avisa cuando envía una versión al cliente
+document.addEventListener('pedido-cambiado', async e => {
+  await cargar(true);
+  if (dlg.open && e.detail) abrirPedido(e.detail);
+});
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) { ocultoDesde = Date.now(); return; }
   if (U && U.role !== 'client' && ocultoDesde && Date.now() - ocultoDesde > 60000 && !dlg.open) cargar(true);
@@ -926,9 +934,14 @@ function abrirPedido(id) {
             ? `${icono('euro')}<span>El cliente indica que ha pagado ${p.pagoFase === 'resto' ? 'el resto' : 'la señal'} (<b class="nw">${euros(p.pagoFase === 'resto' ? p.total - senal : senal)}</b>) por <b>${METODOS[p.pagoMetodo] || p.pagoMetodo}</b> ${p.pagoAviso ? haceCuanto(p.pagoAviso) : ''}. Compruébalo en tu banco y márcalo como <b>Pagado</b> (o «Señal pagada»).</span>`
             : p.pagoMetodo ? `Último pago por ${METODOS[p.pagoMetodo] || p.pagoMetodo}.` : `Señal: ${euros(senal)} · Resto: ${euros((p.total || 0) - senal)}`}</p>
         </div>
-        <button type="button" class="od-ia" id="odPrompt">
+        <button type="button" class="od-ia od-ia-web" id="odWebIA">
           <span class="od-ia-ic">${icono('sparkle')}</span>
-          <span><b>Mega prompt con IA</b><small>Todo lo que ha pedido el cliente, listo para crear su web</small></span>
+          <span><b>Crear la web con IA</b><small>Mira el pedido, los mensajes y las fotos del cliente y crea su web en HTML, revisada desde 9 puntos de vista</small></span>
+          ${icono('arrow')}
+        </button>
+        <button type="button" class="od-ia od-ia-sec" id="odPrompt">
+          <span class="od-ia-ic">${icono('file')}</span>
+          <span><b>Mega prompt</b><small>Todo lo que ha pedido el cliente en un texto, para usarlo en otra herramienta</small></span>
           ${icono('arrow')}
         </button>
         <form class="od-urls" id="odUrls" novalidate>
@@ -1072,6 +1085,7 @@ function abrirPedido(id) {
   });
   $('#odExport', box)?.addEventListener('click', e => exportarHTML(p, e.currentTarget));
   $('#odPrompt', box)?.addEventListener('click', () => abrirMegaPrompt(p));
+  $('#odWebIA', box)?.addEventListener('click', () => abrirGeneradorWeb(p));
   $('#odCoger', box)?.addEventListener('click', async e => {
     const b = e.currentTarget;
     ocupado(b, true);

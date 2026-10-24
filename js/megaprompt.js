@@ -15,7 +15,7 @@ import { catalogo } from './asistente.js';
 const limpio = v => String(v ?? '').trim();
 
 /** Reúne los datos del proyecto en un objeto compacto (lo que se envía a la IA) */
-async function reunir(p) {
+export async function reunir(p) {
   const [mensajes, archivos] = await Promise.all([
     store.mensajesDe(p.id).catch(() => []),
     store.listarArchivos(p.id).catch(() => [])

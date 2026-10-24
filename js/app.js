@@ -966,6 +966,8 @@ $('#pedidosList').addEventListener('click', e => {
   }
   const rc = e.target.closest('[data-recibo]');
   if (rc) return abrirRecibo(misPedidos.find(x => x.id === rc.dataset.recibo), rc.dataset.fase);
+  const vw = e.target.closest('[data-ver-web]');
+  if (vw) return verPropuesta(misPedidos.find(x => x.id === vw.dataset.verWeb), vw);
   const ap = e.target.closest('[data-aprobar-web]');
   if (ap) {
     const p = misPedidos.find(x => x.id === ap.dataset.aprobarWeb);
@@ -1145,3 +1147,33 @@ addEventListener('hashchange', () => {
 const qComprar = new URLSearchParams(location.search).get('comprar');
 if (qComprar) abrirCompra(qComprar);
 
+
+/* ---------- Propuesta de web creada por el equipo (vista del cliente) ---------- */
+let webDlg;
+async function verPropuesta(p, btn) {
+  if (!p?.webIA?.id) return;
+  ocupado(btn, true);
+  try {
+    const v = await store.webIACompartida(p.webIA.id);
+    if (!v?.html) throw new Error('La propuesta aún no está disponible. Inténtalo en un rato.');
+    let html = v.html;
+    for (const im of v.imagenes || []) {
+      try { const u = await store.urlArchivo({ ruta: im.archivo, url: im.url }); if (u) html = html.split(im.ruta).join(u); } catch { /* sin esa foto */ }
+    }
+    if (!webDlg) {
+      webDlg = document.createElement('dialog');
+      webDlg.className = 'dlg dlg-web';
+      webDlg.dataset.backdrop = 'no';
+      webDlg.innerHTML = `<div class="web-v">
+        <header class="web-v-h"><div><b>Propuesta de tu web</b><small id="webVSub"></small></div><button class="dlg-x" data-close aria-label="Cerrar">${icono('x')}</button></header>
+        <iframe title="Propuesta de tu web" sandbox="allow-scripts allow-popups allow-forms"></iframe>
+        <footer class="web-v-f"><p>¿Te gusta? Ciérrala para <b>aprobarla</b> o escribirnos los <b>cambios</b> que quieras.</p><button type="button" class="btn btn-primary" data-close><span>Entendido</span></button></footer>
+      </div>`;
+      document.body.appendChild(webDlg);
+    }
+    $('#webVSub', webDlg).textContent = `${p.respuestas?.negocio || p.planNombre || ''} · ${refPedido(p.id)}`;
+    $('iframe', webDlg).srcdoc = html;
+    abrir(webDlg);
+  } catch (e) { toast(e.message, 'err'); }
+  ocupado(btn, false);
+}

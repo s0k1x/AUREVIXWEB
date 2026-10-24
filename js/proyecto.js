@@ -107,7 +107,8 @@ export function accionCliente(p, botonPagoHTML) {
     const url = urlVistaPrevia(p);
     return `${cab}
     <div class="ac-form" data-id="${id}">
-      ${url ? `<a class="btn btn-ghost btn-fill" href="${esc(url)}" target="_blank" rel="noopener"><span>Abrir la vista previa</span>${icono('external')}</a>` : ''}
+      ${p.webIA?.id ? `<button type="button" class="btn btn-primary btn-fill" data-ver-web="${id}"><span>Ver la propuesta de tu web</span>${icono('eye')}</button>` : ''}
+      ${url && !(p.webIA?.id && !p.urlVista) ? `<a class="btn btn-ghost btn-fill" href="${esc(url)}" target="_blank" rel="noopener"><span>Abrir la vista previa</span>${icono('external')}</a>` : ''}
       ${(rv.comentarios || []).length ? `<div class="ac-hist">${rv.comentarios.map(c => `<p><small>${haceCuanto(c.t)}</small>${esc(c.texto)}</p>`).join('')}</div>` : ''}
       ${rv.estado === 'cambios' ? `<p class="ac-nota">${icono('clock')} Hemos recibido tus cambios. Te avisaremos cuando estén aplicados.</p>` : ''}
       <form data-form="cambios" data-id="${id}" novalidate>
@@ -121,7 +122,7 @@ export function accionCliente(p, botonPagoHTML) {
   }
 
   if (et === 'pago') {
-    return `${cab}<div class="ac-form"><div class="mp-pay">${botonPagoHTML}</div></div>`;
+    return `${cab}<div class="ac-form"><div class="mp-pay">${botonPagoHTML}</div>${p.webIA?.id ? `<button type="button" class="btn btn-ghost btn-fill" data-ver-web="${id}"><span>Ver la web aprobada</span>${icono('eye')}</button>` : ''}</div>`;
   }
 
   if (et === 'publicada') {

@@ -497,6 +497,97 @@ export async function preguntarIA(cuerpo) {
   return data;
 }
 
+/* ---------- Crear la web del cliente con IA (solo equipo) ----------
+   Cada paso llama a la función «asistente» y la respuesta llega en
+   directo: alTexto(trozo) con lo que va escribiendo y alPensar(trozo)
+   con lo que va pensando. Devuelve { texto, modelo, motivo }. */
+export async function iaWeb(cuerpo, { alTexto, alPensar, senal } = {}) {
+  if (modoDemo) throw new Error('La IA no está disponible en el modo demo');
+  const { data } = await limite(sb.auth.getSession(), 10000);
+  const token = data?.session?.access_token;
+  if (!token) throw new Error('Tu sesión ha caducado. Vuelve a entrar.');
+  const ctrl = new AbortController();
+  senal?.addEventListener?.('abort', () => ctrl.abort());
+  let quieto;
+  const vigilar = () => { clearTimeout(quieto); quieto = setTimeout(() => ctrl.abort('quieto'), 120000); };
+  vigilar();
+  let r;
+  try {
+    r = await fetch(`${CONFIG.supabase.url}/functions/v1/asistente`, {
+      method: 'POST', signal: ctrl.signal,
+      headers: { 'Content-Type': 'application/json', apikey: CONFIG.supabase.anonKey, Authorization: `Bearer ${token}` },
+      body: JSON.stringify(cuerpo)
+    });
+  } catch (e) {
+    clearTimeout(quieto);
+    throw new Error(senal?.aborted ? 'Cancelado' : navigator.onLine === false ? SIN_RED : 'No se ha podido conectar con la IA');
+  }
+  if (!r.ok || !r.body) {
+    clearTimeout(quieto);
+    let m = '';
+    try { m = (await r.json()).error; } catch { /* sin cuerpo */ }
+    throw new Error(r.status === 403 ? 'Solo el equipo puede crear webs con IA' : m || `La IA no responde (${r.status}). Revisa la función «asistente» en Supabase.`);
+  }
+  const lector = r.body.getReader(), dec = new TextDecoder();
+  let resto = '', texto = '', fin = null, fallo = '';
+  try {
+    while (true) {
+      const { done, value } = await lector.read();
+      if (done) break;
+      vigilar();
+      resto += dec.decode(value, { stream: true });
+      let i;
+      while ((i = resto.indexOf('\n\n')) >= 0) {
+        const bloque = resto.slice(0, i); resto = resto.slice(i + 2);
+        const linea = bloque.split('\n').find(l => l.startsWith('data:'));
+        if (!linea) continue;
+        let d; try { d = JSON.parse(linea.slice(5)); } catch { continue; }
+        if (d.t) { texto += d.t; alTexto?.(d.t, texto); }
+        if (d.p) alPensar?.(d.p);
+        if (d.error) fallo = d.error;
+        if (d.fin) fin = d;
+      }
+    }
+  } catch (e) {
+    throw new Error(senal?.aborted ? 'Cancelado' : 'La conexión con la IA se ha cortado. Vuelve a intentarlo.');
+  } finally { clearTimeout(quieto); }
+  if (fallo) throw new Error(fallo);
+  if (!fin) throw new Error('La IA no ha terminado (puede que la función de Supabase llegara a su tiempo máximo). Vuelve a intentarlo.');
+  return { texto, modelo: fin.modelo, motivo: fin.motivo, uso: fin.uso };
+}
+
+/* Versiones de la web creada con IA (tabla webs_ia, solo equipo) */
+export async function websIA(pedidoId) {
+  necesitaUsuario();
+  if (modoDemo) return recientes(local.get('webs_ia', []).filter(w => w.pedido === pedidoId));
+  const r = await limite(sb.from('webs_ia').select('id, uid, datos, created_at').eq('pedido', pedidoId).order('created_at', { ascending: false }).limit(20), 15000);
+  return comprobar(r).map(f => ({ ...(f.datos || {}), id: f.id, uid: f.uid }));
+}
+export async function guardarWebIA(pedidoId, datos) {
+  const u = necesitaUsuario();
+  const doc = { ...datos, pedido: pedidoId, autor: u.name, createdAt: Date.now() };
+  if (modoDemo) {
+    const w = { ...doc, id: nuevoId(), uid: u.uid };
+    try { local.set('webs_ia', [w, ...local.get('webs_ia', [])].slice(0, 12)); } catch { /* sin espacio */ }
+    return w;
+  }
+  const f = comprobar(await limite(sb.from('webs_ia').insert({ uid: u.uid, pedido: pedidoId, datos: doc }).select('id, uid, datos').single(), 20000));
+  return { ...f.datos, id: f.id, uid: f.uid };
+}
+/** La versión que el equipo ha enviado al cliente para revisar */
+export async function webIACompartida(id) {
+  necesitaUsuario();
+  if (modoDemo) return local.get('webs_ia', []).find(w => w.id === id) || null;
+  const r = await limite(sb.from('webs_ia').select('id, datos').eq('id', id).maybeSingle(), 15000);
+  const f = comprobar(r);
+  return f ? { ...f.datos, id: f.id } : null;
+}
+export async function borrarWebIA(id) {
+  necesitaUsuario();
+  if (modoDemo) { local.set('webs_ia', local.get('webs_ia', []).filter(w => w.id !== id)); return; }
+  comprobar(await limite(sb.from('webs_ia').delete().eq('id', id)));
+}
+
 /* ==========================================================
    PERFIL, CUENTA Y PRIVACIDAD
    ========================================================== */
@@ -773,7 +864,7 @@ export async function subirArchivo(pedidoId, archivo) {
   return { ruta, nombre: archivo.name, tam: archivo.size, tipo: archivo.type, t: Date.now() };
 }
 export async function urlArchivo(a) {
-  if (modoDemo) return a.url;
+  if (modoDemo) return a.url || local.get('archivos', []).find(x => x.ruta === a.ruta)?.url || '';
   const { data, error } = await limite(sb.storage.from('archivos').createSignedUrl(a.ruta, 3600));
   if (error) throw new Error(traducirError(error));
   return data.signedUrl;
