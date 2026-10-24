@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Login and email verification codes, typed or pasted one character per slot",
+      "Numeric PINs and digit only codes that ignore any letter typed into them",
+      "Fixed length codes of letters and numbers, split into groups by separators"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A complete sign-in page with password, social buttons and a brand layout",
+        "instead": "application/auth"
+      },
+      {
+        "when": "A mobile number with its country dial code, entered before any code is sent",
+        "instead": "phone-input"
+      },
+      {
+        "when": "Open ended text of any length, such as a name, an email address or a password",
+        "instead": "input"
+      }
+    ],
+    "agentNotes": [
+      "A wrong code turns red only from aria-invalid on each `InputOTPSlot`; set on `InputOTP` it reaches the hidden input and the slots stay plain",
+      "Read the code from `onChange` on `InputOTP` and check it once it reaches `maxLength`; no example sends or verifies it"
+    ]
+  }
+}

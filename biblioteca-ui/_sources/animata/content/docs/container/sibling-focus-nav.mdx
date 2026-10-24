@@ -1,0 +1,117 @@
+---
+title: Sibling Focus Nav
+description: A nav row that dims or blurs sibling links when one item is hovered or focused — padding-based spacing keeps the effect alive between items.
+author: hari
+labels: ["new", "hover"]
+---
+
+<ComponentPreview name="container-sibling-focus-nav--primary" />
+
+## Installation
+
+### CLI
+
+<RegistryInstall category="container" name="sibling-focus-nav" />
+
+### Manual
+
+<Steps>
+
+<Step>Run the following command</Step>
+
+```bash
+mkdir -p components/animata/container && touch components/animata/container/sibling-focus-nav.tsx
+```
+
+<Step>Paste the code</Step>
+
+Open the newly created file and paste the following code:
+
+```jsx file=<rootDir>/animata/container/sibling-focus-nav.tsx
+
+```
+
+</Steps>
+
+## Usage
+
+The primitive owns the group spotlight mechanic. You own the links — plain `<a>` tags or framework routers, as long as they render as direct `<a>` children.
+
+Pass `mode="opacity"` (default) or `mode="blur"` on the nav. Links pick up the matching transition classes automatically when you use `SiblingFocusNav.Link`.
+
+Horizontal rows use `spacingAxis="x"` (default). Stacked navs use `spacingAxis="y"`. Do not use flex `gap` for separation — padding on each link keeps the hover spotlight active while you move between items.
+
+```tsx
+import SiblingFocusNav from "@/animata/container/sibling-focus-nav";
+
+<SiblingFocusNav mode="blur" aria-label="Footer">
+  <SiblingFocusNav.Link href="/docs">Docs</SiblingFocusNav.Link>
+  <SiblingFocusNav.Link href="/changelog">Changelog</SiblingFocusNav.Link>
+</SiblingFocusNav>
+```
+
+Vertical stack (footer column):
+
+```tsx
+<SiblingFocusNav mode="opacity" spacingAxis="y" aria-label="Explore" className="flex-col items-start">
+  <SiblingFocusNav.Link href="/docs">Docs</SiblingFocusNav.Link>
+  <SiblingFocusNav.Link href="/changelog">Changelog</SiblingFocusNav.Link>
+</SiblingFocusNav>
+```
+
+Custom spacing — set `spacingAxis="none"` and apply padding on the nav:
+
+```tsx
+<SiblingFocusNav
+  spacingAxis="none"
+  className="[&>a:not(:last-child)]:pe-8"
+  aria-label="Studio"
+>
+  …
+</SiblingFocusNav>
+```
+
+With Next.js `Link`, merge the mode-aware class helper onto each child anchor:
+
+```tsx
+import Link from "next/link";
+import SiblingFocusNav from "@/animata/container/sibling-focus-nav";
+
+<SiblingFocusNav mode="opacity" spacingAxis="y" aria-label="Footer" className="flex-col items-start">
+  <Link href="/docs" className={SiblingFocusNav.getLinkClassName("opacity")}>
+    Docs
+  </Link>
+</SiblingFocusNav>
+```
+
+## How it works
+
+Pure CSS on the `<nav>` — no JavaScript state. Both modes animate with `duration-200 ease-out`; `prefers-reduced-motion` disables the transition and, in blur mode, skips the filter effect.
+
+**Spotlight only on a link** — siblings dim only while a direct child `<a>` is hovered or `focus-visible`, using `:has()` so empty padding in the nav does not trigger the effect:
+
+```css
+[&:has(>a:hover)>a:not(:hover)]:opacity-30
+[&:has(>a:focus-visible)>a:not(:focus-visible)]:opacity-30
+```
+
+The active link is excluded with `:not(:hover)` / `:not(:focus-visible)` so it stays at full opacity (or unblurred) without fighting a reset rule.
+
+**Opacity** — non-active links fade to `opacity-30`. Links use `transition-opacity`.
+
+**Blur** — same sibling trick with `blur-sm` on non-active links. Links use `blur-0` and `transition-[filter]`.
+
+**Padding spacing, not gap** — flex `gap` leaves dead space between hit targets; moving the pointer across that gap drops `:hover` and the spotlight flickers off. Separation is padding on each link instead:
+
+| Axis | Class | Default |
+| --- | --- | --- |
+| Horizontal (`spacingAxis="x"`) | `[&>a:not(:last-child)]:pe-6` | `1.5rem` end padding |
+| Vertical (`spacingAxis="y"`) | `[&>a:not(:last-child)]:pb-2.5` | `0.625rem` bottom padding |
+
+Export helpers: `SiblingFocusNav.spacingXClassName` and `SiblingFocusNav.spacingYClassName`.
+
+`SiblingFocusNav.Link` adds `min-h-11`, `touch-manipulation`, and a `focus-visible` ring. Override with your own classes on each link.
+
+## Credits
+
+Built by [hari](https://github.com/hari)

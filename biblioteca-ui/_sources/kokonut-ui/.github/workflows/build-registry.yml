@@ -1,0 +1,74 @@
+name: Build Registry
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - "components/kokonutui/**"
+            - "registry/**"
+            - "content/docs/components/**"
+            - "public/.well-known/agent-skills/**/SKILL.md"
+            - "scripts/build-registry.ts"
+            - ".github/workflows/build-registry.yml"
+    pull_request:
+        branches:
+            - main
+        paths:
+            - "components/kokonutui/**"
+            - "registry/**"
+            - "content/docs/components/**"
+            - "public/.well-known/agent-skills/**/SKILL.md"
+            - "scripts/build-registry.ts"
+            - ".github/workflows/build-registry.yml"
+
+# Queue runs on main so two bot commits never race each other's push.
+concurrency:
+    group: build-registry-${{ github.ref }}
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+    build-registry:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+
+            - name: Install dependencies
+              run: bun install
+
+            - name: Build registry
+              run: bun run ./scripts/build-registry.ts
+
+            # Every file build-registry.ts writes.
+            - name: Check for changes
+              id: git-check
+              run: |
+                  if [ -n "$(git status --porcelain -- registry.json public/r public/.well-known/agent-skills)" ]; then
+                      echo "changes=true" >> "$GITHUB_OUTPUT"
+                      git status --short -- registry.json public/r public/.well-known/agent-skills
+                  fi
+
+            # PRs only verify the build; the regenerated files land when
+            # the PR merges and this workflow runs on main.
+            - name: Note stale registry files on PRs
+              if: github.event_name == 'pull_request' && steps.git-check.outputs.changes == 'true'
+              run: echo "::notice::Registry files will be regenerated on merge to main. Run 'bun run ./scripts/build-registry.ts' to include them in this PR."
+
+            - name: Commit and push if changed
+              if: github.event_name == 'push' && steps.git-check.outputs.changes == 'true'
+              run: |
+                  git config --global user.name 'github-actions[bot]'
+                  git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+                  git add -- registry.json public/r public/.well-known/agent-skills
+                  git commit -m "chore: update registry files [skip ci]"
+                  git pull --rebase origin main
+                  git push

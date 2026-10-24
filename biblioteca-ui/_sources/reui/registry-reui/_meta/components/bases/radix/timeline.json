@@ -1,0 +1,334 @@
+{
+  "items": [
+    {
+      "name": "c-timeline-1",
+      "type": "registry:block",
+      "title": "Basic timeline.",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Basic timeline.",
+      "descriptionLong": "Basic timeline. Built with the Timeline component. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-1 and edit as your own code.",
+      "registryDependencies": [
+        "timeline"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "gridSize": 1,
+        "label": "Basic"
+      }
+    },
+    {
+      "name": "c-timeline-2",
+      "type": "registry:block",
+      "title": "Timeline with roadmap.",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Timeline with roadmap.",
+      "descriptionLong": "Timeline with roadmap. Built with the Timeline component. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-2 and edit as your own code.",
+      "registryDependencies": [
+        "timeline"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "gridSize": 1,
+        "label": "Roadmap"
+      }
+    },
+    {
+      "name": "c-timeline-3",
+      "type": "registry:block",
+      "title": "Timeline with order status.",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Timeline with order status.",
+      "descriptionLong": "Timeline with order status. Built with the Timeline component. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-3 and edit as your own code.",
+      "registryDependencies": [
+        "timeline"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "gridSize": 1,
+        "label": "Order Status"
+      }
+    },
+    {
+      "name": "c-timeline-4",
+      "type": "registry:block",
+      "title": "Timeline with git activity.",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Timeline with git activity.",
+      "descriptionLong": "Timeline with git activity. Built with the Timeline component. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-4 and edit as your own code.",
+      "registryDependencies": [
+        "timeline"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "gridSize": 1,
+        "label": "Git Activity"
+      }
+    },
+    {
+      "name": "c-timeline-5",
+      "type": "registry:block",
+      "title": "Timeline with milestones.",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Timeline with milestones.",
+      "descriptionLong": "Timeline with milestones. Built with the Timeline component. Uses cn alongside the shadcn primitives. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-5 and edit as your own code.",
+      "registryDependencies": [
+        "timeline"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "gridSize": 1,
+        "label": "Milestones"
+      }
+    },
+    {
+      "name": "c-timeline-6",
+      "type": "registry:block",
+      "title": "Timeline with pipeline steps.",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Timeline with pipeline steps.",
+      "descriptionLong": "Timeline with pipeline steps. Built by composing Avatar, Badge, Collapsible, Frame, Spinner and 1 more. Uses cn alongside the shadcn primitives. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-6 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "badge",
+        "collapsible",
+        "frame",
+        "spinner",
+        "timeline"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "gridSize": 1,
+        "label": "Pipeline Steps"
+      }
+    },
+    {
+      "name": "c-timeline-7",
+      "type": "registry:block",
+      "title": "Timeline with roadmap items.",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Timeline with roadmap items.",
+      "descriptionLong": "Timeline with roadmap items. Built with the Timeline component. Uses cn alongside the shadcn primitives. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-7 and edit as your own code.",
+      "registryDependencies": [
+        "timeline"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "gridSize": 1,
+        "label": "Roadmap Items"
+      }
+    },
+    {
+      "name": "c-timeline-8",
+      "type": "registry:block",
+      "title": "Vertical timeline",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Vertical timeline",
+      "descriptionLong": "Vertical timeline. Built with the Timeline component. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-8 and edit as your own code.",
+      "registryDependencies": [
+        "timeline"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "gridSize": 1,
+        "label": "Horizontal"
+      }
+    },
+    {
+      "name": "c-timeline-9",
+      "type": "registry:block",
+      "title": "Horizontal timeline with leading labels",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Horizontal timeline with leading labels",
+      "descriptionLong": "Horizontal timeline with leading labels. Built with the Timeline component. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-9 and edit as your own code.",
+      "registryDependencies": [
+        "timeline"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "gridSize": 1,
+        "label": "Leading Labels"
+      }
+    },
+    {
+      "name": "c-timeline-10",
+      "type": "registry:block",
+      "title": "Deployment log timeline",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Deployment log timeline",
+      "descriptionLong": "Deployment log timeline. Built by composing Badge, Timeline. Uses cn alongside the shadcn primitives. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-10 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "timeline"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "gridSize": 1,
+        "label": "Deployment Log"
+      }
+    },
+    {
+      "name": "c-timeline-11",
+      "type": "registry:block",
+      "title": "Activity feed timeline with user avatars",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Activity feed timeline with user avatars",
+      "descriptionLong": "Activity feed timeline with user avatars. Built by composing Avatar, Timeline. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-11 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "timeline"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "gridSize": 1,
+        "label": "Avatar Activity"
+      }
+    },
+    {
+      "name": "c-timeline-12",
+      "type": "registry:block",
+      "title": "Compact horizontal milestone timeline",
+      "categories": [
+        "timeline"
+      ],
+      "description": "Compact horizontal milestone timeline",
+      "descriptionLong": "Compact horizontal milestone timeline. Built by composing Badge, Timeline. Uses cn alongside the shadcn primitives. A free, open source shadcn timeline example you can install with npx shadcn@latest add @reui/c-timeline-12 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "timeline"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/timeline/c-timeline-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-timeline-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "gridSize": 1,
+        "label": "Compact Milestones"
+      }
+    }
+  ]
+}

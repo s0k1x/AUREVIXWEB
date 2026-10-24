@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "p-slider-7",
+  "description": "Range slider",
+  "registryDependencies": [
+    "@coss/slider"
+  ],
+  "files": [
+    {
+      "path": "registry/default/particles/p-slider-7.tsx",
+      "content": "\"use client\";\n\nimport { Slider } from \"@/registry/default/ui/slider\";\n\nexport default function Particle() {\n  return (\n    <Slider\n      getAriaLabel={(index) =>\n        index === 0 ? \"Minimum value\" : \"Maximum value\"\n      }\n      defaultValue={[25, 75]}\n    />\n  );\n}\n",
+      "type": "registry:block"
+    }
+  ],
+  "meta": {
+    "className": "**:data-[slot=preview]:w-full **:data-[slot=preview]:max-w-64"
+  },
+  "categories": [
+    "slider"
+  ],
+  "type": "registry:block"
+}

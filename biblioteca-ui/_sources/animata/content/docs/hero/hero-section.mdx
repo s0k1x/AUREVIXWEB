@@ -1,0 +1,52 @@
+---
+title: Hero Section
+description: A hero section with interactivity
+labels: ["requires-interaction", "hover"]
+author: AdashBaral
+published: false
+---
+
+<ComponentPreview name="hero-hero-section--primary" />
+
+## Installation
+
+### CLI
+
+<RegistryInstall category="hero" name="hero-section" />
+
+### Manual
+
+<Steps>
+
+<Step>Add to your CSS</Step>
+```css
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@theme {
+  --animate-fade-in: fadeIn 0.5s ease-in;
+}
+```
+
+<Step>Run the following command</Step>
+
+It will create a new file called `hero-section.tsx` inside the `components/animata/hero` directory.
+
+```bash
+touch components/animata/hero/hero-section.tsx
+```
+
+<Step>Paste the code</Step>
+
+Open the newly created file and paste the following code:
+
+```jsx file=<rootDir>/animata/hero/hero-section.tsx
+
+```
+
+</Steps>
+
+## Credits
+
+Built by [Aadarsh Baral](https://github.com/aadarshbaral)

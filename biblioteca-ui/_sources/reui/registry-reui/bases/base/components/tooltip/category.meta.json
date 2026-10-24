@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Short labels for buttons and icon only toolbar actions, with a keyboard shortcut where one exists",
+      "Help text on an info icon, a warning, a verified mark, a locked feature or a disabled button",
+      "Compact summaries behind a trigger, such as service status, notifications, file details or a person"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Content with links or buttons that keyboard users must be able to reach",
+        "instead": "popover"
+      },
+      {
+        "when": "A rich profile or page preview with a large photo, bio and dates",
+        "instead": "hover-card"
+      },
+      {
+        "when": "A status or count that stays readable without pointing at anything",
+        "instead": "badge"
+      }
+    ],
+    "agentNotes": [
+      "Outside a `TooltipProvider` the base `Tooltip` opens after 600ms and inside one at once; the radix `Tooltip` throws without one",
+      "`TooltipTrigger` renders a `button` of its own, so a `Button` nested in it without `render` or radix `asChild` makes a button in a button",
+      "`TooltipContent` is portaled to the end of the body with no focus guards, so a link or button in it is not next in Tab order after its trigger"
+    ]
+  }
+}

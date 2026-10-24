@@ -1,0 +1,207 @@
+[
+  {
+    "name": "c-slider-1",
+    "title": "Basic slider.",
+    "label": "Basic",
+    "description": "Basic slider.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The bare uncontrolled control: a single value starting at 50 on a 0 to 100 scale, with no label or readout",
+      "whenNotToUse": [
+        {
+          "when": "A span with a low end and a high end chosen on one track",
+          "instead": "c-slider-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-slider-2",
+    "title": "Disabled slider",
+    "label": "Disabled",
+    "description": "Disabled slider",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A locked setting held at 50 that people can see but cannot drag, click or step with the keys",
+      "whenNotToUse": [
+        {
+          "when": "A setting people are meant to change by dragging or with the keys",
+          "instead": "c-slider-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-slider-3",
+    "title": "Slider with multiple discrete values",
+    "label": "Multiple Thumbs",
+    "description": "Slider with multiple discrete values",
+    "order": 3,
+    "guidance": {
+      "bestFor": "A track with 3 thumbs starting at 10, 40 and 80, each snapping to steps of 10",
+      "whenNotToUse": [
+        {
+          "when": "A span that needs only a low and a high end",
+          "instead": "c-slider-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-slider-4",
+    "title": "Vertical slider with range selection",
+    "label": "Vertical",
+    "description": "Vertical slider with range selection",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A pair of upright tracks side by side, one holding a single value and one a 2 thumb span in steps of 5",
+      "whenNotToUse": [
+        {
+          "when": "A span set along a track that runs left to right",
+          "instead": "c-slider-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-slider-5",
+    "title": "Slider with controlled value tracking",
+    "label": "Controlled Value",
+    "description": "Slider with controlled value tracking",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A 2 thumb span over a 0 to 1 scale in tenths, held in state and printed above the track to 1 decimal place",
+      "whenNotToUse": [
+        {
+          "when": "A figure people may also type exactly into a box beside the label",
+          "instead": "c-slider-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-slider-6",
+    "title": "Slider with range selection",
+    "label": "Range",
+    "description": "Slider with range selection",
+    "order": 6,
+    "guidance": {
+      "bestFor": "The plain 2 thumb span: ends at 25 and 75 on a 0 to 100 track that move in steps of 5, with no state",
+      "whenNotToUse": [
+        {
+          "when": "A span whose chosen ends must show as numbers while dragging",
+          "instead": "c-slider-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-slider-7",
+    "title": "Slider synced with number input",
+    "label": "Number Input",
+    "description": "Slider synced with number input",
+    "order": 7,
+    "guidance": {
+      "bestFor": "An opacity percent kept in step between the track and a number box beside the label, either one driving the other",
+      "agentNotes": [
+        "The 0 to 100 bounds sit in the `Input` `onChange` check, its `min` and `max`, and the `Slider` `max`; change them together",
+        "A cleared number box reads as 0 through `Number`, so emptying the `Input` snaps the slider to 0"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "An amount stepped with plus and minus buttons and no track at all",
+          "instead": "number-field"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-slider-8",
+    "title": "Color temperature slider",
+    "label": "Color Temperature",
+    "description": "Color temperature slider",
+    "order": 8,
+    "guidance": {
+      "bestFor": "A kelvin value from 2700 to 6500 in steps of 100 below a warm to cool gradient strip, with its band named in the readout",
+      "agentNotes": [
+        "`getLabel` names the band Warm, Neutral, Daylight or Cool at cut points of 3000, 4500 and 5500; rewrite it for another scale"
+      ]
+    }
+  },
+  {
+    "name": "c-slider-9",
+    "title": "Slider with reference labels",
+    "label": "Reference Labels",
+    "description": "Slider with reference labels",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A 5 to 35 GB storage pick with its low, middle and high marks printed under the track",
+      "agentNotes": [
+        "The 5 GB, 20 GB and 35 GB marks are fixed text hidden from screen readers; rewrite them whenever `min` or `max` changes"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A scale that needs a mark at every step, not just its ends and middle",
+          "instead": "c-slider-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-slider-10",
+    "title": "Slider with tick marks",
+    "label": "Tick Marks",
+    "description": "Slider with tick marks",
+    "order": 10,
+    "guidance": {
+      "bestFor": "A 0 to 12 month duration with a tick per month and a number on every second tick, all built from the max constant",
+      "agentNotes": [
+        "`ticks` runs from 0 to `max` in ones and `skipInterval` picks which get a number; rebuild it if the slider gains a `min` or a step"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A scale labeled only at its 2 ends and its midpoint",
+          "instead": "c-slider-9"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-slider-11",
+    "title": "Slider with dynamic tooltip indicator",
+    "label": "Value Tooltip",
+    "description": "Slider with dynamic tooltip indicator",
+    "order": 11,
+    "guidance": {
+      "bestFor": "A volume level whose percent rides above the thumb in a filled bubble with a small arrow, moving as it drags",
+      "agentNotes": [
+        "Change the local `min` and `max` constants, not the `Slider` props alone, since the bubble's `percentage` reads them too"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A short hint shown on hover or focus beside a button or an icon",
+          "instead": "tooltip"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-slider-12",
+    "title": "Rating slider with emoji feedback",
+    "label": "Emoji Rating",
+    "description": "Rating slider with emoji feedback",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A 1 to 5 experience score that swaps a face emoji beside the track and a word such as Okay under it",
+      "agentNotes": [
+        "`emojis` and `labels` are read at `value` minus 1, so keep each list as long as `max` while `min` stays 1"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A score shown as stars that people click, or as an average in a list",
+          "instead": "rating"
+        }
+      ]
+    }
+  }
+]

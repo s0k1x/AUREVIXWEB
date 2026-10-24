@@ -1,0 +1,273 @@
+[
+  {
+    "name": "c-toggle-group-1",
+    "title": "Basic toggle group.",
+    "label": "Basic",
+    "description": "Basic toggle group.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "Bold, italic and underline as borderless icon buttons that can all be on at once, none pressed at load",
+      "whenNotToUse": [
+        {
+          "when": "Formatting where only one option applies at a time, such as text alignment",
+          "instead": "c-toggle-group-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-2",
+    "title": "Toggle group with outline variant.",
+    "label": "Outline",
+    "description": "Toggle group with outline variant.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "An outline pair of text options, All and Missed, with All picked and only one on at a time",
+      "whenNotToUse": [
+        {
+          "when": "A status filter with more than 2 states, such as active, completed and archived",
+          "instead": "c-toggle-group-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-3",
+    "title": "Toggle groups in different sizes.",
+    "label": "Sizes",
+    "description": "Toggle groups in different sizes.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "The sm and default heights stacked to compare, each an outline Top and Bottom pair with Top picked",
+      "whenNotToUse": [
+        {
+          "when": "The lg height, the largest of the 3 item sizes",
+          "instead": "c-toggle-group-16"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-4",
+    "title": "Toggle group with custom spacing.",
+    "label": "Custom Spacing",
+    "description": "Toggle group with custom spacing.",
+    "order": 4,
+    "guidance": {
+      "bestFor": "Day, Week and Month as separate outline items with Week picked on load",
+      "agentNotes": [
+        "`spacing` 2 is already the `ToggleGroup` default, so this looks like any other outline set; pass 0 to join the items edge to edge"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A finer time range that runs from hours to days in a smaller size",
+          "instead": "c-toggle-group-12"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-5",
+    "title": "Toggle group with filter control.",
+    "label": "Filter Control",
+    "description": "Toggle group with filter control.",
+    "order": 5,
+    "guidance": {
+      "bestFor": "Small outline items for 4 statuses, All, Active, Completed and Archived, with Active picked",
+      "whenNotToUse": [
+        {
+          "when": "A filter bar that adds fields, operators and values to build a query",
+          "instead": "filters"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-6",
+    "title": "Toggle group with vertical orientation.",
+    "label": "Vertical",
+    "description": "Toggle group with vertical orientation.",
+    "order": 6,
+    "guidance": {
+      "bestFor": "Bold, italic and underline stacked in an outlined column, icon only, with any mix on together",
+      "agentNotes": [
+        "On the base twin `orientation` only stacks the items and never reaches Base UI, so focus still moves with the Left and Right arrows"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "The same formatting set laid out in a row with no borders",
+          "instead": "c-toggle-group-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-7",
+    "title": "Toggle group for text alignment",
+    "label": "Text Alignment",
+    "description": "Toggle group for text alignment",
+    "order": 7,
+    "guidance": {
+      "bestFor": "Left, center, right and justify as borderless icon buttons where one alignment is on, left at load",
+      "whenNotToUse": [
+        {
+          "when": "Formatting marks such as bold and italic that can all be on together",
+          "instead": "c-toggle-group-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-8",
+    "title": "Toggle group for view mode switching",
+    "label": "View Mode",
+    "description": "Toggle group for view mode switching",
+    "order": 8,
+    "guidance": {
+      "bestFor": "Icon only outline choice of list, grid or kanban layout, with list picked and an aria label on each",
+      "whenNotToUse": [
+        {
+          "when": "Picking how many columns a grid shows rather than which view is open",
+          "instead": "c-toggle-group-14"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-9",
+    "title": "Vertical toggle group for settings",
+    "label": "Vertical Settings",
+    "description": "Vertical toggle group for settings",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A borderless column of Wi-Fi, Bluetooth, Airplane Mode and Location with icon and label, any mix on, 2 at load",
+      "agentNotes": [
+        "The base `ToggleGroup` keeps `orientation` for layout only, so Up and Down never move focus in this column; Left and Right do"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Device settings such as airplane mode set as rows with a track beside each label",
+          "instead": "switch"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-10",
+    "title": "Toggle group for color theme",
+    "label": "Color Theme",
+    "description": "Toggle group for color theme",
+    "order": 10,
+    "guidance": {
+      "bestFor": "Light, Dark and System choices with an icon and label each in outline, Light picked on load",
+      "agentNotes": [
+        "`defaultValue` starts every visit on light; seed it from the saved theme so a returning dark mode user sees Dark picked"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A theme choice tucked into an account popup that opens from the avatar",
+          "instead": "dropdown-menu"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-11",
+    "title": "Toggle group for font size",
+    "label": "Font Size",
+    "description": "Toggle group for font size",
+    "order": 11,
+    "guidance": {
+      "bestFor": "Small outline items lettered S, M, L and XL for a short size scale, with M picked on load",
+      "agentNotes": [
+        "Each `ToggleGroupItem` is named only by its letter, so screen readers announce S or XL; give each one a full size name"
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-12",
+    "title": "Toggle group for time range filter",
+    "label": "Time Range",
+    "description": "Toggle group for time range filter",
+    "order": 12,
+    "guidance": {
+      "bestFor": "Small outline presets 1H, 6H, 24H, 7D, 30D and All in one row, with 24H picked on load",
+      "whenNotToUse": [
+        {
+          "when": "A custom span with a chosen start and end day, beyond fixed presets",
+          "instead": "date-selector"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-13",
+    "title": "Toggle group for notification channels",
+    "label": "Notification Channels",
+    "description": "Toggle group for notification channels",
+    "order": 13,
+    "guidance": {
+      "bestFor": "Email, SMS, Push and Slack with an icon and label each, any mix on together, Email and Push on at load",
+      "whenNotToUse": [
+        {
+          "when": "Channels ticked inside a form and posted along with its other fields",
+          "instead": "checkbox"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-14",
+    "title": "Toggle group for layout columns",
+    "label": "Layout Columns",
+    "description": "Toggle group for layout columns",
+    "order": 14,
+    "guidance": {
+      "bestFor": "Icon only outline picks for 1, 2, 3 or 4 columns, each named by its count, with 2 set at load",
+      "agentNotes": [
+        "Each `value` is a string from 1 to 4; map it to a fixed column class, since Tailwind never generates one built at runtime"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Switching between list, grid and kanban rather than a column count",
+          "instead": "c-toggle-group-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-15",
+    "title": "Toggle group for sort direction",
+    "label": "Sort Direction",
+    "description": "Toggle group for sort direction",
+    "order": 15,
+    "guidance": {
+      "bestFor": "A small outline pair, Ascending and Descending, each led by an up or down arrow, Ascending on at load",
+      "whenNotToUse": [
+        {
+          "when": "Sorting that also picks the field to sort by from a list of columns",
+          "instead": "select"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-group-16",
+    "title": "Toggle group for pricing tier",
+    "label": "Pricing Tier",
+    "description": "Toggle group for pricing tier",
+    "order": 16,
+    "guidance": {
+      "bestFor": "A large outline Monthly and Yearly pair, the Yearly item carrying a filled Save 20% pill",
+      "agentNotes": [
+        "The Save 20% pill is fixed text in a `span`; work the discount out from your real monthly and yearly prices"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Plans compared as rows, each with a name, a price and a short pitch",
+          "instead": "radio-group"
+        }
+      ]
+    }
+  }
+]

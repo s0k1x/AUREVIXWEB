@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Editor formatting and alignment controls kept as one set, such as bold, italic, underline or justify",
+      "View, column layout and theme switchers where the pressed item holds the current choice",
+      "Short option rows for a time range, status, sort order, billing period, channels or device settings"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Related actions such as export, zoom or playback joined in one strip with no pressed state",
+        "instead": "button-group"
+      },
+      {
+        "when": "A single on or off control such as bookmark or mute that stands on its own",
+        "instead": "toggle"
+      },
+      {
+        "when": "Labelled settings in a list, each flipped on or off beside its own text",
+        "instead": "switch"
+      }
+    ],
+    "agentNotes": [
+      "The base twin picks one item unless `multiple` is set and always takes an array `defaultValue`; the radix twin needs `type` single or multiple",
+      "No example passes `value` to `ToggleGroup` or reads a change back, so the pick stays inside the group; control it to act on the choice",
+      "A second click on a pressed `ToggleGroupItem` releases it in both twins, so even a single choice group can end with nothing picked"
+    ]
+  }
+}

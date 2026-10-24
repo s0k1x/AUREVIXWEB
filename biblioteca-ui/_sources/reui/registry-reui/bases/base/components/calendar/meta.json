@@ -1,0 +1,489 @@
+[
+  {
+    "name": "c-calendar-1",
+    "title": "Basic calendar",
+    "label": "Basic",
+    "description": "Basic calendar",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The minimal single day picker in a Card, with today selected on first render",
+      "whenNotToUse": [
+        {
+          "when": "Picking a span of days with a start and an end",
+          "instead": "c-calendar-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-2",
+    "title": "Range calendar",
+    "label": "Range",
+    "description": "Range calendar",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A from and to span in one month, seeded as today through 5 days later",
+      "whenNotToUse": [
+        {
+          "when": "A long span that needs 2 months in view at once",
+          "instead": "c-calendar-21"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-3",
+    "title": "Disabled dates",
+    "label": "Disabled Dates",
+    "description": "Disabled dates",
+    "order": 3,
+    "guidance": {
+      "bestFor": "Range picking that blocks past days, today, weekends and 2 spans, restarting any range that crosses one",
+      "agentNotes": [
+        "No `selected` state is wired, so the chosen range stays inside `Calendar` and nothing can read it",
+        "The 2 blocked spans in `disabled` are sample dates 14 to 16 and 23 to 24 days out; swap in real blackout dates"
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-4",
+    "title": "Multiple day selection",
+    "label": "Multiple Days",
+    "description": "Multiple day selection",
+    "order": 4,
+    "guidance": {
+      "bestFor": "Separate days toggled on and off one by one, seeded with 4 dates around today",
+      "whenNotToUse": [
+        {
+          "when": "Consecutive days picked as one span rather than one by one",
+          "instead": "c-calendar-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-5",
+    "title": "Custom select day style",
+    "label": "Circular Days",
+    "description": "Custom select day style",
+    "order": 5,
+    "guidance": {
+      "bestFor": "Fully round day buttons for a single pick, forced with one classNames override on the day button",
+      "whenNotToUse": [
+        {
+          "when": "Round day styling on a span with a start and an end",
+          "instead": "c-calendar-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-6",
+    "title": "Custom select range style",
+    "label": "Circular Range",
+    "description": "Custom select range style",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A from and to span with every day button forced round, the range counterpart of the circular single pick",
+      "agentNotes": [
+        "The `range-start` and `range-end` selectors in `classNames` match no element in react-day-picker 9, so the half filled band never draws",
+        "Overriding `day` in `classNames` replaces the Calendar day classes, dropping the `group/day` hook its focused day ring needs"
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-7",
+    "title": "Right navigation",
+    "label": "Right Navigation",
+    "description": "Right navigation",
+    "order": 7,
+    "guidance": {
+      "bestFor": "The month title moved to the left edge with both arrows grouped on the right, through classNames"
+    }
+  },
+  {
+    "name": "c-calendar-8",
+    "title": "Month and year selection",
+    "label": "Month Year Select",
+    "description": "Month and year selection",
+    "order": 8,
+    "guidance": {
+      "bestFor": "Far past days reached through month and year Select menus that replace the arrows, from July 1980 on",
+      "agentNotes": [
+        "The year menu starts at the July 1980 `startMonth` and, with no end month passed, stops at the current year",
+        "`handleCalendarChange` wraps the Select value in a fake change event for the `onChange` each react-day-picker dropdown hands over"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A year jump that keeps the month arrows and shows the month name as text",
+          "instead": "c-calendar-9"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-9",
+    "title": "Year select with navigation",
+    "label": "Year Select",
+    "description": "Year select with navigation",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A year Select beside the month name in the caption, with the previous and next arrows kept",
+      "agentNotes": [
+        "Years run from the July 1980 `startMonth` to the end of this year, and the next arrow stops there as well"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Month and year both chosen from menus, with no arrows at all",
+          "instead": "c-calendar-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-10",
+    "title": "Display week numbers",
+    "label": "Week Numbers",
+    "description": "Display week numbers",
+    "order": 10,
+    "guidance": {
+      "bestFor": "Week numbers in a leading column through a custom WeekNumber cell, with 6 rows in every month"
+    }
+  },
+  {
+    "name": "c-calendar-11",
+    "title": "Current month button",
+    "label": "Current Month Button",
+    "description": "Current month button",
+    "order": 11,
+    "guidance": {
+      "bestFor": "An outline button under the grid that brings the view back to this month without changing the pick",
+      "whenNotToUse": [
+        {
+          "when": "A reset that should also select today, not only show its month",
+          "instead": "c-calendar-12"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-12",
+    "title": "Today button",
+    "label": "Today Button",
+    "description": "Today button",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A reset button that selects today and jumps to it, with the grid opening 4 weeks back"
+    }
+  },
+  {
+    "name": "c-calendar-13",
+    "title": "Custom navigation with year view",
+    "label": "Year View",
+    "description": "Custom navigation with year view",
+    "order": 13,
+    "guidance": {
+      "bestFor": "A caption button that swaps the grid for a year list, then a month list, spanning 10 years either side of today",
+      "agentNotes": [
+        "`startYear` and `endYear` fix the range at 10 years before and after today; widen both for older or later dates"
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-14",
+    "title": "Preset time selection",
+    "label": "Time Slots",
+    "description": "Preset time selection",
+    "order": 14,
+    "guidance": {
+      "bestFor": "Half hour slots from 09:00 to 17:30 in a scrolling column beside the grid, with taken slots and past days disabled",
+      "agentNotes": [
+        "`timeSlots` is mock availability, identical for every day; load the real slots for the chosen `date`",
+        "The chosen `time` lives in local state only and resets to null on each new day; nothing submits it"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "An hour and minute value chosen freely rather than from fixed slots",
+          "instead": "time-picker"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-15",
+    "title": "Calendar with presets",
+    "label": "Date Presets",
+    "description": "Calendar with presets",
+    "order": 15,
+    "guidance": {
+      "bestFor": "A rail of Today, Yesterday, Last week, Last month and Last year shortcuts for one past day, with future days blocked",
+      "whenNotToUse": [
+        {
+          "when": "Shortcuts into the coming days, such as Tomorrow or 2 weeks out",
+          "instead": "c-calendar-18"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-16",
+    "title": "Range calendar with presets",
+    "label": "Range Presets",
+    "description": "Range calendar with presets",
+    "order": 16,
+    "guidance": {
+      "bestFor": "Range presets such as Last 7 days, Month to date and Last year that set both ends and jump the view there",
+      "whenNotToUse": [
+        {
+          "when": "A span shortcut rail that opens from a field in a popover",
+          "instead": "c-calendar-29"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-17",
+    "title": "Calendar with pricing",
+    "label": "Pricing",
+    "description": "Calendar with pricing",
+    "order": 17,
+    "guidance": {
+      "bestFor": "A price under every day from a seeded formula, green below $100, with large cells and no outside days",
+      "agentNotes": [
+        "`getPriceForDate` derives a fake price from the date itself; swap in your real rates per day"
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-18",
+    "title": "Calendar with presets",
+    "label": "Forward Presets",
+    "description": "Calendar with presets",
+    "order": 18,
+    "guidance": {
+      "bestFor": "Forward shortcuts Today, Tomorrow, 3 days, Week and 2 weeks as a footer button row in a compact card",
+      "agentNotes": [
+        "The initial `date` is fixed to 12 February this year, while `currentMonth` opens on the current month"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Shortcuts back to past days, such as Yesterday or Last year",
+          "instead": "c-calendar-15"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-19",
+    "title": "Appointment calendar",
+    "label": "Appointment",
+    "description": "Appointment calendar",
+    "order": 19,
+    "guidance": {
+      "bestFor": "A titled booking card with 15 minute slots from 09:00 to 18:00, today and 2 more days taken, and a summary line by Confirm",
+      "agentNotes": [
+        "`bookedDates` blocks today and the next 2 days as sample data; fill it from your real bookings",
+        "The Confirm `Button` has no handler, and the footer already says booked once a day and `selectedTime` are set"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Many booked appointments viewed across a week, not one slot being picked",
+          "instead": "event-calendar"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-20",
+    "title": "Display 2 months",
+    "label": "Two Months",
+    "description": "Display 2 months",
+    "order": 20,
+    "guidance": {
+      "bestFor": "A single day pick across 2 months shown side by side, stacking into one column below md",
+      "whenNotToUse": [
+        {
+          "when": "A start and end span stretched across the 2 months",
+          "instead": "c-calendar-21"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-21",
+    "title": "Display 2 months with range picker",
+    "label": "Two Month Range",
+    "description": "Display 2 months with range picker",
+    "order": 21,
+    "guidance": {
+      "bestFor": "A range across 2 side by side months, preset from the 6th to the 18th of this month",
+      "whenNotToUse": [
+        {
+          "when": "A range kept closed behind a field until someone opens it",
+          "instead": "c-calendar-25"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-22",
+    "title": "Calendar with event list",
+    "label": "Event List",
+    "description": "Calendar with event list",
+    "order": 22,
+    "guidance": {
+      "bestFor": "A compact card listing events under the grid with colored bars, time spans and an Add Event button",
+      "agentNotes": [
+        "`events` holds 3 fixed January 2026 entries and ignores the selected `date`, so the list never changes",
+        "The Add Event `Button` has no handler; wire it to your own create flow"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A full month or week view where entries are dragged and resized",
+          "instead": "event-calendar"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-23",
+    "title": "Localize calendar",
+    "label": "Localized",
+    "description": "Localize calendar",
+    "order": 23,
+    "guidance": {
+      "bestFor": "A language Select in the header that switches day names, month titles and the heading between English and Chinese",
+      "agentNotes": [
+        "The `locale` ternary maps every key except zh to `enUS`, so a new `localizedStrings` language needs its own locale import",
+        "`dateRange` starts on fixed sample dates, 9 to 17 February 2026, and the grid opens on that month"
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-24",
+    "title": "Calendar with date picker",
+    "label": "Date Picker",
+    "description": "Calendar with date picker",
+    "order": 24,
+    "guidance": {
+      "bestFor": "An outline trigger reading Pick a date that opens one month in a popover and then shows the long formatted day",
+      "agentNotes": [
+        "`Popover` stays open after a day is picked; close it from `onSelect` through a controlled open state"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A filter that also offers before, after and between operators",
+          "instead": "date-selector"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-25",
+    "title": "Calendar with date range picker",
+    "label": "Date Range Picker",
+    "description": "Calendar with date range picker",
+    "order": 25,
+    "guidance": {
+      "bestFor": "A trigger reading Pick a date range that opens 2 months in a popover and prints both ends once chosen",
+      "whenNotToUse": [
+        {
+          "when": "A range field that also needs one click shortcuts such as Last 30 days",
+          "instead": "c-calendar-29"
+        },
+        {
+          "when": "Filtering by month, quarter or year periods as well as day spans",
+          "instead": "date-selector"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-26",
+    "title": "Calendar with date picker and year view",
+    "label": "Picker Year View",
+    "description": "Calendar with date picker and year view",
+    "order": 26,
+    "guidance": {
+      "bestFor": "The year then month drill down from the caption, inside a popover opened from a field",
+      "whenNotToUse": [
+        {
+          "when": "A year jump that sits on the page with no trigger field",
+          "instead": "c-calendar-13"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-27",
+    "title": "Calendar with date and appointment picker",
+    "label": "Picker Time Slots",
+    "description": "Calendar with date and appointment picker",
+    "order": 27,
+    "guidance": {
+      "bestFor": "The half hour slot column inside a popover opened from a field, with past days blocked",
+      "agentNotes": [
+        "The trigger prints only `date`; the slot held in `time` is highlighted in the column but never shown on the trigger or returned",
+        "`timeSlots` is mock data, the same list for every day the user picks"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Slot picking that stays open on the page rather than in a popover",
+          "instead": "c-calendar-14"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-28",
+    "title": "Calendar with date picker and presets",
+    "label": "Picker Presets",
+    "description": "Calendar with date picker and presets",
+    "order": 28,
+    "guidance": {
+      "bestFor": "Past day shortcuts from Today to Last year in a rail inside a popover opened from a field",
+      "whenNotToUse": [
+        {
+          "when": "The same past day shortcuts shown on the page with no trigger",
+          "instead": "c-calendar-15"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-29",
+    "title": "Range calendar with date picker and presets",
+    "label": "Range Picker Presets",
+    "description": "Range calendar with date picker and presets",
+    "order": 29,
+    "guidance": {
+      "bestFor": "The 8 shortcut span rail inside a popover, its trigger printing the chosen span and starting on the last 7 days",
+      "whenNotToUse": [
+        {
+          "when": "Filters by quarter, half year or year with is, before or after",
+          "instead": "date-selector"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-calendar-30",
+    "title": "Calendar with date and time range picker",
+    "label": "Date Time Range",
+    "description": "Calendar with date and time range picker",
+    "order": 30,
+    "guidance": {
+      "bestFor": "Start and End Time inputs with seconds under the grid in a popover, starting on the 12th of this month",
+      "agentNotes": [
+        "The Start and End Time inputs are uncontrolled through `defaultValue`, and the trigger label shows only `date`",
+        "The input ids `time-from` and `time-to` are fixed strings, so 2 pickers on one page share them"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Hours, minutes and AM or PM picked from columns with min and max bounds",
+          "instead": "time-picker"
+        }
+      ]
+    }
+  }
+]

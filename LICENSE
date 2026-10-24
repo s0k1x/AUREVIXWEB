@@ -40,6 +40,16 @@ Marcas y los tratados internacionales sobre propiedad intelectual.
    (supabase-js, qrcode-generator) pertenecen a sus autores y se usan según
    sus propias licencias.
 
+   Queda expresamente excluida de esta licencia la carpeta «biblioteca-ui/»
+   y todo su contenido. Esa carpeta reúne código de bibliotecas de terceros
+   (componentes, iconos, estilos y scripts) que pertenece a sus respectivos
+   autores y se rige exclusivamente por la licencia original de cada
+   biblioteca, que se conserva junto a su código con sus avisos de
+   copyright. AurevixWeb no reclama la propiedad de ese contenido, y las
+   restricciones de esta licencia no se aplican a él ni limitan los derechos
+   o las obligaciones que establecen sus licencias originales. Ver
+   «biblioteca-ui/LICENSE-TERCEROS.md».
+
 5. El incumplimiento de esta licencia podrá dar lugar a las acciones civiles
    y penales que correspondan, incluida la reclamación de daños y perjuicios.
 

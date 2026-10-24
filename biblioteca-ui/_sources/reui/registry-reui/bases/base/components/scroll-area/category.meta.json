@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Fixed height lists and photo columns that scroll inside their own box with a custom scrollbar",
+      "Sideways strips of cards or photos kept to the width of their container",
+      "Wide tables that pan on both axes without widening the page around them"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Section links that light up as the reader scrolls past each heading",
+        "instead": "scrollspy"
+      },
+      {
+        "when": "A chat transcript that opens on the newest turn and follows streamed replies",
+        "instead": "message-scroller"
+      },
+      {
+        "when": "Shoppers weighing rival products on price, star rating and specs",
+        "instead": "ecommerce/comparison"
+      }
+    ],
+    "agentNotes": [
+      "Give the `ScrollArea` root a bounded height or width through `className`, or it grows with its content and never scrolls",
+      "`ScrollArea` draws only the vertical `ScrollBar`; for sideways scrolling pass a `ScrollBar` with `orientation` horizontal as a child"
+    ]
+  }
+}

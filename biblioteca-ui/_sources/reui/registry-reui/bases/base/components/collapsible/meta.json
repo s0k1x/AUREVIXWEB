@@ -1,0 +1,164 @@
+[
+  {
+    "name": "c-collapsible-1",
+    "title": "Basic collapsible",
+    "label": "Basic",
+    "description": "Basic collapsible",
+    "order": 1,
+    "guidance": {
+      "bestFor": "An order summary that keeps its status row in view and opens the shipping address and items from an icon button",
+      "whenNotToUse": [
+        {
+          "when": "A titled status panel that starts open and toggles from its whole header row",
+          "instead": "c-collapsible-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-collapsible-2",
+    "title": "Collapsible with checkbox settings",
+    "label": "Checkbox Settings",
+    "description": "Collapsible with checkbox settings",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A full-width outline button that opens a card of 3 notification channel checkboxes, starting open",
+      "agentNotes": [
+        "Replace `settings` with your channels; each `Checkbox` takes only `defaultChecked`, so no choice is read or saved yet"
+      ]
+    }
+  },
+  {
+    "name": "c-collapsible-3",
+    "title": "Collapsible animated card",
+    "label": "Animated Card",
+    "description": "Collapsible animated card",
+    "order": 3,
+    "guidance": {
+      "bestFor": "A single help question in a small card, where the whole question line opens its answer below",
+      "whenNotToUse": [
+        {
+          "when": "Several help questions listed together that each open their own answer",
+          "instead": "accordion"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-collapsible-4",
+    "title": "Collapsible card with bottom trigger",
+    "label": "Bottom Trigger",
+    "description": "Collapsible card with bottom trigger",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A billing usage card with a progress bar whose round chevron button, centered on the bottom edge, opens a cost breakdown",
+      "agentNotes": [
+        "The Billing `Button` has no handler and `Progress` is fixed at a `value` of 90; wire both to your billing data",
+        "The round trigger is `absolute` and hangs past the card's bottom edge, so leave space below or it overlaps the next element"
+      ]
+    }
+  },
+  {
+    "name": "c-collapsible-5",
+    "title": "Collapsible form fields",
+    "label": "Form Fields",
+    "description": "Collapsible form fields",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A price input with a sliders icon button beside it that reveals tax rate and discount fields, its open state held in React state",
+      "agentNotes": [
+        "The 3 `InputGroupInput` fields use `defaultValue` with no form or handler, so nothing reads the price, tax or discount yet"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "On or off options picked with checkboxes rather than typed numbers",
+          "instead": "c-collapsible-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-collapsible-6",
+    "title": "Collapsible frame",
+    "label": "In Frame",
+    "description": "Collapsible frame",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A deployment status note in a stacked Frame, open on load, its whole header row toggling the release summary",
+      "whenNotToUse": [
+        {
+          "when": "A summary whose key status stays visible while only the extra details hide",
+          "instead": "c-collapsible-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-collapsible-7",
+    "title": "Nested collapsible list with actions",
+    "label": "Nested List",
+    "description": "Nested collapsible list with actions",
+    "order": 7,
+    "guidance": {
+      "bestFor": "A list of 3 API keys under a toggling Frame header, each row's menu copying its key or deleting the row",
+      "agentNotes": [
+        "Replace `initialKeys` with your keys; Delete only filters the local `keys` state, so call your API from `onDelete`",
+        "The plus `Button` sits inside `CollapsibleTrigger` with no handler, so a click on it toggles the list; move it out before wiring an add action"
+      ]
+    }
+  },
+  {
+    "name": "c-collapsible-8",
+    "title": "Collapsible User profile",
+    "label": "User Profile",
+    "description": "Collapsible User profile",
+    "order": 8,
+    "guidance": {
+      "bestFor": "A user handle with avatar that opens to last activity, an online since time and a country flag for location",
+      "agentNotes": [
+        "`AvatarImage` loads from github.com and the flag `img` from flagcdn.com; serve your own images or allow both hosts in your CSP"
+      ]
+    }
+  },
+  {
+    "name": "c-collapsible-9",
+    "title": "Multi-level collapsible menu",
+    "label": "Multi-Level Menu",
+    "description": "Multi-level collapsible menu",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A 3 level navigation menu of icon rows where folders open in place and the chosen leaf row stays highlighted",
+      "agentNotes": [
+        "Replace `navItems` with your routes; a leaf row only sets `selectedId`, so add the link or router call in `onSelect`",
+        "Leaf rows render `Item` as a div with only `onClick`, so the keyboard opens folders but never picks a leaf; render leaves as buttons or links"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A full app navigation column that collapses to icons and turns into a sheet on phones",
+          "instead": "sidebar"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-collapsible-10",
+    "title": "Tree view with file actions",
+    "label": "File Tree",
+    "description": "Tree view with file actions",
+    "order": 10,
+    "guidance": {
+      "bestFor": "A code file explorer under Explorer and Outline tabs, file rows showing download and delete buttons on hover or selection",
+      "agentNotes": [
+        "Replace `fileTree` with your files; selection keys on `name`, so give rows a unique id before 2 folders hold the same file name",
+        "The download and delete `Button` icons have no handlers, and `TabsList` switches no content, so Outline shows the same files",
+        "File rows render `Item` as a div with only `onClick`, so the keyboard opens folders but never selects a file; give file rows a button"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A file explorer people move through with arrow keys rather than row by row clicks",
+          "instead": "tree"
+        }
+      ]
+    }
+  }
+]

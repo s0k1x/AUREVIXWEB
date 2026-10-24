@@ -1,0 +1,895 @@
+{
+  "items": [
+    {
+      "name": "c-avatar-1",
+      "type": "registry:block",
+      "title": "Basic avatar",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Basic avatar",
+      "descriptionLong": "Basic avatar. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-1 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Basic"
+      }
+    },
+    {
+      "name": "c-avatar-2",
+      "type": "registry:block",
+      "title": "Avatar with fallback",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with fallback",
+      "descriptionLong": "Avatar with fallback. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-2 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Fallbacks"
+      }
+    },
+    {
+      "name": "c-avatar-3",
+      "type": "registry:block",
+      "title": "Avatars with different sizes",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatars with different sizes",
+      "descriptionLong": "Avatars with different sizes. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-3 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Sizes"
+      }
+    },
+    {
+      "name": "c-avatar-4",
+      "type": "registry:block",
+      "title": "Avatars with different border radiuses",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatars with different border radiuses",
+      "descriptionLong": "Avatars with different border radiuses. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-4 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Border Radius"
+      }
+    },
+    {
+      "name": "c-avatar-5",
+      "type": "registry:block",
+      "title": "Avatars with custom sizes",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatars with custom sizes",
+      "descriptionLong": "Avatars with custom sizes. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-5 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Custom Sizes"
+      }
+    },
+    {
+      "name": "c-avatar-6",
+      "type": "registry:block",
+      "title": "Avatar with an online status badge",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with an online status badge",
+      "descriptionLong": "Avatar with an online status badge. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-6 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Status Dots"
+      }
+    },
+    {
+      "name": "c-avatar-7",
+      "type": "registry:block",
+      "title": "Avatar with badge icon",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with badge icon",
+      "descriptionLong": "Avatar with badge icon. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-7 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Badge Icons"
+      }
+    },
+    {
+      "name": "c-avatar-8",
+      "type": "registry:block",
+      "title": "Avatar with different badge positions",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with different badge positions",
+      "descriptionLong": "Avatar with different badge positions. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-8 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Round Badge Corners"
+      }
+    },
+    {
+      "name": "c-avatar-9",
+      "type": "registry:block",
+      "title": "Avatar with different badge positions",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with different badge positions",
+      "descriptionLong": "Avatar with different badge positions. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-9 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "Square Badge Corners"
+      }
+    },
+    {
+      "name": "c-avatar-10",
+      "type": "registry:block",
+      "title": "Basic avatar group",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Basic avatar group",
+      "descriptionLong": "Basic avatar group. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-10 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "label": "Avatar Group"
+      }
+    },
+    {
+      "name": "c-avatar-11",
+      "type": "registry:block",
+      "title": "Avatar group with numerical count",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar group with numerical count",
+      "descriptionLong": "Avatar group with numerical count. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-11 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "label": "Group With Count"
+      }
+    },
+    {
+      "name": "c-avatar-12",
+      "type": "registry:block",
+      "title": "Avatar group with an icon count",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar group with an icon count",
+      "descriptionLong": "Avatar group with an icon count. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-12 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "label": "Plus Chip Group"
+      }
+    },
+    {
+      "name": "c-avatar-13",
+      "type": "registry:block",
+      "title": "Avatar with a distinct border ring",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with a distinct border ring",
+      "descriptionLong": "Avatar with a distinct border ring. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-13 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-13.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-13.tsx"
+        }
+      ],
+      "meta": {
+        "order": 13,
+        "label": "Border Rings"
+      }
+    },
+    {
+      "name": "c-avatar-14",
+      "type": "registry:block",
+      "title": "Avatar with light background color fallback",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with light background color fallback",
+      "descriptionLong": "Avatar with light background color fallback. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-14 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-14.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-14.tsx"
+        }
+      ],
+      "meta": {
+        "order": 14,
+        "label": "Soft Fallbacks"
+      }
+    },
+    {
+      "name": "c-avatar-15",
+      "type": "registry:block",
+      "title": "Avatar with a solid background color fallback",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with a solid background color fallback",
+      "descriptionLong": "Avatar with a solid background color fallback. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-15 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-15.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-15.tsx"
+        }
+      ],
+      "meta": {
+        "order": 15,
+        "label": "Solid Fallbacks"
+      }
+    },
+    {
+      "name": "c-avatar-16",
+      "type": "registry:block",
+      "title": "Avatar with user details and badge",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with user details and badge",
+      "descriptionLong": "Avatar with user details and badge. Built by composing Avatar, Badge. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-16 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "badge"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-16.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-16.tsx"
+        }
+      ],
+      "meta": {
+        "order": 16,
+        "label": "User Details"
+      }
+    },
+    {
+      "name": "c-avatar-17",
+      "type": "registry:block",
+      "title": "Avatar with grayscale image filter",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with grayscale image filter",
+      "descriptionLong": "Avatar with grayscale image filter. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-17 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-17.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-17.tsx"
+        }
+      ],
+      "meta": {
+        "order": 17,
+        "label": "Grayscale"
+      }
+    },
+    {
+      "name": "c-avatar-18",
+      "type": "registry:block",
+      "title": "Avatar group with online status on one",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar group with online status on one",
+      "descriptionLong": "Avatar group with online status on one. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-18 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-18.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-18.tsx"
+        }
+      ],
+      "meta": {
+        "order": 18,
+        "label": "Group Presence"
+      }
+    },
+    {
+      "name": "c-avatar-19",
+      "type": "registry:block",
+      "title": "Avatar inside small outline button",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar inside small outline button",
+      "descriptionLong": "Avatar inside small outline button. Built by composing Avatar, Button. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-19 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-19.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-19.tsx"
+        }
+      ],
+      "meta": {
+        "order": 19,
+        "label": "Outline Button"
+      }
+    },
+    {
+      "name": "c-avatar-20",
+      "type": "registry:block",
+      "title": "Avatar social proof with text label",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar social proof with text label",
+      "descriptionLong": "Avatar social proof with text label. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-20 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-20.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-20.tsx"
+        }
+      ],
+      "meta": {
+        "order": 20,
+        "label": "Social Proof Pill"
+      }
+    },
+    {
+      "name": "c-avatar-21",
+      "type": "registry:block",
+      "title": "Compact social proof with initials",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Compact social proof with initials",
+      "descriptionLong": "Compact social proof with initials. Built by composing Avatar, Frame. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-21 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "frame"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-21.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-21.tsx"
+        }
+      ],
+      "meta": {
+        "order": 21,
+        "label": "Compact Social Proof"
+      }
+    },
+    {
+      "name": "c-avatar-22",
+      "type": "registry:block",
+      "title": "Avatar group with hover tooltips and lift effect",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar group with hover tooltips and lift effect",
+      "descriptionLong": "Avatar group with hover tooltips and lift effect. Built by composing Avatar, Tooltip. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-22 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "tooltip"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-22.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-22.tsx"
+        }
+      ],
+      "meta": {
+        "order": 22,
+        "label": "Lift Tooltips"
+      }
+    },
+    {
+      "name": "c-avatar-23",
+      "type": "registry:block",
+      "title": "Avatar group with hover effect",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar group with hover effect",
+      "descriptionLong": "Avatar group with hover effect. Built with the Avatar component. Uses cn alongside the shadcn primitives. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-23 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-23.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-23.tsx"
+        }
+      ],
+      "meta": {
+        "order": 23,
+        "label": "Hover Fan"
+      }
+    },
+    {
+      "name": "c-avatar-24",
+      "type": "registry:block",
+      "title": "Avatar group with hover effect and tooltips",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar group with hover effect and tooltips",
+      "descriptionLong": "Avatar group with hover effect and tooltips. Built by composing Avatar, Tooltip. Uses cn alongside the shadcn primitives. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-24 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "tooltip"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-24.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-24.tsx"
+        }
+      ],
+      "meta": {
+        "order": 24,
+        "label": "Fan With Tooltips"
+      }
+    },
+    {
+      "name": "c-avatar-25",
+      "type": "registry:block",
+      "title": "Avatar group with numerical count",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar group with numerical count",
+      "descriptionLong": "Avatar group with numerical count. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-25 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-25.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-25.tsx"
+        }
+      ],
+      "meta": {
+        "order": 25,
+        "label": "Bordered Count Pill"
+      }
+    },
+    {
+      "name": "c-avatar-26",
+      "type": "registry:block",
+      "title": "Pilled small outline button with avatar",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Pilled small outline button with avatar",
+      "descriptionLong": "Pilled small outline button with avatar. Built by composing Avatar, Button. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-26 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-26.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-26.tsx"
+        }
+      ],
+      "meta": {
+        "order": 26,
+        "label": "Pill Outline Button"
+      }
+    },
+    {
+      "name": "c-avatar-27",
+      "type": "registry:block",
+      "title": "Pilled small button with avatar",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Pilled small button with avatar",
+      "descriptionLong": "Pilled small button with avatar. Built by composing Avatar, Button. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-27 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-27.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-27.tsx"
+        }
+      ],
+      "meta": {
+        "order": 27,
+        "label": "Pill Primary Button"
+      }
+    },
+    {
+      "name": "c-avatar-28",
+      "type": "registry:block",
+      "title": "Avatar inside an empty state example",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar inside an empty state example",
+      "descriptionLong": "Avatar inside an empty state example. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-28 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-28.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-28.tsx"
+        }
+      ],
+      "meta": {
+        "order": 28,
+        "label": "Empty State"
+      }
+    },
+    {
+      "name": "c-avatar-29",
+      "type": "registry:block",
+      "title": "Avatar group with icon count and button",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar group with icon count and button",
+      "descriptionLong": "Avatar group with icon count and button. Built by composing Avatar, Button, Tooltip. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-29 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button",
+        "tooltip"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-29.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-29.tsx"
+        }
+      ],
+      "meta": {
+        "order": 29,
+        "label": "Group Add Button"
+      }
+    },
+    {
+      "name": "c-avatar-30",
+      "type": "registry:block",
+      "title": "Avatar with loading state demonstration",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with loading state demonstration",
+      "descriptionLong": "Avatar with loading state demonstration. Built by composing Avatar, Spinner. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-30 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-30.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-30.tsx"
+        }
+      ],
+      "meta": {
+        "order": 30,
+        "label": "Loading State"
+      }
+    },
+    {
+      "name": "c-avatar-31",
+      "type": "registry:block",
+      "title": "Avatar with custom badge",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with custom badge",
+      "descriptionLong": "Avatar with custom badge. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-31 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-31.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-31.tsx"
+        }
+      ],
+      "meta": {
+        "order": 31,
+        "label": "Custom Badge"
+      }
+    },
+    {
+      "name": "c-avatar-32",
+      "type": "registry:block",
+      "title": "Avatar with ring animation",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with ring animation",
+      "descriptionLong": "Avatar with ring animation. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-32 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-32.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-32.tsx"
+        }
+      ],
+      "meta": {
+        "order": 32,
+        "label": "Pulsing Ring"
+      }
+    },
+    {
+      "name": "c-avatar-33",
+      "type": "registry:block",
+      "title": "Avatar with gradient animated ring",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with gradient animated ring",
+      "descriptionLong": "Avatar with gradient animated ring. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-33 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-33.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-33.tsx"
+        }
+      ],
+      "meta": {
+        "order": 33,
+        "label": "Gradient Ring"
+      }
+    },
+    {
+      "name": "c-avatar-34",
+      "type": "registry:block",
+      "title": "Avatar with multiple badges",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Avatar with multiple badges",
+      "descriptionLong": "Avatar with multiple badges. Built with the Avatar component. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-34 and edit as your own code.",
+      "registryDependencies": [
+        "avatar"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-34.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-34.tsx"
+        }
+      ],
+      "meta": {
+        "order": 34,
+        "label": "Multiple Badges"
+      }
+    },
+    {
+      "name": "c-avatar-35",
+      "type": "registry:block",
+      "title": "Compact avatar dropdown menu",
+      "categories": [
+        "avatar"
+      ],
+      "description": "Compact avatar dropdown menu",
+      "descriptionLong": "Compact avatar dropdown menu. Built by composing Avatar, Button, Dropdown Menu. A free, open source shadcn avatar example you can install with npx shadcn@latest add @reui/c-avatar-35 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/avatar/c-avatar-35.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-avatar-35.tsx"
+        }
+      ],
+      "meta": {
+        "order": 35,
+        "label": "Dropdown Menu"
+      }
+    }
+  ]
+}

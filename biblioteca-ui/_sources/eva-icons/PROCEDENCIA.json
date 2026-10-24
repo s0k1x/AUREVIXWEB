@@ -1,0 +1,22 @@
+{
+  "repo": "https://github.com/akveo/eva-icons",
+  "commit": "70d2471ff88ab1385d3310b93a406243377b53d5",
+  "commit_date": "2020-09-08T22:02:52+03:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 589,
+  "files_skipped": {
+    "media": 23,
+    "lockfile": 1,
+    "too_large": 0,
+    "symlink": 0,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

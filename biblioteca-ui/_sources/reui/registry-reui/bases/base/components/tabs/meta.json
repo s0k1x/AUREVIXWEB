@@ -1,0 +1,200 @@
+[
+  {
+    "name": "c-tabs-1",
+    "title": "Basic tabs.",
+    "label": "Basic",
+    "description": "Basic tabs.",
+    "order": 1,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "The smallest setup: 2 triggers on a muted track switching between an account card and a password card",
+      "agentNotes": [
+        "Name and username are `defaultValue` samples and no form wraps any `Input`, so Save changes and Update password send nothing"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A range switch whose chosen period the page reads from state",
+          "instead": "c-tabs-9"
+        },
+        {
+          "when": "Dashboard views in place of forms, with an icon on every trigger",
+          "instead": "c-tabs-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tabs-2",
+    "title": "Tabs with line variant.",
+    "label": "Line Variant",
+    "description": "Tabs with line variant.",
+    "order": 2,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "An underlined row stretched full width over 3 cards for account, password and preference forms",
+      "agentNotes": [
+        "Theme and Language are free text `Input` fields seeded with Light and English; swap in a select for real options",
+        "Save changes, Update password and Save settings are `Button` elements with no handler or form around them"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "The underlined style stacked as a column on the left of the panel",
+          "instead": "c-tabs-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tabs-3",
+    "title": "Tabs with vertical orientation.",
+    "label": "Vertical",
+    "description": "Tabs with vertical orientation.",
+    "order": 3,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A muted column of 3 triggers on the left, with the matching form card opening to its right",
+      "agentNotes": [
+        "Each `Input` is uncontrolled, with Emma Wilson as the sample account, and none of the 3 footer buttons has a handler"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A side column with no muted track, where a thin bar marks the open section",
+          "instead": "c-tabs-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tabs-4",
+    "title": "Tabs with vertical orientation and line variant.",
+    "label": "Vertical Line",
+    "description": "Tabs with vertical orientation and line variant.",
+    "order": 4,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A transparent left column where a thin bar on its right edge marks the active section, beside wider cards",
+      "agentNotes": [
+        "Name, email, theme and language are prefilled through `defaultValue` and the 3 footer buttons do nothing yet"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A side list whose rows each lead with an icon, some ending in a count",
+          "instead": "c-tabs-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tabs-5",
+    "title": "Tabs with icons.",
+    "label": "Icons",
+    "description": "Tabs with icons.",
+    "order": 5,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "User, lock and gear icons ahead of each label on a muted track sized to its content, over 3 form cards",
+      "agentNotes": [
+        "No form element wraps the `Input` fields and the 3 footer `Button` actions have no handler, so nothing is saved yet"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Icon triggers over panels you fill yourself, with no form inside",
+          "instead": "c-tabs-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tabs-6",
+    "title": "Tabs with icons",
+    "label": "Full Width Icons",
+    "description": "Tabs with icons",
+    "order": 6,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A full width muted track of Overview, Analytics and Settings with icons, over 1 line placeholder cards",
+      "agentNotes": [
+        "Each `CardContent` holds a 1 line placeholder sentence; put your overview, analytics and settings views there"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Icon triggers over panels that hold edit forms with a save button",
+          "instead": "c-tabs-5"
+        },
+        {
+          "when": "A stats period switch whose selection lives in React state",
+          "instead": "c-tabs-9"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tabs-7",
+    "title": "Tabs with badge counts",
+    "label": "Badge Counts",
+    "description": "Tabs with badge counts",
+    "order": 7,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "Mail folders on an underlined row, with tinted count badges on Inbox, Drafts and Spam and none on Sent",
+      "agentNotes": [
+        "The 12, 3 and 24 counts are literals in each `Badge` and again in the panel text; derive both from your data"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Sections in a side column, each led by an icon and some carrying a count",
+          "instead": "c-tabs-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tabs-8",
+    "title": "Tabs with icons and line variant",
+    "label": "Side List Icons",
+    "description": "Tabs with icons and line variant",
+    "order": 8,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A side list of Projects, Tasks, Team and Reports, each led by an icon, 2 ending in a right aligned count badge",
+      "agentNotes": [
+        "`plans` and its `tablerIcon` fields are declared but never rendered; delete the constant when adapting",
+        "The 8 and 24 counts appear in both a `Badge` and the panel copy, so update them together from one source"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A plain side list of text labels with no icons or counts",
+          "instead": "c-tabs-4"
+        },
+        {
+          "when": "Counts on a horizontal row of folders with no icons",
+          "instead": "c-tabs-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tabs-9",
+    "title": "Segmented control tabs",
+    "label": "Segmented Control",
+    "description": "Segmented control tabs",
+    "order": 9,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A controlled Daily to Yearly switch kept in React state, each panel showing one large visitor total",
+      "agentNotes": [
+        "The 4 visitor totals are fixed text in each `TabsContent`; read `period` to load the figure for the chosen range"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A period switch that filters data shown elsewhere, with no panel of its own",
+          "instead": "toggle-group"
+        },
+        {
+          "when": "Panels that hold forms with their own save buttons",
+          "instead": "c-tabs-1"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Desktop style command bars of File, Edit and Account lists, with key hints and side flyouts",
+      "Formatting and insert lists for a document editor, such as Bold, Italic, Media and Link",
+      "View toggles and a single choice setting kept in the top bar, such as bookmarks or the theme"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A single list of actions or account options opened from one button",
+        "instead": "dropdown-menu"
+      },
+      {
+        "when": "Commands opened by right clicking a file, row or canvas, with no visible trigger",
+        "instead": "context-menu"
+      },
+      {
+        "when": "A signed in product header holding the logo, search, alerts and the user avatar",
+        "instead": "application/navbar"
+      }
+    ],
+    "agentNotes": [
+      "Give each `MenubarItem` its command through onClick, which both twins fire; Base UI never fires the Radix onSelect event",
+      "`MenubarShortcut` is a plain span that prints the chord only; register the keys in your own keydown listener",
+      "`MenubarLabel` throws on the base twin unless it sits inside a `MenubarGroup` or `MenubarRadioGroup`"
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Table with selection",
+  "category": "tables",
+  "canvas": {
+    "center": true,
+    "maxWidth": 800
+  }
+}

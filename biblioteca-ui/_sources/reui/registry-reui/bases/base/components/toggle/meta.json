@@ -1,0 +1,208 @@
+[
+  {
+    "name": "c-toggle-1",
+    "title": "Basic toggle.",
+    "label": "Basic",
+    "description": "Basic toggle.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "Bold, italic and underline as 3 separate icon only toggles in the default variant, with bold pressed on load",
+      "agentNotes": [
+        "Bold starts on through `defaultPressed` and no toggle applies any formatting; wire each one to your editor commands"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Bold, italic and underline kept as one set whose pressed values are read together",
+          "instead": "toggle-group"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-2",
+    "title": "Toggle buttons with outline variant.",
+    "label": "Outline",
+    "description": "Toggle buttons with outline variant.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "Outline toggles that pair an icon with a text label, Italic and Bold, both off on load"
+    }
+  },
+  {
+    "name": "c-toggle-3",
+    "title": "Toggle buttons in different sizes.",
+    "label": "Text Sizes",
+    "description": "Toggle buttons in different sizes.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "Text only outline toggles at the sm, default and lg sizes side by side, labelled Small, Default and Large",
+      "whenNotToUse": [
+        {
+          "when": "Comparing the 3 sizes on icon only controls with a caption beside each",
+          "instead": "c-toggle-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-4",
+    "title": "Toggle with button and icon.",
+    "label": "Button Comparison",
+    "description": "Toggle with button and icon.",
+    "order": 4,
+    "guidance": {
+      "bestFor": "An outline Button set beside an outline toggle in 2 rows, a text pair at sm and a bold icon pair, to compare them",
+      "agentNotes": [
+        "The icon only `Button` in the second row has no `aria-label`; add one or screen readers announce it unnamed"
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-5",
+    "title": "Disabled toggle.",
+    "label": "Disabled Text",
+    "description": "Disabled toggle.",
+    "order": 5,
+    "guidance": {
+      "bestFor": "Text only toggles locked by the disabled prop in both variants, default and outline, with no enabled control beside them",
+      "whenNotToUse": [
+        {
+          "when": "Enabled and disabled controls set side by side for comparison",
+          "instead": "c-toggle-13"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-6",
+    "title": "Toggle with icon.",
+    "label": "Icon & Label",
+    "description": "Toggle with icon.",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A single outline bookmark toggle with an icon and a fixed Bookmark label, left uncontrolled",
+      "whenNotToUse": [
+        {
+          "when": "A save control whose icon and label change once it is pressed",
+          "instead": "c-toggle-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-7",
+    "title": "Toggle with notification count badge",
+    "label": "Count Badge",
+    "description": "Toggle with notification count badge",
+    "order": 7,
+    "guidance": {
+      "bestFor": "A bell in the default variant with a destructive count badge on its top right corner that hides while pressed",
+      "agentNotes": [
+        "The count is a fixed 3 inside `Badge`, shown only while `pressed` is false; feed it your unread total"
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-8",
+    "title": "Toggle size variants showcase",
+    "label": "Icon Sizes",
+    "description": "Toggle size variants showcase",
+    "order": 8,
+    "guidance": {
+      "bestFor": "An icon only star toggle repeated at sm, default and lg, each row captioned in muted text",
+      "whenNotToUse": [
+        {
+          "when": "Comparing the 3 sizes on controls that carry a text label",
+          "instead": "c-toggle-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-9",
+    "title": "Toggle with icon swap on press",
+    "label": "Icon Swap",
+    "description": "Toggle with icon swap on press",
+    "order": 9,
+    "guidance": {
+      "bestFor": "An icon only heart in the default variant that gains a solid fill while pressed, with no label or count",
+      "whenNotToUse": [
+        {
+          "when": "A reaction that also shows a running count beside the heart",
+          "instead": "c-toggle-11"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-10",
+    "title": "Toggle with text label that changes",
+    "label": "Label Swap",
+    "description": "Toggle with text label that changes",
+    "order": 10,
+    "guidance": {
+      "bestFor": "An outline bookmark that fills in and relabels itself from Bookmark to Bookmarked once pressed",
+      "whenNotToUse": [
+        {
+          "when": "A bookmark whose label stays the same in both states",
+          "instead": "c-toggle-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-11",
+    "title": "Social media reaction toggles",
+    "label": "Reactions",
+    "description": "Social media reaction toggles",
+    "order": 11,
+    "guidance": {
+      "bestFor": "Like, retweet, share and bookmark outline toggles in a row, each count rising by 1 while pressed",
+      "agentNotes": [
+        "Counts are hardcoded literals switched by `liked`, `retweeted`, `shared` and `bookmarked`; load the real totals from your data"
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-12",
+    "title": "Toggle with tooltip",
+    "label": "Tooltip",
+    "description": "Toggle with tooltip",
+    "order": 12,
+    "guidance": {
+      "bestFor": "An icon only outline pin whose purpose, Pin to sidebar, appears in a tooltip on hover",
+      "agentNotes": [
+        "`TooltipTrigger` takes the `Toggle` through `render` on the base twin; the radix twin uses `asChild` inside a `TooltipProvider`"
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-13",
+    "title": "Disabled toggle states",
+    "label": "Disabled Icons",
+    "description": "Disabled toggle states",
+    "order": 13,
+    "guidance": {
+      "bestFor": "Formatting icons in 4 toggles, bold and italic enabled, underline and strikethrough disabled, each pair default then outline",
+      "whenNotToUse": [
+        {
+          "when": "Just the disabled look, shown on text labelled controls in both variants",
+          "instead": "c-toggle-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-toggle-14",
+    "title": "Toggle as mute/unmute button",
+    "label": "Mute Button",
+    "description": "Toggle as mute/unmute button",
+    "order": 14,
+    "guidance": {
+      "bestFor": "A large outline speaker that swaps to a muted speaker icon and from Sound to Muted while pressed",
+      "agentNotes": [
+        "`muted` drives only the icon and label; apply it to your audio or video element from `onPressedChange`"
+      ]
+    }
+  }
+]

@@ -1,0 +1,177 @@
+---
+title: Segmented Control
+description: A visual pattern for presenting related choices, navigation destinations, filters, or content views.
+---
+
+<ComponentPreview name="p-radio-group-8" />
+
+## About
+
+A segmented control is a visual pattern, not a standalone behavior. `SegmentedControl` and `SegmentedControlItem` provide the presentation and the sliding indicator; the element you pass to `render` provides the semantics, keyboard interactions, and state model.
+
+## Choose the right primitive
+
+| Intent | Use | Why |
+| ------ | --- | --- |
+| Choose one value in a form | [Radio Group](/ui/docs/components/radio-group) | Represents a mutually exclusive value and participates in form state. |
+| Navigate to another URL or route | Navigation links | Preserves link behavior, browser history, and `aria-current`. |
+| Apply an exclusive filter or mode | [Toggle Group](/ui/docs/components/toggle-group) | Represents the pressed state of an action that may be cleared. |
+| Switch between related panels | [Tabs](/ui/docs/components/tabs) | Connects each tab to an associated content panel. |
+
+Choose the primitive from the interaction first, then render it through the segmented control. Visual similarity alone is not a reason to use Tabs or Toggle Group.
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTab value="cli">CLI</TabsTab>
+  <TabsTab value="manual">Manual</TabsTab>
+</TabsList>
+<TabsPanel value="cli">
+
+```bash
+npx shadcn@latest add @coss/segmented-control
+```
+
+</TabsPanel>
+
+<TabsPanel value="manual">
+
+<Steps>
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install @base-ui/react
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource
+  name="segmented-control"
+  title="components/ui/segmented-control.tsx"
+/>
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsPanel>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import {
+  RadioGroupPrimitive,
+  RadioPrimitive,
+} from "@/components/ui/radio-group"
+import {
+  SegmentedControl,
+  SegmentedControlItem,
+} from "@/components/ui/segmented-control"
+```
+
+```tsx
+<SegmentedControl
+  aria-label="Billing period"
+  render={<RadioGroupPrimitive defaultValue="monthly" />}
+>
+  <SegmentedControlItem render={<RadioPrimitive.Root value="monthly" />}>
+    Monthly
+  </SegmentedControlItem>
+  <SegmentedControlItem render={<RadioPrimitive.Root value="yearly" />}>
+    Yearly
+  </SegmentedControlItem>
+</SegmentedControl>
+```
+
+Put behavior props such as `defaultValue`, `value`, `onValueChange`, or `href` on the element passed to `render`. Use the Radio Group primitives rather than `RadioGroup` and `Radio`, so the native radio indicator is not rendered.
+
+The same composition works for navigation links:
+
+```tsx
+<SegmentedControl aria-label="Project sections" render={<nav />}>
+  <SegmentedControlItem render={<a aria-current="page" href="/overview" />}>
+    Overview
+  </SegmentedControlItem>
+  <SegmentedControlItem render={<a href="/activity" />}>
+    Activity
+  </SegmentedControlItem>
+</SegmentedControl>
+```
+
+And for an exclusive filter that may be cleared:
+
+```tsx
+<SegmentedControl render={<ToggleGroupPrimitive aria-label="Status" />}>
+  <SegmentedControlItem render={<TogglePrimitive value="open" />}>
+    Open
+  </SegmentedControlItem>
+  <SegmentedControlItem render={<TogglePrimitive value="closed" />}>
+    Closed
+  </SegmentedControlItem>
+</SegmentedControl>
+```
+
+## API Reference
+
+### SegmentedControl
+
+The segmented surface. Renders a `<div>` by default and appends the sliding indicator after its children. Provides the size to its items via context.
+
+| Prop     | Type                        | Default     | Description                                                                 |
+| -------- | --------------------------- | ----------- | --------------------------------------------------------------------------- |
+| `size`   | `"sm" \| "default" \| "lg"` | `"default"` | Controls the height and horizontal padding of every item                    |
+| `render` | `ReactElement \| function`  | —           | Replaces the rendered element, for example with a Radio Group primitive or `<nav />` |
+
+### SegmentedControlItem
+
+A single segment. Renders a `<button type="button">` by default.
+
+| Prop     | Type                        | Default             | Description                                                       |
+| -------- | --------------------------- | ------------------- | ----------------------------------------------------------------- |
+| `size`   | `"sm" \| "default" \| "lg"` | Inherited from root | Overrides the size inherited from `SegmentedControl`              |
+| `render` | `ReactElement \| function`  | —                   | Replaces the rendered element, for example with a radio or a link |
+
+An item is active when it has `data-checked` (Radio Group), `aria-current="page"` (links), or `data-pressed` (Toggle Group). The indicator slides to the active item over 200ms with an ease-in-out curve, stays still when the user prefers reduced motion, and is hidden when no item is active. Before hydration or without JavaScript, the active item paints its own static pill instead. For navigation, the pill animates only when the control persists across route changes, such as in a shared layout; otherwise it appears in place on each page.
+
+At the outside edges, the item padding and the surface’s inset combine to match the horizontal padding of the corresponding Button size. The surface is slightly taller than that Button to optically balance its inset selected item when the controls appear next to each other.
+
+## Examples
+
+### Small Radio Group
+
+<ComponentPreview name="p-radio-group-7" />
+
+### Default Radio Group
+
+<ComponentPreview name="p-radio-group-8" />
+
+### Large Radio Group
+
+<ComponentPreview name="p-radio-group-9" />
+
+### Small Navigation
+
+<ComponentPreview name="p-navigation-2" />
+
+### Default Navigation
+
+<ComponentPreview name="p-navigation-1" />
+
+### Large Navigation
+
+<ComponentPreview name="p-navigation-3" />
+
+## Related content
+
+Use Tabs when each segment controls an associated content panel. Tabs keep Base UI’s own indicator and add orientation support and panel semantics, but share the segmented control’s sizes, icon layout, and indicator surface so both look the same.
+
+<ComponentPreview name="p-tabs-1" />
+
+## Changelog
+
+- [Oct 20, 2026](/ui/docs/changelog#segmented-control-component) — Segmented control is now a component with a built-in sliding indicator

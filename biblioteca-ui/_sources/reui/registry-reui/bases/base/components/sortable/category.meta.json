@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Ranked lists such as a play queue, notification channels or release tasks, put in order by a grip",
+      "Tile grids such as a media library, where cards change places across rows and columns",
+      "Grouped options and menus reordered in place, such as product variants or sidebar menu entries"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Cards that move between several status columns on one board",
+        "instead": "kanban"
+      },
+      {
+        "when": "Ranked table rows that keep several columns of values lined up",
+        "instead": "data-grid/drag-drop"
+      },
+      {
+        "when": "A whole page layout of sidebar, top bar and content area around the list",
+        "instead": "application/app-shell"
+      }
+    ],
+    "agentNotes": [
+      "Drag listeners sit on `SortableItemHandle` only, so a `SortableItem` rendered without one cannot be dragged",
+      "Passing `onMove` skips the built-in reorder, so neither `onValueChange` nor `onValueCommit` fires on drop",
+      "The drag preview clones the child of `Sortable` whose `value` matches the dragged item, so a wrapper around `SortableItem` needs that `value` too"
+    ]
+  }
+}

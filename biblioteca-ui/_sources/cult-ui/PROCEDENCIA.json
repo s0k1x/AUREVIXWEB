@@ -1,0 +1,23 @@
+{
+  "repo": "https://github.com/nolly-studio/cult-ui",
+  "commit": "7f031dc812f7bda10213bab62752dd6d080297ff",
+  "commit_date": "2026-10-14T02:08:34-04:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 1546,
+  "files_skipped": {
+    "media": 215,
+    "lockfile": 1,
+    "too_large": 0,
+    "symlink": 2,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitignore",
+    "apps/www/.gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

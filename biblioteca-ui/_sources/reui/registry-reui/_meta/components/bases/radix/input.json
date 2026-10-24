@@ -1,0 +1,817 @@
+{
+  "items": [
+    {
+      "name": "c-input-1",
+      "type": "registry:block",
+      "title": "Basic input",
+      "categories": [
+        "input"
+      ],
+      "description": "Basic input",
+      "descriptionLong": "Basic input. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-1 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Basic"
+      }
+    },
+    {
+      "name": "c-input-2",
+      "type": "registry:block",
+      "title": "Input with label",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with label",
+      "descriptionLong": "Input with label. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-2 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "With Label"
+      }
+    },
+    {
+      "name": "c-input-3",
+      "type": "registry:block",
+      "title": "Input with description",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with description",
+      "descriptionLong": "Input with description. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-3 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "With Description"
+      }
+    },
+    {
+      "name": "c-input-4",
+      "type": "registry:block",
+      "title": "Disabled input",
+      "categories": [
+        "input"
+      ],
+      "description": "Disabled input",
+      "descriptionLong": "Disabled input. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-4 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Disabled"
+      }
+    },
+    {
+      "name": "c-input-5",
+      "type": "registry:block",
+      "title": "Input with error message",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with error message",
+      "descriptionLong": "Input with error message. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-5 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Error Message"
+      }
+    },
+    {
+      "name": "c-input-6",
+      "type": "registry:block",
+      "title": "Input with character counter",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with character counter",
+      "descriptionLong": "Input with character counter. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-6 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Character Counter"
+      }
+    },
+    {
+      "name": "c-input-7",
+      "type": "registry:block",
+      "title": "Input with password type",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with password type",
+      "descriptionLong": "Input with password type. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-7 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Password"
+      }
+    },
+    {
+      "name": "c-input-8",
+      "type": "registry:block",
+      "title": "Input with phone type",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with phone type",
+      "descriptionLong": "Input with phone type. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-8 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Phone"
+      }
+    },
+    {
+      "name": "c-input-9",
+      "type": "registry:block",
+      "title": "Input with URL type",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with URL type",
+      "descriptionLong": "Input with URL type. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-9 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "URL"
+      }
+    },
+    {
+      "name": "c-input-10",
+      "type": "registry:block",
+      "title": "Input with number type",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with number type",
+      "descriptionLong": "Input with number type. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-10 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "label": "Number"
+      }
+    },
+    {
+      "name": "c-input-11",
+      "type": "registry:block",
+      "title": "Input with date type",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with date type",
+      "descriptionLong": "Input with date type. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-11 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "label": "Date"
+      }
+    },
+    {
+      "name": "c-input-12",
+      "type": "registry:block",
+      "title": "Input with file type",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with file type",
+      "descriptionLong": "Input with file type. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-12 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "label": "File"
+      }
+    },
+    {
+      "name": "c-input-13",
+      "type": "registry:block",
+      "title": "Input with required indicator",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with required indicator",
+      "descriptionLong": "Input with required indicator. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-13 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-13.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-13.tsx"
+        }
+      ],
+      "meta": {
+        "order": 13,
+        "label": "Required Indicator"
+      }
+    },
+    {
+      "name": "c-input-14",
+      "type": "registry:block",
+      "title": "Input with time type",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with time type",
+      "descriptionLong": "Input with time type. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-14 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-14.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-14.tsx"
+        }
+      ],
+      "meta": {
+        "order": 14,
+        "label": "Time"
+      }
+    },
+    {
+      "name": "c-input-15",
+      "type": "registry:block",
+      "title": "Complex input form with multiple fields",
+      "categories": [
+        "input"
+      ],
+      "description": "Complex input form with multiple fields",
+      "descriptionLong": "Complex input form with multiple fields. Built by composing Button, Field, Input, Select. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-15 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "field",
+        "input",
+        "select"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-15.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-15.tsx"
+        }
+      ],
+      "meta": {
+        "order": 15,
+        "label": "Contact Form"
+      }
+    },
+    {
+      "name": "c-input-16",
+      "type": "registry:block",
+      "title": "Input label with tooltip",
+      "categories": [
+        "input"
+      ],
+      "description": "Input label with tooltip",
+      "descriptionLong": "Input label with tooltip. Built by composing Field, Input, Tooltip. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-16 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input",
+        "tooltip"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-16.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-16.tsx"
+        }
+      ],
+      "meta": {
+        "order": 16,
+        "label": "Label Tooltip"
+      }
+    },
+    {
+      "name": "c-input-17",
+      "type": "registry:block",
+      "title": "Input label with badge",
+      "categories": [
+        "input"
+      ],
+      "description": "Input label with badge",
+      "descriptionLong": "Input label with badge. Built by composing Badge, Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-17 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-17.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-17.tsx"
+        }
+      ],
+      "meta": {
+        "order": 17,
+        "label": "Label Badge"
+      }
+    },
+    {
+      "name": "c-input-18",
+      "type": "registry:block",
+      "title": "Input label with optional badge",
+      "categories": [
+        "input"
+      ],
+      "description": "Input label with optional badge",
+      "descriptionLong": "Input label with optional badge. Built by composing Badge, Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-18 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-18.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-18.tsx"
+        }
+      ],
+      "meta": {
+        "order": 18,
+        "label": "Optional Badge"
+      }
+    },
+    {
+      "name": "c-input-19",
+      "type": "registry:block",
+      "title": "Input label with link and visibility toggle",
+      "categories": [
+        "input"
+      ],
+      "description": "Input label with link and visibility toggle",
+      "descriptionLong": "Input label with link and visibility toggle. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-19 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-19.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-19.tsx"
+        }
+      ],
+      "meta": {
+        "order": 19,
+        "label": "Link & Toggle"
+      }
+    },
+    {
+      "name": "c-input-20",
+      "type": "registry:block",
+      "title": "Input with horizontal orientation",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with horizontal orientation",
+      "descriptionLong": "Input with horizontal orientation. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-20 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-20.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-20.tsx"
+        }
+      ],
+      "meta": {
+        "order": 20,
+        "label": "Horizontal"
+      }
+    },
+    {
+      "name": "c-input-21",
+      "type": "registry:block",
+      "title": "Input with multiple error messages",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with multiple error messages",
+      "descriptionLong": "Input with multiple error messages. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-21 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-21.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-21.tsx"
+        }
+      ],
+      "meta": {
+        "order": 21,
+        "label": "Multiple Errors"
+      }
+    },
+    {
+      "name": "c-input-22",
+      "type": "registry:block",
+      "title": "Basic password strength with dynamic hint and icons",
+      "categories": [
+        "input"
+      ],
+      "description": "Basic password strength with dynamic hint and icons",
+      "descriptionLong": "Basic password strength with dynamic hint and icons. Built by composing Field, Input. Uses cn alongside the shadcn primitives. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-22 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/input/c-input-22.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-22.tsx"
+        }
+      ],
+      "meta": {
+        "order": 22,
+        "label": "Strength Hint"
+      }
+    },
+    {
+      "name": "c-input-23",
+      "type": "registry:block",
+      "title": "Advanced password strength indicator with progress",
+      "categories": [
+        "input"
+      ],
+      "description": "Advanced password strength indicator with progress",
+      "descriptionLong": "Advanced password strength indicator with progress. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-23 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-23.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-23.tsx"
+        }
+      ],
+      "meta": {
+        "order": 23,
+        "label": "Strength Meter"
+      }
+    },
+    {
+      "name": "c-input-24",
+      "type": "registry:block",
+      "title": "Input with pulsed background animation",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with pulsed background animation",
+      "descriptionLong": "Input with pulsed background animation. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-24 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-24.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-24.tsx"
+        }
+      ],
+      "meta": {
+        "order": 24,
+        "label": "Pulsed Background"
+      }
+    },
+    {
+      "name": "c-input-25",
+      "type": "registry:block",
+      "title": "Input with custom focus ring",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with custom focus ring",
+      "descriptionLong": "Input with custom focus ring. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-25 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-25.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-25.tsx"
+        }
+      ],
+      "meta": {
+        "order": 25,
+        "label": "Custom Focus Ring"
+      }
+    },
+    {
+      "name": "c-input-26",
+      "type": "registry:block",
+      "title": "Input with subtle background",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with subtle background",
+      "descriptionLong": "Input with subtle background. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-26 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-26.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-26.tsx"
+        }
+      ],
+      "meta": {
+        "order": 26,
+        "label": "Subtle Background"
+      }
+    },
+    {
+      "name": "c-input-27",
+      "type": "registry:block",
+      "title": "Input with bottom border only",
+      "categories": [
+        "input"
+      ],
+      "description": "Input with bottom border only",
+      "descriptionLong": "Input with bottom border only. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-27 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-27.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-27.tsx"
+        }
+      ],
+      "meta": {
+        "order": 27,
+        "label": "Bottom Border"
+      }
+    },
+    {
+      "name": "c-input-28",
+      "type": "registry:block",
+      "title": "Color input",
+      "categories": [
+        "input"
+      ],
+      "description": "Color input",
+      "descriptionLong": "Color input. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-28 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-28.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-28.tsx"
+        }
+      ],
+      "meta": {
+        "order": 28,
+        "label": "Color"
+      }
+    },
+    {
+      "name": "c-input-29",
+      "type": "registry:block",
+      "title": "Range input with value indicator",
+      "categories": [
+        "input"
+      ],
+      "description": "Range input with value indicator",
+      "descriptionLong": "Range input with value indicator. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-29 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-29.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-29.tsx"
+        }
+      ],
+      "meta": {
+        "order": 29,
+        "label": "Range"
+      }
+    },
+    {
+      "name": "c-input-30",
+      "type": "registry:block",
+      "title": "Pill-shaped input",
+      "categories": [
+        "input"
+      ],
+      "description": "Pill-shaped input",
+      "descriptionLong": "Pill-shaped input. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-30 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-30.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-30.tsx"
+        }
+      ],
+      "meta": {
+        "order": 30,
+        "label": "Pill Shape"
+      }
+    },
+    {
+      "name": "c-input-31",
+      "type": "registry:block",
+      "title": "Minimal input without borders or background",
+      "categories": [
+        "input"
+      ],
+      "description": "Minimal input without borders or background",
+      "descriptionLong": "Minimal input without borders or background. Built by composing Field, Input. A free, open source shadcn input example you can install with npx shadcn@latest add @reui/c-input-31 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/input/c-input-31.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-input-31.tsx"
+        }
+      ],
+      "meta": {
+        "order": 31,
+        "label": "Borderless"
+      }
+    }
+  ]
+}

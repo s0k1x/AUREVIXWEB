@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Profile photos with initials or a user icon that stand in when the picture is missing or fails",
+      "Presence dots, verified marks and number badges pinned to the corners of a person's photo",
+      "Overlapping team stacks, social proof rows and user chips inside buttons or account triggers"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "An account panel opened from a trigger, with the name, email and grouped actions",
+        "instead": "dropdown-menu"
+      },
+      {
+        "when": "A full account settings page where a person edits photo, name and details",
+        "instead": "application/profile"
+      },
+      {
+        "when": "A workspace members directory with roles, invites and access status",
+        "instead": "solutions/users"
+      }
+    ],
+    "agentNotes": [
+      "Initials inside `AvatarFallback` are typed by hand in every example; derive them from each person's name rather than copying the sample letters",
+      "A square `Avatar` needs the same radius on `AvatarImage`, `AvatarFallback` and its after pseudo element border, since all 3 default to round"
+    ]
+  }
+}

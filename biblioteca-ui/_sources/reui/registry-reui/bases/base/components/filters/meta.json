@@ -1,0 +1,248 @@
+[
+  {
+    "name": "c-filters-1",
+    "title": "Everything in one filter bar",
+    "label": "Full Filter Bar",
+    "description": "Multi-select, nested fields, async options and stacked values.",
+    "order": 1,
+    "gridSize": 1,
+    "previewHeight": "560",
+    "guidance": {
+      "bestFor": "Nine fields on one bar with picks pinned atop every option list, an exclusive Unassigned row and the query printed as JSON",
+      "agentNotes": [
+        "`searchDirectory` fakes a paged server over the 4,000 rows in `DIRECTORY` with a 260ms timer; call your API from the Contact field's `loadOptions` instead",
+        "Replace `TEAM` and `COUNTRIES` with your own people and countries; `Person` loads every face from randomuser.me by its `img` path"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Value editors built from toggles, radios, checkboxes and a switch",
+          "instead": "c-filters-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-filters-2",
+    "title": "Nested attributes at workspace scale",
+    "label": "Nested Attributes",
+    "description": "Drill-down groups, a filterable branch and deep search.",
+    "order": 2,
+    "gridSize": 1,
+    "previewHeight": "360",
+    "guidance": {
+      "bestFor": "A 2,000 attribute branch generated across eight record types, with search synonyms such as zip for postcode and type icons on nested leaves",
+      "agentNotes": [
+        "`buildCustomFields` pads each object in `OBJECTS` to 250 attributes from `GENERIC`; replace it with the custom fields your workspace defines"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A short schema of flat fields with one small nested branch",
+          "instead": "c-filters-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-filters-3",
+    "title": "Status and priority colour badges",
+    "label": "Status Badges",
+    "description": "Colour-coded options and badges in the chip.",
+    "order": 3,
+    "gridSize": 1,
+    "previewHeight": "360",
+    "guidance": {
+      "bestFor": "Picks shown as tinted badges until a third one folds them into a swatch stack with a count, plus a chip that takes no value",
+      "agentNotes": [
+        "Each tone in `STATUSES` and `PRIORITIES` spells out its full `badge` class string, because Tailwind never generates a class assembled at runtime",
+        "`BADGE_LIMIT` sets how many badges a chip draws before it collapses them to the swatch stack"
+      ]
+    }
+  },
+  {
+    "name": "c-filters-4",
+    "title": "Avatars, paging and a restored view",
+    "label": "Avatars & Paging",
+    "description": "Avatar options, results paged over the wire and a saved view.",
+    "order": 4,
+    "gridSize": 1,
+    "previewHeight": "360",
+    "guidance": {
+      "bestFor": "A stored query of bare ids restored by a button, with contact names fetched for ids no search has loaded yet, and a Reset to the seed",
+      "agentNotes": [
+        "`searchDirectory` and `fetchPeople` fake a server over the 5,000 rows in `DIRECTORY`; wire them to your contacts API behind `loadOptions` and `resolveValues`",
+        "`SAVED_VIEW` is a hardcoded query; load the user's stored query from your backend and pass it to `setQuery`"
+      ]
+    }
+  },
+  {
+    "name": "c-filters-5",
+    "title": "A date and a date range editor",
+    "label": "Date Editors",
+    "description": "Consumer-owned date and date range controls.",
+    "order": 5,
+    "gridSize": 1,
+    "previewHeight": "432",
+    "guidance": {
+      "bestFor": "Typed phrases like next friday or a calendar click for one day, and a two month calendar with last 7 and 30 day presets for a range",
+      "agentNotes": [
+        "Values are `FilterDateValue` tokens holding a `relative` offset or a `date` string, never a Date; resolve each with `resolveFilterDate` when you compile",
+        "`dateOperators` is declared in this file, so `is_before`, `is_on_or_after` and the rest need their own branch in your query compiler"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A day or span of days picked on its own, outside any attribute or condition",
+          "instead": "date-selector"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-filters-6",
+    "title": "Sliders as the value editor",
+    "label": "Slider Editor",
+    "description": "One slider editor for range and single-value operators.",
+    "order": 6,
+    "gridSize": 1,
+    "previewHeight": "360",
+    "guidance": {
+      "bestFor": "Health score and monthly spend bounds dragged on a thumb, with the closed chip drawing a mini rail of the span and its maximum",
+      "agentNotes": [
+        "Set `min`, `max` and `step` in `SCORE` and `PRICE` to your data's range; the thumb, the chip rail and the spoken value all read them"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Exact amounts typed into a currency box with a monthly unit",
+          "instead": "c-filters-9"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-filters-7",
+    "title": "Filtering a table",
+    "label": "Table Filtering",
+    "description": "The query tree compiled to a row predicate.",
+    "order": 7,
+    "gridSize": 1,
+    "previewHeight": "520",
+    "guidance": {
+      "bestFor": "A chip bar in a Card over a 12 person staff grid that sorts, pages, returns to page 1 on every edit and shows an empty message",
+      "agentNotes": [
+        "`matches` filters `STAFF` in the browser; send the query to your API and feed the rows it returns to `useTable` once data lives on a server",
+        "`readField` maps a field id to a row value, and `staff` searches name and email together; add a case for any field that is not a plain row key"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Conditions that need OR groups nested inside an AND",
+          "instead": "c-filters-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-filters-8",
+    "title": "Choice controls as editors",
+    "label": "Choice Controls",
+    "description": "Toggle group, radios, checkboxes, select and switch.",
+    "order": 8,
+    "gridSize": 1,
+    "previewHeight": "360",
+    "guidance": {
+      "bestFor": "Shadcn form controls as editors that commit per press, staying open for multi picks and closing after a single plan or region pick",
+      "agentNotes": [
+        "Each editor reads its rows from a constant such as `CHANNELS` or `PERMISSIONS`, not the field's `options`, so reusing it elsewhere shows the wrong rows",
+        "Pass `commit` a second argument with `close` set to false to keep the panel open, as `ChannelToggles` and `PermissionChecks` do"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Option lists drawn by the built in menu with picks pinned on top",
+          "instead": "c-filters-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-filters-9",
+    "title": "Typed values in shadcn inputs",
+    "label": "Typed Inputs",
+    "description": "An input group, a term list, code slots and a validated domain.",
+    "order": 9,
+    "gridSize": 1,
+    "previewHeight": "360",
+    "guidance": {
+      "bestFor": "Dollar amounts with a per month unit, pasted keywords one per line, a 6 character code that commits when full and a domain check",
+      "agentNotes": [
+        "`AmountEditor` addons and the Monthly spend `renderValue` both hardcode the dollar sign; change both to switch currency",
+        "`DomainEditor` refuses to call `commit` while `DOMAIN` fails, but a query restored from storage skips that check, so validate on your server too"
+      ]
+    }
+  },
+  {
+    "name": "c-filters-10",
+    "title": "Nested groups in a popover",
+    "label": "Popover Builder",
+    "description": "A data grid paged, sorted and totalled under a popover builder.",
+    "order": 10,
+    "gridSize": 1,
+    "previewHeight": "600",
+    "guidance": {
+      "bestFor": "A deal pipeline card whose header trigger opens a reorderable builder seeded with an OR group, with short operator words such as at least",
+      "agentNotes": [
+        "`matches` walks the tree over `DEALS` in the browser with a `TESTS` entry per operator; replace it with your API call or extend `TESTS` for new operators",
+        "`reach` counts each term against `DEALS` and ignores `negated`, so drop `TermReach` from the renderers once rows come from a server",
+        "Route every query write through `applyQuery`, which also resets `pageIndex` so a narrower result never strands the pager"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "The builder laid open on the page with its tree printed back as an expression",
+          "instead": "c-filters-11"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-filters-11",
+    "title": "Nested groups inline, walked back out",
+    "label": "Inline Builder",
+    "description": "The builder inline, beside its own tree read back as an expression.",
+    "order": 11,
+    "gridSize": 1,
+    "previewHeight": "720",
+    "guidance": {
+      "bestFor": "Fields mapped to storage columns such as story_points, with a button that loads a group nested two deep and a live rule count",
+      "agentNotes": [
+        "`describeNode` quotes values without escaping and is display text only; never send its output to a database as SQL",
+        "Give each leaf a `column` for its storage name; `collectColumns` maps it by dotted path and falls back to the path when a leaf has none"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A builder tucked behind a trigger above a table that it narrows",
+          "instead": "c-filters-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-filters-12",
+    "title": "Controlled, sized and translated",
+    "label": "Controlled & Translated",
+    "description": "One controlled query, three locales and every change reported.",
+    "order": 12,
+    "gridSize": 1,
+    "previewHeight": "440",
+    "guidance": {
+      "bestFor": "English, German and Japanese copy over one query, a small or default size switch, read only and disabled states and a log of change reasons",
+      "agentNotes": [
+        "Chip empty words come from `ANY_LABELS` through `renderValue`, which `labels` never reaches, so translate them with your other copy",
+        "`NEGATED_DE` and `NEGATED_JA` are keyed by the translated operator label, so rewording an entry in `OPERATORS` needs the same key changed there",
+        "The read only tint keys off the `data-readonly` attribute the primitive sets; `disabled` has no such hook, so it is painted from `interaction`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A chip bar that narrows the rows of a real table as it changes",
+          "instead": "c-filters-7"
+        }
+      ]
+    }
+  }
+]

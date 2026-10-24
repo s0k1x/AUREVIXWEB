@@ -1,0 +1,723 @@
+{
+  "items": [
+    {
+      "name": "c-chart-1",
+      "type": "registry:block",
+      "title": "Basic bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "Basic bar chart",
+      "descriptionLong": "Basic bar chart. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-1 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Basic Bars"
+      }
+    },
+    {
+      "name": "c-chart-2",
+      "type": "registry:block",
+      "title": "Multi-dataset bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "Multi-dataset bar chart",
+      "descriptionLong": "Multi-dataset bar chart. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-2 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Multi-Dataset Bars"
+      }
+    },
+    {
+      "name": "c-chart-3",
+      "type": "registry:block",
+      "title": "Diagonal stripe bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "Diagonal stripe bar chart",
+      "descriptionLong": "Diagonal stripe bar chart. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-3 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Diagonal Stripe Bars"
+      }
+    },
+    {
+      "name": "c-chart-4",
+      "type": "registry:block",
+      "title": "Dotted pattern bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "Dotted pattern bar chart",
+      "descriptionLong": "Dotted pattern bar chart. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-4 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Dotted Bars"
+      }
+    },
+    {
+      "name": "c-chart-5",
+      "type": "registry:block",
+      "title": "Striped and solid bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "Striped and solid bar chart",
+      "descriptionLong": "Striped and solid bar chart. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-5 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Striped Solid Bars"
+      }
+    },
+    {
+      "name": "c-chart-6",
+      "type": "registry:block",
+      "title": "3D gradient bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "3D gradient bar chart",
+      "descriptionLong": "3D gradient bar chart. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-6 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "3D Gradient Bars"
+      }
+    },
+    {
+      "name": "c-chart-7",
+      "type": "registry:block",
+      "title": "Gradient bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "Gradient bar chart",
+      "descriptionLong": "Gradient bar chart. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-7 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Gradient Bars"
+      }
+    },
+    {
+      "name": "c-chart-8",
+      "type": "registry:block",
+      "title": "3D isometric bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "3D isometric bar chart",
+      "descriptionLong": "3D isometric bar chart. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-8 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Isometric Bars"
+      }
+    },
+    {
+      "name": "c-chart-9",
+      "type": "registry:block",
+      "title": "Dotted and solid bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "Dotted and solid bar chart",
+      "descriptionLong": "Dotted and solid bar chart. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-9 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "Dotted Solid Bars"
+      }
+    },
+    {
+      "name": "c-chart-10",
+      "type": "registry:block",
+      "title": "Duotone gradient bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "Duotone gradient bar chart",
+      "descriptionLong": "Duotone gradient bar chart. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-10 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "label": "Duotone Bars"
+      }
+    },
+    {
+      "name": "c-chart-11",
+      "type": "registry:block",
+      "title": "Animated monochrome bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "Animated monochrome bar chart",
+      "descriptionLong": "Animated monochrome bar chart. Built by composing Badge, Card, Chart. Uses cn, motion, recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-11 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "cn",
+        "motion",
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "label": "Animated Monochrome Bars"
+      }
+    },
+    {
+      "name": "c-chart-12",
+      "type": "registry:block",
+      "title": "Vertical bar chart",
+      "categories": [
+        "chart"
+      ],
+      "description": "Vertical bar chart",
+      "descriptionLong": "Vertical bar chart. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-12 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "label": "Horizontal Bars"
+      }
+    },
+    {
+      "name": "c-chart-13",
+      "type": "registry:block",
+      "title": "Gradient area chart with stripe overlay",
+      "categories": [
+        "chart"
+      ],
+      "description": "Gradient area chart with stripe overlay",
+      "descriptionLong": "Gradient area chart with stripe overlay. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-13 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-13.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-13.tsx"
+        }
+      ],
+      "meta": {
+        "order": 13,
+        "label": "Gradient Area"
+      }
+    },
+    {
+      "name": "c-chart-14",
+      "type": "registry:block",
+      "title": "Stacked area chart with dashed strokes",
+      "categories": [
+        "chart"
+      ],
+      "description": "Stacked area chart with dashed strokes",
+      "descriptionLong": "Stacked area chart with dashed strokes. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-14 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-14.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-14.tsx"
+        }
+      ],
+      "meta": {
+        "order": 14,
+        "label": "Stacked Dashed Area"
+      }
+    },
+    {
+      "name": "c-chart-15",
+      "type": "registry:block",
+      "title": "Step area chart with dotted pattern fill",
+      "categories": [
+        "chart"
+      ],
+      "description": "Step area chart with dotted pattern fill",
+      "descriptionLong": "Step area chart with dotted pattern fill. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-15 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-15.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-15.tsx"
+        }
+      ],
+      "meta": {
+        "order": 15,
+        "label": "Dotted Step Area"
+      }
+    },
+    {
+      "name": "c-chart-16",
+      "type": "registry:block",
+      "title": "Area chart with glowing dot markers",
+      "categories": [
+        "chart"
+      ],
+      "description": "Area chart with glowing dot markers",
+      "descriptionLong": "Area chart with glowing dot markers. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-16 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-16.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-16.tsx"
+        }
+      ],
+      "meta": {
+        "order": 16,
+        "label": "Glowing Dot Area"
+      }
+    },
+    {
+      "name": "c-chart-17",
+      "type": "registry:block",
+      "title": "Forecast line chart with stripe pattern zone",
+      "categories": [
+        "chart"
+      ],
+      "description": "Forecast line chart with stripe pattern zone",
+      "descriptionLong": "Forecast line chart with stripe pattern zone. Built by composing Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-17 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-17.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-17.tsx"
+        }
+      ],
+      "meta": {
+        "order": 17,
+        "label": "Forecast Line"
+      }
+    },
+    {
+      "name": "c-chart-18",
+      "type": "registry:block",
+      "title": "Stacked area chart with crosshatch pattern fill",
+      "categories": [
+        "chart"
+      ],
+      "description": "Stacked area chart with crosshatch pattern fill",
+      "descriptionLong": "Stacked area chart with crosshatch pattern fill. Built by composing Badge, Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-18 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-18.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-18.tsx"
+        }
+      ],
+      "meta": {
+        "order": 18,
+        "label": "Crosshatch Area"
+      }
+    },
+    {
+      "name": "c-chart-19",
+      "type": "registry:block",
+      "title": "Donut chart with center total",
+      "categories": [
+        "chart"
+      ],
+      "description": "Donut chart with center total",
+      "descriptionLong": "Donut chart with center total. Built by composing Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-19 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-19.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-19.tsx"
+        }
+      ],
+      "meta": {
+        "order": 19,
+        "label": "Donut Center Total"
+      }
+    },
+    {
+      "name": "c-chart-20",
+      "type": "registry:block",
+      "title": "Donut chart with center stats",
+      "categories": [
+        "chart"
+      ],
+      "description": "Donut chart with center stats",
+      "descriptionLong": "Donut chart with center stats. Built by composing Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-20 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-20.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-20.tsx"
+        }
+      ],
+      "meta": {
+        "order": 20,
+        "label": "Donut Center Stats"
+      }
+    },
+    {
+      "name": "c-chart-21",
+      "type": "registry:block",
+      "title": "Bug priority pie with stripe patterns",
+      "categories": [
+        "chart"
+      ],
+      "description": "Bug priority pie with stripe patterns",
+      "descriptionLong": "Bug priority pie with stripe patterns. Built by composing Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-21 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-21.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-21.tsx"
+        }
+      ],
+      "meta": {
+        "order": 21,
+        "label": "Striped Pie"
+      }
+    },
+    {
+      "name": "c-chart-22",
+      "type": "registry:block",
+      "title": "Active segment donut with center label",
+      "categories": [
+        "chart"
+      ],
+      "description": "Active segment donut with center label",
+      "descriptionLong": "Active segment donut with center label. Built by composing Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-22 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-22.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-22.tsx"
+        }
+      ],
+      "meta": {
+        "order": 22,
+        "label": "Active Segment Donut"
+      }
+    },
+    {
+      "name": "c-chart-23",
+      "type": "registry:block",
+      "title": "Radar chart with gradient fill",
+      "categories": [
+        "chart"
+      ],
+      "description": "Radar chart with gradient fill",
+      "descriptionLong": "Radar chart with gradient fill. Built by composing Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-23 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-23.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-23.tsx"
+        }
+      ],
+      "meta": {
+        "order": 23,
+        "label": "Gradient Radar"
+      }
+    },
+    {
+      "name": "c-chart-24",
+      "type": "registry:block",
+      "title": "Filled radar with glowing stroke",
+      "categories": [
+        "chart"
+      ],
+      "description": "Filled radar with glowing stroke",
+      "descriptionLong": "Filled radar with glowing stroke. Built by composing Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-24 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-24.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-24.tsx"
+        }
+      ],
+      "meta": {
+        "order": 24,
+        "label": "Glowing Stroke Radar"
+      }
+    },
+    {
+      "name": "c-chart-25",
+      "type": "registry:block",
+      "title": "Lighthouse scores radial with labels",
+      "categories": [
+        "chart"
+      ],
+      "description": "Lighthouse scores radial with labels",
+      "descriptionLong": "Lighthouse scores radial with labels. Built by composing Card, Chart. Uses recharts alongside the shadcn primitives. A free, open source shadcn chart example you can install with npx shadcn@latest add @reui/c-chart-25 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "components/chart/c-chart-25.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-chart-25.tsx"
+        }
+      ],
+      "meta": {
+        "order": 25,
+        "label": "Radial Scores"
+      }
+    }
+  ]
+}

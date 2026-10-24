@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Form fields that pick one option by typing to search, such as a framework, timezone or country",
+      "Fields holding several picks as chips, such as frameworks or team members with avatars",
+      "Task property pickers opened from a button, such as status, priority, assignee, labels, team or due date"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A short fixed list chosen from a button, with no typing to narrow it",
+        "instead": "select"
+      },
+      {
+        "when": "A free text field that suggests matches but keeps whatever was typed",
+        "instead": "autocomplete"
+      },
+      {
+        "when": "A complete signup or settings page with many fields and a submit row",
+        "instead": "application/form"
+      }
+    ],
+    "agentNotes": [
+      "Rows filter as the user types only when the function child of `ComboboxList` renders them; static `ComboboxItem` children always stay listed",
+      "`itemToStringValue` sets only the submitted value; without itemToStringLabel, search matches an object item's label, else its value field, else its JSON",
+      "Combobox parts take `render` in both twins, since both wrap `@base-ui/react`; `asChild` applies only to radix twin parts such as `DialogTrigger` and `Button`"
+    ]
+  }
+}

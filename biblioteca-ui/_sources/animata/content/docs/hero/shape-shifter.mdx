@@ -1,0 +1,68 @@
+---
+title: Shape Shifter
+description: A hero section with a shape-shifting component in the center
+labels: ["requires interaction", "hover"]
+author: harimanok_
+---
+
+<ComponentPreview name="hero-shape-shifter--primary" />
+
+## Installation
+
+### CLI
+
+<RegistryInstall category="hero" name="shape-shifter" />
+
+### Manual
+
+<Steps>
+
+<Step>Add to your CSS</Step>
+```css
+@keyframes shape-shift {
+  0% {
+    width: 40px;
+    height: 20px;
+  }
+  20% {
+    width: 240px;
+    height: 128px;
+  }
+  40% {
+    width: 80px;
+    height: 80px;
+  }
+  80% {
+    width: 128px;
+    height: 240px;
+  }
+  100% {
+    width: 40px;
+    height: 20px;
+  }
+}
+```
+
+<Step>Run the following command</Step>
+
+It will create a new file called `shape-shifter.tsx` inside the `components/animata/hero` directory.
+
+```bash
+mkdir -p components/animata/hero && touch components/animata/hero/shape-shifter.tsx
+```
+
+<Step>Paste the code</Step>
+
+Open the newly created file and paste the following code:
+
+```jsx file=<rootDir>/animata/hero/shape-shifter.tsx
+
+```
+
+</Steps>
+
+## Credits
+
+Inspired by [Good Loop](https://good-loop.com/)
+
+Images by [Unsplash](https://unsplash.com/)

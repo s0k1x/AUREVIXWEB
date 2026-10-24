@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Appointment, pickup and delivery slots kept on minute steps inside opening hours",
+      "Recurring times of day in settings, such as a daily digest, a standup or a shift start",
+      "Meeting start and end times, and a publish time set beside a chosen day"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A booking card with a day, a list of open slots, a duration and a confirm step",
+        "instead": "application/schedule"
+      },
+      {
+        "when": "A day or a range of days picked with no time of day",
+        "instead": "calendar"
+      },
+      {
+        "when": "A whole data entry page where the time is one field among many",
+        "instead": "application/form"
+      }
+    ],
+    "agentNotes": [
+      "A `value` or `defaultValue` set in code shows as given, never snapped to the steps, `min` or `max`; only picks, typing and Now snap",
+      "On `TimePickerTrigger`, `aria-label` replaces the shown value in the accessible name; point `aria-labelledby` at a visible label",
+      "Inside a right to left `dir` wrapper, pass `dir` to `TimePickerContent` too, because the popover portals out of the wrapper"
+    ]
+  }
+}

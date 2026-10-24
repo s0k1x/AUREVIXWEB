@@ -1,0 +1,197 @@
+[
+  {
+    "name": "c-popover-1",
+    "title": "Basic popover.",
+    "label": "Basic",
+    "description": "Basic popover.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The minimal anatomy: a title and a one line description in the header part, with no body or actions",
+      "whenNotToUse": [
+        {
+          "when": "A panel where the user flips switches and drags a slider",
+          "instead": "c-popover-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-popover-2",
+    "title": "Popovers opening from different sides.",
+    "label": "Opening Sides",
+    "description": "Popovers opening from different sides.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "One trigger per side in a button grid, each opening a narrow panel on that side to compare placements",
+      "agentNotes": [
+        "The base `sides` list adds `inline-start` and `inline-end`, logical sides that follow text direction, which the radix `PopoverContent` does not accept"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Sliding the panel along one edge of the trigger rather than changing the edge",
+          "instead": "c-popover-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-popover-3",
+    "title": "Popover with form.",
+    "label": "Inline Form",
+    "description": "Popover with form.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "A Dimensions header over 2 inline label and input rows for width and height, with no submit button",
+      "agentNotes": [
+        "Both `Input` fields are uncontrolled with a `defaultValue` and nothing reads them; add state or a submit handler to apply the values"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Settings changed with switches and a slider rather than typed values",
+          "instead": "c-popover-10"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-popover-4",
+    "title": "Popover alignment positions.",
+    "label": "Alignment",
+    "description": "Popover alignment positions.",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A row of 3 small buttons whose auto width panels line up with the start, center or end of their trigger",
+      "whenNotToUse": [
+        {
+          "when": "Moving the panel to another side of the trigger, such as above or to the left",
+          "instead": "c-popover-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-popover-5",
+    "title": "Popover within a dialog.",
+    "label": "In Dialog",
+    "description": "Popover within a dialog.",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A second layer nested in an open modal: a button in the modal body opens a title and description panel",
+      "agentNotes": [
+        "The `Dialog` and its Open Dialog trigger only host the demo; place the `Popover` inside your own `DialogContent`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A modal holding a short form, with no floating panel opened inside it",
+          "instead": "dialog"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-popover-6",
+    "title": "Popover with user profile details.",
+    "label": "Profile Card",
+    "description": "Popover with user profile details.",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A person chip with avatar, name and handle that opens a bio card with follower counts and a Follow button",
+      "agentNotes": [
+        "Name, handle and the `AvatarImage` photo are hardcoded in both the trigger and the card; read them, the bio and the counts from one user record",
+        "The Follow `Button` has no handler, so it does nothing until you wire your follow action"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A profile preview that opens as the pointer rests on a name",
+          "instead": "hover-card"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-popover-7",
+    "title": "Popover with custom content",
+    "label": "Feature Pitch",
+    "description": "Popover with custom content",
+    "order": 7,
+    "guidance": {
+      "bestFor": "A feature pitch with a primary tinted header bar, a short explainer and Enable AI and Learn more buttons",
+      "agentNotes": [
+        "Enable AI and Learn more are plain `Button` elements with no handlers; wire the opt in and point Learn more at your docs"
+      ]
+    }
+  },
+  {
+    "name": "c-popover-8",
+    "title": "Popover with media preview.",
+    "label": "Media Preview",
+    "description": "Popover with media preview.",
+    "order": 8,
+    "guidance": {
+      "bestFor": "An edge to edge 16:9 image that zooms on hover, above a template name, a one line summary and 2 action buttons",
+      "agentNotes": [
+        "The `img` loads a placeholder grayscale photo from picsum.photos; set `src`, `alt` and the template copy to your own",
+        "Learn more is a `Button` whose `aria-label` reads View demo in new tab yet opens nothing; make it a link or match the label"
+      ]
+    }
+  },
+  {
+    "name": "c-popover-9",
+    "title": "Relative time popover with timezone details",
+    "label": "Relative Time",
+    "description": "Relative time popover with timezone details",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A relative time inside a sentence, behind a dashed underline, that opens exact dates and clock times updating each second",
+      "agentNotes": [
+        "`referenceTime` is always 2 hours before `now`, so pass your real deploy timestamp in its place",
+        "The row badged UTC goes through date-fns `format`, which prints local time; convert it before showing it as UTC",
+        "`now` reads the clock in `useState` during render, so a server rendered page hydrates with other seconds; set it after mount"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Exact deploy times revealed while the pointer rests on the label",
+          "instead": "hover-card"
+        },
+        {
+          "when": "A field where the user picks an hour and minute rather than reads them",
+          "instead": "time-picker"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-popover-10",
+    "title": "Popover with controls",
+    "label": "Controls",
+    "description": "Popover with controls",
+    "order": 10,
+    "guidance": {
+      "bestFor": "An icon only settings button opening 2 labeled switches and a volume slider with a live percent readout",
+      "agentNotes": [
+        "Both `Switch` toggles are uncontrolled and `volume` stays in local state; connect all 3 to your settings store",
+        "The icon only `PopoverTrigger` has no accessible name; add an aria-label such as Quick settings"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Values typed into labeled text inputs, such as a width and a height",
+          "instead": "c-popover-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-popover-11",
+    "title": "Popover with navigation",
+    "label": "Step Tour",
+    "description": "Popover with navigation",
+    "order": 11,
+    "guidance": {
+      "bestFor": "A 4 step tour opening above its button, with a step counter and back and next arrows that stop at either end",
+      "agentNotes": [
+        "Replace `steps` with your tour; the last step only disables the next arrow and offers no finish action",
+        "`currentStep` lives outside the `Popover`, so reopening resumes the last step seen; reset it on close to restart the tour"
+      ]
+    }
+  }
+]

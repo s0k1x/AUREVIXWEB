@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Profile previews on a person's name or avatar, with photo, handle, role and join date",
+      "Feature, image and release note previews shown on hover or focus of a button or link",
+      "Exact dates and times behind a short inline label, such as a relative deploy time in a sentence"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Content opened by a click or tap, such as a form or settings to change",
+        "instead": "popover"
+      },
+      {
+        "when": "A one line label that names an icon button or a control",
+        "instead": "tooltip"
+      },
+      {
+        "when": "Content that stays visible in the page layout without a pointer over it",
+        "instead": "card"
+      }
+    ],
+    "agentNotes": [
+      "Timing is `delay` and `closeDelay` on the base `HoverCardTrigger` but `openDelay` and `closeDelay` on the radix `HoverCard` root",
+      "Without `render` on the base twin or `asChild` on radix, `HoverCardTrigger` renders a link with no href, which Tab skips",
+      "The radix `HoverCardContent` sets tabindex -1 on every link and button inside it, so keep keyboard actions outside the card"
+    ]
+  }
+}

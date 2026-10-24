@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Numbered page links between previous and next controls under a list, a table or search results",
+      "Compact pagers of back and forward controls alone or beside a page count, for narrow spaces",
+      "Table footers pairing page controls with a rows per page select, a range count or a page jump field"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A records table that sorts and filters its rows and needs its pager built in",
+        "instead": "data-grid"
+      },
+      {
+        "when": "A whole table section with a title, toolbar, rows and a working pager",
+        "instead": "data-grid/base"
+      },
+      {
+        "when": "Page controls kept in local state that run click handlers, with no URL per page",
+        "instead": "button-group"
+      }
+    ],
+    "agentNotes": [
+      "`PaginationLink` renders its own anchor and takes neither `render` nor `asChild`; swap that anchor for your router link in your copy of the component",
+      "Every `href` is a hash placeholder and each page number, count and current page is typed in; derive them from your page state or URL"
+    ]
+  }
+}

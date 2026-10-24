@@ -1,0 +1,29 @@
+{
+  "repo": "https://github.com/phosphor-icons/core",
+  "commit": "2b75f3ad12b420c9504ef05df8d2564a28f8500e",
+  "commit_date": "2026-01-06T14:28:48-07:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 9089,
+  "files_skipped": {
+    "media": 1,
+    "lockfile": 1,
+    "too_large": 0,
+    "symlink": 0,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio.",
+  "excluded_dirs_after_copy": [
+    {
+      "path": "raw",
+      "files": 9072,
+      "reason": "SVG de diseño sin optimizar; las mismas 6 variantes estan en assets/ (duplicado, 36 MB)."
+    }
+  ]
+}

@@ -1,0 +1,499 @@
+[
+  {
+    "name": "c-input-1",
+    "title": "Basic input",
+    "label": "Basic",
+    "description": "Basic input",
+    "order": 1,
+    "guidance": {
+      "bestFor": "A bare text box with placeholder text and no label, the smallest markup to start from",
+      "agentNotes": [
+        "The `Input` is named only by its `placeholder`, which vanishes as the user types; add a visible label for real forms"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A field whose name must stay on screen after the user starts typing",
+          "instead": "c-input-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-2",
+    "title": "Input with label",
+    "label": "With Label",
+    "description": "Input with label",
+    "order": 2,
+    "guidance": {
+      "bestFor": "An email field with a visible label above it, tied to the box through htmlFor and id",
+      "whenNotToUse": [
+        {
+          "when": "A label that needs a hover hint explaining what the field is for",
+          "instead": "c-input-16"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-3",
+    "title": "Input with description",
+    "label": "With Description",
+    "description": "Input with description",
+    "order": 3,
+    "guidance": {
+      "bestFor": "A username field with one line of help text printed under the box",
+      "agentNotes": [
+        "`FieldDescription` is not linked to the `Input`; give it an id and set aria-describedby so screen readers read the hint"
+      ]
+    }
+  },
+  {
+    "name": "c-input-4",
+    "title": "Disabled input",
+    "label": "Disabled",
+    "description": "Disabled input",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A labeled email field locked by the disabled attribute, dimmed and skipped by the keyboard",
+      "agentNotes": [
+        "A `disabled` field is skipped by Tab and left out of form data; set readOnly instead when the value must still submit"
+      ]
+    }
+  },
+  {
+    "name": "c-input-5",
+    "title": "Input with error message",
+    "label": "Error Message",
+    "description": "Input with error message",
+    "order": 5,
+    "guidance": {
+      "bestFor": "An email field shown in its red invalid state with a single error line below",
+      "agentNotes": [
+        "`aria-invalid` is hardcoded to true and the `FieldError` text is fixed; set both from your validation result"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Several failed rules listed at once, each with its own warning mark",
+          "instead": "c-input-21"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-6",
+    "title": "Input with character counter",
+    "label": "Character Counter",
+    "description": "Input with character counter",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A 50 character project description with a live typed count across from the label",
+      "agentNotes": [
+        "`maxLength` drives both the browser cap and the counter text, so change that one constant to move the limit"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A description that runs over several lines of text",
+          "instead": "textarea"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-7",
+    "title": "Input with password type",
+    "label": "Password",
+    "description": "Input with password type",
+    "order": 7,
+    "guidance": {
+      "bestFor": "A plain masked password box with no reveal button and no strength feedback",
+      "whenNotToUse": [
+        {
+          "when": "A password the user may reveal with an eye button",
+          "instead": "c-input-19"
+        },
+        {
+          "when": "A new password checked against rules while the user types",
+          "instead": "c-input-23"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-8",
+    "title": "Input with phone type",
+    "label": "Phone",
+    "description": "Input with phone type",
+    "order": 8,
+    "guidance": {
+      "bestFor": "A tel field that brings up the phone keypad, with no country menu or number formatting",
+      "agentNotes": [
+        "`type` tel adds no pattern check or formatting, so the number arrives exactly as typed; validate it before saving"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Numbers from many countries that need a flag menu and live formatting",
+          "instead": "phone-input"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-9",
+    "title": "Input with URL type",
+    "label": "URL",
+    "description": "Input with URL type",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A website address field typed as url, with a full https address as its placeholder"
+    }
+  },
+  {
+    "name": "c-input-10",
+    "title": "Input with number type",
+    "label": "Number",
+    "description": "Input with number type",
+    "order": 10,
+    "guidance": {
+      "bestFor": "A numeric field typed as number, with the browser's own spin arrows for stepping",
+      "agentNotes": [
+        "Even with `type` number the field's value reads back as a string, so convert it before math or saving"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Quantities stepped with plus and minus buttons inside set limits",
+          "instead": "number-field"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-11",
+    "title": "Input with date type",
+    "label": "Date",
+    "description": "Input with date type",
+    "order": 11,
+    "guidance": {
+      "bestFor": "A day picked from the browser's built in calendar popup, with no date library",
+      "agentNotes": [
+        "The value of a `type` date field is a yyyy-mm-dd string, never a Date, whatever format the browser displays"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A themed month grid opened from a button, or a from and to span",
+          "instead": "calendar"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-12",
+    "title": "Input with file type",
+    "label": "File",
+    "description": "Input with file type",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A native file chooser with the browser's pick button flattened into the field, taking one file",
+      "agentNotes": [
+        "A `type` file field takes 1 file of every format until you add the accept and multiple attributes"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A drop zone with previews, size checks or several picks at once",
+          "instead": "file-upload"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-13",
+    "title": "Input with required indicator",
+    "label": "Required Indicator",
+    "description": "Input with required indicator",
+    "order": 13,
+    "guidance": {
+      "bestFor": "A company name field whose label ends in a red asterisk to mark it mandatory",
+      "agentNotes": [
+        "The red asterisk is only a `span`; add required or aria-required to the `Input` so browsers and screen readers know"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A form that marks the optional fields rather than the mandatory ones",
+          "instead": "c-input-18"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-14",
+    "title": "Input with time type",
+    "label": "Time",
+    "description": "Input with time type",
+    "order": 14,
+    "guidance": {
+      "bestFor": "A native hour and minute field rendered by the browser, with no picker library and no state",
+      "agentNotes": [
+        "The value of a `type` time field is a 24 hour HH:mm string even when the browser shows a 12 hour clock"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A themed clock popover with minute steps, limits or a 12 hour display",
+          "instead": "time-picker"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-15",
+    "title": "Complex input form with multiple fields",
+    "label": "Contact Form",
+    "description": "Complex input form with multiple fields",
+    "order": 15,
+    "guidance": {
+      "bestFor": "A short contact form with phone and country side by side, an address line and Cancel and Submit",
+      "agentNotes": [
+        "The `form` has no submit handler, so Submit reloads the page; add onSubmit and call preventDefault",
+        "No control carries a name, so FormData read from the `form` comes back empty until you add them"
+      ]
+    }
+  },
+  {
+    "name": "c-input-16",
+    "title": "Input label with tooltip",
+    "label": "Label Tooltip",
+    "description": "Input label with tooltip",
+    "order": 16,
+    "guidance": {
+      "bestFor": "A username label with a help icon that opens a tooltip, repeating the hint as text under the box",
+      "agentNotes": [
+        "`TooltipTrigger` renders a button holding only the help icon, so give it an aria-label for screen readers"
+      ]
+    }
+  },
+  {
+    "name": "c-input-17",
+    "title": "Input label with badge",
+    "label": "Label Badge",
+    "description": "Input label with badge",
+    "order": 17,
+    "guidance": {
+      "bestFor": "An API key field with a New badge in the success tint beside its label",
+      "whenNotToUse": [
+        {
+          "when": "A tag that tells the user a field may be left empty",
+          "instead": "c-input-18"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-18",
+    "title": "Input label with optional badge",
+    "label": "Optional Badge",
+    "description": "Input label with optional badge",
+    "order": 18,
+    "guidance": {
+      "bestFor": "A middle name field with a small outlined Optional badge at the far end of the label row",
+      "whenNotToUse": [
+        {
+          "when": "A form that flags each mandatory field with a red mark",
+          "instead": "c-input-13"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-19",
+    "title": "Input label with link and visibility toggle",
+    "label": "Link & Toggle",
+    "description": "Input label with link and visibility toggle",
+    "order": 19,
+    "guidance": {
+      "bestFor": "A sign in password with a Forgot password link opposite the label and an eye button to reveal it",
+      "agentNotes": [
+        "The Forgot password link keeps a placeholder `href`; point it at your reset page"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A sign up password that grades itself with one hint line",
+          "instead": "c-input-22"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-20",
+    "title": "Input with horizontal orientation",
+    "label": "Horizontal",
+    "description": "Input with horizontal orientation",
+    "order": 20,
+    "guidance": {
+      "bestFor": "A name field with its label placed to the left on the same row rather than above",
+      "agentNotes": [
+        "`orientation` horizontal keeps the row on narrow screens; the responsive value stacks it until its FieldGroup parent is wide"
+      ]
+    }
+  },
+  {
+    "name": "c-input-21",
+    "title": "Input with multiple error messages",
+    "label": "Multiple Errors",
+    "description": "Input with multiple error messages",
+    "order": 21,
+    "guidance": {
+      "bestFor": "A security code field listing 3 failed rules under it, each led by an alert icon",
+      "agentNotes": [
+        "The 3 messages and `aria-invalid` are hardcoded; render the rows inside `FieldError` from your validation result"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Rules shown as a live checklist that ticks off while the user types",
+          "instead": "c-input-23"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-22",
+    "title": "Basic password strength with dynamic hint and icons",
+    "label": "Strength Hint",
+    "description": "Basic password strength with dynamic hint and icons",
+    "order": 22,
+    "guidance": {
+      "bestFor": "A password with one hint line that turns from grey to red, amber or green as 3 rules pass",
+      "agentNotes": [
+        "`getStrength` counts only the 8 symbols in its regex as special, so a dash or a dot never meets the third rule"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A meter with a segmented bar, a rule checklist and a reveal button",
+          "instead": "c-input-23"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-23",
+    "title": "Advanced password strength indicator with progress",
+    "label": "Strength Meter",
+    "description": "Advanced password strength indicator with progress",
+    "order": 23,
+    "guidance": {
+      "bestFor": "A 5 rule checklist with ticks, a 5 segment color bar, a met count and an eye toggle",
+      "agentNotes": [
+        "The bar draws 5 segments and the count reads out of 5 by hand, so a rule added to `checkStrength` needs both updated",
+        "The eye button's aria-controls names `password`, an id that does not exist; point it at the generated `id`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A single hint line with no bar or rule checklist",
+          "instead": "c-input-22"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-24",
+    "title": "Input with pulsed background animation",
+    "label": "Pulsed Background",
+    "description": "Input with pulsed background animation",
+    "order": 24,
+    "guidance": {
+      "bestFor": "A field behind a pulsing primary tint that stops when focused and resumes on blur",
+      "agentNotes": [
+        "`animate-pulse` keeps running for users who ask for reduced motion; add motion-reduce:animate-none to the overlay",
+        "The pulsing overlay is fixed at `rounded-md`, so match it to your input radius or the tint shows past the corners"
+      ]
+    }
+  },
+  {
+    "name": "c-input-25",
+    "title": "Input with custom focus ring",
+    "label": "Custom Focus Ring",
+    "description": "Input with custom focus ring",
+    "order": 25,
+    "guidance": {
+      "bestFor": "A field whose focus border and ring turn emerald green in place of the theme ring color"
+    }
+  },
+  {
+    "name": "c-input-26",
+    "title": "Input with subtle background",
+    "label": "Subtle Background",
+    "description": "Input with subtle background",
+    "order": 26,
+    "guidance": {
+      "bestFor": "A field filled with the muted surface color, kept the same on hover and focus"
+    }
+  },
+  {
+    "name": "c-input-27",
+    "title": "Input with bottom border only",
+    "label": "Bottom Border",
+    "description": "Input with bottom border only",
+    "order": 27,
+    "guidance": {
+      "bestFor": "An underline style field with a 2px bottom rule that turns primary on focus, with no ring"
+    }
+  },
+  {
+    "name": "c-input-28",
+    "title": "Color input",
+    "label": "Color",
+    "description": "Color input",
+    "order": 28,
+    "guidance": {
+      "bestFor": "A browser color swatch that opens the native picker, starting from a blue hex value",
+      "whenNotToUse": [
+        {
+          "when": "Opacity, preset swatches or oklch and hsl values in a themed popover",
+          "instead": "color-picker"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-29",
+    "title": "Range input with value indicator",
+    "label": "Range",
+    "description": "Range input with value indicator",
+    "order": 29,
+    "guidance": {
+      "bestFor": "A native 0 to 100 range with its current number printed at the end of the label row",
+      "whenNotToUse": [
+        {
+          "when": "A themed track with 2 thumbs, tick marks or a tooltip over the thumb",
+          "instead": "slider"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-30",
+    "title": "Pill-shaped input",
+    "label": "Pill Shape",
+    "description": "Pill-shaped input",
+    "order": 30,
+    "guidance": {
+      "bestFor": "A search box with fully rounded ends and wider side padding",
+      "whenNotToUse": [
+        {
+          "when": "A search box that needs a magnifier icon or a clear button inside it",
+          "instead": "input-group"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-input-31",
+    "title": "Minimal input without borders or background",
+    "label": "Borderless",
+    "description": "Minimal input without borders or background",
+    "order": 31,
+    "guidance": {
+      "bestFor": "A chromeless field with no border, fill, padding or focus ring, only text and caret",
+      "agentNotes": [
+        "`border-none` and `ring-0` remove every focus mark but the caret, so add a focus style for keyboard users"
+      ]
+    }
+  }
+]

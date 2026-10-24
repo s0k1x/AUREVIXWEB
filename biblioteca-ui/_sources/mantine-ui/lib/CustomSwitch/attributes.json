@@ -1,0 +1,8 @@
+{
+  "title": "Custom switch",
+  "category": "inputs",
+  "changelog": "september-2022",
+  "canvas": {
+    "center": true
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Square media for list rows, feature cards and empty states, held to one size and radius",
+      "Status and brand markers in a soft tint, a solid fill or a theme or Tailwind palette color",
+      "Compact links, initials or counts, and glyphs with a status dot pinned to one corner"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A finished first run screen with heading, message and actions around the glyph",
+        "instead": "application/empty-state"
+      },
+      {
+        "when": "A finished KPI or feature tile with a value, a label and a trend beside the glyph",
+        "instead": "application/card"
+      },
+      {
+        "when": "Markers for each step of a multi step flow, with active and completed states",
+        "instead": "stepper"
+      }
+    ]
+  }
+}

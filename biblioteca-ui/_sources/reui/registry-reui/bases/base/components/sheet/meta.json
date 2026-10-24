@@ -1,0 +1,54 @@
+[
+  {
+    "name": "c-sheet-1",
+    "title": "Sheet containing a form for editing profile information",
+    "label": "Profile Editor",
+    "description": "Sheet containing a form for editing profile information.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "A right side profile editor with 2 fields, Save changes, Cancel and the corner X",
+      "agentNotes": [
+        "The inputs use `defaultValue` and no form element wraps them, so Save changes submits nothing yet"
+      ]
+    }
+  },
+  {
+    "name": "c-sheet-2",
+    "title": "Sheet without a corner close button",
+    "label": "No Close Button",
+    "description": "Sheet containing a profile form with the corner close button hidden, so the footer Cancel button closes it.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "The profile editor without the corner X, leaving footer Cancel as the visible way out",
+      "agentNotes": [
+        "Save changes is a submit `Button` outside any form, so add the form element and your handler"
+      ]
+    }
+  },
+  {
+    "name": "c-sheet-3",
+    "title": "Sheets that open from any side",
+    "label": "Any Side",
+    "description": "Sheets that open from any side.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "One trigger per edge, top, right, bottom and left, with top and bottom sheets held to half the screen",
+      "agentNotes": [
+        "Keep 1 value of `sides` and pass it as `side`; the demo mounts a sheet for every edge"
+      ]
+    }
+  },
+  {
+    "name": "c-sheet-4",
+    "title": "Sheet with scrollable content",
+    "label": "Scrollable Content",
+    "description": "Sheet with scrollable content",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A long body in a ScrollArea between a pinned header and a Save and Cancel footer",
+      "agentNotes": [
+        "`ScrollArea` fills the height between header and footer through `flex-1` and `min-h-0`, so it needs no fixed height when either changes"
+      ]
+    }
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Message composers, replies and notes that insert emoji at the caret of a text field",
+      "Reactions on posts and messages, added from a popover beside the reaction pills",
+      "A single stored emoji such as a page icon or a profile status, kept inline or behind a trigger"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A finished assistant conversation screen around a composer",
+        "instead": "ai-agents/ai-chat"
+      },
+      {
+        "when": "Rendering a conversation as bubbles with avatars, names and times",
+        "instead": "message"
+      },
+      {
+        "when": "A hue chosen from swatches, a spectrum or a typed hex value",
+        "instead": "color-picker"
+      }
+    ],
+    "agentNotes": [
+      "Left unset, `value` keeps each pick as the picker's value and `EmojiPickerTrigger` draws it in place of its default smiley; insert-only pickers pass null",
+      "By default every picker on the origin shares recent emoji and skin tone through localStorage; scope them with `recentStorageKey` and `skinToneStorageKey`"
+    ]
+  }
+}

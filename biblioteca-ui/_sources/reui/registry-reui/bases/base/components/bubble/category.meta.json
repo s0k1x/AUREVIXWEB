@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Chat and support threads where each turn shows its sender by side and by color",
+      "Assistant replies in a transcript, including long answers folded to a lead and formatted answers",
+      "Turn extras such as emoji reactions and quick reply choices that the reader presses"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A turn that needs an avatar, a sender name, a timestamp or actions around it",
+        "instead": "message"
+      },
+      {
+        "when": "A finished assistant page or panel with a composer and streaming replies wired",
+        "instead": "ai-agents/ai-chat"
+      },
+      {
+        "when": "A conversation with nothing in it yet, waiting for its first turn",
+        "instead": "empty"
+      }
+    ],
+    "agentNotes": [
+      "`align` end sets align-self, so each `Bubble` needs a flex column parent; in a grid or a plain block the end turns stay at the start",
+      "A pressable bubble is `BubbleContent` itself, through `render` on base or `asChild` on radix; the bubble hover and focus ring skip a control nested inside it"
+    ]
+  }
+}

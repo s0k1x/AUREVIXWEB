@@ -1,0 +1,11 @@
+{
+  "title": "Media",
+  "pages": [
+    "clip-trimmer",
+    "synced-transcript",
+    "focal-point-picker",
+    "photo-straighten",
+    "contact-sheet",
+    "audio-player-card"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Quick edits and settings opened from a button, such as layer dimensions, switches or a volume slider",
+      "Previews opened by a click, such as a person's bio card, a template image with actions or an AI feature pitch",
+      "Inline details and short guides, such as exact times behind a relative date or a stepped feature tour"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A full account page that edits a person's name, avatar, email, team and billing",
+        "instead": "application/profile"
+      },
+      {
+        "when": "A full page of record fields, such as an invoice or a product, ending in a submit row",
+        "instead": "application/form"
+      },
+      {
+        "when": "A task that must block the page and hold focus until the user answers",
+        "instead": "dialog"
+      }
+    ],
+    "agentNotes": [
+      "Compose `PopoverTrigger` through `render` on the base twin and `asChild` on the radix twin, as every example does; the other twin's prop does not compose",
+      "`PopoverContent` is w-72 in both twins whatever it holds; size it with a width class such as `w-auto` or `w-64`",
+      "The base `PopoverTitle` names the popup for screen readers; the radix one is a plain div, so give radix `PopoverContent` an `aria-label`"
+    ]
+  }
+}

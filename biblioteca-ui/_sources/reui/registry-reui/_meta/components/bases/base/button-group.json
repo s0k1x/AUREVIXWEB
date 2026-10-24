@@ -1,0 +1,1554 @@
+{
+  "items": [
+    {
+      "name": "c-button-group-1",
+      "type": "registry:block",
+      "title": "Basic button group with two buttons",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Basic button group with two buttons",
+      "descriptionLong": "Basic button group with two buttons. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-1 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Two Buttons"
+      }
+    },
+    {
+      "name": "c-button-group-2",
+      "type": "registry:block",
+      "title": "Button group with button followed by input",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with button followed by input",
+      "descriptionLong": "Button group with button followed by input. Built by composing Button, Button Group, Input. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-2 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Button & Input"
+      }
+    },
+    {
+      "name": "c-button-group-3",
+      "type": "registry:block",
+      "title": "Button group with buttons and badge",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with buttons and badge",
+      "descriptionLong": "Button group with buttons and badge. Built by composing Badge, Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-3 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Buttons & Badge"
+      }
+    },
+    {
+      "name": "c-button-group-4",
+      "type": "registry:block",
+      "title": "Button group with dropdown menu",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with dropdown menu",
+      "descriptionLong": "Button group with dropdown menu. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-4 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Dropdown Menu"
+      }
+    },
+    {
+      "name": "c-button-group-5",
+      "type": "registry:block",
+      "title": "Team activity and collaboration group",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Team activity and collaboration group",
+      "descriptionLong": "Team activity and collaboration group. Built by composing Avatar, Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-5 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Team Activity"
+      }
+    },
+    {
+      "name": "c-button-group-6",
+      "type": "registry:block",
+      "title": "Button group using icons for visual actions",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group using icons for visual actions",
+      "descriptionLong": "Button group using icons for visual actions. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-6 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Icon Actions"
+      }
+    },
+    {
+      "name": "c-button-group-7",
+      "type": "registry:block",
+      "title": "Dropdown menu with status indicator",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Dropdown menu with status indicator",
+      "descriptionLong": "Dropdown menu with status indicator. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-7 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Status Indicator"
+      }
+    },
+    {
+      "name": "c-button-group-8",
+      "type": "registry:block",
+      "title": "Button group styled as a like button with a counter",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group styled as a like button with a counter",
+      "descriptionLong": "Button group styled as a like button with a counter. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-8 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Like Counter"
+      }
+    },
+    {
+      "name": "c-button-group-9",
+      "type": "registry:block",
+      "title": "Nested button groups for complex action sets",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Nested button groups for complex action sets",
+      "descriptionLong": "Nested button groups for complex action sets. Built by composing Button, Button Group, Input Group, Tooltip. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-9 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "input-group",
+        "tooltip"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "Nested Groups"
+      }
+    },
+    {
+      "name": "c-button-group-10",
+      "type": "registry:block",
+      "title": "Button group used for standard pagination",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group used for standard pagination",
+      "descriptionLong": "Button group used for standard pagination. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-10 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "label": "Basic Pagination"
+      }
+    },
+    {
+      "name": "c-button-group-11",
+      "type": "registry:block",
+      "title": "Pagination split into page numbers and navigation arrows",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Pagination split into page numbers and navigation arrows",
+      "descriptionLong": "Pagination split into page numbers and navigation arrows. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-11 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "label": "Split Pagination"
+      }
+    },
+    {
+      "name": "c-button-group-12",
+      "type": "registry:block",
+      "title": "Button group for editor text alignment controls",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group for editor text alignment controls",
+      "descriptionLong": "Button group for editor text alignment controls. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-12 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "label": "Text Alignment"
+      }
+    },
+    {
+      "name": "c-button-group-13",
+      "type": "registry:block",
+      "title": "Vertical button group orientation",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Vertical button group orientation",
+      "descriptionLong": "Vertical button group orientation. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-13 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-13.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-13.tsx"
+        }
+      ],
+      "meta": {
+        "order": 13,
+        "label": "Vertical Orientation"
+      }
+    },
+    {
+      "name": "c-button-group-14",
+      "type": "registry:block",
+      "title": "Nested vertical button group for complex tool palettes",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Nested vertical button group for complex tool palettes",
+      "descriptionLong": "Nested vertical button group for complex tool palettes. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-14 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-14.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-14.tsx"
+        }
+      ],
+      "meta": {
+        "order": 14,
+        "label": "Vertical Tool Palette"
+      }
+    },
+    {
+      "name": "c-button-group-15",
+      "type": "registry:block",
+      "title": "Star button group with count and dropdown",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Star button group with count and dropdown",
+      "descriptionLong": "Star button group with count and dropdown. Built by composing Badge, Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-15 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-15.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-15.tsx"
+        }
+      ],
+      "meta": {
+        "order": 15,
+        "label": "Star With Dropdown"
+      }
+    },
+    {
+      "name": "c-button-group-16",
+      "type": "registry:block",
+      "title": "Search input with filter menu and clear button",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Search input with filter menu and clear button",
+      "descriptionLong": "Search input with filter menu and clear button. Built by composing Button, Button Group, Dropdown Menu, Input. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-16 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu",
+        "input"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-16.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-16.tsx"
+        }
+      ],
+      "meta": {
+        "order": 16,
+        "label": "Search Filter Clear"
+      }
+    },
+    {
+      "name": "c-button-group-17",
+      "type": "registry:block",
+      "title": "Button group with comprehensive action menu",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with comprehensive action menu",
+      "descriptionLong": "Button group with comprehensive action menu. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-17 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-17.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-17.tsx"
+        }
+      ],
+      "meta": {
+        "order": 17,
+        "label": "Conversation Menu"
+      }
+    },
+    {
+      "name": "c-button-group-18",
+      "type": "registry:block",
+      "title": "Advanced git toolbar with branch selection and split commit button",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Advanced git toolbar with branch selection and split commit button",
+      "descriptionLong": "Advanced git toolbar with branch selection and split commit button. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-18 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-18.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-18.tsx"
+        }
+      ],
+      "meta": {
+        "order": 18,
+        "label": "Git Split Button"
+      }
+    },
+    {
+      "name": "c-button-group-19",
+      "type": "registry:block",
+      "title": "Button group with dropdown menu and input group",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with dropdown menu and input group",
+      "descriptionLong": "Button group with dropdown menu and input group. Built by composing Button, Button Group, Dropdown Menu, Input Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-19 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-19.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-19.tsx"
+        }
+      ],
+      "meta": {
+        "order": 19,
+        "label": "Search With Menu"
+      }
+    },
+    {
+      "name": "c-button-group-20",
+      "type": "registry:block",
+      "title": "Button group with input group and button",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with input group and button",
+      "descriptionLong": "Button group with input group and button. Built by composing Button, Button Group, Dropdown Menu, Input Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-20 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-20.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-20.tsx"
+        }
+      ],
+      "meta": {
+        "order": 20,
+        "label": "Search With Button"
+      }
+    },
+    {
+      "name": "c-button-group-21",
+      "type": "registry:block",
+      "title": "Button group with dropdown menu and input group",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with dropdown menu and input group",
+      "descriptionLong": "Button group with dropdown menu and input group. Built by composing Button, Button Group, Dropdown Menu, Input Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-21 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu",
+        "input-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-21.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-21.tsx"
+        }
+      ],
+      "meta": {
+        "order": 21,
+        "label": "File Name Menu"
+      }
+    },
+    {
+      "name": "c-button-group-22",
+      "type": "registry:block",
+      "title": "Basic button group with disabled button",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Basic button group with disabled button",
+      "descriptionLong": "Basic button group with disabled button. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-22 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-22.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-22.tsx"
+        }
+      ],
+      "meta": {
+        "order": 22,
+        "label": "Disabled Button"
+      }
+    },
+    {
+      "name": "c-button-group-23",
+      "type": "registry:block",
+      "title": "Button group buttons with separators",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group buttons with separators",
+      "descriptionLong": "Button group buttons with separators. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-23 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-23.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-23.tsx"
+        }
+      ],
+      "meta": {
+        "order": 23,
+        "label": "Separated Buttons"
+      }
+    },
+    {
+      "name": "c-button-group-24",
+      "type": "registry:block",
+      "title": "View switcher for dashboard layouts",
+      "categories": [
+        "button-group"
+      ],
+      "description": "View switcher for dashboard layouts",
+      "descriptionLong": "View switcher for dashboard layouts. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-24 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-24.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-24.tsx"
+        }
+      ],
+      "meta": {
+        "order": 24,
+        "label": "Dashboard Views"
+      }
+    },
+    {
+      "name": "c-button-group-25",
+      "type": "registry:block",
+      "title": "Rating scale using numerical buttons",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Rating scale using numerical buttons",
+      "descriptionLong": "Rating scale using numerical buttons. Built by composing Button, Button Group. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-25 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-25.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-25.tsx"
+        }
+      ],
+      "meta": {
+        "order": 25,
+        "label": "Rating Scale"
+      }
+    },
+    {
+      "name": "c-button-group-26",
+      "type": "registry:block",
+      "title": "Button group with user selection select",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with user selection select",
+      "descriptionLong": "Button group with user selection select. Built by composing Avatar, Button, Button Group, Select. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-26 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button",
+        "button-group",
+        "select"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-26.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-26.tsx"
+        }
+      ],
+      "meta": {
+        "order": 26,
+        "label": "User Selection"
+      }
+    },
+    {
+      "name": "c-button-group-27",
+      "type": "registry:block",
+      "title": "Button group with select status addon",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with select status addon",
+      "descriptionLong": "Button group with select status addon. Built by composing Button Group, Input, Select. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-27 and edit as your own code.",
+      "registryDependencies": [
+        "button-group",
+        "input",
+        "select"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-27.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-27.tsx"
+        }
+      ],
+      "meta": {
+        "order": 27,
+        "label": "Status Select"
+      }
+    },
+    {
+      "name": "c-button-group-28",
+      "type": "registry:block",
+      "title": "Volume controller with plus/minus actions",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Volume controller with plus/minus actions",
+      "descriptionLong": "Volume controller with plus/minus actions. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-28 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-28.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-28.tsx"
+        }
+      ],
+      "meta": {
+        "order": 28,
+        "label": "Volume Control"
+      }
+    },
+    {
+      "name": "c-button-group-29",
+      "type": "registry:block",
+      "title": "Button group with follower count",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with follower count",
+      "descriptionLong": "Button group with follower count. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-29 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-29.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-29.tsx"
+        }
+      ],
+      "meta": {
+        "order": 29,
+        "label": "Follower Count"
+      }
+    },
+    {
+      "name": "c-button-group-30",
+      "type": "registry:block",
+      "title": "Active state button group with count",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Active state button group with count",
+      "descriptionLong": "Active state button group with count. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-30 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-30.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-30.tsx"
+        }
+      ],
+      "meta": {
+        "order": 30,
+        "label": "Active Count"
+      }
+    },
+    {
+      "name": "c-button-group-31",
+      "type": "registry:block",
+      "title": "Horizontal button group with primary and secondary labels",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Horizontal button group with primary and secondary labels",
+      "descriptionLong": "Horizontal button group with primary and secondary labels. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-31 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-31.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-31.tsx"
+        }
+      ],
+      "meta": {
+        "order": 31,
+        "label": "Share Caption"
+      }
+    },
+    {
+      "name": "c-button-group-32",
+      "type": "registry:block",
+      "title": "Button group with dropdown menu and view toggle",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with dropdown menu and view toggle",
+      "descriptionLong": "Button group with dropdown menu and view toggle. Built by composing Button, Button Group, Dropdown Menu. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-32 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-32.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-32.tsx"
+        }
+      ],
+      "meta": {
+        "order": 32,
+        "label": "Sort & View"
+      }
+    },
+    {
+      "name": "c-button-group-33",
+      "type": "registry:block",
+      "title": "Button group with select controls",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Button group with select controls",
+      "descriptionLong": "Button group with select controls. Built by composing Button Group, Select. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-33 and edit as your own code.",
+      "registryDependencies": [
+        "button-group",
+        "select"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-33.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-33.tsx"
+        }
+      ],
+      "meta": {
+        "order": 33,
+        "label": "Select Controls"
+      }
+    },
+    {
+      "name": "c-button-group-34",
+      "type": "registry:block",
+      "title": "Segmented control with dropdown inside button group",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Segmented control with dropdown inside button group",
+      "descriptionLong": "Segmented control with dropdown inside button group. Built by composing Button, Button Group, Dropdown Menu. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-34 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-34.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-34.tsx"
+        }
+      ],
+      "meta": {
+        "order": 34,
+        "label": "Segmented Control"
+      }
+    },
+    {
+      "name": "c-button-group-35",
+      "type": "registry:block",
+      "title": "Pagination button group",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Pagination button group",
+      "descriptionLong": "Pagination button group. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-35 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-35.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-35.tsx"
+        }
+      ],
+      "meta": {
+        "order": 35,
+        "label": "Numbered Pagination"
+      }
+    },
+    {
+      "name": "c-button-group-36",
+      "type": "registry:block",
+      "title": "View switcher button group",
+      "categories": [
+        "button-group"
+      ],
+      "description": "View switcher button group",
+      "descriptionLong": "View switcher button group. Built by composing Button, Button Group. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-36 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-36.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-36.tsx"
+        }
+      ],
+      "meta": {
+        "order": 36,
+        "label": "View Switcher"
+      }
+    },
+    {
+      "name": "c-button-group-37",
+      "type": "registry:block",
+      "title": "Zoom controls button group",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Zoom controls button group",
+      "descriptionLong": "Zoom controls button group. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-37 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-37.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-37.tsx"
+        }
+      ],
+      "meta": {
+        "order": 37,
+        "label": "Zoom Controls"
+      }
+    },
+    {
+      "name": "c-button-group-38",
+      "type": "registry:block",
+      "title": "Media player controls button group",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Media player controls button group",
+      "descriptionLong": "Media player controls button group. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-38 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-38.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-38.tsx"
+        }
+      ],
+      "meta": {
+        "order": 38,
+        "label": "Media Controls"
+      }
+    },
+    {
+      "name": "c-button-group-39",
+      "type": "registry:block",
+      "title": "Split button with dropdown trigger",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Split button with dropdown trigger",
+      "descriptionLong": "Split button with dropdown trigger. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-39 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-39.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-39.tsx"
+        }
+      ],
+      "meta": {
+        "order": 39,
+        "label": "Split Button"
+      }
+    },
+    {
+      "name": "c-button-group-40",
+      "type": "registry:block",
+      "title": "Vertical button group",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Vertical button group",
+      "descriptionLong": "Vertical button group. Built by composing Button, Button Group. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-40 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-40.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-40.tsx"
+        }
+      ],
+      "meta": {
+        "order": 40,
+        "label": "Vertical List"
+      }
+    },
+    {
+      "name": "c-button-group-41",
+      "type": "registry:block",
+      "title": "Model selector with tier badges",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Model selector with tier badges",
+      "descriptionLong": "Model selector with tier badges. Built by composing Badge, Button, Button Group, Tooltip. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-41 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "button-group",
+        "tooltip"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-41.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-41.tsx"
+        }
+      ],
+      "meta": {
+        "order": 41,
+        "label": "Model Selector"
+      }
+    },
+    {
+      "name": "c-button-group-42",
+      "type": "registry:block",
+      "title": "Segmented order type selector",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Segmented order type selector",
+      "descriptionLong": "Segmented order type selector. Built by composing Button, Button Group, Tooltip. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-42 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "tooltip"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-42.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-42.tsx"
+        }
+      ],
+      "meta": {
+        "order": 42,
+        "label": "Order Type"
+      }
+    },
+    {
+      "name": "c-button-group-43",
+      "type": "registry:block",
+      "title": "Buy sell hold toggle group",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Buy sell hold toggle group",
+      "descriptionLong": "Buy sell hold toggle group. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-43 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-43.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-43.tsx"
+        }
+      ],
+      "meta": {
+        "order": 43,
+        "label": "Buy Sell Hold"
+      }
+    },
+    {
+      "name": "c-button-group-44",
+      "type": "registry:block",
+      "title": "Pipeline stage mover with dropdown",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Pipeline stage mover with dropdown",
+      "descriptionLong": "Pipeline stage mover with dropdown. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-44 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-44.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-44.tsx"
+        }
+      ],
+      "meta": {
+        "order": 44,
+        "label": "Pipeline Stage"
+      }
+    },
+    {
+      "name": "c-button-group-45",
+      "type": "registry:block",
+      "title": "Environment switcher with indicator",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Environment switcher with indicator",
+      "descriptionLong": "Environment switcher with indicator. Built by composing Button, Button Group, Tooltip. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-45 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "tooltip"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-45.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-45.tsx"
+        }
+      ],
+      "meta": {
+        "order": 45,
+        "label": "Environment Switcher"
+      }
+    },
+    {
+      "name": "c-button-group-46",
+      "type": "registry:block",
+      "title": "Compact time interval selector",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Compact time interval selector",
+      "descriptionLong": "Compact time interval selector. Built by composing Button, Button Group. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-46 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-46.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-46.tsx"
+        }
+      ],
+      "meta": {
+        "order": 46,
+        "label": "Time Interval"
+      }
+    },
+    {
+      "name": "c-button-group-47",
+      "type": "registry:block",
+      "title": "Review actions split button",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Review actions split button",
+      "descriptionLong": "Review actions split button. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-47 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-47.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-47.tsx"
+        }
+      ],
+      "meta": {
+        "order": 47,
+        "label": "Review Actions"
+      }
+    },
+    {
+      "name": "c-button-group-48",
+      "type": "registry:block",
+      "title": "Toolbar filter with export and view toggle",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Toolbar filter with export and view toggle",
+      "descriptionLong": "Toolbar filter with export and view toggle. Built by composing Button, Button Group, Dropdown Menu. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-48 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-48.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-48.tsx"
+        }
+      ],
+      "meta": {
+        "order": 48,
+        "label": "Export Toolbar"
+      }
+    },
+    {
+      "name": "c-button-group-49",
+      "type": "registry:block",
+      "title": "Vertical nav links with icons",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Vertical nav links with icons",
+      "descriptionLong": "Vertical nav links with icons. Built by composing Button, Button Group. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-49 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-49.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-49.tsx"
+        }
+      ],
+      "meta": {
+        "order": 49,
+        "label": "Vertical Nav"
+      }
+    },
+    {
+      "name": "c-button-group-50",
+      "type": "registry:block",
+      "title": "Toolbar filter sort and more",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Toolbar filter sort and more",
+      "descriptionLong": "Toolbar filter sort and more. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-50 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-50.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-50.tsx"
+        }
+      ],
+      "meta": {
+        "order": 50,
+        "label": "Filter Sort More"
+      }
+    },
+    {
+      "name": "c-button-group-51",
+      "type": "registry:block",
+      "title": "New button with create dropdown",
+      "categories": [
+        "button-group"
+      ],
+      "description": "New button with create dropdown",
+      "descriptionLong": "New button with create dropdown. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-51 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-51.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-51.tsx"
+        }
+      ],
+      "meta": {
+        "order": 51,
+        "label": "Create Menu"
+      }
+    },
+    {
+      "name": "c-button-group-52",
+      "type": "registry:block",
+      "title": "Refresh share and export dropdown",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Refresh share and export dropdown",
+      "descriptionLong": "Refresh share and export dropdown. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-52 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-52.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-52.tsx"
+        }
+      ],
+      "meta": {
+        "order": 52,
+        "label": "Dashboard Actions"
+      }
+    },
+    {
+      "name": "c-button-group-53",
+      "type": "registry:block",
+      "title": "Publish controls with split button and overflow",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Publish controls with split button and overflow",
+      "descriptionLong": "Publish controls with split button and overflow. Built by composing Avatar, Button, Button Group, Dropdown Menu, Separator. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-53 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button",
+        "button-group",
+        "dropdown-menu",
+        "separator"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-53.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-53.tsx"
+        }
+      ],
+      "meta": {
+        "order": 53,
+        "label": "Publish Controls"
+      }
+    },
+    {
+      "name": "c-button-group-54",
+      "type": "registry:block",
+      "title": "API service environment and version selectors",
+      "categories": [
+        "button-group"
+      ],
+      "description": "API service environment and version selectors",
+      "descriptionLong": "API service environment and version selectors. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-54 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-54.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-54.tsx"
+        }
+      ],
+      "meta": {
+        "order": 54,
+        "label": "Service Selectors"
+      }
+    },
+    {
+      "name": "c-button-group-55",
+      "type": "registry:block",
+      "title": "Payout release controls with amount context",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Payout release controls with amount context",
+      "descriptionLong": "Payout release controls with amount context. Built by composing Button, Button Group, Dropdown Menu. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-55 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-55.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-55.tsx"
+        }
+      ],
+      "meta": {
+        "order": 55,
+        "label": "Payout Release"
+      }
+    },
+    {
+      "name": "c-button-group-56",
+      "type": "registry:block",
+      "title": "Attachment button group with download action",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Attachment button group with download action",
+      "descriptionLong": "Attachment button group with download action. Built by composing Button, Button Group. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-56 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-56.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-56.tsx"
+        }
+      ],
+      "meta": {
+        "order": 56,
+        "label": "File Attachment"
+      }
+    },
+    {
+      "name": "c-button-group-57",
+      "type": "registry:block",
+      "title": "Agent mode selector with credit cap dropdown",
+      "categories": [
+        "button-group"
+      ],
+      "description": "Agent mode selector with credit cap dropdown",
+      "descriptionLong": "Agent mode selector with credit cap dropdown. Built by composing Button, Button Group, Dropdown Menu. Uses cn alongside the shadcn primitives. A free, open source shadcn button group example you can install with npx shadcn@latest add @reui/c-button-group-57 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "dropdown-menu"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/button-group/c-button-group-57.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-button-group-57.tsx"
+        }
+      ],
+      "meta": {
+        "order": 57,
+        "label": "Agent Mode"
+      }
+    }
+  ]
+}

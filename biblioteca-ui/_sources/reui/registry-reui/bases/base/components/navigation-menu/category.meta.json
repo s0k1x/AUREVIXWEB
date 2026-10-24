@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Site headers whose top level items open panels of links, such as docs, components or industry pages",
+      "Mega menu panels that lay out links with summaries in columns, with glyphs and a call to action button",
+      "Header rows that mix panel triggers with plain top level links styled to match them"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Actions on the current page, such as edit, share or sign out, opened from one button",
+        "instead": "dropdown-menu"
+      },
+      {
+        "when": "Sections of a signed in app listed down the screen edge and kept in view",
+        "instead": "sidebar"
+      },
+      {
+        "when": "A complete header with logo, link panels and a Get Started button already placed",
+        "instead": "application/navbar"
+      }
+    ],
+    "agentNotes": [
+      "`NavigationMenuLink` takes its anchor through `render` on the base twin and `asChild` on the radix twin; neither twin reads the other one's prop",
+      "Every `href` is a hash placeholder; point each `NavigationMenuLink` at a real route, through your router link where you have one",
+      "The radix `NavigationMenu` opens panels in a shared `NavigationMenuViewport` unless `viewport` is false; base has no `viewport` prop and uses `align`"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Trend cards that plot monthly or weekly figures as bars, areas or a line",
+      "Part to whole breakdowns such as traffic sources, task status or plan tiers as donut and pie slices",
+      "Score profiles across several axes, such as team skills or audit results, as radar or radial bars"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A finished metric card with period tabs, KPI tiles and a range switcher built in",
+        "instead": "chart/area-chart"
+      },
+      {
+        "when": "Headline numbers with trend badges and no plotted series",
+        "instead": "application/stats"
+      },
+      {
+        "when": "A whole overview page with summary tiles above a trend and a work list",
+        "instead": "application/dashboard"
+      }
+    ],
+    "agentNotes": [
+      "Replace the sample `chartData` array, and give each series or slice name it uses a `chartConfig` entry with a label and color",
+      "Each example caps its `Card` at `max-w-md` or `max-w-xs`; drop the cap so the chart fills a grid cell",
+      "`ChartContainer` sizes itself by `aspect-video` unless a class overrides it, so set an aspect ratio or height class to fit a fixed tile"
+    ]
+  }
+}

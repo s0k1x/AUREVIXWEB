@@ -1,0 +1,314 @@
+{
+  "items": [
+    {
+      "name": "c-slider-1",
+      "type": "registry:block",
+      "title": "Basic slider.",
+      "categories": [
+        "slider"
+      ],
+      "description": "Basic slider.",
+      "descriptionLong": "Basic slider. Built with the Slider component. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-1 and edit as your own code.",
+      "registryDependencies": [
+        "slider"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/slider/c-slider-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Basic"
+      }
+    },
+    {
+      "name": "c-slider-2",
+      "type": "registry:block",
+      "title": "Disabled slider",
+      "categories": [
+        "slider"
+      ],
+      "description": "Disabled slider",
+      "descriptionLong": "Disabled slider. Built with the Slider component. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-2 and edit as your own code.",
+      "registryDependencies": [
+        "slider"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/slider/c-slider-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Disabled"
+      }
+    },
+    {
+      "name": "c-slider-3",
+      "type": "registry:block",
+      "title": "Slider with multiple discrete values",
+      "categories": [
+        "slider"
+      ],
+      "description": "Slider with multiple discrete values",
+      "descriptionLong": "Slider with multiple discrete values. Built with the Slider component. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-3 and edit as your own code.",
+      "registryDependencies": [
+        "slider"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/slider/c-slider-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Multiple Thumbs"
+      }
+    },
+    {
+      "name": "c-slider-4",
+      "type": "registry:block",
+      "title": "Vertical slider with range selection",
+      "categories": [
+        "slider"
+      ],
+      "description": "Vertical slider with range selection",
+      "descriptionLong": "Vertical slider with range selection. Built with the Slider component. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-4 and edit as your own code.",
+      "registryDependencies": [
+        "slider"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/slider/c-slider-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Vertical"
+      }
+    },
+    {
+      "name": "c-slider-5",
+      "type": "registry:block",
+      "title": "Slider with controlled value tracking",
+      "categories": [
+        "slider"
+      ],
+      "description": "Slider with controlled value tracking",
+      "descriptionLong": "Slider with controlled value tracking. Built by composing Label, Slider. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-5 and edit as your own code.",
+      "registryDependencies": [
+        "label",
+        "slider"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/slider/c-slider-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Controlled Value"
+      }
+    },
+    {
+      "name": "c-slider-6",
+      "type": "registry:block",
+      "title": "Slider with range selection",
+      "categories": [
+        "slider"
+      ],
+      "description": "Slider with range selection",
+      "descriptionLong": "Slider with range selection. Built with the Slider component. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-6 and edit as your own code.",
+      "registryDependencies": [
+        "slider"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/slider/c-slider-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Range"
+      }
+    },
+    {
+      "name": "c-slider-7",
+      "type": "registry:block",
+      "title": "Slider synced with number input",
+      "categories": [
+        "slider"
+      ],
+      "description": "Slider synced with number input",
+      "descriptionLong": "Slider synced with number input. Built by composing Input, Label, Slider. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-7 and edit as your own code.",
+      "registryDependencies": [
+        "input",
+        "label",
+        "slider"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/slider/c-slider-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Number Input"
+      }
+    },
+    {
+      "name": "c-slider-8",
+      "type": "registry:block",
+      "title": "Color temperature slider",
+      "categories": [
+        "slider"
+      ],
+      "description": "Color temperature slider",
+      "descriptionLong": "Color temperature slider. Built by composing Label, Slider. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-8 and edit as your own code.",
+      "registryDependencies": [
+        "label",
+        "slider"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/slider/c-slider-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Color Temperature"
+      }
+    },
+    {
+      "name": "c-slider-9",
+      "type": "registry:block",
+      "title": "Slider with reference labels",
+      "categories": [
+        "slider"
+      ],
+      "description": "Slider with reference labels",
+      "descriptionLong": "Slider with reference labels. Built by composing Label, Slider. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-9 and edit as your own code.",
+      "registryDependencies": [
+        "label",
+        "slider"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/slider/c-slider-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "Reference Labels"
+      }
+    },
+    {
+      "name": "c-slider-10",
+      "type": "registry:block",
+      "title": "Slider with tick marks",
+      "categories": [
+        "slider"
+      ],
+      "description": "Slider with tick marks",
+      "descriptionLong": "Slider with tick marks. Built by composing Label, Slider. Uses cn alongside the shadcn primitives. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-10 and edit as your own code.",
+      "registryDependencies": [
+        "label",
+        "slider"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/slider/c-slider-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "label": "Tick Marks"
+      }
+    },
+    {
+      "name": "c-slider-11",
+      "type": "registry:block",
+      "title": "Slider with dynamic tooltip indicator",
+      "categories": [
+        "slider"
+      ],
+      "description": "Slider with dynamic tooltip indicator",
+      "descriptionLong": "Slider with dynamic tooltip indicator. Built by composing Label, Slider. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-11 and edit as your own code.",
+      "registryDependencies": [
+        "label",
+        "slider"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/slider/c-slider-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "label": "Value Tooltip"
+      }
+    },
+    {
+      "name": "c-slider-12",
+      "type": "registry:block",
+      "title": "Rating slider with emoji feedback",
+      "categories": [
+        "slider"
+      ],
+      "description": "Rating slider with emoji feedback",
+      "descriptionLong": "Rating slider with emoji feedback. Built by composing Label, Slider. A free, open source shadcn slider example you can install with npx shadcn@latest add @reui/c-slider-12 and edit as your own code.",
+      "registryDependencies": [
+        "label",
+        "slider"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/slider/c-slider-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-slider-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "label": "Emoji Rating"
+      }
+    }
+  ]
+}

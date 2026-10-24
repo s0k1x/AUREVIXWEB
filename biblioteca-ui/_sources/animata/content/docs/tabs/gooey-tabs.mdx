@@ -1,0 +1,79 @@
+---
+title: Gooey Tabs
+description: Icon tabs that merge with an SVG goo filter when one label expands to show its title.
+labels: ["new", "requires interaction", "click"]
+author: harimanok_
+---
+
+<ComponentPreview name="tabs-gooey-tabs--primary" />
+
+## Installation
+
+### CLI
+
+<RegistryInstall category="tabs" name="gooey-tabs" />
+
+The registry item installs `gooey-tabs.tsx` and `animata/tabs/shared.ts`.
+
+### Manual
+
+<Steps>
+<Step>Install dependencies</Step>
+
+```bash
+npm install motion @phosphor-icons/react
+```
+
+<Step>Run the following command</Step>
+
+It will create a new file called `gooey-tabs.tsx` inside the `components/animata/tabs` directory.
+
+```bash
+mkdir -p components/animata/tabs && touch components/animata/tabs/shared.ts components/animata/tabs/gooey-tabs.tsx
+```
+
+<Step>Paste the shared tab helpers</Step>
+
+```jsx file=<rootDir>/animata/tabs/shared.ts
+
+```
+
+<Step>Paste the component</Step>
+
+```jsx file=<rootDir>/animata/tabs/gooey-tabs.tsx
+
+```
+
+</Steps>
+
+## Usage
+
+Compose tabs with primitives. Each `GooeyTabs.Tab` needs a `color` class string. `GooeyTabs.Icon` is optional — label-only, icon-only, or both. The grid columns adjust automatically. Icons are decorative (`aria-hidden`) when a label is visible; use the `label` prop for icon-only tabs.
+
+```tsx
+import GooeyTabs from "@/animata/tabs/gooey-tabs";
+import { HouseIcon } from "@phosphor-icons/react";
+
+<GooeyTabs defaultActiveIndex={0}>
+  <GooeyTabs.List>
+    <GooeyTabs.Tab color="bg-violet-500 hover:bg-violet-600" label="Home">
+      <GooeyTabs.Icon>
+        <HouseIcon weight="duotone" aria-hidden />
+      </GooeyTabs.Icon>
+      <GooeyTabs.Label>Home</GooeyTabs.Label>
+    </GooeyTabs.Tab>
+  </GooeyTabs.List>
+</GooeyTabs>
+```
+
+Use `defaultActiveIndex={-1}` for an all-icon row (none selected until Enter/Space or click). Structure: `<nav>`, inner `role="tablist"`, and `motion.button` with `role="tab"` (SVG goo filter wraps the list).
+
+**Keyboard (manual activation):** **Tab** visits every tab; **arrow** keys move focus; **Enter** or **Space** selects. Click selects immediately.
+
+Use `activeIndex` and `onActiveIndexChange` for controlled mode. Optional `intensity`, `contrast`, and `lightness` on the root adjust the goo filter. Label width uses CSS grid (`0fr` / `1fr`) with no layout measurement in JavaScript.
+
+## Credits
+
+Built by [hari](https://github.com/hari)
+
+Inspired by [@wickedmishra](https://x.com/wickedmishra) on Twitter

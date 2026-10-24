@@ -1,0 +1,23 @@
+{
+  "repo": "https://github.com/markmead/hyperui",
+  "commit": "252efcfe39161db6e67cd877da001ee248d2bbf6",
+  "commit_date": "2026-10-10T15:00:05+01:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 752,
+  "files_skipped": {
+    "media": 3,
+    "lockfile": 1,
+    "too_large": 0,
+    "symlink": 3,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitattributes",
+    ".gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

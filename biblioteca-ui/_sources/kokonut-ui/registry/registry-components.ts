@@ -1,0 +1,1130 @@
+import type { Registry } from "./schema";
+
+export const component: Registry = [
+  {
+    name: "ai-prompt",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    registryDependencies: ["textarea", "dropdown-menu"],
+    files: [
+      {
+        path: "components/kokonutui/ai-prompt.tsx",
+        type: "registry:component",
+      },
+      {
+        path: "hooks/use-auto-resize-textarea.ts",
+        type: "registry:hook",
+      },
+    ],
+  },
+  {
+    name: "command-button",
+    type: "registry:component",
+    dependencies: [],
+    registryDependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/command-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "card-flip",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/card-flip.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "smooth-drawer",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    registryDependencies: ["drawer", "button"],
+    files: [
+      {
+        path: "components/kokonutui/smooth-drawer.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "halftone-background",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/halftone-background.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "shape-hero",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/shape-hero.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-text-loading",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-text-loading.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "carousel-cards",
+    type: "registry:component",
+    dependencies: ["lucide-react"],
+    files: [
+      {
+        path: "components/kokonutui/carousel-cards.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "file-upload",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/file-upload.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "action-search-bar",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/action-search-bar.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-input-search",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    registryDependencies: ["textarea", "dropdown-menu"],
+    files: [
+      {
+        path: "components/kokonutui/ai-input-search.tsx",
+        type: "registry:component",
+      },
+      {
+        path: "hooks/use-auto-resize-textarea.ts",
+        type: "registry:hook",
+      },
+    ],
+  },
+  {
+    name: "cradle-text",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/cradle-text.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "currency-transfer",
+    type: "registry:component",
+    dependencies: ["lucide-react"],
+    files: [
+      {
+        path: "components/kokonutui/currency-transfer.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "background-paths",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/background-paths.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "dot-field",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/dot-field.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "flow-field",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/flow-field.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "topo-background",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/topo-background.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "drape-background",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/drape-background.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "apple-activity-card",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/apple-activity-card.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-voice",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-voice.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "smooth-tab",
+    type: "registry:component",
+    dependencies: ["motion", "lucide-react"],
+    files: [
+      {
+        path: "components/kokonutui/smooth-tab.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "marking-menu",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/marking-menu.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "team-selector",
+    type: "registry:component",
+    dependencies: ["motion", "lucide-react"],
+    files: [
+      {
+        path: "components/kokonutui/team-selector.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "detent-dial",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/detent-dial.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "liquid-slider",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/liquid-slider.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "signature-pad",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/signature-pad.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "switch-button",
+    type: "registry:component",
+    dependencies: [],
+    registryDependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/switch-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "pull-cord",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/pull-cord.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "tear-button",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/tear-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "bell-button",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/bell-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "bento-grid",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/bento-grid.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "hold-button",
+    type: "registry:component",
+    dependencies: ["class-variance-authority", "lucide-react", "motion"],
+    registryDependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/hold-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "attract-button",
+    type: "registry:component",
+    dependencies: ["lucide-react"],
+    registryDependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/attract-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "gradient-button",
+    type: "registry:component",
+    registryDependencies: ["button"],
+    files: [
+      {
+        path: "components/kokonutui/gradient-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "v0-button",
+    type: "registry:component",
+    registryDependencies: ["button"],
+    files: [
+      {
+        path: "components/kokonutui/v0-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "toolbar",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/toolbar.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-loading",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-loading.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-tool-approval",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-tool-approval.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-context-meter",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-context-meter.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-citations",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-citations.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-diff-review",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-diff-review.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-model-selector",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-model-selector.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "card-stack",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/card-stack.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "notification-stack",
+    type: "registry:component",
+    dependencies: ["lucide-react"],
+    files: [
+      {
+        path: "components/kokonutui/notification-stack.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "liquid-gauge",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/liquid-gauge.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "activity-terrain",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/activity-terrain.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "receipt-printer",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/receipt-printer.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "metric-card",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/metric-card.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "uptime-card",
+    type: "registry:component",
+    dependencies: ["lucide-react"],
+    files: [
+      {
+        path: "components/kokonutui/uptime-card.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "spending-ring",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/spending-ring.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "focal-point-picker",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/focal-point-picker.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "photo-straighten",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/photo-straighten.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "clip-trimmer",
+    type: "registry:component",
+    dependencies: ["lucide-react"],
+    files: [
+      {
+        path: "components/kokonutui/clip-trimmer.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "synced-transcript",
+    type: "registry:component",
+    dependencies: ["lucide-react"],
+    files: [
+      {
+        path: "components/kokonutui/synced-transcript.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "avatar-picker",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/avatar-picker.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "wheel-picker",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/wheel-picker.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "type-writer",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/type-writer.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "swoosh-text",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/swoosh-text.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "scroll-index",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/scroll-index.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "plucked-text",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/plucked-text.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "glitch-text",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/glitch-text.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "dynamic-text",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/dynamic-text.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "particle-button",
+    type: "registry:component",
+    dependencies: ["class-variance-authority", "lucide-react", "motion"],
+    registryDependencies: ["button"],
+    files: [
+      {
+        path: "components/kokonutui/particle-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "liquid-glass-card",
+    type: "registry:component",
+    dependencies: ["class-variance-authority", "lucide-react"],
+    registryDependencies: ["card", "button"],
+    files: [
+      {
+        path: "components/kokonutui/liquid-glass-card.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "profile-dropdown",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/profile-dropdown.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "loader",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/loader.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "slide-text-button",
+    type: "registry:component",
+    files: [
+      {
+        path: "components/kokonutui/slide-text-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "morphic-navbar",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/morphic-navbar.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "status-island",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/status-island.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "morph-popover",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/morph-popover.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "lightbox-grid",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/lightbox-grid.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "spoiler-text",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/spoiler-text.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "stack-panel",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/stack-panel.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-autocomplete",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/ai-autocomplete.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "undo-button",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/undo-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "timezone-planner",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/timezone-planner.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "page-flip",
+    type: "registry:component",
+    dependencies: ["motion"],
+    files: [
+      {
+        path: "components/kokonutui/page-flip.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-token-alternatives",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-token-alternatives.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-branches",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-branches.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-agent-lanes",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-agent-lanes.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-inline-edit",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-inline-edit.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-message-queue",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-message-queue.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-redact",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-redact.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ai-memory",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/ai-memory.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "marker-text",
+    type: "registry:component",
+    dependencies: ["lucide-react"],
+    files: [
+      {
+        path: "components/kokonutui/marker-text.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "ink-background",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/ink-background.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "caustics-background",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/caustics-background.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "rain-glass-background",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/rain-glass-background.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "shadow-text",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/shadow-text.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "seat-map",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/seat-map.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "amount-pad",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/amount-pad.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "slide-to-confirm",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/slide-to-confirm.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "save-button",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/save-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "cart-button",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/cart-button.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "card-field",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/card-field.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "stay-picker",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/stay-picker.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "slot-picker",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/slot-picker.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "tip-selector",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/tip-selector.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "boarding-pass",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/boarding-pass.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "split-flap-text",
+    type: "registry:component",
+    dependencies: [],
+    files: [
+      {
+        path: "components/kokonutui/split-flap-text.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "location-picker",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/location-picker.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+  {
+    name: "contact-sheet",
+    type: "registry:component",
+    dependencies: ["lucide-react", "motion"],
+    files: [
+      {
+        path: "components/kokonutui/contact-sheet.tsx",
+        type: "registry:component",
+      },
+    ],
+  },
+];

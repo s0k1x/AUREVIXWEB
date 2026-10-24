@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Modal prompts that block the page and ask the user to answer or acknowledge",
+      "Confirmations, permission requests and notices that a backdrop click must not close"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A form or settings panel that a click outside may dismiss",
+        "instead": "dialog"
+      },
+      {
+        "when": "A status or warning shown in the page with no decision to make",
+        "instead": "alert"
+      },
+      {
+        "when": "A modal task with several fields, such as a plan cancellation survey",
+        "instead": "application/dialog"
+      }
+    ],
+    "agentNotes": [
+      "On the base twin `AlertDialogAction` is a plain `Button` that leaves the dialog open; the radix one closes it on click",
+      "`AlertDialogTrigger` takes its button through `render` on the base twin and `asChild` on the radix twin",
+      "`size` sm on `AlertDialogContent` sets the footer as 2 equal columns, so keep it to 2 buttons"
+    ]
+  }
+}

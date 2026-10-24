@@ -1,0 +1,24 @@
+{
+  "repo": "https://github.com/radix-ui/primitives",
+  "commit": "eb3a2b7091293e27df8f9ba906632d8daa3d81a3",
+  "commit_date": "2026-10-14T12:06:36-07:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 699,
+  "files_skipped": {
+    "media": 3,
+    "lockfile": 1,
+    "too_large": 0,
+    "symlink": 0,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitignore",
+    "apps/ssr-testing/.gitignore",
+    "apps/storybook/.gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

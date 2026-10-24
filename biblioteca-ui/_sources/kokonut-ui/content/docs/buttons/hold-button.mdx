@@ -1,0 +1,18 @@
+---
+title: Hold Button
+description: Press and hold to confirm, with a fill that drains back on early release and a drawn check on completion.
+keywords: ["long press", "confirm action", "destructive", "delete confirmation", "press and hold"]
+icon: Fingerprint
+full: false
+---
+
+
+import HoldButton from "@/components/kokonutui/hold-button";
+
+<Preview link="hold-button">
+    <div className="flex flex-col items-center gap-3">
+        <HoldButton />
+        <HoldButton variant="green" />
+        <HoldButton variant="grey" holdDuration={2000} />
+    </div>
+</Preview>

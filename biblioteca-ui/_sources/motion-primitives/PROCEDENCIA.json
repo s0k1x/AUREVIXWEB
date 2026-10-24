@@ -1,0 +1,22 @@
+{
+  "repo": "https://github.com/ibelick/motion-primitives",
+  "commit": "120f64f6ca60348e251f929e9c81f11ccbe45eda",
+  "commit_date": "2026-09-28T15:32:06+02:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 363,
+  "files_skipped": {
+    "media": 6,
+    "lockfile": 2,
+    "too_large": 0,
+    "symlink": 0,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

@@ -1,0 +1,23 @@
+{
+  "repo": "https://github.com/emilkowalski/sonner",
+  "commit": "8e4662b39255120b62138312058f5d77c0139a5e",
+  "commit_date": "2026-08-10T13:13:03+02:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 29,
+  "files_skipped": {
+    "media": 0,
+    "lockfile": 2,
+    "too_large": 0,
+    "symlink": 0,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitignore",
+    "test/.gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

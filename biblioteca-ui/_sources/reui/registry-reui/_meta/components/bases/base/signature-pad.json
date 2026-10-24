@@ -1,0 +1,344 @@
+{
+  "items": [
+    {
+      "name": "c-signature-pad-1",
+      "type": "registry:block",
+      "title": "Pinned clear and save",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Muted signing surface with clear and save controls pinned inside the pad.",
+      "descriptionLong": "Pinned clear and save. Built with the Signature Pad component. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-1 and edit as your own code.",
+      "registryDependencies": [
+        "signature-pad"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Pinned Actions"
+      }
+    },
+    {
+      "name": "c-signature-pad-2",
+      "type": "registry:block",
+      "title": "Undo and redo toolbar",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Toolbar with undo, redo and clear, plus Ctrl+Z and Ctrl+Shift+Z shortcuts.",
+      "descriptionLong": "Undo and redo toolbar. Built by composing Button Group, Kbd, Signature Pad. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-2 and edit as your own code.",
+      "registryDependencies": [
+        "button-group",
+        "kbd",
+        "signature-pad"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Undo & Redo"
+      }
+    },
+    {
+      "name": "c-signature-pad-3",
+      "type": "registry:block",
+      "title": "Form field with validation",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Native form field that submits an SVG signature, with a required check and reset.",
+      "descriptionLong": "Form field with validation. Built by composing Button, Field, Input, Signature Pad. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-3 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "field",
+        "input",
+        "signature-pad"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Form Validation"
+      }
+    },
+    {
+      "name": "c-signature-pad-4",
+      "type": "registry:block",
+      "title": "Signing workspace",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Ink colors, line weights, undo, redo, replay and PNG or SVG download in one signing card.",
+      "descriptionLong": "Signing workspace. Built by composing Badge, Button, Card, Dropdown Menu, Separator and 1 more. Uses cn alongside the shadcn primitives. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-4 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "card",
+        "dropdown-menu",
+        "separator",
+        "signature-pad"
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Signing Workspace"
+      }
+    },
+    {
+      "name": "c-signature-pad-5",
+      "type": "registry:block",
+      "title": "Export PNG, JPEG, SVG or JSON",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Export the signature in 4 formats with a preview, payload size and download link.",
+      "descriptionLong": "Export PNG, JPEG, SVG or JSON. Built by composing Button, Button Group, Frame, Signature Pad. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-5 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "button-group",
+        "frame",
+        "signature-pad"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Export Formats"
+      }
+    },
+    {
+      "name": "c-signature-pad-6",
+      "type": "registry:block",
+      "title": "Draw or type",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Tabs to draw a signature or type it, the keyboard route to the same outcome.",
+      "descriptionLong": "Draw or type. Built by composing Badge, Button, Field, Input, Signature Pad and 1 more. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-6 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "field",
+        "input",
+        "signature-pad",
+        "tabs"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Draw or Type"
+      }
+    },
+    {
+      "name": "c-signature-pad-7",
+      "type": "registry:block",
+      "title": "Agreement signing card",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Agreement card that locks the signature read-only once it is signed and dated.",
+      "descriptionLong": "Agreement signing card. Built by composing Badge, Button, Card, Checkbox, Field and 1 more. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-7 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "card",
+        "checkbox",
+        "field",
+        "signature-pad"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Agreement Card"
+      }
+    },
+    {
+      "name": "c-signature-pad-8",
+      "type": "registry:block",
+      "title": "Signature in a dialog",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Saved profile signature with a dialog to draw, edit or remove it.",
+      "descriptionLong": "Signature in a dialog. Built by composing Button, Dialog, Item, Signature Pad. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-8 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "dialog",
+        "item",
+        "signature-pad"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "In Dialog"
+      }
+    },
+    {
+      "name": "c-signature-pad-9",
+      "type": "registry:block",
+      "title": "Stylus mode with palm rejection",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Pen-only input that ignores a resting palm, with pressure-sensitive ink.",
+      "descriptionLong": "Stylus mode with palm rejection. Built by composing Badge, Field, Signature Pad, Switch. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-9 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "field",
+        "signature-pad",
+        "switch"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "Stylus Mode"
+      }
+    },
+    {
+      "name": "c-signature-pad-10",
+      "type": "registry:block",
+      "title": "Initials per clause",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Compact initial pads for each contract clause with a completion count.",
+      "descriptionLong": "Initials per clause. Built by composing Badge, Button, Item, Signature Pad. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-10 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "item",
+        "signature-pad"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "label": "Clause Initials"
+      }
+    },
+    {
+      "name": "c-signature-pad-11",
+      "type": "registry:block",
+      "title": "Proof of delivery",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Mobile delivery card with recipient name, a touch signature and confirmation.",
+      "descriptionLong": "Proof of delivery. Built by composing Badge, Button, Card, Field, Input and 1 more. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-11 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "card",
+        "field",
+        "input",
+        "signature-pad"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "label": "Proof of Delivery"
+      }
+    },
+    {
+      "name": "c-signature-pad-12",
+      "type": "registry:block",
+      "title": "Upload with apiRef",
+      "categories": [
+        "signature-pad"
+      ],
+      "description": "Read the pad from outside its tree and attach the signature as a PNG file.",
+      "descriptionLong": "Upload with apiRef. Built by composing Button, Signature Pad. A free, open source shadcn signature pad example you can install with npx shadcn@latest add @reui/c-signature-pad-12 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "signature-pad"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/signature-pad/c-signature-pad-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-signature-pad-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "label": "File Upload"
+      }
+    }
+  ]
+}

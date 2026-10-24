@@ -1,0 +1,133 @@
+---
+title: Code guidelines
+date: 2024-06-14
+description: Guidelines for contributing to Animata.
+---
+
+## Component Generation
+
+Use `pnpm animata:new` for creating new components. This command will add some default files. More details can be found in the [contributing components](/docs/contributing/components) documentation.
+
+## File Naming
+
+All file names should use lower `kebab-case`.
+
+## Image Usage
+
+- Use [Unsplash](https://unsplash.com) for images.
+- Use [radix icon](https://www.radix-ui.com/icons) or [lucide icon](https://lucide.dev/icons/) for icons.
+- If you need specific SVGs, use [svgrepo.com](https://svgrepo.com) and copy the SVG. Make sure to add the credits in the documentation for the icon.
+
+## Imports
+
+All imports should be `absolute`, i.e., use `@/...` instead of relative imports like `./` or `../`. If you are using VSCode, we have this setup by default.
+
+## "use client" Directive
+
+If you are using React hooks, make sure to add the `use client` directive at the top level of your component file.
+
+## Plugins
+
+Install [Tailwind's VSCode plugin](https://tailwindcss.com/docs/editor-setup) for a better development experience. If you are using VSCode, we have added recommended extensions in the `.vscode/extensions.json` file.
+
+## Event Handlers
+
+If you are taking an event handler as a prop, make sure to use the `onXXX` naming convention. For example, if you are passing an onClick event to a button, give it a sensible name like `onLikeButtonPress`.
+
+## Default Props
+
+Make sure to use reasonable defaults in the props. The component should render something by default.
+
+## Styling
+
+Use Tailwind on the component for layout, color, spacing, and simple transitions. Put animation logic that Tailwind cannot express — `@keyframes`, `::before` / `::after`, multi-step transform-origin flips, typed `@property` — in a co-located `<name>.css` file imported from the TSX. The registry ships both files together (see `roll-text`, `metis-text`).
+
+Keep the CSS file focused: if a rule is a one-liner utility (`relative`, `inline-block`, `block`), prefer Tailwind on the element instead of duplicating it in CSS.
+
+Do not use inline `<style>` blocks in components — put `@keyframes`, pseudo-elements, and selectors Tailwind cannot express in a co-located `<name>.css` imported from the TSX. Do not use CSS modules or styled-components.
+
+## Conditional Classes
+
+Use `cn` for writing conditional classes. For example:
+
+```tsx
+cn({
+  visible: shouldShow,
+  invisible: !shouldShow,
+});
+```
+
+## Responsiveness
+
+Ensure that the components are responsive and look good at different sizes.
+
+## Helper Functions
+
+Move helper functions out of the component. Do not write all the helper logic inside the render function. You can and should move them out of the component.
+
+## Breaking Down Logic
+
+You can break down the logic into smaller hooks/components and compose them. Feel free to create custom hooks and smaller components, but make sure they are all in a single file.
+
+## Opacity and Fractional Properties
+
+You can change the opacity of colors by using the opacity syntax, e.g., `text-green-500/10`. Also, you can use fractional height, width, and position properties like `h-1/2` for 50% height, `w-1/3` for 33% width, `top-1/4` for 25% top, etc.
+
+## Color Usage
+
+Do not use custom colors unless needed. Tailwind already provides a wide range of colors which we can use.
+
+## Stories and argTypes
+
+Every component must have a `.stories.tsx` file with at least a `Primary` story export. When your component has props with union/literal types (e.g., `direction: "up" | "down"`), you must add `argTypes` with `options` so the props editor renders a select dropdown instead of a text input:
+
+```tsx
+const meta = {
+  title: "Text/Wave Reveal",
+  component: WaveReveal,
+  tags: ["autodocs"],
+  argTypes: {
+    direction: { control: { type: "select" }, options: ["up", "down"] },
+    mode: { control: { type: "select" }, options: ["letter", "word"] },
+  },
+} satisfies Meta<typeof WaveReveal>;
+```
+
+If a component renders full-width content that should fill the preview container edge-to-edge (no padding), add the `full-content` CSS class to the outermost wrapper in the story's render function:
+
+```tsx
+export const Primary: Story = {
+  render: (args) => (
+    <div className="full-content w-full">
+      <MyComponent {...args} />
+    </div>
+  ),
+};
+```
+
+## PR review
+
+Make sure to self-review the PRs thoroughly before submitting them. Check for any linting errors, console logs, and unnecessary code.
+
+## PR description
+
+Add a detailed description of the changes you have made in the PR. It should be clear and concise.
+
+## Labels
+
+If the component requires interaction from user like `hover` or `click` then add the `requires interaction` label to the component followed by `click` or `hover` whichever is applicable in the metadata section.
+
+Available labels:
+
+- `requires interaction` - If the component requires user interaction.
+- `click`: If the component requires click interaction.
+- `hover`: If the component requires hover interaction.
+- `requires config`: If the component requires tailwind configuration to work properly.
+
+For example:
+
+```mdx
+---
+labels: ["requires interaction", "click"]
+---
+```

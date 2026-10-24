@@ -1,0 +1,233 @@
+[
+  {
+    "name": "c-time-picker-1",
+    "title": "Inline time panel",
+    "label": "Inline Panel",
+    "description": "Hour and minute columns rendered in place, with Now, Clear and a live readout.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "An always open panel set flush in a Card, where each column pick commits at once with no OK step",
+      "agentNotes": [
+        "Replace the 14:30 preset `value` in `useState` with the stored meeting time, or `null` for none"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A day and an hour chosen together in one card",
+          "instead": "c-time-picker-13"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-2",
+    "title": "Popover picker",
+    "label": "Popover",
+    "description": "Outline trigger in a labelled field that opens hour and minute columns with Now, Clear and OK.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "The bare root with no children and no state, drawing its own trigger and popover and starting empty",
+      "agentNotes": [
+        "Nothing reads the pick: wire `value` and `onValueChange`, or pass `name` so a native form submits it"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A field where people type the hour and minutes by keyboard",
+          "instead": "c-time-picker-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-3",
+    "title": "Typable time input",
+    "label": "Typable Input",
+    "description": "Type 930, 14:30 or 2:30 pm, or step through free times with the arrow keys.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "Keyboard first entry in a text field with a clock button, where typed times snap to 5 minute steps",
+      "agentNotes": [
+        "Typed text commits on blur or Enter, never per keystroke, so `onValueChange` sees only finished times",
+        "`TimePickerInput` takes the root `id` in place of `TimePickerTrigger`, so never render the 2 side by side"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Columns that stay open on the page with nothing to type",
+          "instead": "c-time-picker-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-4",
+    "title": "12-hour clock with seconds",
+    "label": "12-Hour Seconds",
+    "description": "Hour, minute, second and AM/PM columns for a stream go-live time.",
+    "order": 4,
+    "guidance": {
+      "bestFor": "Second level precision where the trigger reads 02:45:30 PM while the stored value stays 14:45:30",
+      "agentNotes": [
+        "The `defaultValue` only seeds the picker; add `onValueChange` or a `name` to keep the go live time"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A send hour where minutes and seconds do not matter",
+          "instead": "c-time-picker-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-5",
+    "title": "Hour only",
+    "label": "Hour Only",
+    "description": "A daily digest send time picked by the hour in a settings row.",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A small fixed width trigger at the end of a settings Item row, with only hour and AM/PM columns",
+      "agentNotes": [
+        "The digest hour is never saved; connect `onValueChange` to your notification settings to store it"
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-6",
+    "title": "Steps and opening hours",
+    "label": "Opening Hours",
+    "description": "15-minute steps limited to 08:30 to 17:30, with out-of-range hours disabled.",
+    "order": 6,
+    "guidance": {
+      "bestFor": "An empty picker whose columns open on 08:30, the first allowed time, so an hour pick lands inside the window",
+      "agentNotes": [
+        "Opening hours are hardcoded in `min` and `max`; load them per location before showing the picker",
+        "No handler reads the pick, so add `onValueChange` or a `name` before using it for a booking"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Single booked slots or a lunch break blocked inside the open hours",
+          "instead": "c-time-picker-7"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-7",
+    "title": "Unavailable slots",
+    "label": "Unavailable Slots",
+    "description": "30-minute appointment slots with the lunch hour and booked times disabled.",
+    "order": 7,
+    "guidance": {
+      "bestFor": "A lunch hour and a set of booked slots greyed out by one predicate, so hour 12 is disabled whole",
+      "agentNotes": [
+        "Replace the hardcoded `BOOKED` set with your calendar's slots; once `isUnavailable` reads them, memoize it, since `isTimeDisabled` wants a stable function",
+        "The chosen slot stays inside the picker until you wire `onValueChange` or give the root a `name`"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Opening hours alone, with no single slot blocked inside them",
+          "instead": "c-time-picker-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-8",
+    "title": "Start and end time",
+    "label": "Start & End",
+    "description": "A meeting range where the end stays after the start and the duration updates.",
+    "order": 8,
+    "guidance": {
+      "bestFor": "Two linked pickers where moving the start shifts the end by the same amount and earlier end slots are disabled",
+      "agentNotes": [
+        "`start` and `end` are local state seeded with 09:00 and 10:00; lift them into your form to save the range",
+        "Ranges never cross midnight: the start stops at 23:30 and `LATEST_END` holds the end at 23:45"
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-9",
+    "title": "Time zone label",
+    "label": "Time Zone",
+    "description": "Event time in the venue's time zone, shown in the trigger, with a footer that leaves out Now.",
+    "order": 9,
+    "guidance": {
+      "bestFor": "Hand composed trigger content and footer: the value, a fixed zone name and the clock, then only Clear and OK",
+      "agentNotes": [
+        "The `doors-open-zone` text is a fixed label that converts nothing; the value stays the venue's wall clock time",
+        "Trigger children replace the default content, so keep `TimePickerValue` in them or the value leaves the accessible name",
+        "The 19:30 `defaultValue` is never read back; add `onValueChange` or a `name` to store the doors time"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A publish moment that needs a day picked as well as an hour",
+          "instead": "c-time-picker-13"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-10",
+    "title": "Confirm before applying",
+    "label": "Confirm Before Apply",
+    "description": "Column picks stay a draft until OK, so a shift change applies once.",
+    "order": 10,
+    "guidance": {
+      "bestFor": "Popover picks, Now and Clear held as a draft that closing throws away, with OK drawn as the primary button",
+      "agentNotes": [
+        "`shiftStart` is local state seeded with 08:00; persist it from `onValueChange`, which fires only once a draft is confirmed"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Picks that should apply the moment a row is clicked",
+          "instead": "c-time-picker-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-11",
+    "title": "Localized labels",
+    "label": "Localized",
+    "description": "English, German, Chinese and Arabic labels, clocks and digits, with Arabic right to left.",
+    "order": 11,
+    "guidance": {
+      "bestFor": "One stored value shown through 4 locale tabs, Chinese leading with the period and Arabic digits from a custom formatter",
+      "agentNotes": [
+        "Languages live in the `LOCALES` array; add one there with its `hourCycle`, `dir` and `i18n` overrides"
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-12",
+    "title": "Form field with validation",
+    "label": "Form Validation",
+    "description": "Native form field with a required check, an error, reset and the submitted value.",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A native form that reads the time from FormData on submit, swaps in a FieldError when empty and clears it on Reset",
+      "agentNotes": [
+        "`onSubmit` only copies `deliveryTime` into local `booked` state; post it to your API there"
+      ]
+    }
+  },
+  {
+    "name": "c-time-picker-13",
+    "title": "Date and time",
+    "label": "Date & Time",
+    "description": "Schedule a post with a calendar and time columns side by side in one card.",
+    "order": 13,
+    "gridSize": 1,
+    "guidance": {
+      "bestFor": "A day and a time merged into one summary line, with 7 row columns, no footer and a Schedule button",
+      "agentNotes": [
+        "`FIRST_MONTH` and `SUGGESTED_DAY` are fixed to October 2026; replace them with dates from your app",
+        "The Schedule `Button` only stores the summary in local `scheduled` state; send the date and `time` to your API there"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A day of the month picked with no hour or minute",
+          "instead": "calendar"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,661 @@
+---
+title: Time Picker
+description: A shadcn time picker with hour, minute, second and AM/PM columns in a popover or inline, text entry, steps, time bounds, form fields and i18n labels.
+component: true
+base: radix
+---
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-1"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[350px]"
+/>
+
+## Installation
+
+```bash component
+npx shadcn@latest add @reui/time-picker
+```
+
+## Usage
+
+```tsx
+import {
+  TimePicker,
+  TimePickerClear,
+  TimePickerColumns,
+  TimePickerConfirm,
+  TimePickerContent,
+  TimePickerFooter,
+  TimePickerNow,
+  TimePickerTrigger,
+} from "@/components/reui/time-picker"
+```
+
+```tsx
+<TimePicker value={time} onValueChange={setTime}>
+  <TimePickerTrigger />
+  <TimePickerContent>
+    <TimePickerColumns />
+    <TimePickerFooter>
+      <TimePickerNow />
+      <TimePickerClear />
+      <TimePickerConfirm />
+    </TimePickerFooter>
+  </TimePickerContent>
+</TimePicker>
+```
+
+## Examples
+
+### Popover picker
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-2"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[170px]"
+/>
+
+### Typable time input
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-3"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[220px]"
+/>
+
+### 12-hour clock with seconds
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-4"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[170px]"
+/>
+
+### Hour only
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-5"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[170px]"
+/>
+
+### Steps and opening hours
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-6"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[170px]"
+/>
+
+### Unavailable slots
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-7"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[190px]"
+/>
+
+### Start and end time
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-8"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[170px]"
+/>
+
+### Time zone label
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-9"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[190px]"
+/>
+
+### Confirm before applying
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-10"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[200px]"
+/>
+
+### Localized labels
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-11"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[390px]"
+/>
+
+### Form field with validation
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-12"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[220px]"
+/>
+
+### Date and time
+
+<ComponentPreview
+  styleName="radix-nova"
+  name="c-time-picker-13"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[500px]"
+/>
+
+## API Reference
+
+Time Picker is composable. `TimePicker` holds the value and renders no wrapper
+element. `TimePickerTrigger` or `TimePickerInput` opens `TimePickerContent`,
+and `TimePickerPanel` renders the same columns and footer in place. Each column
+is a listbox, and the footer holds the Now, Clear and OK buttons. It composes
+the shadcn Popover, Button and InputGroup. The value is a plain string, so
+there is no date library to install.
+
+### Value
+
+The value is a string in the format `<input type="time">` uses: `HH:mm`, or
+`HH:mm:ss` with `granularity="second"`, always in 24-hour time whatever
+`hourCycle` displays. `null` or `""` is empty. `onValueChange` fires with the
+new value in that format, or `null` when cleared, and only when it differs from
+the current one. With `granularity="hour"` the value is `HH:00`.
+
+A controlled value the picker would not offer (off the steps, outside `min` and
+`max`, or disabled) is shown as is and never rewritten: nothing is emitted until
+someone picks. Off the steps, a column highlights the available row below it. A
+value with seconds shows, submits and reads at the picker's granularity, so
+`14:30:15` is `14:30` at minute granularity. A string `parseTimeValue` cannot
+read shows as empty.
+
+```tsx
+const [time, setTime] = useState<string | null>("14:30")
+
+<TimePicker value={time} onValueChange={setTime} hourCycle={12} />
+```
+
+That picker shows `02:30 PM`, and its value stays `"14:30"`. `isTimeDisabled`,
+`useTimePicker` and the helpers hand you the same time as numbers, with `hour`
+from 0 to 23:
+
+```ts
+type TimePickerTime = { hour: number; minute: number; second: number }
+```
+
+### i18n
+
+Every string the picker renders, and the way it writes a time, comes from
+`i18n`. It is merged over the English defaults per section, so one label is
+enough.
+
+```ts
+type TimePickerI18nOverrides = {
+  labels?: Partial<TimePickerLabels>
+  functions?: Partial<TimePickerFunctions>
+}
+```
+
+| Label                                | Default                                     | Used for                                                   |
+| :----------------------------------- | :------------------------------------------ | :--------------------------------------------------------- |
+| `placeholder`                        | `"Select time"`                             | Trigger text while empty.                                  |
+| `hour`, `minute`, `second`, `period` | `"Hour"`, `"Minute"`, `"Second"`, `"AM/PM"` | Column headers, which also name the listboxes.             |
+| `am`, `pm`                           | `"AM"`, `"PM"`                              | The period rows, the shown value and what the input reads. |
+| `now`, `clear`, `confirm`            | `"Now"`, `"Clear"`, `"OK"`                  | The footer buttons.                                        |
+| `panelLabel`                         | `"Choose time"`                             | Names the popover and an inline panel.                     |
+| `openPicker`                         | `"Open time picker"`                        | Names the clock button in `TimePickerInput`.               |
+
+| Function        | Type                                                                 | Description                                                                        |
+| :-------------- | :------------------------------------------------------------------- | :--------------------------------------------------------------------------------- |
+| `formatSegment` | `(value: number, unit: TimePickerUnit) => string`                    | Option text in the columns. Pads to 2 digits. In 12-hour time the hour is 1 to 12. |
+| `formatValue`   | `(time: TimePickerTime, context: TimePickerFormatContext) => string` | The value as the trigger, `TimePickerValue` and `TimePickerInput` show it.         |
+
+`context` carries `hourCycle`, `granularity`, `periodPosition`, the merged
+`labels` and the merged `formatSegment`, so a `formatSegment` override reaches
+the default `formatValue` too. The default writes `14:30`, adds seconds with
+`granularity="second"`, keeps `:00` with `granularity="hour"`, and in 12-hour
+time adds the `am` or `pm` label: `02:30 PM`. `periodPosition` is a root prop,
+not a label: `"start"` puts the period before the time and the AM/PM column
+first, as Chinese, Japanese and Korean write it. With `TimePickerInput`, keep a
+custom `formatValue` to text `parseTimeInput` reads: an untouched value is
+never read back, but an edited one is.
+
+```tsx
+const DE: TimePickerI18nOverrides = {
+  labels: {
+    placeholder: "Uhrzeit wählen",
+    hour: "Stunde",
+    minute: "Minute",
+    now: "Jetzt",
+    clear: "Löschen",
+    panelLabel: "Uhrzeit wählen",
+    openPicker: "Zeitauswahl öffnen",
+  },
+}
+
+<TimePicker i18n={DE} />
+```
+
+Digits come from `formatSegment`. The column type-ahead and `TimePickerInput`
+read Arabic-Indic, Persian and full-width digits back, so localized text
+round-trips. The popover renders in a portal outside your `dir` wrapper, so pass
+`dir` to `TimePickerContent` as well.
+
+```tsx
+const ARABIC_DIGITS = "٠١٢٣٤٥٦٧٨٩"
+
+const AR: TimePickerI18nOverrides = {
+  labels: { hour: "الساعة", minute: "الدقيقة", period: "ص/م", am: "ص", pm: "م" },
+  functions: {
+    formatSegment: (value) =>
+      String(value)
+        .padStart(2, "0")
+        .replace(/\d/g, (digit) => ARABIC_DIGITS[Number(digit)]),
+  },
+}
+
+<div dir="rtl" lang="ar">
+  <TimePicker hourCycle={12} i18n={AR}>
+    <TimePickerTrigger />
+    <TimePickerContent dir="rtl" />
+  </TimePicker>
+</div>
+```
+
+The defaults are plain string code with no `Intl`, so the server and the
+browser render the same text. An override built on `Intl` or `toLocaleString`
+can format differently on each, because their default locale and ICU data
+differ, and the mismatch fails hydration. Pin the locale in every `Intl` call,
+and prefer a fixed map like the one above for anything the server renders.
+
+### TimePicker
+
+The root. Holds the value, the popover state and any pending draft, and renders
+no wrapper element. Without children it renders a `TimePickerTrigger` and a
+`TimePickerContent` with the default columns and footer, so `<TimePicker />`
+alone is a complete picker; `className` and `placeholder` reach that trigger.
+
+| Prop               | Type                                               | Default              | Description                                                                                     |
+| :----------------- | :------------------------------------------------- | :------------------- | :---------------------------------------------------------------------------------------------- |
+| `value`            | `string \| null`                                   | -                    | Controlled value, `HH:mm` or `HH:mm:ss` in 24-hour time. `null` is empty.                       |
+| `defaultValue`     | `string \| null`                                   | `null`               | Initial value when uncontrolled, and what a form reset restores.                                |
+| `onValueChange`    | `(value: string \| null) => void`                  | -                    | Fires with the new value in the same format, or `null` when cleared.                            |
+| `open`             | `boolean`                                          | -                    | Controlled popover state.                                                                       |
+| `defaultOpen`      | `boolean`                                          | `false`              | Initial popover state when uncontrolled.                                                        |
+| `onOpenChange`     | `(open: boolean) => void`                          | -                    | Fires when the popover opens or closes.                                                         |
+| `hourCycle`        | `12 \| 24`                                         | `24`                 | `12` shows hours 12, 01 to 11 and adds the AM/PM column.                                        |
+| `granularity`      | `"hour" \| "minute" \| "second"`                   | `"minute"`           | The finest column, and the precision of the value.                                              |
+| `periodPosition`   | `"start" \| "end"`                                 | `"end"`              | Where AM/PM goes, in the text and in the columns.                                               |
+| `hourStep`         | `number`                                           | `1`                  | Hours offered, counted from 0 on the 24-hour scale.                                             |
+| `minuteStep`       | `number`                                           | `1`                  | Minutes offered, counted from 0.                                                                |
+| `secondStep`       | `number`                                           | `1`                  | Seconds offered, counted from 0.                                                                |
+| `min`              | `string`                                           | -                    | Earliest selectable time, inclusive. After `max`, the window runs overnight.                    |
+| `max`              | `string`                                           | -                    | Latest selectable time, inclusive.                                                              |
+| `isTimeDisabled`   | `(value: string, time: TimePickerTime) => boolean` | -                    | Marks single times unavailable. `value` is in the value format.                                 |
+| `requireConfirm`   | `boolean`                                          | `false`              | Picks, Now and Clear stay a draft until OK. Closing discards them.                              |
+| `fade`             | `boolean`                                          | `true`               | Fades the top and bottom of a column while more rows are scrolled out of view there.            |
+| `disabled`         | `boolean`                                          | `false`              | Disables every part and stops the popover opening. A disabled picker submits nothing.           |
+| `readOnly`         | `boolean`                                          | `false`              | The popover opens and the columns take focus, but no pick, key, Now or Clear changes the value. |
+| `invalid`          | `boolean`                                          | `false`              | Sets `aria-invalid` on the trigger or the input, and `data-invalid` on the trigger.             |
+| `name`             | `string`                                           | -                    | Submits the value with a native form under this name.                                           |
+| `form`             | `string`                                           | -                    | Associates the field with a form elsewhere in the page.                                         |
+| `required`         | `boolean`                                          | `false`              | Fails native form validation while empty.                                                       |
+| `inputRef`         | `Ref<HTMLInputElement>`                            | -                    | The hidden form field, for form libraries that focus a field on error.                          |
+| `id`               | `string`                                           | generated            | Lands on the trigger or the input, so a label's `htmlFor` reaches it.                           |
+| `aria-label`       | `string`                                           | -                    | Names the trigger or the input, the popover and an inline panel.                                |
+| `aria-labelledby`  | `string`                                           | -                    | The same, by id. The trigger keeps its value in the name.                                       |
+| `aria-describedby` | `string`                                           | -                    | Describes the trigger or the input.                                                             |
+| `i18n`             | `TimePickerI18nOverrides`                          | English              | Labels and formatting, merged over the defaults.                                                |
+| `placeholder`      | `string`                                           | `labels.placeholder` | Text of the default trigger while empty.                                                        |
+| `className`        | `string`                                           | -                    | Classes for the default trigger.                                                                |
+
+Steps count from 0 in each unit, so `minuteStep={15}` offers 00, 15, 30 and 45,
+and `hourStep={5}` under a 12-hour clock offers 12, 05 and 10 AM and 03 and
+08 PM. `min`, `max` and `isTimeDisabled` narrow those steps. `isTimeDisabled`
+runs for each step-aligned time inside the bounds, and availability is
+recomputed whenever its identity changes, so define it at module scope or
+memoize it.
+
+```tsx
+const BOOKED = new Set(["10:00", "14:30"])
+
+const isTimeDisabled = (value: string) =>
+  (value >= "12:00" && value < "13:00") || BOOKED.has(value)
+
+<TimePicker
+  minuteStep={30}
+  min="09:00"
+  max="17:00"
+  isTimeDisabled={isTimeDisabled}
+/>
+```
+
+With `requireConfirm`, picks, Now and Clear write a draft that the columns show
+and the trigger does not. It is committed by OK, by <Kbd>Enter</Kbd> on a
+column, or by <Kbd>Alt</Kbd> + <Kbd>↑</Kbd> in the popover. Closing the popover,
+or <Kbd>Esc</Kbd> on an inline column, drops it, and every open starts without
+one. Typing in `TimePickerInput` and `useTimePicker().setValue` commit
+directly.
+
+### TimePickerTrigger
+
+A shadcn `Button` that opens the popover, and the element that takes the root's
+`id` and ARIA props. It shows `TimePickerValue` and a clock icon. `children`
+replace both; include a `TimePickerValue` in them to keep the value in the
+accessible name. Accepts every `Button` prop.
+
+| Prop          | Type             | Default              | Description                         |
+| :------------ | :--------------- | :------------------- | :---------------------------------- |
+| `variant`     | `Button` variant | `"outline"`          | The look of the button.             |
+| `placeholder` | `ReactNode`      | `labels.placeholder` | Shown while there is no value.      |
+| `children`    | `ReactNode`      | value and icon       | Replaces the content of the button. |
+
+### TimePickerValue
+
+The committed value as text, or the placeholder, in a `span`. Use it in custom
+trigger content: its id is what keeps the value in the trigger's name. It never
+shows a draft. Accepts every `span` prop.
+
+| Prop          | Type        | Default              | Description                    |
+| :------------ | :---------- | :------------------- | :----------------------------- |
+| `placeholder` | `ReactNode` | `labels.placeholder` | Shown while there is no value. |
+
+### TimePickerInput
+
+A shadcn `InputGroup` with a text field and a clock button that opens the
+popover. Use it in place of `TimePickerTrigger`, not beside it: both take the
+root's `id`. Pair it with `<TimePickerContent align="end">` so the popover lines
+up with the button.
+
+It reads `9`, `930`, `14:30`, `14.30`, `14h30`, `2:30 pm` and `2p`, the `am` and
+`pm` labels on either side, and full-width, Arabic-Indic and Persian digits.
+Text is read on blur and <Kbd>Enter</Kbd>, moved to the nearest selectable time,
+and committed directly, even under `requireConfirm`. Text it cannot read puts
+the value back, and an empty field clears it. Under a 12-hour clock, a time
+typed without AM or PM takes the half of the day on screen, unless only the
+other half is inside `min` and `max`.
+
+| Prop          | Type     | Default | Description                                                                           |
+| :------------ | :------- | :------ | :------------------------------------------------------------------------------------ |
+| `placeholder` | `string` | a mask  | `--:--`, `--:--:--` with seconds, and `--:-- --` or `-- --:--` under a 12-hour clock. |
+| `className`   | `string` | -       | Classes for the `InputGroup`.                                                         |
+
+Every other prop reaches the `<input>`. `onChange`, `onBlur` and `onKeyDown` run
+before the built-in handlers, and a `keydown` that calls `preventDefault` skips
+the built-in keys.
+
+### TimePickerContent
+
+The popover, a shadcn `PopoverContent` holding `TimePickerColumns` and
+`TimePickerFooter` by default. It is named by the root's `aria-labelledby` or
+`aria-label`, else by `labels.panelLabel`, and <Kbd>Tab</Kbd> cycles inside
+it. Accepts every `PopoverContent` prop, `dir` included.
+
+| Prop       | Type                           | Default            | Description                    |
+| :--------- | :----------------------------- | :----------------- | :----------------------------- |
+| `align`    | `"start" \| "center" \| "end"` | `"start"`          | Alignment against the trigger. |
+| `children` | `ReactNode`                    | columns and footer | Replaces the content.          |
+
+### TimePickerPanel
+
+The columns and the footer rendered in place, for an always-open picker: put it
+straight inside `TimePicker`, with no trigger or content. Inline it is a
+`group` named like the popover; inside `TimePickerContent` it is a plain `div`.
+Inline, the default footer shows OK only under `requireConfirm`, because every
+pick already commits. Accepts every `div` prop.
+
+| Prop       | Type        | Default            | Description           |
+| :--------- | :---------- | :----------------- | :-------------------- |
+| `children` | `ReactNode` | columns and footer | Replaces the content. |
+
+### TimePickerColumns
+
+The row of columns, one per unit the picker needs, in `periodPosition` order.
+It is `dir="ltr"` in every text direction, because a time reads hour first in
+right-to-left text too; pass `dir` to change it. Accepts every `div` prop.
+
+| Prop       | Type        | Default                | Description                                        |
+| :--------- | :---------- | :--------------------- | :------------------------------------------------- |
+| `children` | `ReactNode` | a column for each unit | `TimePickerColumn`s, to reorder, relabel or style. |
+
+### TimePickerColumn
+
+One unit as a listbox under a header. Selection follows the keyboard, like a
+native time wheel. A row that leads to no selectable time is disabled, and the
+highlighted row scrolls toward the middle of the list whenever it changes.
+Accepts every `div` prop.
+
+| Prop    | Type                                         | Default        | Description                                                                            |
+| :------ | :------------------------------------------- | :------------- | :------------------------------------------------------------------------------------- |
+| `type`  | `"hour" \| "minute" \| "second" \| "period"` | -              | **Required**. Renders nothing for a unit the granularity or the hour cycle leaves out. |
+| `label` | `ReactNode`                                  | `labels[type]` | Header text, which also names the listbox.                                             |
+
+A pick moves to the nearest selectable time with that row's value and remembers
+what it aimed at: from 09:15 with `min="08:30"`, hour 8 gives 08:30 and hour 9
+goes back to 09:15. An empty picker fills the other units with 0 where it can,
+so hour 14 gives 14:00. Under a 12-hour clock the hour column lists the half of
+the day the shown time is in, and AM or PM keeps the hour on the other side of
+noon.
+
+Each list shows 5 rows. Set `--time-picker-rows` on any ancestor for more, as in
+`className="[--time-picker-rows:7]"`, and keep it odd so the selection can sit
+in the middle. The selection stays centered when the list resizes, for example
+when a font or a theme settles after mount.
+
+With `fade` on, the default, an end of a list fades only while rows are scrolled
+past it, so the first and last rows are never dimmed at rest. The fade is one
+row deep; set `--time-picker-fade-size` on any ancestor to change it, or pass
+`fade={false}` to turn it off.
+
+### TimePickerFooter
+
+The action row. Without children it holds Now and Clear, plus OK in a popover or
+under `requireConfirm`. Pass the actions you want as children to leave one out.
+Accepts every `div` prop.
+
+| Prop       | Type        | Default           | Description                                                                 |
+| :--------- | :---------- | :---------------- | :-------------------------------------------------------------------------- |
+| `children` | `ReactNode` | Now, Clear and OK | Replaces the actions. OK is left out inline unless `requireConfirm` is set. |
+
+### TimePickerNow, TimePickerClear, TimePickerConfirm
+
+shadcn `Button`s wired to the picker, labelled from `i18n`. An `onClick` that
+calls `preventDefault` skips the action. Each accepts every `Button` prop.
+
+| Prop       | Type             | Default                                                                 | Description             |
+| :--------- | :--------------- | :---------------------------------------------------------------------- | :---------------------- |
+| `variant`  | `Button` variant | `"ghost"`; OK is `"default"` under `requireConfirm`, else `"secondary"` | The look of the button. |
+| `size`     | `Button` size    | `"sm"`                                                                  | The size of the button. |
+| `children` | `ReactNode`      | `labels.now`, `labels.clear`, `labels.confirm`                          | The button text.        |
+
+- `TimePickerNow` sets the current time, floored to the steps (14:38 on a 15
+  minute step is 14:30), or the next selectable time after it, else the last one
+  before it. It reads the clock only when pressed, never while rendering.
+  Disabled when the picker is `disabled` or `readOnly`.
+- `TimePickerClear` empties the value (the draft under `requireConfirm`), then
+  moves focus to the first column. Disabled when the picker is `disabled` or
+  `readOnly`.
+- `TimePickerConfirm` commits a pending draft and closes the popover. Disabled
+  only when the picker is `disabled`, so it still closes a read-only picker.
+
+### useTimePicker
+
+Returns the picker's state and actions inside a `TimePicker`, for a custom
+action or readout. It throws outside one.
+
+| Field      | Type                              | Description                                                                                            |
+| :--------- | :-------------------------------- | :----------------------------------------------------------------------------------------------------- |
+| `value`    | `string \| null`                  | The committed value in the value format.                                                               |
+| `time`     | `TimePickerTime \| null`          | The same value as numbers.                                                                             |
+| `open`     | `boolean`                         | Whether the popover is open.                                                                           |
+| `setOpen`  | `(open: boolean) => void`         | Opens or closes the popover.                                                                           |
+| `setValue` | `(value: string \| null) => void` | Commits a value as given, with no snapping and no draft. A string `parseTimeValue` cannot read clears. |
+| `now`      | `() => void`                      | The same as `TimePickerNow`.                                                                           |
+| `clear`    | `() => void`                      | Empties the value, or the draft under `requireConfirm`.                                                |
+| `confirm`  | `() => void`                      | Commits a pending draft and closes the popover.                                                        |
+
+```tsx
+function NineAm() {
+  const { setValue } = useTimePicker()
+  return (
+    <Button variant="ghost" size="sm" onClick={() => setValue("09:00")}>
+      9:00
+    </Button>
+  )
+}
+```
+
+Render it anywhere inside the picker, such as a composed `TimePickerFooter`
+next to `TimePickerConfirm`.
+
+### Helpers
+
+Pure functions for code that never mounts a picker: a duration, a sort, a
+payload built on the client. They ship in the same `"use client"` module as the
+picker, so a Server Component cannot call them.
+
+| Helper                               | Returns                                                                                                                                                          |
+| :----------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `parseTimeValue(value)`              | A `TimePickerTime` from `HH:mm` or `HH:mm:ss` (a 1-digit hour also reads), dropping a fraction of a second. Anything else, `""` and `24:00` included, is `null`. |
+| `formatTimeValue(time, granularity)` | `HH:mm`, or `HH:mm:ss` when `granularity` is `"second"`. It defaults to `"minute"`.                                                                              |
+| `parseTimeInput(text, options)`      | A `TimePickerTime` from typed text in the grammar `TimePickerInput` reads, or `null`.                                                                            |
+| `mergeTimePickerI18n(overrides)`     | The full i18n config, the overrides merged over the defaults per section.                                                                                        |
+| `DEFAULT_TIME_PICKER_I18N`           | The English labels and functions.                                                                                                                                |
+
+`parseTimeInput` takes `hourCycle`, the `am` and `pm` `labels`, and `period`,
+the half of the day a 12-hour time typed without one takes (`"am"` by default).
+
+```ts
+parseTimeValue("09:30") // { hour: 9, minute: 30, second: 0 }
+formatTimeValue({ hour: 14, minute: 5, second: 0 }) // "14:05"
+parseTimeInput("2:30 pm") // { hour: 14, minute: 30, second: 0 }
+```
+
+### Forms
+
+Give the root a `name` and the value submits with a native form, as `HH:mm` or
+`HH:mm:ss`. An empty picker submits an empty string, so `required` works. The
+field carries the committed value, never a draft, and a disabled picker submits
+nothing. `form` ties the field to a form elsewhere in the page, and `inputRef`
+points at it for form libraries, such as react-hook-form, that focus a field on
+error. <Kbd>Enter</Kbd> in `TimePickerInput` reads the typed text before the
+form submits.
+
+A form reset restores `defaultValue`, empty unless you passed one, as a native
+field returns to its default; a controlled picker gets it through
+`onValueChange`. A listener that cancels the reset keeps the value.
+
+`required` fails validation while the picker is empty and also lands on
+`TimePickerInput`'s own field. `invalid` is for your own validation: it sets
+`aria-invalid`, so pair it with an error message in `aria-describedby`, as the
+form field example does.
+
+```tsx
+<form onSubmit={handleSubmit}>
+  <FieldLabel id="delivery-label" htmlFor="delivery">
+    Delivery time
+  </FieldLabel>
+  <TimePicker
+    id="delivery"
+    aria-labelledby="delivery-label"
+    name="deliveryTime"
+    required
+  />
+</form>
+```
+
+### Data Attributes
+
+| Attribute                                  | On                       | Values                                                     |
+| :----------------------------------------- | :----------------------- | :--------------------------------------------------------- |
+| `data-placeholder`                         | trigger, value           | present while there is no value                            |
+| `data-invalid`                             | trigger                  | present when `invalid`                                     |
+| `data-disabled`                            | `TimePickerInput`, panel | present when disabled                                      |
+| `data-type`                                | column                   | `hour`, `minute`, `second`, `period`                       |
+| `data-empty`                               | column list              | present when the list has no selectable row                |
+| `data-fade`                                | column list              | present while `fade` is on                                 |
+| `data-overflow-start`, `data-overflow-end` | column list              | present while rows are scrolled past the top or the bottom |
+| `data-highlighted`                         | option                   | present on the row the keyboard is on                      |
+| `aria-selected`                            | option                   | `true` on the row of the shown value, else `false`         |
+| `aria-disabled`                            | option                   | `true` on a row that leads to no selectable time           |
+
+| Part                  | `data-slot`                                                                                                      |
+| :-------------------- | :--------------------------------------------------------------------------------------------------------------- |
+| `TimePickerTrigger`   | `time-picker-trigger`                                                                                            |
+| `TimePickerValue`     | `time-picker-value`                                                                                              |
+| `TimePickerInput`     | `time-picker-input`, and `time-picker-input-trigger` on the clock button                                         |
+| `TimePickerContent`   | `popover-content`, the shadcn popover's own                                                                      |
+| `TimePickerPanel`     | `time-picker-panel`                                                                                              |
+| `TimePickerColumns`   | `time-picker-columns`                                                                                            |
+| `TimePickerColumn`    | `time-picker-column`, then `time-picker-column-label`, `time-picker-column-list` and `time-picker-option` inside |
+| `TimePickerFooter`    | `time-picker-footer`                                                                                             |
+| Now, Clear, Confirm   | `time-picker-now`, `time-picker-clear`, `time-picker-confirm`                                                    |
+| The hidden form field | `time-picker-field`                                                                                              |
+
+### Keyboard
+
+On a column:
+
+| Key                                     | Action                                                                                                                 |
+| :-------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| <Kbd>↓</Kbd> <Kbd>↑</Kbd>               | Selects the next or previous available row, without wrapping. When empty, it selects the highlighted row.              |
+| <Kbd>Home</Kbd> <Kbd>End</Kbd>          | Selects the first or last available row.                                                                               |
+| <Kbd>Page Down</Kbd> <Kbd>Page Up</Kbd> | Moves 5 rows, stopping at the last or first available row.                                                             |
+| <Kbd>←</Kbd> <Kbd>→</Kbd>               | Moves focus to the previous or next column, left to right in every text direction.                                     |
+| <Kbd>0</Kbd> to <Kbd>9</Kbd>            | Selects the row typed. 2 digits within a second read as one number, so <Kbd>1</Kbd> <Kbd>4</Kbd> is 14.                |
+| <Kbd>A</Kbd> <Kbd>P</Kbd>               | In the AM/PM column, selects AM or PM, as does the first letter of a label. Pressing it again moves to the next match. |
+| <Kbd>Space</Kbd>                        | Selects the highlighted row.                                                                                           |
+| <Kbd>Enter</Kbd>                        | Selects the highlighted row, commits a draft and closes the popover.                                                   |
+| <Kbd>Alt</Kbd> + <Kbd>↑</Kbd>           | In the popover, commits a draft and closes it.                                                                         |
+| <Kbd>Esc</Kbd>                          | Closes the popover, dropping a draft. Inline, drops a draft.                                                           |
+
+A digit with no row of its own selects the first row that starts with it, so
+pressing <Kbd>3</Kbd> on a 15 minute step selects 30. Under a 12-hour clock you
+type the hour as shown. In `readOnly`, the lists stay focusable and focus still
+moves between them with <Kbd>←</Kbd> <Kbd>→</Kbd>, but no key or click changes
+the value, and <Kbd>Enter</Kbd> closes the popover.
+
+In `TimePickerInput`:
+
+| Key                           | Action                                                                                                                        |
+| :---------------------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| <Kbd>Enter</Kbd>              | Reads the typed text, before a form submits.                                                                                  |
+| <Kbd>↑</Kbd> <Kbd>↓</Kbd>     | Commits the next later or earlier available time, wrapping at midnight. When empty, the first or last one. Not in `readOnly`. |
+| <Kbd>Alt</Kbd> + <Kbd>↓</Kbd> | Reads the typed text and opens the popover.                                                                                   |
+| <Kbd>Esc</Kbd>                | While editing, puts the value back.                                                                                           |
+
+On the trigger and in the popover:
+
+| Key                                              | Action                                                                 |
+| :----------------------------------------------- | :--------------------------------------------------------------------- |
+| <Kbd>Enter</Kbd> <Kbd>Space</Kbd>                | On the trigger, opens the popover.                                     |
+| <Kbd>Tab</Kbd> <Kbd>Shift</Kbd> + <Kbd>Tab</Kbd> | Moves between the columns and the buttons, cycling inside the popover. |
+
+### Accessibility
+
+- Each column is a `listbox` named by its header. Focus stays on the list and
+  `aria-activedescendant` points at the highlighted row, so the rows are not
+  tab stops. The list is described by the whole time on screen, draft included,
+  so a screen reader hears the time and not only the column's part of it.
+- With `aria-labelledby`, the trigger is named by your label followed by the
+  value, because a label on a button would otherwise replace its text.
+  `aria-label` replaces the text entirely, so prefer a visible label with
+  `aria-labelledby`, and point its `htmlFor` at the root `id` so a click on the
+  label still opens the picker.
+- The popover and an inline panel, a `group`, are named by the root's label or
+  by `labels.panelLabel`. The clock button in `TimePickerInput` is named by
+  `labels.openPicker`, and the input announces <Kbd>Alt</Kbd> + <Kbd>↓</Kbd>
+  through `aria-keyshortcuts`.
+- The columns are `dir="ltr"` in every text direction, since a time reads hour
+  first in right-to-left text too, and <Kbd>←</Kbd> <Kbd>→</Kbd> are never
+  mirrored.
+- In forced colors mode the selected row takes the system `Highlight` colors,
+  and the keyboard row is marked with an outline, which forced colors keep.
+- The hidden form field is out of the tab order and hidden from assistive tech.
+  A failed `required` check focuses it, and it hands focus on to the trigger,
+  the input or, for an inline panel, the first column. For an error assistive
+  tech announces, validate yourself and pair `invalid` with a described-by
+  message.
+- Opening with a mouse or the keyboard focuses the first column in both twins.
+  Opened by touch, the Base UI popover focuses the popup itself, while the
+  Radix popover focuses the first column. Closing from the keyboard returns
+  focus to the trigger, or to the clock button for `TimePickerInput`.

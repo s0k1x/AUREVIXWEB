@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Project plans where a tree of phases and tasks owns bars dragged and resized along a time axis",
+      "Roadmaps, status reports and team capacity views read anywhere from a single day to a whole year",
+      "Delivery tracked against a frozen plan, or work chained by dependency arrows and milestone diamonds"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A finished planner page with an edit dialog, dispatch rows and rules checked on drop",
+        "instead": "application/gantt"
+      },
+      {
+        "when": "A quarter of sales deals grouped by account, beside board, table and calendar views",
+        "instead": "solutions/crm"
+      },
+      {
+        "when": "A list of dated steps or updates read in order, with no bars to drag or resize",
+        "instead": "timeline"
+      }
+    ],
+    "agentNotes": [
+      "Replace `buildBars`, which dates its sample bars from the start of the current week, with your own records",
+      "Every example seeds bars through `defaultEvents` alone; pass `events` with `onEventsChange` to keep edits in your store"
+    ]
+  }
+}

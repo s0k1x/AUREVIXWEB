@@ -1,0 +1,123 @@
+[
+  {
+    "name": "c-message-scroller-1",
+    "title": "Chat transcript with jump to latest",
+    "label": "Jump to Latest",
+    "description": "A scroll region that opens at the live edge with a jump to latest control.",
+    "order": 1,
+    "gridSize": 1,
+    "previewHeight": "420",
+    "guidance": {
+      "bestFor": "A read only 9 message thread on the provider defaults, with no client state, streaming or composer to strip out",
+      "agentNotes": [
+        "Replace `TURNS` with your thread and `VIEWER_AVATAR`, an Unsplash photo, with the signed in user's picture",
+        "Change the `aria-label` on `MessageScrollerViewport` for each surface; without one the region is announced as Messages"
+      ]
+    }
+  },
+  {
+    "name": "c-message-scroller-2",
+    "title": "Streaming reply that follows the edge",
+    "label": "Streaming Reply",
+    "description": "autoScroll pins the viewport while tokens arrive, and releases the moment the reader scrolls up.",
+    "order": 2,
+    "gridSize": 1,
+    "previewHeight": "480",
+    "guidance": {
+      "bestFor": "A reply typed out 4 characters every 28ms under a Working badge, with aria-busy on the log and a Replay stream button",
+      "agentNotes": [
+        "Swap the `setTimeout` loop that slices `REPLY` for your stream, appending chunks to the row whose id is `REPLY_ID`",
+        "Keep `aria-busy` on `MessageScrollerContent` while a reply streams, so the log announces the finished row once instead of per chunk"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A settled thread where no reply is being written",
+          "instead": "c-message-scroller-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-message-scroller-3",
+    "title": "Anchored turn with a previous peek",
+    "label": "Anchored Turn",
+    "description": "scrollAnchor lifts a sent message near the top while a slice of the previous turn stays visible.",
+    "order": 3,
+    "gridSize": 1,
+    "previewHeight": "500",
+    "guidance": {
+      "bestFor": "A composer form that sends questions and gets a canned answer after 900ms, each question lifted near the top under a 64px peek",
+      "agentNotes": [
+        "Replace the 900ms `setTimeout` in `handleSubmit`, which answers from `REPLIES`, with your send and reply call",
+        "The `scrollPreviousItemPeek` gap is left above a row only when it carries `scrollAnchor`, so keep that prop on the question rows"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A reply that grows token by token while the view follows the bottom",
+          "instead": "c-message-scroller-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-message-scroller-4",
+    "title": "Opening position for a saved thread",
+    "label": "Opening Position",
+    "description": "Compare start, end and last-anchor as the place a reopened thread opens at.",
+    "order": 4,
+    "gridSize": 1,
+    "previewHeight": "500",
+    "guidance": {
+      "bestFor": "A Tabs switch over the 3 opening positions on a thread whose last answer outgrows the panel, with a day divider on top",
+      "agentNotes": [
+        "Pick one `defaultScrollPosition` and drop the `Tabs` switch; the provider re-applies the position every time the value changes",
+        "`last-anchor` falls back to the end when no row has `scrollAnchor` or everything from the last anchored row down already fits the viewport"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Stepping between the questions of a long thread after it has opened",
+          "instead": "c-message-scroller-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-message-scroller-5",
+    "title": "Load earlier without losing your place",
+    "label": "Load Earlier",
+    "description": "Older turns prepend above the reader while the row they were reading stays put.",
+    "order": 5,
+    "gridSize": 1,
+    "previewHeight": "460",
+    "guidance": {
+      "bestFor": "A header Load earlier button adding 5 older turns per click to a 6 of 16 window, with a badge that reports whether the view can scroll up",
+      "agentNotes": [
+        "Replace `loadEarlier`, a 700ms timer that widens the `HISTORY` slice, with a cursor fetch that prepends older rows",
+        "Keep the load control outside `MessageScrollerContent`; a permanent first row never moves, so the prepend restore never fires",
+        "Key rows by a stable `id`, never the index; with index keys the old first row never moves and the prepend restore silently skips"
+      ]
+    }
+  },
+  {
+    "name": "c-message-scroller-6",
+    "title": "Thread navigator for stepping turns",
+    "label": "Thread Navigator",
+    "description": "A footer navigator that reports the turn you are reading and jumps between turns.",
+    "order": 6,
+    "gridSize": 1,
+    "previewHeight": "480",
+    "guidance": {
+      "bestFor": "Previous and next buttons around a turn counter and the current question, tracked from the anchor and jumped with smooth scrolling",
+      "agentNotes": [
+        "`currentAnchorId` only names rows that carry both `messageId` and `scrollAnchor`, so build `QUESTIONS` from those same rows",
+        "`scrollToMessage` reaches only rows given a `messageId`; a divider or any row without one cannot be a jump target"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Choosing where a reopened thread lands before anyone scrolls",
+          "instead": "c-message-scroller-4"
+        }
+      ]
+    }
+  }
+]

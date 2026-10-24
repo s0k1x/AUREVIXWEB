@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Chat, support and team threads laid out turn by turn, with avatars, sender names and read receipts",
+      "Assistant replies carrying a copy, regenerate and rating toolbar, or a pending then streaming state",
+      "Shared images and documents carried in a turn beside its text"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A text surface on its own, with no avatar slot, metadata row or side switching",
+        "instead": "bubble"
+      },
+      {
+        "when": "A long thread that scrolls and must stay pinned to the newest turn",
+        "instead": "message-scroller"
+      },
+      {
+        "when": "A complete assistant screen with a composer, a thread switcher and streaming controls",
+        "instead": "ai-agents/ai-chat"
+      }
+    ],
+    "agentNotes": [
+      "On an `align` end row only children of `MessageContent` that carry a `data-slot` move to the end; a plain element there keeps to the start",
+      "`MessageHeader` and `MessageFooter` set no gap, so a header or footer built from several nodes needs its own gap class"
+    ]
+  }
+}

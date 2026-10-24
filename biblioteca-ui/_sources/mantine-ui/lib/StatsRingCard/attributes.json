@@ -1,0 +1,10 @@
+{
+  "title": "Stats card with progress",
+  "category": "app-cards",
+  "responsive": true,
+  "dimmed": true,
+  "canvas": {
+    "center": true,
+    "maxWidth": 420
+  }
+}

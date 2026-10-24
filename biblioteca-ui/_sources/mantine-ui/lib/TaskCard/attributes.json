@@ -1,0 +1,10 @@
+{
+  "title": "Tasks card",
+  "category": "app-cards",
+  "dimmed": true,
+  "changelog": "september-2022",
+  "canvas": {
+    "center": true,
+    "maxWidth": 360
+  }
+}

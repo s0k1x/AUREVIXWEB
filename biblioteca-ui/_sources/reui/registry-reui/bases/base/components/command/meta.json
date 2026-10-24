@@ -1,0 +1,154 @@
+[
+  {
+    "name": "c-command-1",
+    "title": "Basic command",
+    "label": "Basic",
+    "description": "Basic command",
+    "order": 1,
+    "guidance": {
+      "bestFor": "An always open list inside a narrow Card, with a disabled Calculator row and shortcut hints on the Settings rows only",
+      "agentNotes": [
+        "`disabled` on the Calculator `CommandItem` drops it from arrow key navigation and ignores clicks on it"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "The same Suggestions and Settings groups opened in a modal from a button",
+          "instead": "c-command-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-command-2",
+    "title": "Command with shortcuts",
+    "label": "Shortcuts",
+    "description": "Command with shortcuts",
+    "order": 2,
+    "guidance": {
+      "bestFor": "The smallest modal palette, a single Settings group of 3 rows with a shortcut hint on each",
+      "agentNotes": [
+        "The palette opens only from the `Button` that calls `setOpen`; no global key listener exists, so add one for a shortcut such as ⌘K"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A menu shown in place on the page that needs no button to open it",
+          "instead": "c-command-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-command-3",
+    "title": "Command with groups",
+    "label": "Groups",
+    "description": "Command with groups",
+    "order": 3,
+    "guidance": {
+      "bestFor": "A modal with 2 groups, Suggestions as plain rows and Settings rows with shortcut hints, split by a separator",
+      "whenNotToUse": [
+        {
+          "when": "The same rows kept open in a card on the page with no modal",
+          "instead": "c-command-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-command-4",
+    "title": "Command with many groups",
+    "label": "Many Groups",
+    "description": "Command with many groups",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A dense palette of 5 groups and 23 rows, from navigation and file actions to view, account and tools",
+      "whenNotToUse": [
+        {
+          "when": "A short palette where one group of a few rows is enough",
+          "instead": "c-command-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-command-5",
+    "title": "File search command palette",
+    "label": "File Search",
+    "description": "File search command palette",
+    "order": 5,
+    "guidance": {
+      "bestFor": "A file finder whose rows show name, muted path and a type Badge, opened from a search style trigger with a Kbd hint",
+      "agentNotes": [
+        "Replace `files` with your own list; each row is keyed by `file.path`, so paths must stay unique",
+        "The ⌘K `Kbd` on the trigger is only a label; add a keydown listener that calls `setOpen` to make it work",
+        "Each `CommandItem` filters on its whole text, so a query also matches `file.path` and the `file.type` badge"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A search over people with avatars, emails and role badges",
+          "instead": "c-command-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-command-6",
+    "title": "User search command with avatars",
+    "label": "User Search",
+    "description": "User search command with avatars",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A people search with avatar, name over email, and a role Badge tinted per Admin, Editor or Viewer",
+      "agentNotes": [
+        "Replace `users`; every `avatar` URL points at images.unsplash.com, so serve your own images",
+        "Roles other than Admin and Editor fall through to `success-light`; extend the `variant` ternary when you add roles",
+        "`CommandDialog` keeps its default `title` Command Palette for screen readers; pass one that names the user search"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A finder over project files with paths and type badges",
+          "instead": "c-command-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-command-7",
+    "title": "Action palette with keyboard shortcuts",
+    "label": "Action Palette",
+    "description": "Action palette with keyboard shortcuts",
+    "order": 7,
+    "guidance": {
+      "bestFor": "Task verbs grouped as Create, Navigate and System, from New Project and Invite Member to dark mode and sign out",
+      "agentNotes": [
+        "No listener binds the `CommandShortcut` hints such as ⌘N and ⌘⇧D; register each key yourself",
+        "`CommandShortcut` lists ⌘N and ⌘Q, which browsers keep for a new window and quit; pick other keys before you bind them"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A jump list of starred and recently visited pages rather than tasks",
+          "instead": "c-command-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-command-8",
+    "title": "Command with recent and favorites sections",
+    "label": "Recent & Favorites",
+    "description": "Command with recent and favorites sections",
+    "order": 8,
+    "guidance": {
+      "bestFor": "A jump list of starred favorites, recent pages stamped 2m to 2h ago and help links, opened as Search Everything",
+      "agentNotes": [
+        "The Recent rows hard code 2m ago to 2h ago in a `data-slot` command-shortcut div; feed them from your own visit history",
+        "A wrapper with `data-slot` set to command-shortcut hides the trailing check of `CommandItem`, which keeps the time at the right edge"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A palette of create, navigate and system tasks with shortcut hints",
+          "instead": "c-command-7"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "repo": "https://github.com/tabler/tabler-icons",
+  "commit": "a4ce1404bc6d24d3c365afe7b258d6bf6f48d62d",
+  "commit_date": "2026-10-05T19:00:18+02:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 6807,
+  "files_skipped": {
+    "media": 485,
+    "lockfile": 1,
+    "too_large": 0,
+    "symlink": 0,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitignore",
+    "packages/icons-angular/.gitignore",
+    "packages/icons-astro/.gitignore",
+    "packages/icons-preact/.gitignore",
+    "packages/icons-react-native/.gitignore",
+    "packages/icons-react/.gitignore",
+    "packages/icons-solidjs/.gitignore",
+    "packages/icons-sprite/.gitignore",
+    "packages/icons-svelte-runes/.gitignore",
+    "packages/icons-svelte/.gitignore",
+    "packages/icons-vue/.gitignore",
+    "packages/icons-webfont/.gitignore",
+    "packages/icons/.gitignore",
+    "test/test-angular/.gitignore",
+    "test/test-astro/.gitignore",
+    "test/test-preact/.gitignore",
+    "test/test-react-native/.gitignore",
+    "test/test-react-rsc/.gitignore",
+    "test/test-react/.gitignore",
+    "test/test-svelte/.gitignore",
+    "test/test-vue/.gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

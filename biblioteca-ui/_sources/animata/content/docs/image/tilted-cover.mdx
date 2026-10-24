@@ -1,0 +1,48 @@
+---
+title: Tilted Cover
+description: A titled image component with a background element
+labels: ["requires interaction", "hover"]
+author: harimanok_
+---
+
+<ComponentPreview name="image-tilted-cover--primary" />
+
+## Installation
+
+### CLI
+
+<RegistryInstall category="image" name="tilted-cover" />
+
+### Manual
+
+<Steps>
+
+<Step>Add to your CSS</Step>
+```css
+@theme {
+  --ease-slow: cubic-bezier(.405, 0, .025, 1);
+  --ease-minor-spring: cubic-bezier(0.18, 0.89, 0.82, 1.04);
+}
+```
+
+<Step>Run the following command</Step>
+
+It will create a new file called `tilted-cover.tsx` inside the `components/animata/image` directory.
+
+```bash
+mkdir -p components/animata/image && touch components/animata/image/tilted-cover.tsx
+```
+
+<Step>Paste the code</Step>
+
+Open the newly created file and paste the following code:
+
+```jsx file=<rootDir>/animata/image/tilted-cover.tsx
+
+```
+
+</Steps>
+
+## Credits
+
+Built by [hari](https://github.com/hari)

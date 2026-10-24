@@ -1,0 +1,312 @@
+{
+  "items": [
+    {
+      "name": "c-spinner-1",
+      "type": "registry:block",
+      "title": "Basic spinner.",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Basic spinner.",
+      "descriptionLong": "Basic spinner. Built with the Spinner component. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-1 and edit as your own code.",
+      "registryDependencies": [
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Basic"
+      }
+    },
+    {
+      "name": "c-spinner-2",
+      "type": "registry:block",
+      "title": "Spinners in buttons.",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Spinners in buttons.",
+      "descriptionLong": "Spinners in buttons. Built by composing Button, Spinner. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-2 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "In Buttons"
+      }
+    },
+    {
+      "name": "c-spinner-3",
+      "type": "registry:block",
+      "title": "Spinners in badges.",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Spinners in badges.",
+      "descriptionLong": "Spinners in badges. Built by composing Badge, Spinner. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-3 and edit as your own code.",
+      "registryDependencies": [
+        "badge",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "In Badges"
+      }
+    },
+    {
+      "name": "c-spinner-4",
+      "type": "registry:block",
+      "title": "Spinner in input group.",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Spinner in input group.",
+      "descriptionLong": "Spinner in input group. Built by composing Field, Input Group, Spinner. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-4 and edit as your own code.",
+      "registryDependencies": [
+        "field",
+        "input-group",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "In Input Group"
+      }
+    },
+    {
+      "name": "c-spinner-5",
+      "type": "registry:block",
+      "title": "Spinner in empty state.",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Spinner in empty state.",
+      "descriptionLong": "Spinner in empty state. Built by composing Button, Empty, Spinner. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-5 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "empty",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "In Empty State"
+      }
+    },
+    {
+      "name": "c-spinner-6",
+      "type": "registry:block",
+      "title": "Button loading states",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Button loading states",
+      "descriptionLong": "Button loading states. Built by composing Button, Spinner. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-6 and edit as your own code.",
+      "registryDependencies": [
+        "button",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Pending Buttons"
+      }
+    },
+    {
+      "name": "c-spinner-7",
+      "type": "registry:block",
+      "title": "Overlay loading spinner",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Overlay loading spinner",
+      "descriptionLong": "Overlay loading spinner. Built by composing Card, Spinner. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-7 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Overlay With Caption"
+      }
+    },
+    {
+      "name": "c-spinner-8",
+      "type": "registry:block",
+      "title": "Full page loading state",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Full page loading state",
+      "descriptionLong": "Full page loading state. Built by composing Card, Spinner. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-8 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Full Page"
+      }
+    },
+    {
+      "name": "c-spinner-9",
+      "type": "registry:block",
+      "title": "Inline loading text with spinner",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Inline loading text with spinner",
+      "descriptionLong": "Inline loading text with spinner. Built with the Spinner component. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-9 and edit as your own code.",
+      "registryDependencies": [
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-9.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-9.tsx"
+        }
+      ],
+      "meta": {
+        "order": 9,
+        "label": "Inline Text"
+      }
+    },
+    {
+      "name": "c-spinner-10",
+      "type": "registry:block",
+      "title": "Animated loading dots",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Animated loading dots",
+      "descriptionLong": "Animated loading dots. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-10 and edit as your own code.",
+      "registryDependencies": [],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-10.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-10.tsx"
+        }
+      ],
+      "meta": {
+        "order": 10,
+        "label": "Loading Dots"
+      }
+    },
+    {
+      "name": "c-spinner-11",
+      "type": "registry:block",
+      "title": "Spinner overlay on card",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Spinner overlay on card",
+      "descriptionLong": "Spinner overlay on card. Built by composing Card, Spinner. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-11 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-11.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-11.tsx"
+        }
+      ],
+      "meta": {
+        "order": 11,
+        "label": "Card Overlay"
+      }
+    },
+    {
+      "name": "c-spinner-12",
+      "type": "registry:block",
+      "title": "Spinner color variants",
+      "categories": [
+        "spinner"
+      ],
+      "description": "Spinner color variants",
+      "descriptionLong": "Spinner color variants. Built with the Spinner component. A free, open source shadcn spinner example you can install with npx shadcn@latest add @reui/c-spinner-12 and edit as your own code.",
+      "registryDependencies": [
+        "spinner"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/spinner/c-spinner-12.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-spinner-12.tsx"
+        }
+      ],
+      "meta": {
+        "order": 12,
+        "label": "Color Variants"
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Labeled text, email and search fields, plain or restyled as a pill, an underline or borderless",
+      "Native typed fields for passwords, phones, URLs, numbers, dates, times, files, colors and ranges",
+      "Field states and hints: disabled, required or optional marks, errors, character counts and password strength"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "Icons, buttons, units or a prefix that sit inside the border of the box",
+        "instead": "input-group"
+      },
+      {
+        "when": "International numbers chosen by country flag and formatted as the user types",
+        "instead": "phone-input"
+      },
+      {
+        "when": "A whole create or edit page that gathers many fields under one save action",
+        "instead": "application/form"
+      }
+    ],
+    "agentNotes": [
+      "The red invalid border comes from `aria-invalid` on `Input` in every style; `FieldError` only prints the message"
+    ]
+  }
+}

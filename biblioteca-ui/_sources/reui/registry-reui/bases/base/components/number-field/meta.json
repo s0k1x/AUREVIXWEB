@@ -1,0 +1,105 @@
+[
+  {
+    "name": "c-number-field-1",
+    "title": "Basic number field",
+    "label": "Default Size",
+    "description": "Basic number field",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The default size with minus at the start, plus at the end and the value centered between them",
+      "whenNotToUse": [
+        {
+          "when": "A value checked against a schema with an error shown under the control",
+          "instead": "c-number-field-6"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-number-field-2",
+    "title": "Basic number field",
+    "label": "Small Size",
+    "description": "Basic number field",
+    "order": 2,
+    "guidance": {
+      "bestFor": "The sm size, a 28px tall group with tighter input padding for dense rows and toolbars",
+      "whenNotToUse": [
+        {
+          "when": "A row of standard 32px controls where the default height fits",
+          "instead": "c-number-field-1"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-number-field-3",
+    "title": "Basic number field",
+    "label": "Large Size",
+    "description": "Basic number field",
+    "order": 3,
+    "guidance": {
+      "bestFor": "The lg size, a 36px tall group with wider buttons and roomier vertical input padding",
+      "whenNotToUse": [
+        {
+          "when": "A dense row where the control must stay 28px tall",
+          "instead": "c-number-field-2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-number-field-4",
+    "title": "Number field with buttons on right",
+    "label": "Buttons on Right",
+    "description": "Number field with buttons on right",
+    "order": 4,
+    "guidance": {
+      "bestFor": "The value aligned left with minus and plus grouped side by side at the end of the field",
+      "whenNotToUse": [
+        {
+          "when": "Stacked up and down chevrons in place of a minus and plus pair",
+          "instead": "c-number-field-5"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-number-field-5",
+    "title": "Number field with spinner buttons",
+    "label": "Spinner Buttons",
+    "description": "Number field with spinner buttons",
+    "order": 5,
+    "guidance": {
+      "bestFor": "Up and down chevrons stacked in a small bordered box at the end, with the value aligned to the start",
+      "agentNotes": [
+        "The chevron box hard codes `rounded-lg`, so it stays rounded in styles whose group is square, such as lyra and sera"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Separate minus and plus buttons side by side after the value",
+          "instead": "c-number-field-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-number-field-6",
+    "title": "Number field in form",
+    "label": "Form Validation",
+    "description": "Number field in form",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A React Hook Form Controller binding the amount, with zod bounds, an error message and Cancel and Submit buttons",
+      "agentNotes": [
+        "`onSubmit` only raises a `toast` with `data.amount` and resets the form; send the amount to your API there and mount the Sonner toaster",
+        "`FormSchema` requires 10 to 100 while `NumberField` allows 0 to 100 and starts at 5; align `min` and `defaultValues` with the schema"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A standalone control outside any schema or submit flow",
+          "instead": "c-number-field-1"
+        }
+      ]
+    }
+  }
+]

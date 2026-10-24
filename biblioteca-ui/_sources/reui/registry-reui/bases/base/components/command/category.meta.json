@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Keyboard driven palettes in a modal that search actions, pages and settings from one input",
+      "Search lists of files, team members, favorites and recent pages that narrow as the user types",
+      "Inline menus kept open in a card or panel, with grouped rows and keyboard shortcut hints"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A form field that keeps the option the user picks, such as a country or an assignee",
+        "instead": "combobox"
+      },
+      {
+        "when": "A complete product layout with sidebar navigation, where search is only one of its parts",
+        "instead": "application/app-shell"
+      },
+      {
+        "when": "A top bar above your page with brand, menus and alerts, where search sits beside them",
+        "instead": "application/navbar"
+      }
+    ],
+    "agentNotes": [
+      "No example gives a `CommandItem` a select handler, so pressing Enter or clicking a row runs nothing until you add one",
+      "`CommandList` stops at 18rem tall in every style and scrolls the rows past that height inside itself"
+    ]
+  }
+}

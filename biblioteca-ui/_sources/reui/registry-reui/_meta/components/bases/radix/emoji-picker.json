@@ -1,0 +1,241 @@
+{
+  "items": [
+    {
+      "name": "c-emoji-picker-1",
+      "type": "registry:block",
+      "title": "Inline emoji picker",
+      "categories": [
+        "emoji-picker"
+      ],
+      "description": "The full picker inline on a card: search, category tabs, the grid and a footer with the preview and skin tone.",
+      "descriptionLong": "Inline emoji picker. Built by composing Card, Emoji Picker. A free, open source shadcn emoji picker example you can install with npx shadcn@latest add @reui/c-emoji-picker-1 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "emoji-picker"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/emoji-picker/c-emoji-picker-1.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-emoji-picker-1.tsx"
+        }
+      ],
+      "meta": {
+        "order": 1,
+        "label": "Inline"
+      }
+    },
+    {
+      "name": "c-emoji-picker-2",
+      "type": "registry:block",
+      "title": "Chat composer",
+      "categories": [
+        "emoji-picker"
+      ],
+      "description": "A chat composer that inserts emoji at the caret and keeps the draft in view.",
+      "descriptionLong": "Chat composer. Built by composing Avatar, Bubble, Button, Card, Emoji Picker and 3 more. A free, open source shadcn emoji picker example you can install with npx shadcn@latest add @reui/c-emoji-picker-2 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "bubble",
+        "button",
+        "card",
+        "emoji-picker",
+        "input-group",
+        "message",
+        "separator"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/emoji-picker/c-emoji-picker-2.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-emoji-picker-2.tsx"
+        }
+      ],
+      "meta": {
+        "order": 2,
+        "label": "Chat Composer"
+      }
+    },
+    {
+      "name": "c-emoji-picker-3",
+      "type": "registry:block",
+      "title": "Message reactions",
+      "categories": [
+        "emoji-picker"
+      ],
+      "description": "A product update with reactions you can toggle, a tooltip naming who reacted and a picker that opens on quick reactions.",
+      "descriptionLong": "Message reactions. Built by composing Avatar, Button, Emoji Picker, Item, Tooltip. A free, open source shadcn emoji picker example you can install with npx shadcn@latest add @reui/c-emoji-picker-3 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button",
+        "emoji-picker",
+        "item",
+        "tooltip"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/emoji-picker/c-emoji-picker-3.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-emoji-picker-3.tsx"
+        }
+      ],
+      "meta": {
+        "order": 3,
+        "label": "Message Reactions"
+      }
+    },
+    {
+      "name": "c-emoji-picker-4",
+      "type": "registry:block",
+      "title": "Page icon",
+      "categories": [
+        "emoji-picker"
+      ],
+      "description": "A page header with an emoji icon above the title, plus Random and Remove in the picker.",
+      "descriptionLong": "Page icon. Built by composing Avatar, Badge, Breadcrumb, Button, Card and 3 more. A free, open source shadcn emoji picker example you can install with npx shadcn@latest add @reui/c-emoji-picker-4 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "badge",
+        "breadcrumb",
+        "button",
+        "card",
+        "emoji-picker",
+        "popover",
+        "separator"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/emoji-picker/c-emoji-picker-4.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-emoji-picker-4.tsx"
+        }
+      ],
+      "meta": {
+        "order": 4,
+        "label": "Page Icon"
+      }
+    },
+    {
+      "name": "c-emoji-picker-5",
+      "type": "registry:block",
+      "title": "Custom team emoji",
+      "categories": [
+        "emoji-picker"
+      ],
+      "description": "A release thread whose reply field inserts the workspace's own emoji as shortcodes from their own tab.",
+      "descriptionLong": "Custom team emoji. Built by composing Avatar, Button, Card, Emoji Picker, Input Group and 2 more. A free, open source shadcn emoji picker example you can install with npx shadcn@latest add @reui/c-emoji-picker-5 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button",
+        "card",
+        "emoji-picker",
+        "input-group",
+        "item",
+        "separator"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/emoji-picker/c-emoji-picker-5.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-emoji-picker-5.tsx"
+        }
+      ],
+      "meta": {
+        "order": 5,
+        "label": "Custom Team Emoji"
+      }
+    },
+    {
+      "name": "c-emoji-picker-6",
+      "type": "registry:block",
+      "title": "Shortcode suggestions",
+      "categories": [
+        "emoji-picker"
+      ],
+      "description": "A design review reply where typing a colon shortcode shows emoji suggestions under the field.",
+      "descriptionLong": "Shortcode suggestions. Built by composing Avatar, Button, Card, Emoji Picker, Input Group and 1 more. A free, open source shadcn emoji picker example you can install with npx shadcn@latest add @reui/c-emoji-picker-6 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button",
+        "card",
+        "emoji-picker",
+        "input-group",
+        "item"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/emoji-picker/c-emoji-picker-6.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-emoji-picker-6.tsx"
+        }
+      ],
+      "meta": {
+        "order": 6,
+        "label": "Shortcode Suggestions"
+      }
+    },
+    {
+      "name": "c-emoji-picker-7",
+      "type": "registry:block",
+      "title": "Workplace-safe set",
+      "categories": [
+        "emoji-picker"
+      ],
+      "description": "A kudos card whose picker hides a blocklist and newer emoji, then posts the note to #platform.",
+      "descriptionLong": "Workplace-safe set. Built by composing Avatar, Button, Card, Emoji Picker, Item and 1 more. A free, open source shadcn emoji picker example you can install with npx shadcn@latest add @reui/c-emoji-picker-7 and edit as your own code.",
+      "registryDependencies": [
+        "avatar",
+        "button",
+        "card",
+        "emoji-picker",
+        "item",
+        "textarea"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/emoji-picker/c-emoji-picker-7.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-emoji-picker-7.tsx"
+        }
+      ],
+      "meta": {
+        "order": 7,
+        "label": "Workplace-Safe Set"
+      }
+    },
+    {
+      "name": "c-emoji-picker-8",
+      "type": "registry:block",
+      "title": "Localized data and labels",
+      "categories": [
+        "emoji-picker"
+      ],
+      "description": "A status emoji card in German, French or Japanese, with localized emoji names, keywords and labels.",
+      "descriptionLong": "Localized data and labels. Built by composing Card, Emoji Picker, Native Select. A free, open source shadcn emoji picker example you can install with npx shadcn@latest add @reui/c-emoji-picker-8 and edit as your own code.",
+      "registryDependencies": [
+        "card",
+        "emoji-picker",
+        "native-select"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "components/emoji-picker/c-emoji-picker-8.tsx",
+          "type": "registry:block",
+          "target": "components/examples/c-emoji-picker-8.tsx"
+        }
+      ],
+      "meta": {
+        "order": 8,
+        "label": "Localized Labels"
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Read only star scores at 3 sizes, with partial stars for averages such as 3.5 or 4.6",
+      "Star inputs that collect a whole star score in feedback and written review forms",
+      "Review summaries with a count bar per star level, and 5 step emoji scales for quick feedback"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A full product page section of buyer quotes, avatars and a ratings overview",
+        "instead": "ecommerce/review"
+      },
+      {
+        "when": "A required score that keyboard and screen reader users must be able to set",
+        "instead": "radio-group"
+      },
+      {
+        "when": "A score picked in half or finer steps rather than whole stars",
+        "instead": "slider"
+      }
+    ],
+    "agentNotes": [
+      "An `editable` `Rating` takes pointer clicks only: each star is a `div` with an `onClick` and no role, tab stop or key handler",
+      "Clicks send whole numbers from 1 to `maxRating` to `onRatingChange`; a decimal `rating` draws a partial star but cannot be picked",
+      "`starClassName` styles the `showValue` number, not the stars; recolor stars from `className` through the `rating-star-filled` slot"
+    ]
+  }
+}

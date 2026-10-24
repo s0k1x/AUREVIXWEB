@@ -1,0 +1,379 @@
+---
+title: Emoji Picker
+description: A shadcn emoji picker with search, shortcodes, skin tones, frequently used and custom emoji, a category bar, a virtualized grid, 28 data languages and form fields.
+component: true
+base: base
+---
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-emoji-picker-1"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[450px]"
+/>
+
+## Installation
+
+```bash component
+npx shadcn@latest add @reui/emoji-picker
+```
+
+## Usage
+
+```tsx
+import {
+  EmojiPicker,
+  EmojiPickerCategories,
+  EmojiPickerContent,
+  EmojiPickerFooter,
+  EmojiPickerHeader,
+  EmojiPickerList,
+  EmojiPickerPreview,
+  EmojiPickerSearch,
+  EmojiPickerSkinTone,
+  EmojiPickerTrigger,
+} from "@/components/reui/emoji-picker"
+```
+
+```tsx
+<EmojiPicker onEmojiSelect={({ value }) => insert(value)}>
+  <EmojiPickerTrigger />
+  <EmojiPickerContent>
+    <EmojiPickerHeader>
+      <EmojiPickerSearch />
+    </EmojiPickerHeader>
+    <EmojiPickerCategories />
+    <EmojiPickerList />
+    <EmojiPickerFooter>
+      <EmojiPickerPreview />
+      <EmojiPickerSkinTone />
+    </EmojiPickerFooter>
+  </EmojiPickerContent>
+</EmojiPicker>
+```
+
+## Examples
+
+The workplace-safe set, the localized picker and the other examples are on
+the [Emoji Picker](/components/emoji-picker) page.
+
+### Chat composer
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-emoji-picker-2"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[720px]"
+/>
+
+### Message reactions
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-emoji-picker-3"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[210px]"
+/>
+
+### Page icon
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-emoji-picker-4"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[360px]"
+/>
+
+### Custom team emoji
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-emoji-picker-5"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[560px]"
+/>
+
+### Shortcode suggestions
+
+<ComponentPreview
+  styleName="base-nova"
+  name="c-emoji-picker-6"
+  className="**:[.preview]:h-auto **:[.preview]:min-h-[590px]"
+/>
+
+## API Reference
+
+Emoji Picker is composable. `EmojiPicker` holds the data, the value, the
+search, the skin tone and the recent list, and renders no wrapper element.
+`EmojiPickerTrigger` opens `EmojiPickerContent`, and `EmojiPickerPanel` renders
+the same parts in place. The grid is one listbox of category groups that only
+renders the rows in view, so 50 reaction pickers on a page or a 20,000 custom
+emoji library stay cheap. It composes the shadcn Popover, Button and
+InputGroup, and installs no npm dependency besides `cn`.
+
+### Data
+
+The emoji, their names and keywords come from
+[emojibase](https://emojibase.dev) (MIT), fetched once per page from a pinned
+release on jsDelivr and shared by every picker:
+`https://cdn.jsdelivr.net/npm/emojibase-data@17.0.0`, exported as
+`EMOJI_PICKER_DATA_URL`. Only JSON is fetched, and it renders as text. The
+browser caches the pinned files, so a return visit makes no request.
+
+- **Language.** `locale` loads names, keywords and category labels in one of
+  28 languages (`en`, `de`, `fr`, `ja`, `zh`, `pt`, `es` and more), and search
+  works in that language.
+- **Shortcodes.** `shortcodes` adds `:thumbsup:` style codes to search and the
+  preview: `"github"` (default), `"iamcal"` (Slack), `"emojibase"` or `"cldr"`,
+  or several. GitHub and Slack codes are English only. `false` skips the
+  request.
+- **Unsupported emoji.** `emojiVersion="auto"` (default) draws one emoji of
+  each Unicode version on a canvas and hides the versions the device would show
+  as empty boxes, and country flags where the system font has none (Windows).
+  Pass a number to fix the version instead.
+
+Self-host the data for a strict Content Security Policy or an offline app:
+copy `emojibase-data` to your own origin and pass `dataUrl`, or bundle it and
+pass `data` to skip the fetch entirely. Without either, allow the pinned path
+in `connect-src`:
+
+```txt
+connect-src 'self' https://cdn.jsdelivr.net/npm/emojibase-data@17.0.0/
+```
+
+```tsx
+import { normalizeEmojibaseData } from "@/components/reui/emoji-picker"
+import raw from "emojibase-data/en/data.json"
+import messages from "emojibase-data/en/messages.json"
+import github from "emojibase-data/en/shortcodes/github.json"
+
+const DATA = normalizeEmojibaseData(raw, { messages, shortcodes: [github] })
+
+<EmojiPicker data={DATA} />
+```
+
+### Value
+
+A pick hands `onEmojiSelect` the value to insert or store: the native emoji
+with the skin tone applied (`"👍🏽"`), or `:shortcode:` for a custom emoji
+(`":partyparrot:"`). Values compare with or without the emoji variation
+selector and in any tone, so a stored `"👍"` still marks its cell.
+
+`value`, `defaultValue` and `onValueChange` make it a field: the trigger shows
+the value, the grid marks it, and `name` submits it. `multiple` turns the value
+into a list that picks toggle in and out of, with `max` as a cap.
+
+```ts
+type EmojiPickerSelection = {
+  value: string
+  emoji: EmojiPickerEmoji
+  skinTone: EmojiPickerSkinTone
+}
+
+type EmojiPickerEmoji = {
+  id: string // "1F44D", or a custom emoji's id
+  emoji: string // "👍️", empty for a custom emoji
+  label: string // "thumbs up", in the data's language
+  tags: string[]
+  shortcodes: string[]
+  category: string
+  version: number
+  skins?: string[] // light to dark
+  src?: string // a custom emoji's image
+}
+```
+
+### i18n
+
+Every string the picker renders comes from `i18n`, merged over the English
+defaults per section, so one label is enough. Category names fall back to the
+data's own language when `locale` is not English.
+
+| Label                       | Default                                | Used for                                             |
+| :-------------------------- | :------------------------------------- | :--------------------------------------------------- |
+| `trigger`                   | `"Add emoji"`                          | The trigger's name while empty.                      |
+| `panel`                     | `"Emoji picker"`                       | Names the popover and an inline panel.               |
+| `search`, `clearSearch`     | `"Search emoji"`, `"Clear search"`     | The search placeholder and name, and its clear icon. |
+| `list`, `categories`        | `"Emoji"`, `"Emoji categories"`        | Name the grid and the tabs.                          |
+| `frequent`, `recent`        | `"Frequently used"`, `"Recently used"` | The recent section, per `recentMode`.                |
+| `searchResults`, `custom`   | `"Search results"`, `"Custom"`         | The results section, and custom emoji without one.   |
+| `smileys` to `flags`        | `"Smileys & emotion"` to `"Flags"`     | The 9 category names.                                |
+| `skinTone`, `skinTones`     | `"Skin tone"`, 6 names                 | The tone control: default, then light to dark.       |
+| `empty`, `emptyHint`        | `"No emoji found"`, a hint             | The empty search state.                              |
+| `loading`, `error`, `retry` | `"Loading emoji"`, ...                 | The loading and failed states.                       |
+| `preview`                   | `"Pick an emoji"`                      | The preview while nothing is highlighted.            |
+
+| Function            | Type                        | Description                                        |
+| :------------------ | :-------------------------- | :------------------------------------------------- |
+| `formatResultCount` | `(count: number) => string` | Announced after a search.                          |
+| `formatSelected`    | `(label: string) => string` | Announced after a pick that keeps the picker open. |
+| `formatLabel`       | `(label: string) => string` | Display name from the lowercase data label.        |
+
+### EmojiPicker
+
+The root. Without children it renders an `EmojiPickerTrigger` and an
+`EmojiPickerContent` with the default layout, so `<EmojiPicker />` alone is a
+complete picker.
+
+| Prop                                   | Type                                                    | Default                         | Description                                                                        |
+| :------------------------------------- | :------------------------------------------------------ | :------------------------------ | :--------------------------------------------------------------------------------- |
+| `onEmojiSelect`                        | `(selection: EmojiPickerSelection) => void`             | -                               | Fires on every pick with the toned value. The insert-into-text hook.               |
+| `value`                                | `string \| null`, or `string[]` with `multiple`         | -                               | Controlled value.                                                                  |
+| `defaultValue`                         | `string \| null`, or `string[]`                         | -                               | Initial value when uncontrolled, and what a form reset restores.                   |
+| `onValueChange`                        | `(value) => void`                                       | -                               | Fires with the new value or list.                                                  |
+| `multiple`                             | `boolean`                                               | `false`                         | Picks toggle in and out of a list, and the popover stays open.                     |
+| `max`                                  | `number`                                                | -                               | With `multiple`, the most values; further cells refuse a pick.                     |
+| `open`, `defaultOpen`, `onOpenChange`  | -                                                       | -                               | The popover state.                                                                 |
+| `closeOnSelect`                        | `boolean`                                               | `!multiple`                     | Closes the popover after a pick. Shift+click keeps it open either way.             |
+| `data`                                 | `EmojiPickerData`                                       | -                               | Data already in hand. Skips the fetch.                                             |
+| `locale`                               | `string`                                                | `"en"`                          | An emojibase locale.                                                               |
+| `dataUrl`                              | `string`                                                | `EMOJI_PICKER_DATA_URL`         | Base URL of a self-hosted emojibase-data copy.                                     |
+| `shortcodes`                           | `EmojiPickerShortcodePreset \| ...[] \| false`          | `"github"`                      | Shortcode sets searched and shown.                                                 |
+| `emojiVersion`                         | `number \| "auto"`                                      | `"auto"`                        | Hides emoji newer than this Unicode Emoji version, or what the device cannot draw. |
+| `categories`                           | `string[]`                                              | all                             | Sections shown, in order: `"recent"`, custom category ids and category keys.       |
+| `filter`                               | `(emoji: EmojiPickerEmoji) => boolean`                  | -                               | Drops emoji. Pass a stable function.                                               |
+| `customEmojis`                         | `EmojiPickerCustomEmoji[]`                              | -                               | Image emoji: `{ id, label, src, tags?, shortcodes?, category? }`.                  |
+| `customCategories`                     | `EmojiPickerCustomCategory[]`                           | -                               | Tabs for custom emoji: `{ id, label, icon? }`.                                     |
+| `recentMode`                           | `"frequent" \| "recent"`                                | `"frequent"`                    | Orders the recent section by use count or by last use.                             |
+| `recentLimit`                          | `number`                                                | 2 rows                          | How many recent emoji show. `0` hides the section.                                 |
+| `recent`, `defaultRecent`              | `EmojiPickerRecentEntry[]`                              | -                               | A controlled or seeded recent list, for syncing it to an account.                  |
+| `onRecentChange`                       | `(recent: EmojiPickerRecentEntry[]) => void`            | -                               | Fires after each pick with the updated list.                                       |
+| `recentStorageKey`                     | `string \| null`                                        | `"reui-emoji-picker-recent"`    | localStorage key for the recent list. `null` keeps it in memory.                   |
+| `skinTone`, `defaultSkinTone`          | `EmojiPickerSkinTone`                                   | `0`                             | The tone, 0 (default) to 5 (dark).                                                 |
+| `onSkinToneChange`                     | `(tone: EmojiPickerSkinTone) => void`                   | -                               | Fires when the tone changes.                                                       |
+| `skinToneStorageKey`                   | `string \| null`                                        | `"reui-emoji-picker-skin-tone"` | localStorage key for the tone. `null` keeps it in memory.                          |
+| `query`, `onQueryChange`               | `string`, `(query: string) => void`                     | -                               | Controlled search text.                                                            |
+| `size`                                 | `"sm" \| "default" \| "lg"`                             | `"default"`                     | 16, 20 or 26px glyphs in 26, 30 or 38px cells.                                     |
+| `columns`                              | `number \| "auto"`                                      | `8`                             | Cells per row. `"auto"` fills the panel's width.                                   |
+| `renderEmoji`                          | `(emoji: EmojiPickerEmoji, value: string) => ReactNode` | -                               | Draws an emoji: an image set, a sprite or a brand font.                            |
+| `disabled`, `invalid`                  | `boolean`                                               | `false`                         | Disable the picker, or set `aria-invalid` on the trigger.                          |
+| `name`, `form`, `required`, `inputRef` | -                                                       | -                               | A native form field. Multiple values submit comma-joined.                          |
+| `id`                                   | `string`                                                | generated                       | Lands on the trigger.                                                              |
+| `aria-label`, `aria-labelledby`        | `string`                                                | -                               | Name the trigger, the popover and an inline panel.                                 |
+| `aria-describedby`                     | `string`                                                | -                               | Describes the trigger.                                                             |
+| `i18n`                                 | `EmojiPickerI18nOverrides`                              | English                         | Labels and formatting, merged over the defaults.                                   |
+
+Recent emoji and the skin tone are stored under their keys and shared live by
+every picker and tab on the origin. The server renders neither, so the markup
+never depends on the visitor.
+
+### EmojiPickerTrigger
+
+A shadcn `Button` that opens the popover. It shows the value, or a smiley icon,
+and starts the data fetch on hover or focus, so the grid is ready on open.
+Takes every `Button` prop; `variant` defaults to `"outline"` and `size` to
+`"icon"`.
+
+### EmojiPickerContent
+
+The popover. It wraps its children in an `EmojiPickerPanel`, so it takes the
+same parts; with none it renders the default layout. Focus moves to the search
+on open (to the grid on touch screens, where the keyboard would cover it), Tab
+cycles inside, and Escape closes it.
+
+| Prop          | Type                             | Default   | Description                                                         |
+| :------------ | :------------------------------- | :-------- | :------------------------------------------------------------------ |
+| `returnFocus` | `RefObject<HTMLElement \| null>` | trigger   | Where focus goes on close, such as a composer's textarea.           |
+| `align`       | `"start" \| "center" \| "end"`   | `"start"` | Popover alignment. `side` and the other popover props pass through. |
+
+### EmojiPickerPanel
+
+The picker surface. Put it straight inside `EmojiPicker` for an inline picker.
+Without children it renders `EmojiPickerHeader` (the search),
+`EmojiPickerCategories`, `EmojiPickerList` and `EmojiPickerFooter` (the preview
+and the skin tone); with children, only those, in that order, so the tabs can
+sit under the grid, the skin tone can move beside the search, or the footer
+can go. `--emoji-picker-surface` colours the sticky headers: the card
+inline (put an inline panel in a Card) and the popover in a popup.
+`--emoji-picker-font` swaps the emoji font stack. The search, the tabs, the
+section names, the first column of glyphs and the preview all start 8px in,
+the panel's padding, so header, grid and footer line up. A row you compose
+into the panel lines up the same way with `px-(--emoji-picker-padding)`, as
+the page icon example's title row does.
+
+### EmojiPickerHeader, EmojiPickerFooter
+
+The rows above and below the grid, each a flex row at the panel's padding.
+`EmojiPickerFooter` draws the divider and holds the preview and the skin tone
+by default; put your own actions in either, such as a page icon's Random and
+Remove.
+
+### EmojiPickerSearch, EmojiPickerSkinTone
+
+`EmojiPickerSearch` is a default shadcn `InputGroup` with a search icon and a
+clear button. Focus stays in it while the arrow keys move through the grid.
+`EmojiPickerSkinTone` is a shadcn `Button` with a hand in the current tone that
+opens the 6 tones in a shadcn `DropdownMenu`; it takes every `Button` prop. It
+is `ghost` at `icon-sm` for the footer; beside the search, `outline` at `icon`
+matches the search's height in every style. After a pick, focus returns to it.
+
+### EmojiPickerCategories
+
+The shadcn `Tabs` in its `line` variant, one icon per category, sharing the
+row evenly and underlining the current one on the divider. They jump the grid
+and follow its scroll; arrow keys move between them without jumping, and Enter
+or Space jumps. The keyboard then enters the grid at that category. A jump
+during a search clears the search.
+
+### EmojiPickerList
+
+The virtual grid, with its loading (shadcn `Skeleton`), error and empty
+(shadcn `Empty`) states. Its height is `--emoji-picker-list-height` (7 rows); a
+`className` height replaces it. The scrollbar is hidden: an end with rows
+scrolled out of view fades instead, the top one under the sticky section
+header, and carries `data-overflow-start` or `data-overflow-end`.
+`--emoji-picker-fade-size` sets the depth, two thirds of a cell by default, and
+`0px` turns it off. The grid is a tab stop of its own. The emoji the keyboard
+is on takes the shadcn `Button` focus ring and `data-keyboard`, as does the
+grid, whose fades pause meanwhile so they never cut the ring.
+
+### EmojiPickerPreview, EmojiPickerValue
+
+`EmojiPickerPreview` shows the highlighted emoji large, with its name and first
+shortcode on one line, or the value while nothing is highlighted. It fills the
+space it is given, usually an `EmojiPickerFooter`, and the shortcode gives way
+before the name does. `EmojiPickerValue` draws
+an emoji value the way the grid does, custom images included.
+
+### useEmojiPicker
+
+The picker's state and actions inside an `EmojiPicker`: `data`, `status`,
+`emojis` (what the grid can show), `query`, `setQuery`, `skinTone`,
+`setSkinTone`, `activeEmoji`, `value`, `values`, `recent`, `select(emoji)`,
+`clear()`, `open` and `setOpen`. The page icon example builds its Random and
+Remove buttons from it.
+
+### useEmojiPickerData and helpers
+
+`useEmojiPickerData(options)` loads the same shared data without a picker, for
+a shortcode autocomplete or a reaction bar, and returns
+`{ data, status, error, retry }`. The helpers are plain functions:
+
+| Helper                                     | Returns                                                           |
+| :----------------------------------------- | :---------------------------------------------------------------- |
+| `loadEmojiPickerData(options)`             | A promise of the data, fetched once per URL, locale and code set. |
+| `normalizeEmojibaseData(raw, options)`     | Picker data from emojibase files you bundle yourself.             |
+| `searchEmojis(emojis, query, { limit })`   | Emoji ranked by name, shortcode and keyword.                      |
+| `getEmojiValue(emoji, skinTone)`           | The value a pick would store.                                     |
+| `findEmoji(emojis, value)`, `isEmojiValue` | The emoji behind a stored value, in any tone.                     |
+
+### Keyboard
+
+| Key                 | Action                                                                     |
+| :------------------ | :------------------------------------------------------------------------- |
+| `Tab`               | Moves through the search, the category tabs, the grid and the skin tone.   |
+| `ArrowDown`         | Enters the grid at the first emoji in view, then moves down a row.         |
+| `ArrowUp`           | Moves up a row; from the top row, hands the arrows back to the search.     |
+| `ArrowLeft/Right`   | Moves through the grid once it is entered, mirrored in right-to-left text. |
+| `PageUp/PageDown`   | Moves a screen of rows.                                                    |
+| `Enter`             | Picks the highlighted emoji. While searching, the best match.              |
+| `Shift+Enter`       | Picks and keeps the popover open.                                          |
+| `Home/End`, `Space` | With focus in the grid: first, last, pick.                                 |
+| A letter            | With focus in the grid: moves to the search and types it.                  |
+| `Escape`            | Closes the popover; inline, clears the search.                             |
+
+### Accessibility
+
+The search is a combobox over the grid's listbox, with the highlighted emoji
+as its active descendant, so screen readers announce each emoji by name while
+focus stays in the search. The grid itself, reached with Tab, keeps the same
+active descendant. Category groups are labelled by their headers,
+options carry their position in the category, the tabs are a tablist with
+roving focus, and the skin tone is a menu button over a group of radio items.
+Result counts and picks that
+keep the picker open are announced through a polite live region.

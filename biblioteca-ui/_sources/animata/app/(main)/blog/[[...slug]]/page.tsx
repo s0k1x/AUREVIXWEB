@@ -1,0 +1,147 @@
+import { ChevronRightIcon, ExternalLinkIcon } from "@radix-ui/react-icons";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { blogs as allBlogs } from "#site/content";
+import NavMenu from "@/app/(main)/docs/[[...slug]]/nav-menu";
+import { BlogJsonLd } from "@/components/blog-json-ld";
+import { Mdx } from "@/components/mdx-components";
+import { DocsPager } from "@/components/pager";
+import { DashboardTableOfContents } from "@/components/toc";
+import { badgeVariants } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { blogSidebarNav } from "@/config/blog";
+import { buildBlogMetadata } from "@/lib/metadata";
+import { getTableOfContents } from "@/lib/toc";
+import { cn } from "@/lib/utils";
+
+import "@/styles/mdx.css";
+
+interface BlogPageProps {
+  params: Promise<{
+    slug: string[];
+  }>;
+}
+
+async function getBlogFromParams(params: { slug: string[] }) {
+  const slug = params.slug?.join("/") || "";
+  const blog = allBlogs.find((doc) => doc.slugAsParams === slug);
+
+  if (!blog) {
+    return null;
+  }
+
+  return blog;
+}
+
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const blog = await getBlogFromParams(resolvedParams);
+
+  if (!blog) {
+    return {};
+  }
+
+  return buildBlogMetadata(blog);
+}
+
+export async function generateStaticParams() {
+  return allBlogs.map((blog) => ({
+    slug: blog.slugAsParams.split("/"),
+  }));
+}
+
+export default async function BlogPage({ params }: BlogPageProps) {
+  const resolvedParams = await params;
+  const blog = await getBlogFromParams(resolvedParams);
+
+  if (!blog) {
+    notFound();
+  }
+
+  const toc = await getTableOfContents(blog.body);
+
+  return (
+    <main className="relative py-6 lg:grid lg:grid-cols-[1fr_200px] lg:gap-10 lg:py-8">
+      <BlogJsonLd blog={blog} />
+      <div className="mx-auto w-full min-w-0">
+        <div className="mb-4 flex items-center space-x-1 text-sm text-muted-foreground">
+          <div className="overflow-hidden text-ellipsis whitespace-nowrap">Blog</div>
+          <ChevronRightIcon className="h-4 w-4" />
+          <NavMenu baseRoute="blog" sideBarNavItems={blogSidebarNav} value={blog.slugAsParams} />
+        </div>
+        <div className="space-y-2">
+          <h1 className={cn("scroll-m-20 text-4xl font-bold tracking-tight")}>{blog.title}</h1>
+          {blog.description && (
+            <p className="text-lg text-balance text-muted-foreground">{blog.description}</p>
+          )}
+          <div
+            className={cn("flex items-center space-x-2 text-sm text-muted-foreground", {
+              invisible: !blog.labels?.length,
+            })}
+          >
+            {blog.labels?.map((label) => {
+              return (
+                <span key={label} className={cn(badgeVariants({ variant: "secondary" }), "gap-1")}>
+                  {label}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+        {blog.links ? (
+          <div className="flex items-center space-x-2 pt-4">
+            {blog.links?.doc && (
+              <Link
+                href={blog.links.doc}
+                target="_blank"
+                rel="noreferrer"
+                className={cn(badgeVariants({ variant: "secondary" }), "gap-1")}
+              >
+                Docs
+                <ExternalLinkIcon className="h-3 w-3" />
+              </Link>
+            )}
+            {blog.links?.api && (
+              <Link
+                href={blog.links.api}
+                target="_blank"
+                rel="noreferrer"
+                className={cn(badgeVariants({ variant: "secondary" }), "gap-1")}
+              >
+                API Reference
+                <ExternalLinkIcon className="h-3 w-3" />
+              </Link>
+            )}
+          </div>
+        ) : null}
+        <div className="pb-12">
+          <Mdx code={blog.body} filePath={`content/${blog.path}.mdx`} />
+
+          <div className="my-3 text-right">
+            <Link
+              href={`https://github.com/codse/animata/edit/main/content/blog/${blog.slugAsParams}.mdx`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm text-secondary-foreground underline"
+            >
+              Edit this page on GitHub
+            </Link>
+          </div>
+        </div>
+        <DocsPager doc={blog} />
+      </div>
+      {blog.toc && (
+        <div className="hidden text-sm lg:block">
+          <div className="sticky top-[6.25rem] -mt-10 pt-4">
+            <ScrollArea className="pb-10">
+              <div className="sticky top-[6.25rem] -mt-10 h-[calc(100vh-6.25rem)] py-12">
+                <DashboardTableOfContents toc={toc} />
+              </div>
+            </ScrollArea>
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}

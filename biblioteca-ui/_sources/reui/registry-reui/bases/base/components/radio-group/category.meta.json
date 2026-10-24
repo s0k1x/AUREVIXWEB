@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Short single choice lists in forms and settings, such as density, visibility, role or release channel",
+      "Option tiles and divided card rows for shipping speed, contact method, language or a teammate",
+      "Checkout and plan steps that pick one saved payment method or one priced subscription tier"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A list where any number of the options can be ticked together",
+        "instead": "checkbox"
+      },
+      {
+        "when": "A whole modal step built around one choice, such as a template or a sync scope",
+        "instead": "application/dialog"
+      },
+      {
+        "when": "A full plan table with billing period tabs and a feature list per tier",
+        "instead": "marketing/pricing"
+      }
+    ],
+    "agentNotes": [
+      "Every example seeds `RadioGroup` through `defaultValue` and reads nothing back; pass a controlled value and a change handler to act on the pick",
+      "No example sets a name on `RadioGroup`, so a native form post carries no choice; add one when the group lives in a form",
+      "Every `RadioGroupItem` `id` is a fixed string such as r1 or an option value; derive unique ids when a group can render twice on one page"
+    ]
+  }
+}

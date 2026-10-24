@@ -1,0 +1,176 @@
+---
+title: Contributing components
+date: 2024-06-24
+description: Learn how to contribute components to Animata.
+---
+
+New components are very welcome. Note that if you are going to propose drastic changes, be sure to open an issue for discussion first, to make sure that your PR will be accepted before you spend effort coding it.
+
+## Generating a new component
+
+Once you have the project set up, you can start contributing to Animata.
+
+The first step is to generate a new component. You can use the `pnpm animata:new` command to create a new component. This command will ask you the following questions and generate the required files for you.
+
+```mdx
+? Enter a name for the new component ›
+```
+
+> Simply enter the name of the component you want to create.
+
+```mdx
+? Enter the description for the new component ›
+```
+
+> Provide a brief description of the component. It will be used in the documentation.
+
+```mdx
+? Select the type of component you want to create ›
+```
+
+> It will list the available types of components. You can select one of them or create a new type. If you select `+ Create a new type` then it will ask you to enter the name of the new type.
+
+```mdx
+? Enter the name for the new type ›
+```
+
+> Enter the name of the new type.
+
+If you create a new type, you will see the following message:
+
+```mdx
+You need to register the new type in the following file:
+
+config/docs.ts - Add the new entry in docsConfig.sidebarNav
+```
+
+Simply open the `config/docs.ts` file and paste the new entry in the `docsConfig.sidebarNav` array.
+
+If the new type is a **top-level category** (new sidebar section), you also need a category glyph for `/components`. Follow [category glyph tiles](/docs/contributing/category-glyphs).
+
+## Styling
+
+Use Tailwind on the component for layout and color. Put keyframes, pseudo-elements, and other rules Tailwind cannot express in a co-located `<name>.css` imported from the TSX — the CLI/registry ships both files. See [code guidelines — Styling](/docs/contributing/guidelines#styling).
+
+## Writing docs
+
+The script above generates a placeholder documentation file for the new component. You can find the file in the `content/docs/{type}` directory. Update it with the relevant information about the component you are creating and remove the placeholder content.
+
+### Props tables
+
+Document the component API with `<PropsTable>` and `<PropsTable.Row>` — not a markdown pipe table. See `content/docs/card/collab-card.mdx` for a full example.
+
+```mdx
+## Props
+
+<PropsTable>
+  <PropsTable.Row prop="className" type="string">
+    Classes on the root element.
+  </PropsTable.Row>
+</PropsTable>
+```
+
+For two exported components in one doc (e.g. `DebugGrid` and `DebugSurface`), use `title` on each table: `<PropsTable title="DebugGrid">`.
+
+### Manual install steps (`<Steps>` / `<Step>`)
+
+`<Step>` renders an `<h3>`. In MDX, put a **blank line** after `<Steps>`, after each `</Step>`, and before fenced code blocks. Otherwise MDX wraps steps in `<p>` and you get invalid HTML (`<p>` cannot contain `<h3>`) and hydration errors.
+
+````mdx
+<Steps>
+
+<Step>Install dependencies</Step>
+
+```bash
+npm install lucide-react
+```
+
+<Step>Run the following command</Step>
+
+Your prose here…
+
+</Steps>
+````
+
+### Changelog
+
+Notable component changes use [four tiers of release notes](/docs/contributing/changelog). For the component doc (tier 4), add `## Changelog` near the bottom, grouped by date (newest first):
+
+```mdx
+## Changelog
+
+### 2026-06-12
+
+- What changed, why, and any tradeoff or migration note.
+```
+
+Also update the monthly release file (tier 2), the category index table (tier 3), and the site changelog index (tier 1) when the change warrants it — see the [changelog guide](/docs/contributing/changelog) for the checklist.
+
+## Social (OG) image
+
+Each component doc can have its own social-share image — a screenshot of the component framed in
+a branded card. These are generated locally with `scripts/build-og-images.mjs`, uploaded to the
+`animata` R2 bucket (served from `assets.animata.design`), and recorded in `lib/og-manifest.json`.
+A doc without an entry falls back to the site-wide image, so this is optional and incremental.
+
+The card layout adapts to the component: wide components get a stacked card (logo on top), and
+tall or square ones get a side layout with the demo filling the height and the branding beside it.
+The card is a still PNG by default — that's what every major link unfurler renders, even for
+animated formats. Pass `--animate` to opt into a small looping GIF for animated components (motion
+is auto-detected; static and interaction-only ones stay a PNG even with the flag).
+
+Generate one **locally and check it before pushing** — screenshots can be flaky (a slow render, an
+odd frame on a canvas component), so a human should eyeball it. Uploads go through `wrangler`, so
+you need a Cloudflare login (or `CLOUDFLARE_API_TOKEN` in `.env`) whose token has R2 write access.
+Bucket and public base default to `animata` / `https://assets.animata.design`; override with
+`R2_BUCKET` / `R2_PUBLIC_BASE` if needed.
+
+<Steps>
+
+<Step>Build the previews</Step>
+
+```bash
+pnpm storybook:build
+pnpm og:fonts:sync   # once after install — copies self-hosted fonts to public/og-fonts/
+```
+
+<Step>Preview the card without uploading</Step>
+
+Renders to `.og-out/` so you can open the PNG and confirm it looks right.
+
+```bash
+pnpm og:build --only=background-shooting-stars --dry-run
+```
+
+<Step>Upload and update the manifest</Step>
+
+Uploads to R2 and writes the slug → URL into `lib/og-manifest.json`. Commit that file.
+
+```bash
+pnpm og:build --only=background-shooting-stars
+```
+
+</Steps>
+
+`--only` matches a story id or doc slug, so `--only=shooting-stars` works too. Do several new
+components in one pass with a comma-separated list: `pnpm og:build --only=card-a,card-b`. Re-running
+is cheap — unchanged components are skipped via a content hash, so only what actually changed is
+re-shot and re-uploaded.
+
+To upload to R2 yourself instead of through `wrangler` (e.g. a first bulk backfill), run
+`pnpm og:build --no-upload`. It renders every card into `.og-out/og/<key>` and writes the manifest
+URLs, but uploads nothing — sync `.og-out/og/` to the bucket root (the filenames are the keys), then
+commit `lib/og-manifest.json`. Upload the objects **before** deploying the manifest: a committed
+entry is used even if its URL 404s, so deploying first would serve broken images until the upload
+lands.
+
+If you uploaded the dry-run flat files instead (`background__animated-beam__b_v1.png` at the bucket
+root rather than `og/background/animated-beam.v1.<hash>.png`), run `pnpm og:migrate` to re-key them
+on R2 and regenerate the manifest. Use `--dry-run` first to inspect, or `--no-upload` to write
+`.og-out/og/` locally and sync that tree yourself.
+
+## Proposing pull requests
+
+- **Making changes**: implement your bug fix or feature and write stories to cover different use cases. Then commit your changes, push your bug fix/feature branch to the origin (your forked repo) and open a pull request to the upstream (the repository you originally forked)‘s main branch.
+
+If you have any questions, feel free to reach out to us.

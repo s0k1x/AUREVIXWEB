@@ -1,0 +1,24 @@
+{
+  "repo": "https://github.com/tailwindlabs/heroicons",
+  "commit": "616b7a4dbbf3d011760af8066262cd5c6b3868f3",
+  "commit_date": "2026-05-12T15:51:15+02:00",
+  "downloaded": "2026-10-24",
+  "subpaths": [
+    "(repositorio completo)"
+  ],
+  "files_kept": 2616,
+  "files_skipped": {
+    "media": 0,
+    "lockfile": 1,
+    "too_large": 0,
+    "symlink": 0,
+    "outside_subpaths": 0
+  },
+  "large_files_skipped": [],
+  "renamed_git_control_files": [
+    ".gitignore",
+    "react/.gitignore",
+    "vue/.gitignore"
+  ],
+  "note": "Copia sin .git. Excluidos: imagenes, video, audio, fuentes binarias, archivos comprimidos, lockfiles y archivos >5MB. Los .gitignore/.gitattributes originales se renombraron a *.original para que no afecten a este repositorio."
+}

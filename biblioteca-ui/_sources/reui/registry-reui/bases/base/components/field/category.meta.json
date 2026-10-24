@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Labeled inputs, selects, text areas and code entry with optional hint text under the control",
+      "Preference and permission lists where every switch or checkbox has a title and a description",
+      "Validation states with a red label and one error, or a list of them, under the control"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A complete page for entering or editing a record, such as an invoice or a profile",
+        "instead": "application/form"
+      },
+      {
+        "when": "A full page of toggle rows for alert channels, app integrations or workspace options",
+        "instead": "application/settings"
+      },
+      {
+        "when": "A numeric value stepped with plus and minus buttons or scrubbed by dragging",
+        "instead": "number-field"
+      }
+    ],
+    "agentNotes": [
+      "`FieldTitle` is a plain div, so a `Checkbox` or `Switch` titled only by it has no accessible name; point a `FieldLabel` at its id instead",
+      "`data-invalid` on `Field` only sets a red text color, which its label inherits; the control turns red from aria-invalid, which no example sets",
+      "Nothing ties `FieldDescription` or `FieldError` to the control; give them ids and list those in the control's aria-describedby"
+    ]
+  }
+}

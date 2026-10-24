@@ -1,0 +1,28 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Agent run logs and tool call lists, one short line of status text per step",
+      "Labeled dividers that split a transcript or run log into named phases",
+      "Ruled summaries such as changed files, and rows that open a link or run an action"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "A plain horizontal or vertical rule between content sections or menu items",
+        "instead": "separator"
+      },
+      {
+        "when": "A complete run console with approval steps, log views or an outcome report",
+        "instead": "ai-agents/agent-activity"
+      },
+      {
+        "when": "Dated events or milestones joined by indicator dots and a connecting line",
+        "instead": "timeline"
+      }
+    ],
+    "agentNotes": [
+      "Make a row a link or button with `render` on the base twin and `asChild` on the radix twin",
+      "`MarkerIcon` is `aria-hidden` with everything inside it, so the `MarkerContent` text alone must say what the row means",
+      "An svg in `MarkerIcon` takes each style's icon size only while it carries no size class of its own"
+    ]
+  }
+}

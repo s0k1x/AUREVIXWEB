@@ -1,0 +1,27 @@
+{
+  "guidance": {
+    "whenToUse": [
+      "Help and FAQ sections where each question opens its own answer",
+      "Settings, plans, product details and onboarding steps grouped into sections that expand on demand",
+      "Lists of people or records that open to show detail, such as team members and roles"
+    ],
+    "whenNotToUse": [
+      {
+        "when": "One block of extra content shown and hidden by a single trigger",
+        "instead": "collapsible"
+      },
+      {
+        "when": "A complete questions section for a landing page, with heading and support prompt",
+        "instead": "marketing/faq"
+      },
+      {
+        "when": "Switching between views of the same space where exactly one is always shown",
+        "instead": "tabs"
+      }
+    ],
+    "agentNotes": [
+      "The base twin takes `multiple` and an array `defaultValue`; the radix twin takes `type`, and `defaultValue` is a string only when `type` is single",
+      "A closed `AccordionContent` ships no text in the server HTML of either twin unless kept mounted, so crawlers without JS never read it"
+    ]
+  }
+}

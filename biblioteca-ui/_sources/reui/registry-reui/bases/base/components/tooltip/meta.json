@@ -1,0 +1,277 @@
+[
+  {
+    "name": "c-tooltip-1",
+    "title": "Basic tooltip.",
+    "label": "Basic",
+    "description": "Basic tooltip.",
+    "order": 1,
+    "guidance": {
+      "bestFor": "The bare minimum: an outline text Button and a single line hint, Add to library, opening on the default top side",
+      "whenNotToUse": [
+        {
+          "when": "Several icon buttons in a row whose labels open with no delay as the pointer moves along",
+          "instead": "c-tooltip-8"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-2",
+    "title": "Tooltips opening from different sides.",
+    "label": "Placements",
+    "description": "Tooltips opening from different sides.",
+    "order": 2,
+    "guidance": {
+      "bestFor": "A 3 column grid of 6 outline buttons, one per placement, including the 2 logical sides that follow text direction",
+      "agentNotes": [
+        "Keep 1 entry of `sides` and pass it as `side`; the radix twin's list drops `inline-start` and `inline-end`, which only the base twin accepts"
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-3",
+    "title": "Tooltip with icon trigger.",
+    "label": "Icon Trigger",
+    "description": "Tooltip with icon trigger.",
+    "order": 3,
+    "guidance": {
+      "bestFor": "A ghost info button with no visible text, named by its aria-label, opening a centered line of help copy",
+      "whenNotToUse": [
+        {
+          "when": "An icon button label that also needs to show its keyboard shortcut",
+          "instead": "c-tooltip-4"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-4",
+    "title": "Tooltip with keyboard shortcut.",
+    "label": "Keyboard Shortcut",
+    "description": "Tooltip with keyboard shortcut.",
+    "order": 4,
+    "guidance": {
+      "bestFor": "A small outline save icon button whose hint pairs the action name with its key in a Kbd cap",
+      "agentNotes": [
+        "The save `Button` has no handler and nothing listens for the S key its `Kbd` shows; wire both to your save action"
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-5",
+    "title": "Tooltip on notification bell with badge count",
+    "label": "Bell With Count",
+    "description": "Tooltip on notification bell with badge count",
+    "order": 5,
+    "guidance": {
+      "bestFor": "An icon button with a destructive count Badge that opens a 3 item activity digest under a header and a View all link",
+      "agentNotes": [
+        "The 3 activity lines, the counts in both `Badge` elements and the View all `href` are placeholders; feed them from your notifications"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A bell with an unread dot and a one line summary of new items",
+          "instead": "c-tooltip-16"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-6",
+    "title": "Tooltip with status badge",
+    "label": "Status Badges",
+    "description": "Tooltip with status badge",
+    "order": 6,
+    "guidance": {
+      "bestFor": "A System Status button whose hint lists 3 services with Operational or Degraded badges and an updated time",
+      "agentNotes": [
+        "API and Database both read Operational but take success and info `Badge` variants; give each status 1 `variant` when you map real data"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "One service state that stays on screen without hovering a trigger",
+          "instead": "badge"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-7",
+    "title": "Tooltip with icon and description",
+    "label": "Verified Domain",
+    "description": "Tooltip with icon and description",
+    "order": 7,
+    "guidance": {
+      "bestFor": "A check mark set inside a sentence after Verified domain, revealing a Verified badge and a one line explanation",
+      "agentNotes": [
+        "`TooltipTrigger` wraps only an aria-hidden icon and has no aria-label, so screen readers announce an unnamed button"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A standalone icon button that opens help text, outside any sentence",
+          "instead": "c-tooltip-3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-8",
+    "title": "Toolbar with tooltip actions",
+    "label": "Toolbar Actions",
+    "description": "Toolbar with tooltip actions",
+    "order": 8,
+    "guidance": {
+      "bestFor": "Bold, italic, underline and image buttons in one ghost toolbar, each named by aria-label, under a single provider",
+      "agentNotes": [
+        "The 4 `Button` controls have no handlers and no pressed state; wire them to your editor commands"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Bold, italic and underline controls that must show which ones are on",
+          "instead": "toggle-group"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-9",
+    "title": "Tooltip with warning badge",
+    "label": "Warning",
+    "description": "Tooltip with warning badge",
+    "order": 9,
+    "guidance": {
+      "bestFor": "A triangle alert icon button whose hint warns, behind a matching glyph, that the action cannot be undone",
+      "agentNotes": [
+        "`Badge` is imported but never rendered, so lint flags an unused import; remove it when you copy the file"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A destructive step that needs a confirmation before it runs",
+          "instead": "alert-dialog"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-10",
+    "title": "Tooltip with feature badge and upgrade link",
+    "label": "Upgrade Prompt",
+    "description": "Tooltip with feature badge and upgrade link",
+    "order": 10,
+    "guidance": {
+      "bestFor": "A lock icon button opening a Pro tagged feature pitch with a short blurb and an Upgrade to Pro button",
+      "agentNotes": [
+        "The Upgrade to Pro `Button` has no handler; point it at your checkout or plans page"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "An upsell whose upgrade action must be reachable from the keyboard",
+          "instead": "popover"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-11",
+    "title": "Tooltip with avatar and role badge",
+    "label": "Avatar Role Badge",
+    "description": "Tooltip with avatar and role badge",
+    "order": 11,
+    "guidance": {
+      "bestFor": "An avatar trigger that opens the same photo with the person's name, an Admin role badge and an email address",
+      "agentNotes": [
+        "`AvatarFallback` reads SC for Emma Wilson in both places; derive the initials from the user's name",
+        "The photo URL and alt text repeat in both `AvatarImage` elements; read them and the email from one user record"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A fuller profile preview with a large photo, handle and join date",
+          "instead": "hover-card"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-12",
+    "title": "Tooltip on disabled button with wrapper",
+    "label": "Disabled Button",
+    "description": "Tooltip on disabled button with wrapper",
+    "order": 12,
+    "guidance": {
+      "bestFor": "A disabled Delete Project button wrapped in a span trigger, so the reason it is locked still shows on hover",
+      "agentNotes": [
+        "The `span` trigger is not focusable and the disabled `Button` skips Tab, so keyboard users never see the reason; give the span tabIndex 0"
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-13",
+    "title": "Tooltip with online status indicator",
+    "label": "Online Status",
+    "description": "Tooltip with online status indicator",
+    "order": 13,
+    "guidance": {
+      "bestFor": "An avatar with a green presence dot whose hint repeats the photo beside the name and an Online now line",
+      "agentNotes": [
+        "Presence is a fixed `bg-green-500` dot and the words Online now; switch both from your presence data"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A row of people whose presence shows as a dot with no details on demand",
+          "instead": "avatar"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-14",
+    "title": "Tooltip with file info and badges",
+    "label": "File Info",
+    "description": "Tooltip with file info and badges",
+    "order": 14,
+    "guidance": {
+      "bestFor": "A muted file name in text that opens its size, upload age and PDF and Verified tags next to a document glyph",
+      "agentNotes": [
+        "The file name, 2.4 MB, the upload age and both `Badge` labels are hardcoded; bind them to your file metadata"
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-15",
+    "title": "Tooltip with label badges",
+    "label": "Label Badges",
+    "description": "Tooltip with label badges",
+    "order": 15,
+    "guidance": {
+      "bestFor": "A compact 3 labels count with a tag glyph that expands into 3 colored chips under a Labels heading",
+      "agentNotes": [
+        "The 3 labels text and the Bug, Frontend and High Priority `Badge` chips are separate literals; derive the count from your label list"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "Labels that should stay visible on the row rather than behind a count",
+          "instead": "badge"
+        }
+      ]
+    }
+  },
+  {
+    "name": "c-tooltip-16",
+    "title": "Tooltip with action button inside",
+    "label": "Unread Bell",
+    "description": "Tooltip with action button inside",
+    "order": 16,
+    "guidance": {
+      "bestFor": "A ghost bell button with an unread dot whose hint gives the new count above a View all link",
+      "agentNotes": [
+        "The View all `href` is # and 3 new notifications is fixed text; point the link at your inbox and bind the count"
+      ],
+      "whenNotToUse": [
+        {
+          "when": "A numbered count on the trigger with the latest items listed in the hint",
+          "instead": "c-tooltip-5"
+        }
+      ]
+    }
+  }
+]
