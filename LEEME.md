@@ -462,3 +462,34 @@ etiquetas, índice de iconos caído).
   - precio del paso 3: 7/7;
   - contraste en los dos temas.
 - **No probado:** con Gemini real (calidad del resultado con el modelo básico).
+
+## 24. Versión v33 — la IA piensa como ingeniero sénior y pide más datos al cliente
+
+- **Más datos del cliente** («Mis proyectos» → Contenido): además de lo de siempre, un bloque desplegable y opcional
+  «Más detalles para una web a tu medida» con 12 preguntas:
+  - a quién se dirige y qué le diferencia;
+  - qué quiere que haga el visitante;
+  - contacto público, dirección y zona;
+  - opiniones reales y preguntas frecuentes;
+  - webs que le gustan, marca y tono;
+  - datos legales (nombre o razón social, NIF y dirección fiscal) y algo más que debamos saber.
+
+  Todo llega a la IA y se ve en la ficha del pedido (Entregas). No hace falta tocar la base de datos.
+- **La IA pregunta lo que falta:** el plan y la revisión redactan entre 5 y 12 preguntas concretas para el cliente, en tono
+  de tú y sin tecnicismos, con el motivo y un ejemplo. En el generador → Informe → «Preguntas para el cliente», el botón
+  **«Enviar las preguntas al cliente»** se las manda por el chat de su proyecto, numeradas y sin repetir. Cuando responda,
+  vuelve a crear la web y la IA tendrá sus respuestas.
+- **Piensa como un ingeniero con más de 20 años de experiencia:**
+  - Arquitectura de información y conversión.
+  - HTML semántico.
+  - Sistema de diseño con variables y tipografía fluida.
+  - Presupuesto de rendimiento: LCP < 2,5 s, CLS < 0,1 y peso sin fotos < 100 KB.
+  - Accesibilidad WCAG 2.2 AA.
+  - SEO local con JSON-LD.
+  - Seguridad y RGPD.
+
+  El plan incluye «Decisiones técnicas» (pestaña Plan) y la revisión es una auditoría estricta. La IA razona antes de
+  responder (se ve en directo): a fondo en el plan y la revisión, y a nivel medio al escribir la web, para no pasar del
+  tiempo máximo de Supabase. Si el modelo no admite el razonamiento, la función repite sin él.
+- **Probado (simulado):** función 33/33, recorrido del cliente y de las preguntas 14/14, generador, iconos y contraste.
+  **No probado:** con Gemini real.

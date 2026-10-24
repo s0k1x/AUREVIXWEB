@@ -320,6 +320,15 @@ input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;bo
 .ac-grid{grid-template-columns:1fr 1fr;column-gap:16px}
 .ac-grid .fc{margin:4px 0}
 .ac-grid .ac-btns{grid-column:1/-1}
+.ac-mas{grid-column:1/-1;border:1px solid var(--line);border-radius:16px;padding:0 14px;background:var(--accent-soft)}
+.ac-mas > summary{list-style:none;display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 0;cursor:pointer}
+.ac-mas > summary::-webkit-details-marker{display:none}
+.ac-mas > summary svg{flex:none;width:20px;height:20px;color:var(--accent)}
+.ac-mas > summary span{display:grid;gap:2px}
+.ac-mas > summary small{color:var(--muted);font-size:13px}
+.ac-mas > summary::after{content:"";margin-left:auto;flex:none;width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .2s;opacity:.6}
+.ac-mas[open] > summary::after{transform:rotate(225deg)}
+.ac-mas > .ac-grid{display:grid;padding-bottom:12px}
 .ac-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
 .ac-nota{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13.5px}
 .ac-nota svg{color:var(--accent);flex:none}

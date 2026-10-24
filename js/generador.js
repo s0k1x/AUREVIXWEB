@@ -543,7 +543,7 @@ async function crear({ indicaciones = '', revisar = true } = {}) {
     paso('guardar', 'activo', '');
     const version = {
       html, plan, modelo: r2.modelo, indicaciones, conRevision: !!revision,
-      revision: revision ? { notas: revision.notas, informe: revision.informe, pendientes: revision.pendientes, aplicados, fallidos } : null,
+      revision: revision ? { notas: revision.notas, informe: revision.informe, pendientes: revision.pendientes, preguntasCliente: revision.preguntasCliente, aplicados, fallidos } : null,
       imagenes: elegidos.filter(x => x.ruta).map(x => ({ ruta: x.ruta, archivo: x.a.ruta, nombre: x.a.nombre })),
       componentes: compLista.length ? { lista: compLista, tokens: compInfo?.tokens || 0, presupuesto: compInfo?.presupuesto || estado.presupuesto } : null,
       iconos: icoLista.length ? { lista: icoLista, recibidos: !!r2.iconos } : null
@@ -665,10 +665,12 @@ function pintarPestana() {
         return `<div class="gw-nota-a ${n >= 8 ? 'bien' : n >= 6 ? 'medio' : 'mal'}"><b>${n.toLocaleString('es-ES', { maximumFractionDigits: 1 })}</b><small>${t}</small></div>`;
       }).join('')}</div>` : `<p class="muted">Esta versión no tiene revisión de calidad. Pulsa «Revisar otra vez».</p>`}
       ${rev ? `<p class="muted gw-apl">${rev.aplicados || 0} ${rev.aplicados === 1 ? 'mejora aplicada' : 'mejoras aplicadas'}${rev.fallidos?.length ? ` · ${rev.fallidos.length} sin aplicar (abajo)` : ''}.</p>` : ''}
-      ${pend.length ? `<h4>${icono('alert')} Pedir al cliente</h4><ul class="gw-lista">${pend.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+      ${preguntasHTML(v)}
+      ${pend.length ? `<h4>${icono('alert')} Datos pendientes</h4><ul class="gw-lista">${pend.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
       ${rev?.informe?.length ? `<h4>${icono('shield')} Lo que ha revisado</h4><ul class="gw-inf">${rev.informe.map(x => `<li><span class="gw-tag">${esc(x.perspectiva)}</span><b>${esc(x.problema)}</b>${x.solucion ? `<small>${esc(x.solucion)}</small>` : ''}</li>`).join('')}</ul>` : ''}
       ${rev?.fallidos?.length ? `<h4>No aplicadas (revísalas a mano)</h4><ul class="gw-lista">${rev.fallidos.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
       ${informeComponentes(v)}`;
+    $('#gwPreg', caja)?.addEventListener('click', e => enviarPreguntas(e.currentTarget, v));
     return;
   }
   if (pestana === 'plan') {
@@ -683,12 +685,51 @@ function pintarPestana() {
       ${Object.keys(pal).length ? `<div class="gw-paleta">${Object.entries(pal).filter(([, c]) => /^#[0-9a-f]{3,8}$/i.test(c || '')).map(([k, c]) => `<span><i style="background:${c}"></i><small>${esc(k)}<br>${esc(c)}</small></span>`).join('')}</div>` : ''}
       ${pl.perspectivas?.length ? `<h4>${icono('users')} Puntos de vista</h4><div class="gw-persp">${pl.perspectivas.map(x => `<div><b>${esc(x.rol)}</b><ul>${(x.claves || []).map(c => `<li>${esc(c)}</li>`).join('')}</ul></div>`).join('')}</div>` : ''}
       ${pl.decisiones?.length ? `<h4>Decisiones</h4><ul class="gw-lista">${pl.decisiones.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+      ${pl.tecnico?.length ? `<h4>${icono('shield')} Decisiones técnicas</h4><ul class="gw-inf">${pl.tecnico.map(x => `<li>${x.area ? `<span class="gw-tag">${esc(x.area)}</span>` : ''}<b>${esc(x.decision)}</b></li>`).join('')}</ul>` : ''}
       ${pl.secciones?.length ? `<h4>${icono('panel')} Secciones</h4><ol class="gw-secc">${pl.secciones.map(s => `<li><b>${esc(s.titulo)}</b>${s.objetivo ? `<small>${esc(s.objetivo)}</small>` : ''}</li>`).join('')}</ol>` : ''}`;
     return;
   }
   caja.innerHTML = `<textarea class="gw-codigo" id="gwCodigo" spellcheck="false" aria-label="Código HTML">${esc(v.html)}</textarea>
     <div class="gw-acc"><button type="button" class="btn btn-ghost" id="gwGuardarCod">${icono('check')}<span>Guardar como versión nueva</span></button></div>`;
   $('#gwGuardarCod', caja).addEventListener('click', e => nuevaVersion(e.currentTarget, { ...v, html: $('#gwCodigo', caja).value, retoque: 'Editado a mano' }));
+}
+
+/* ---------- Preguntas para el cliente (las redacta la IA en el plan y en la revisión) ---------- */
+const enviadas = new Set();
+function preguntasDe(v) {
+  const vistas = new Set(), out = [];
+  for (const q of [...(v.plan?.preguntasCliente || []), ...(v.revision?.preguntasCliente || [])]) {
+    const t = String(q?.pregunta || '').trim();
+    if (t && !vistas.has(t.toLowerCase())) { vistas.add(t.toLowerCase()); out.push({ pregunta: t, motivo: String(q.motivo || '').trim(), ejemplo: String(q.ejemplo || '').trim() }); }
+  }
+  return out.slice(0, 15);
+}
+function preguntasHTML(v) {
+  const l = preguntasDe(v);
+  if (!l.length) return '';
+  const ya = enviadas.has(v.id);
+  return `<h4>${icono('message')} Preguntas para el cliente <small class="muted">(las ha preparado la IA)</small></h4>
+    <ol class="gw-preg">${l.map(q => `<li><b>${esc(q.pregunta)}</b>${q.motivo ? `<small>Por qué: ${esc(q.motivo)}</small>` : ''}${q.ejemplo ? `<small>Ejemplo: ${esc(q.ejemplo)}</small>` : ''}</li>`).join('')}</ol>
+    <div class="gw-acc"><button type="button" class="btn ${ya ? 'btn-ghost' : 'btn-primary'}" id="gwPreg" ${ya ? 'disabled' : ''}>${icono(ya ? 'check' : 'send')}<span>${ya ? 'Enviadas al cliente' : 'Enviar las preguntas al cliente'}</span></button></div>
+    <p class="muted gw-nota">Le llegan por el chat de su proyecto («Mis proyectos») con un aviso. Cuando responda, vuelve a crear la web: la IA tendrá sus respuestas.</p>`;
+}
+/** Texto del mensaje con las preguntas (lo lee el cliente: claro y sin tecnicismos) */
+export function textoPreguntas(l) {
+  return ['Hola. Para que tu web quede perfecta nos faltan algunos datos. ¿Puedes respondernos aquí mismo?', '',
+    ...l.map((q, i) => `${i + 1}. ${q.pregunta}${q.ejemplo ? `\n   (Por ejemplo: ${q.ejemplo})` : ''}`),
+    '', 'Si alguna no la sabes, no pasa nada: déjala en blanco. ¡Gracias!'].join('\n');
+}
+async function enviarPreguntas(btn, v) {
+  const l = preguntasDe(v);
+  if (!l.length || enviadas.has(v.id)) return;
+  ocupado(btn, true);
+  try {
+    await store.enviarMensaje(estado.p.id, textoPreguntas(l));
+    enviadas.add(v.id);
+    toast('Preguntas enviadas al cliente');
+    btn.className = 'btn btn-ghost'; btn.disabled = true;
+    btn.innerHTML = `${icono('check')}<span>Enviadas al cliente</span>`;
+  } catch (e) { toast(e.message || 'No se han podido enviar', 'err'); ocupado(btn, false); }
 }
 
 /* Componentes de terceros de esta versión: usados, adaptados y descartados, con su licencia */
@@ -765,7 +806,7 @@ async function retocar(btn, tipo) {
     }
     const nueva = tipo === 'retocar'
       ? { ...v, html: res.html, iconos: iconosV, retoque: peticion, revision: v.revision }
-      : { ...v, html: res.html, iconos: iconosV, conRevision: true, revision: { notas: j.notas, informe: j.informe, pendientes: j.pendientes, aplicados: res.aplicados, fallidos: res.fallidos } };
+      : { ...v, html: res.html, iconos: iconosV, conRevision: true, revision: { notas: j.notas, informe: j.informe, pendientes: j.pendientes, preguntasCliente: j.preguntasCliente, aplicados: res.aplicados, fallidos: res.fallidos } };
     await nuevaVersion(btn, nueva);
     toast(`${res.aplicados} cambio${res.aplicados === 1 ? '' : 's'} aplicado${res.aplicados === 1 ? '' : 's'}${res.fallidos.length ? ` · ${res.fallidos.length} sin aplicar` : ''}`);
   } catch (e) {
