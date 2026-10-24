@@ -6,7 +6,7 @@ import { conSinZoom } from './sinzoom.js';
 import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from './store.js';
 import {
-  $, $$, esc, euros, fecha, icono, toast, abrir, cerrar, conSesion, arrancar, mailLink, refPedido,
+  $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, arrancar, mailLink, refPedido,
   ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados,
   estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
 } from './ui.js';
@@ -464,6 +464,7 @@ function restaurarBorrador(b) {
     if (el.type === 'radio' || el.type === 'checkbox') el.checked = v.includes(el.value);
     else el.value = v;
   });
+  revisarCampos(form);
   W.colorCustom = b.colorCustom || '';
   W.plantilla = b.plantilla || W.plantilla;
   W.auto = { logo: v('logo') === 'No, necesito uno' && marcado('logo'), textos: v('contenido') === 'Necesito ayuda' && marcado('textos') };
@@ -1124,6 +1125,7 @@ function irAContacto(tipo, asunto = '') {
   $('#contacto').scrollIntoView({ behavior: 'smooth' });
   $('#ctTipo').value = tipo;
   if (asunto) { $('#ctAsunto').value = asunto; }
+  revisarCampos($('#contacto'));
   if (tipo === 'espera') toast(CONFIG.mensajeCerrado);
   setTimeout(() => $('#ctMsg').focus({ preventScroll: true }), 700);
 }

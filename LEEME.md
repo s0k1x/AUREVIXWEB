@@ -583,3 +583,7 @@ Medido en un móvil con la CPU 4 veces más lenta (Chromium, no iPhone real). En
 - **Menos trabajo al cargar:** los formateadores de euros y fechas se crean una vez (`ui.js`), y las miniaturas de diseños leen todas las medidas antes de escribir (no fuerzan el diseño varias veces). `sw.js` v40.
 - Sin cambios en el resto de páginas: ya iban a 60 fps (trabaja, ajustes, vista previa y librería).
 - No medido: iPhone real. En los datos del servidor de pruebas no cuenta la compresión de GitHub Pages.
+
+### v41 — etiquetas de los campos ya rellenos (Ajustes)
+- En Ajustes, los campos que ya traían texto (por ejemplo «Texto de la píldora de la portada») dejaban la etiqueta encima del texto. La etiqueta subía solo por `:placeholder-shown`, que en Safari no siempre se actualiza en campos rellenados al pintar la página. Ahora cada campo con texto lleva la clase `.lleno` (`marcarLleno` y `revisarCampos` en `js/ui.js`) y la etiqueta sube por esa clase. Se actualiza al escribir, al vaciar, al abrir un diálogo y al limpiar un formulario. `sw.js` v41.
+- Comprobado en las 4 secciones de Ajustes con campos (Negocio, Perfil, Facturación y Trabajo y cobros): ningún campo con texto sin subir y ningún vacío que suba. Safari real: sin probar.

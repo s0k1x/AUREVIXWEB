@@ -173,9 +173,17 @@ export function etiquetas(raiz = document) {
     l.setAttribute('aria-label', t);
     l.dataset.split = '1';
   });
+  revisarCampos(raiz);
 }
+/** Marca con .lleno los campos que ya tienen texto: la etiqueta sube por esta clase y no solo por :placeholder-shown,
+ *  que en Safari no siempre se actualiza en campos rellenados al pintar la página. */
+const marcarLleno = c => c.classList.toggle('lleno', !!c.querySelector('input,textarea')?.value);
+export const revisarCampos = (raiz = document) => $$('.fc', raiz).forEach(marcarLleno);
 /** Quita el estado de error al escribir */
-document.addEventListener('input', e => e.target.closest?.('.fc, .field')?.classList.remove('error'));
+document.addEventListener('input', e => { const c = e.target.closest?.('.fc, .field'); c?.classList.remove('error'); if (c?.classList.contains('fc')) marcarLleno(c); });
+document.addEventListener('change', e => { const c = e.target.closest?.('.fc'); if (c) marcarLleno(c); });
+document.addEventListener('reset', () => setTimeout(() => revisarCampos(), 0)); // formulario vaciado por código
+document.addEventListener('focusin', e => { const c = e.target.closest?.('.fc'); if (c) marcarLleno(c); });
 
 /** Tarjeta de marca animada */
 // «AurevixWeb» con «Web» en verde, como en el logotipo
