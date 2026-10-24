@@ -557,3 +557,8 @@ Las páginas ya no acaban en `.html`:
 - **Sin zoom:** no hay zoom por doble toque (`touch-action: manipulation`) ni por pellizco (`gesturestart`), y el viewport lleva `maximum-scale=1`. Los campos de formulario miden 16 px en pantallas táctiles para que iOS no haga zoom al enfocarlos. Tampoco hay resaltado al tocar ni menú al mantener pulsado (`-webkit-touch-callout`). Aplica a todas las páginas, incluida la librería.
 - **Franja de la hora en Safari:** la web usa `viewport-fit=cover` también en Safari, como ya hacía en la app instalada. Así la web ocupa toda la pantalla y la cabecera (fija, con fondo sólido y `padding-top: env(safe-area-inset-top)`) tapa la zona de la hora. Antes se veía el contenido de la página por detrás. Igual en la librería.
 - **No probado:** Safari real en iPhone, solo Chromium.
+
+### v38 — zona de la hora y zoom, segunda pasada
+- Una pieza fija con el color de la web (`body::before`, alto `env(safe-area-inset-top)`) tapa siempre la zona de la hora del iPhone, haya o no cabecera a la vista. También en la librería.
+- Las vistas previas (iframes con `srcdoc`: librería, generador y web del cliente) llevan su propio bloqueo de zoom (`js/sinzoom.js`), porque son documentos aparte y el doble toque dentro de ellas hacía zoom a toda la página. `sw.js` v38.
+- Si la franja sigue viéndose en Safari tras recargar, haz una captura con la barra de direcciones visible: puede ser una versión guardada anterior.

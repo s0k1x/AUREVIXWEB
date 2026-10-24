@@ -20,6 +20,7 @@ import * as store from './store.js';
 import { $, $$, esc, icono, toast, abrir, copiar, descargar, ocupado, refPedido, cargandoHTML, haceCuanto, errorCargaHTML } from './ui.js';
 import { reunir } from './megaprompt.js';
 import { crearZip } from './zip.js';
+import { conSinZoom } from './sinzoom.js';
 /* La librería se carga solo al abrir el generador: /library/ no se guarda para usar sin conexión
    y, si no está disponible, el generador funciona igual sin componentes. */
 let L = null;
@@ -645,7 +646,7 @@ function pintarPestana() {
       </div>
       <div class="gw-marco ${dispositivo}"><iframe title="Vista previa de la web" sandbox="allow-scripts allow-popups allow-forms" loading="lazy"></iframe></div>`;
     const marco = $('.gw-marco', caja), ifr = $('iframe', caja);
-    ifr.srcdoc = conFotos(v.html);
+    ifr.srcdoc = conSinZoom(conFotos(v.html));
     const ajustar = () => {
       if (dispositivo !== 'pc') { ifr.style.cssText = ''; marco.style.height = ''; return; }
       const k = Math.min(1, marco.clientWidth / 1280);

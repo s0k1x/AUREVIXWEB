@@ -2,6 +2,7 @@
    Página de inicio: planes, diseños, opiniones, compra y mis pedidos
    ========================================================== */
 import { CONFIG, PLANES, EXTRAS, COMPARATIVA } from '../config.js';
+import { conSinZoom } from './sinzoom.js';
 import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from './store.js';
 import {
@@ -1203,7 +1204,7 @@ async function verPropuesta(p, btn) {
       document.body.appendChild(webDlg);
     }
     $('#webVSub', webDlg).textContent = `${p.respuestas?.negocio || p.planNombre || ''} · ${refPedido(p.id)}`;
-    $('iframe', webDlg).srcdoc = html;
+    $('iframe', webDlg).srcdoc = conSinZoom(html);
     abrir(webDlg);
   } catch (e) { toast(e.message, 'err'); }
   ocupado(btn, false);

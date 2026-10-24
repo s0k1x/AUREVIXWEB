@@ -11,6 +11,7 @@
    © AurevixWeb. Los componentes son de terceros (ver su licencia).
    ========================================================== */
 import { icono } from '../js/iconos.js';
+import { conSinZoom } from '../js/sinzoom.js';
 import { guardarApariencia } from '../js/apariencia.js';
 import { prefsPermitidas } from '../js/cookies.js';
 import { iniciarDesplegables } from '../js/desplegable.js';
@@ -333,7 +334,7 @@ async function montar(caja) {
     ifr.setAttribute('sandbox', 'allow-scripts');
     ifr.setAttribute('loading', 'lazy');
     ifr.setAttribute('tabindex', '-1');
-    ifr.srcdoc = doc;
+    ifr.srcdoc = conSinZoom(doc);
     N.vigilarNavegacion(ifr, doc);
     ifr.addEventListener('load', () => caja.querySelector('.lb-sk')?.remove(), { once: true });
     caja.appendChild(ifr);
@@ -550,7 +551,7 @@ async function vistaPanel(c) {
     ifr.title = `Vista previa de ${c.n}`;
     ifr.setAttribute('sandbox', 'allow-scripts');
     const doc = await N.docVista(c, { id, fondo: fondoPanel === 'puntos' ? '' : fondoPanel });
-    ifr.srcdoc = doc;
+    ifr.srcdoc = conSinZoom(doc);
     N.vigilarNavegacion(ifr, doc);
     ifr.addEventListener('load', () => $('.lb-sk', caja)?.remove(), { once: true });
     caja.appendChild(ifr);
