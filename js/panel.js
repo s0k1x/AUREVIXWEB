@@ -201,7 +201,7 @@ function embudoHTML(lista) {
   const filas = ETAPAS.filter(e => e.id !== 'publicada').map(e => ({ e, n: act.filter(p => etapaDe(p) === e.id).length }));
   const max = Math.max(1, ...filas.map(f => f.n));
   if (!act.length) return vacio('chart', 'No hay proyectos en marcha');
-  return `<div class="embudo">${filas.map(({ e, n }) => `<div class="emb ${n ? '' : 'cero'}"><span>${icono(e.icono)}${esc(e.txt)}</span><div><i style="width:${n ? Math.max(6, (n / max) * 100) : 0}%"></i></div><b>${n}</b></div>`).join('')}</div>`;
+  return `<div class="embudo">${filas.map(({ e, n }) => `<div class="emb ${n ? '' : 'cero'}"><span>${icono(e.icono)}${esc(e.txt)}</span><div aria-hidden="true"><i style="width:${n ? Math.max(6, (n / max) * 100) : 0}%"></i></div><b>${n}</b></div>`).join('')}</div>`;
 }
 function entregasHTML(lista, n = 5) {
   const L = lista.filter(p => activo(p) && diasRestantes(p) !== null).sort((a, b) => fechaEntrega(a) - fechaEntrega(b)).slice(0, n);
@@ -262,8 +262,8 @@ function resumen() {
     <div class="cols">
       <div class="card">
         <div class="card-h"><h3>Ingresos por mes</h3><span class="muted leyenda"><i class="lg-a"></i>Vendido <i class="lg-b"></i>Cobrado</span></div>
-        <div class="meses">${meses.map(m => `<div class="mes" title="${m.n} pedido${m.n === 1 ? '' : 's'} · ${euros(m.total)} vendido · ${euros(m.cobrado)} cobrado">
-          <div class="mes-barras"><i class="a" style="--h:${(m.total / maxMes) * 100}%"></i><i class="b" style="--h:${(m.cobrado / maxMes) * 100}%"></i></div>
+        <div class="meses" role="list" aria-label="Ingresos de los últimos 6 meses">${meses.map(m => `<div class="mes" role="listitem" aria-label="${m.txt}: ${euros(m.total)} vendido, ${euros(m.cobrado)} cobrado, ${m.n} pedido${m.n === 1 ? '' : 's'}" title="${m.n} pedido${m.n === 1 ? '' : 's'} · ${euros(m.total)} vendido · ${euros(m.cobrado)} cobrado">
+          <div class="mes-barras" aria-hidden="true"><i class="a" style="--h:${(m.total / maxMes) * 100}%"></i><i class="b" style="--h:${(m.cobrado / maxMes) * 100}%"></i></div>
           <b>${m.total ? eurosCorto(m.total) : '—'}</b><small>${m.txt}</small></div>`).join('')}</div>
         <div class="card-h" style="margin-top:26px"><h3>Proyectos por etapa</h3><span class="muted" style="font-size:13px">${P.filter(activo).length} en marcha</span></div>
         ${embudoHTML(P)}
@@ -276,7 +276,7 @@ function resumen() {
         <div class="card-h" style="margin-top:26px"><h3>Próximas entregas</h3><button class="link-btn" data-go="agenda">Agenda</button></div>
         ${entregasHTML(P)}
         <div class="card-h" style="margin-top:26px"><h3>Pedidos por tipo de web</h3></div>
-        ${porPlan.length ? `<div class="bars">${porPlan.map(x => `<div class="bar"><span>${esc(x.n)}</span><div><i style="width:${(x.v / max) * 100}%"></i></div><b>${x.v}</b></div>`).join('')}</div>` : vacio('chart', 'Sin datos todavía')}
+        ${porPlan.length ? `<div class="bars">${porPlan.map(x => `<div class="bar"><span>${esc(x.n)}</span><div aria-hidden="true"><i style="width:${(x.v / max) * 100}%"></i></div><b>${x.v}</b></div>`).join('')}</div>` : vacio('chart', 'Sin datos todavía')}
         <div class="card-h" style="margin-top:26px"><h3>Carga del equipo</h3></div>
         ${trabajadores().length ? `<div class="team-load">${trabajadores().map(w => {
           const n = P.filter(p => p.asignado === w.uid && activo(p)).length;

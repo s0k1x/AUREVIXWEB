@@ -18,7 +18,7 @@ const json = (datos: unknown, status = 200) =>
 
 type Mensaje = { rol: 'user' | 'model'; texto: string };
 type Catalogo = {
-  marca: string; senal: number; urgente: number; whatsapp: string; email: string;
+  marca: string; senal: number; urgente: number; email: string; contacto?: string; horario?: string; respuesta?: string; aceptaPedidos?: boolean; notas?: string[];
   planes: { id: string; nombre: string; precio: number; entrega: string; desc: string; incluye: string[]; plantillas: string[] }[];
   extras: { id: string; nombre: string; precio: number; mensual?: boolean; desc: string }[];
   plantillas: { id: string; nombre: string; sector: string; desc: string }[];
@@ -36,16 +36,23 @@ function contexto(c: Catalogo) {
     `Forma de pago: ${c.senal} % al empezar y el resto al aprobar la web, solo por transferencia bancaria (los datos aparecen al pagar). Los precios llevan el IVA incluido.`,
     `Entrega urgente: +${Math.round(c.urgente * 100)} % sobre el precio base.`,
     'Proceso: pedido y cuestionario → el cliente elige dominio y envía su contenido desde «Mis proyectos» → diseño → revisión con vista previa → pago final → publicación.',
-    `Contacto humano: WhatsApp ${c.whatsapp}, email ${c.email}.`
-  ].join('\n');
+    `Contacto humano: ${c.contacto || 'solo por correo o desde el formulario de contacto de la web'}. Email: ${c.email}. ${c.respuesta || ''}.`,
+    'NO hay WhatsApp ni teléfono. Nunca los menciones como forma de contacto.',
+    c.aceptaPedidos === false ? 'Ahora mismo NO se aceptan pedidos nuevos: solo lista de espera.' : '',
+    'Derecho de desistimiento: 14 días naturales desde la compra; si el cliente pidió empezar antes, se descuenta la parte ya hecha. Se ejerce desde su proyecto.',
+    'Los clientes siguen su pedido en «Mis proyectos» (etapas, mensajes, archivos, pagos y vista previa). Las webs se pueden enseñar en aurevixweb.es/<nombre> cuando el equipo las publica.',
+    ...(c.notas || [])
+  ].filter(Boolean).join('\n');
 }
 
 const REGLAS_CHAT = `Eres el asistente de atención al cliente de la web.
 - Responde siempre en español de España, con un tono profesional, cercano y directo. Frases cortas.
 - Responde solo sobre los servicios, precios, plazos, pagos y proceso descritos. Usa exclusivamente esos datos; no inventes precios, plazos, descuentos ni promesas.
-- Si no sabes algo o el cliente necesita un presupuesto especial, sugiérele escribir por WhatsApp.
+- Si no sabes algo o el cliente necesita un presupuesto especial, dile que pulse «Hablar con una persona del equipo» o que escriba por correo. NUNCA menciones WhatsApp ni teléfono.
+- Si más abajo aparecen «Pedidos de este cliente», úsalos para responder sobre su pedido (etapa, qué le toca hacer, fecha de entrega, pagos). No inventes nada que no esté ahí. Si no aparecen y pregunta por su pedido, dile que inicie sesión.
+- Sé útil y concreto: di siempre cuál es el siguiente paso que puede dar.
 - Cuando encaje, recomienda un tipo de web concreto y explica por qué en una o dos frases.
-- No uses emojis ni listas largas. Máximo 90 palabras por respuesta.
+- No uses emojis ni listas largas. Máximo 110 palabras por respuesta.
 - No pidas datos personales sensibles. Si preguntan por temas ajenos a la web, redirige con educación.`;
 
 const REGLAS_ELEGIR = `Recomienda el tipo de web y el diseño de partida que mejor encajan con el negocio que describe el cliente.
@@ -71,7 +78,8 @@ Deno.serve(async req => {
   if (!CLAVE) return json({ error: 'Falta GEMINI_API_KEY' }, 500);
 
   try {
-    const { modo, mensajes, catalogo } = await req.json() as { modo: string; mensajes: Mensaje[]; catalogo: Catalogo };
+    const { modo, mensajes, catalogo, cliente } = await req.json() as { modo: string; mensajes: Mensaje[]; catalogo: Catalogo; cliente?: string };
+    const datosCliente = typeof cliente === 'string' && cliente.trim() ? `\n\nPedidos de este cliente (datos reales de su cuenta):\n${cliente.slice(0, 2500)}` : '';
     if (!catalogo?.planes?.length || !Array.isArray(mensajes) || !mensajes.length) return json({ error: 'Petición incompleta' }, 400);
     // Límites para evitar abusos
     const hilo = mensajes.slice(-16).map(m => ({
@@ -102,11 +110,11 @@ Deno.serve(async req => {
     }
 
     const texto = await gemini({
-      systemInstruction: { parts: [{ text: `${REGLAS_CHAT}\n\n${contexto(catalogo)}` }] },
+      systemInstruction: { parts: [{ text: `${REGLAS_CHAT}\n\n${contexto(catalogo)}${datosCliente}` }] },
       contents: hilo,
-      generationConfig: { temperature: 0.5, maxOutputTokens: 350 }
+      generationConfig: { temperature: 0.4, maxOutputTokens: 400 }
     });
-    return json({ respuesta: texto || 'Ahora mismo no puedo responder. Escríbenos por WhatsApp y te atendemos.' });
+    return json({ respuesta: texto || 'Ahora mismo no puedo responder. Pulsa «Hablar con una persona del equipo» y te atendemos.' });
   } catch (e) {
     console.error(e);
     return json({ error: 'No se ha podido responder' }, 500);

@@ -1,0 +1,89 @@
+/* ==========================================================
+   v49 · PULIDO GENERAL (se carga el último en todas las páginas)
+   Microajustes de la revisión completa con las skills:
+   - Impeccable: sin brillos de color, sin animaciones infinitas
+     de adorno, sin rebotes, texto de 12 px como mínimo.
+   - Emil Kowalski / Apple: curvas de salida fuertes, respuesta
+     al pulsar, duraciones cortas.
+   - Mobile native: sin zoom al escribir en iPhone, objetivos
+     táctiles de 44 px, sin resaltes pegados al tocar.
+   ========================================================== */
+
+/* --- Curvas: el «spring» ya no rebota (ease-out fuerte) --- */
+:root{--e-spring:cubic-bezier(.23,1,.32,1);--e-salida:cubic-bezier(.23,1,.32,1)}
+.fc label .fc-w > span{transition-timing-function:cubic-bezier(.23,1,.32,1)}
+.ok-ic{animation-timing-function:cubic-bezier(.23,1,.32,1)}
+
+/* --- Sombras neutras en lugar de brillos verdes --- */
+.btn-primary{box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 6px 16px -8px rgba(0,0,0,.55)}
+.btn-primary:hover{box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 10px 22px -10px rgba(0,0,0,.6)}
+@media (hover:hover){.btn-fill:hover{box-shadow:0 10px 24px -12px rgba(0,0,0,.55)}}
+@media (max-width:760px){.btn-primary:hover{box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 6px 16px -8px rgba(0,0,0,.55)}}
+.progreso{box-shadow:none}
+.steps.timeline::after{box-shadow:none}
+.cintas .cinta{box-shadow:0 18px 40px -22px rgba(0,0,0,.7)}
+.pct{box-shadow:0 10px 30px -14px rgba(0,0,0,.6)}
+.dot-spinner__dot::before{box-shadow:none}
+.gl-checkbox__input:checked ~ .gl-checkbox__box{box-shadow:0 0 0 3px rgba(200,240,96,.15)}
+html[data-tema=claro] .btn-primary,html[data-tema=claro] .btn-primary:hover{box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 6px 16px -8px rgba(20,20,26,.35)}
+
+/* --- Animaciones de adorno: una vez, no en bucle --- */
+.bv-banda::after{animation-iteration-count:1}
+.bv-ic svg{animation-iteration-count:1}
+.ayuda-ic{animation:none}
+.dot::after{animation-iteration-count:3}
+.chat-fab::after{animation-iteration-count:3}
+.wa-fab::before{animation-iteration-count:3}
+
+/* --- Texto pequeño: 12 px como mínimo --- */
+.hm-b small,.ag-f small,.tk,.rec,.no-disp,.si-disp{font-size:12px}
+@media (max-width:760px){.tabs button,.tabs button span{font-size:12px}}
+@media (max-width:370px){.tabs button{font-size:11.5px}}
+
+/* --- Respuesta al pulsar (Emil): todo lo que se toca se nota --- */
+.icon-btn,.chip,.opt span,.check-card,.pick-card,.dd-op,.faq summary,.tab,.tabs button{transition-property:transform,background-color,border-color,color,box-shadow,opacity}
+.icon-btn:active,.tabs button:active,.chip:active{transform:scale(.94)}
+.check-card:active,.pick-card:active,.opt:active span{transform:scale(.98)}
+
+/* --- Móvil nativo --- */
+@media (max-width:640px){
+  /* iPhone amplía la página si el texto de un campo es menor de 16 px */
+  input:not([type=checkbox]):not([type=radio]):not([type=range]),textarea,select{font-size:16px !important}
+  .icon-btn{min-width:44px;min-height:44px}
+}
+@media (hover:none){
+  /* Sin estados «hover» pegados después de tocar */
+  .btn-primary:hover{background:var(--accent)}
+  .btn-ghost:hover{border-color:var(--line)}
+}
+button,a,label,summary{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn,.chip,.tabs button,.chat-acc,.chat-rapidas button{-webkit-user-select:none;user-select:none}
+
+/* --- Suelo isométrico también en «Trabaja con nosotros» (en vez de rayas animadas) --- */
+.hero:has(.hero-iso)::before{display:none}
+.hero-iso{opacity:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='69.28' height='40' viewBox='0 0 69.28 40'%3E%3Cpath d='M0 20 34.64 0 69.28 20 34.64 40Z' fill='none' stroke='%23ffffff' stroke-opacity='.07' stroke-width='1'/%3E%3C/svg%3E");background-size:69.28px 40px;background-position:center top}
+html[data-tema=claro] .hero-iso{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='69.28' height='40' viewBox='0 0 69.28 40'%3E%3Cpath d='M0 20 34.64 0 69.28 20 34.64 40Z' fill='none' stroke='%2314141a' stroke-opacity='.08' stroke-width='1'/%3E%3C/svg%3E")}
+
+/* --- Accesibilidad: foco siempre visible con teclado --- */
+:where(a,button,summary,[tabindex]):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html[data-tema=claro] :where(a,button,summary,[tabindex]):focus-visible{outline-color:#4f850c}
+
+/* --- Movimiento reducido: respeta también el ajuste de la propia web --- */
+@media (prefers-reduced-motion:reduce){
+  .cinta-track,.vt-movil,.sello svg,.dot::after,.chat-fab::after{animation:none}
+}
+html[data-movimiento=reducido] .cinta-track,html[data-movimiento=reducido] .vt-movil,html[data-movimiento=reducido] .sello svg,html[data-movimiento=reducido] .dot::after,html[data-movimiento=reducido] .chat-fab::after{animation:none}
+
+/* --- Design taste: superficies planas, tipografía de lectura, medida cómoda --- */
+.ayuda{background:var(--card);border-style:solid;border-color:var(--line)}
+.bv-banda{background:var(--card)}
+.chat-h{background:var(--card)}
+/* Las etiquetas de los datos de la portada, en la letra de texto (la mono queda para precios y direcciones) */
+.trust span{font-family:var(--fb);font-size:13px;letter-spacing:0}
+@media (max-width:760px){.trust span{font-size:12.5px}}
+.pc-time,.pc-price small{font-size:12.5px}
+/* Párrafos a una medida cómoda de lectura */
+.lead,.sec-head p{max-width:62ch}
+.faq details p,.step p,.pc-desc{max-width:68ch}
+/* Con «reducir movimiento», todo visible desde el principio */
+@media (prefers-reduced-motion:reduce){.js .reveal{opacity:1;transform:none;transition:none}}
