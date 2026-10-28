@@ -108,30 +108,34 @@ export function accionCliente(p, botonPagoHTML) {
 
   if (et === 'revision') {
     const rv = p.revision || {};
+    const v = webCliente(p);
     const url = urlVistaPrevia(p);
     return `${cab}
     <div class="ac-form" data-id="${id}">
-      ${p.webIA?.id ? `<button type="button" class="btn btn-primary btn-fill" data-ver-web="${id}"><span>Ver la propuesta de tu web</span>${icono('eye')}</button>` : ''}
-      ${url && !(p.webIA?.id && !p.urlVista) ? `<a class="btn btn-ghost btn-fill" href="${esc(url)}" target="_blank" rel="noopener"><span>Abrir la vista previa</span>${icono('external')}</a>` : ''}
-      ${(rv.comentarios || []).length ? `<div class="ac-hist">${rv.comentarios.map(c => `<p><small>${haceCuanto(c.t)}</small>${esc(c.texto)}</p>`).join('')}</div>` : ''}
+      ${v ? `<button type="button" class="ac-web" data-ver-web="${id}">
+        <span class="ac-web-ic">${icono('eye')}</span>
+        <span><b>Ver tu web · versión ${v.n}</b><small>${v.nota ? esc(v.nota) : 'Recórrela en el móvil y en el ordenador. Desde ahí mismo la apruebas o nos pides cambios.'}</small></span>
+        ${icono('arrow')}</button>` : ''}
+      ${url && (!v || p.urlVista) ? `<a class="btn btn-ghost btn-fill" href="${esc(url)}" target="_blank" rel="noopener"><span>${v ? 'Abrir el enlace de la vista previa' : 'Abrir la vista previa'}</span>${icono('external')}</a>` : ''}
+      ${(rv.comentarios || []).length ? `<div class="ac-hist">${rv.comentarios.map(c => `<p><small>${haceCuanto(c.t)}${c.v ? ` · versión ${c.v}` : ''}${c.hecho ? ' · hecho' : ''}</small>${esc(c.texto)}</p>`).join('')}</div>` : ''}
       ${rv.estado === 'cambios' ? `<p class="ac-nota">${icono('clock')} Hemos recibido tus cambios. Te avisaremos cuando estén aplicados.</p>` : ''}
-      <form data-form="cambios" data-id="${id}" novalidate>
+      ${v ? '' : `<form data-form="cambios" data-id="${id}" novalidate>
         ${campo({ id: `cambios-${id}`, name: 'texto', label: 'Cambios que quieres hacer', type: 'textarea' })}
         <div class="ac-btns">
           <button class="btn btn-primary" type="button" data-aprobar-web="${id}"><span>Aprobar la web</span>${icono('check')}</button>
           <button class="btn btn-ghost" type="submit"><span>Enviar cambios</span></button>
         </div>
-      </form>
+      </form>`}
     </div>`;
   }
 
   if (et === 'pago') {
-    return `${cab}<div class="ac-form"><div class="mp-pay">${botonPagoHTML}</div>${p.webIA?.id ? `<button type="button" class="btn btn-ghost btn-fill" data-ver-web="${id}"><span>Ver la web aprobada</span>${icono('eye')}</button>` : ''}</div>`;
+    return `${cab}<div class="ac-form"><div class="mp-pay">${botonPagoHTML}</div>${webCliente(p) ? `<button type="button" class="btn btn-ghost btn-fill" data-ver-web="${id}"><span>Ver la web aprobada</span>${icono('eye')}</button>` : ''}</div>`;
   }
 
   if (et === 'publicada') {
     return `${cab}<div class="ac-form">
-      ${p.urlWeb ? `<a class="btn btn-primary" href="${esc(p.urlWeb)}" target="_blank" rel="noopener"><span>Visitar mi web</span>${icono('external')}</a>` : ''}
+      ${p.urlWeb ? `<a class="btn btn-primary" href="${esc(p.urlWeb)}" target="_blank" rel="noopener"><span>Visitar mi web</span>${icono('external')}</a>` : webCliente(p) ? `<button type="button" class="btn btn-ghost" data-ver-web="${id}"><span>Ver mi web</span>${icono('eye')}</button>` : ''}
       ${!p.resenada ? `<button class="btn btn-ghost mp-rate" data-valorar="${id}">${icono('star')} Valorar el servicio</button>` : '<p class="ac-nota">Gracias por tu valoración.</p>'}
     </div>`;
   }
@@ -142,6 +146,7 @@ export function accionCliente(p, botonPagoHTML) {
     ${et === 'recibido' ? `<div class="mp-pay">${botonPagoHTML}</div>` : ''}
     ${et === 'recibido' && (p.pagoEstado || 'pendiente') === 'pendiente' ? (p.cancelacion ? `<p class="ac-nota">${icono('clock')} Has pedido cancelar este pedido. Te confirmaremos la cancelación por correo.</p>` : `<button type="button" class="link-btn ac-cancel" data-cancelar="${id}">Solicitar la cancelación del pedido</button>`) : ''}
     ${et === 'diseno' && pl ? `<a class="btn btn-ghost" href="${esc(urlVistaPrevia(p))}" target="_blank" rel="noopener"><span>Ver el diseño de partida (${esc(pl.nombre)})</span>${icono('external')}</a>` : ''}
+    ${et === 'diseno' && webCliente(p) ? `<button type="button" class="btn btn-ghost" data-ver-web="${id}"><span>Ver la última versión de tu web</span>${icono('eye')}</button>` : ''}
   </div>`;
 }
 
@@ -178,14 +183,23 @@ export function leerFormulario(form, p) {
     const texto = String(f.get('texto') || '').trim();
     if (!texto) throw new Error('Escribe qué cambios quieres.');
     const rv = p.revision || {};
-    return { revision: { estado: 'cambios', comentarios: [...(rv.comentarios || []), { texto, t: Date.now() }], t: Date.now() } };
+    return pedirCambios(p, texto);
   }
   return null;
 }
-export const aprobarWeb = p => ({ revision: { ...(p.revision || {}), estado: 'aprobada', t: Date.now() }, etapa: 'pago' });
+/** Cambios que pide el cliente (desde el formulario o desde el visor, con la versión y la página que estaba viendo) */
+export function pedirCambios(p, texto, { pagina = '' } = {}) {
+  const rv = p.revision || {};
+  const v = webCliente(p);
+  const c = { texto: String(texto).trim().slice(0, 3000), t: Date.now(), ...(v ? { v: v.n } : {}), ...(pagina ? { pagina } : {}) };
+  return { revision: { ...rv, estado: 'cambios', comentarios: [...(rv.comentarios || []), c], t: Date.now() } };
+}
+export const aprobarWeb = p => ({ revision: { ...(p.revision || {}), estado: 'aprobada', t: Date.now(), ...(webCliente(p) ? { v: webCliente(p).n } : {}) }, etapa: 'pago' });
+/** La versión de la web que el equipo ha enviado al cliente */
+export const webCliente = p => (p.webs || []).find(w => w.id === p.webCliente) || null;
 
 /* ---------- Vista del equipo (panel) ---------- */
-export function entregasCliente(p) {
+export function entregasCliente(p, { editable = false } = {}) {
   const d = p.dominio, c = p.contenido, rv = p.revision;
   const kv = (k, v, link) => v ? `<div class="kv"><span>${esc(k)}</span><b>${link ? `<a class="link-btn" href="${esc(v)}" target="_blank" rel="noopener">abrir ${icono('external')}</a>` : esc(v)}</b></div>` : '';
   const bloque = (t, v) => v ? `<div class="ent-b"><small>${esc(t)}</small><p>${esc(v)}</p></div>` : '';
@@ -200,8 +214,10 @@ export function entregasCliente(p) {
         ${c.redes || c.fotos || c.logo ? `<div class="kvs">${kv('Redes', c.redes)}${kv('Fotos', c.fotos, true)}${kv('Logotipo', c.logo, true)}</div>` : ''}` : ''}
     </div>
     <div class="ent">
-      <div class="ent-h">${icono('eye')}<b>Revisión</b><small>${rv?.estado === 'aprobada' ? 'Aprobada' : rv?.estado === 'cambios' ? 'Pide cambios' : 'Sin respuesta'}</small></div>
-      ${(rv?.comentarios || []).map(x => `<div class="ent-b"><small>${haceCuanto(x.t)}</small><p>${esc(x.texto)}</p></div>`).join('')}
+      <div class="ent-h">${icono('eye')}<b>Revisión</b><small>${rv?.estado === 'aprobada' ? `Aprobada${rv.v ? ` (versión ${rv.v})` : ''}` : rv?.estado === 'cambios' ? 'Pide cambios' : 'Sin respuesta'}</small></div>
+      ${(rv?.comentarios || []).length ? `<ul class="ent-cambios">${rv.comentarios.map((x, i) => `<li class="${x.hecho ? 'hecho' : ''}">
+        <label class="tarea ${editable ? '' : 'off'}"><input type="checkbox" data-hecho="${i}" ${x.hecho ? 'checked' : ''} ${editable ? '' : 'disabled'}><span class="ck-mark"></span>
+        <span><small>${haceCuanto(x.t)}${x.v ? ` · versión ${x.v}` : ''}${x.pagina ? ` · ${esc(x.pagina)}` : ''}${x.hecho ? ' · hecho' : ''}</small>${esc(x.texto)}</span></label></li>`).join('')}</ul>` : ''}
     </div>`;
 }
 
@@ -251,3 +267,68 @@ export function lineaTiempo(p) {
   return L.filter(x => x.t && !vistos.has(x.t + x.texto) && vistos.add(x.t + x.texto)).sort((a, b) => b.t - a.t);
 }
 export const lineaTiempoHTML = p => `<ol class="tl-list">${lineaTiempo(p).map(h => `<li><span class="tl-dot"></span><div><b>${esc(h.texto)}</b><small>${fecha(h.t)} · ${haceCuanto(h.t)}${h.autor ? ' · ' + esc(h.autor) : ''}</small></div></li>`).join('')}</ol>`;
+
+/* ---------- Siguiente paso de cada proyecto ----------
+   Qué hay que hacer ahora y quién lo tiene que hacer (el equipo o el cliente).
+   Lo usa el panel para ordenar los encargos y avisar de lo que falta. */
+export function siguientePaso(p) {
+  if (['entregado', 'cancelado'].includes(p.estado)) return null;
+  const et = etapaDe(p), pago = p.pagoEstado || 'pendiente';
+  const eq = (txt, ic, ayuda = '') => ({ quien: 'equipo', txt, ic, ayuda });
+  const cli = (txt, ic) => ({ quien: 'cliente', txt: `Esperando que el cliente ${txt}`, ic });
+  if (p.cancelacion) return eq('El cliente pide cancelar', 'alert', 'Decide si cancelas el pedido o descartas la solicitud.');
+  if (pago === 'verificando') return eq('Comprobar el pago', 'euro', 'Míralo en el banco o en Bizum y márcalo como pagado.');
+  if (!p.asignado) return eq('Asignar el encargo', 'inbox');
+  if (et === 'recibido') return pago === 'pendiente' ? cli('pague la señal', 'euro') : eq('Pasar a «Dominio»', 'link', 'La señal está pagada: ya puedes empezar.');
+  if (et === 'dominio') return cli('elija el dominio', 'link');
+  if (et === 'contenido') return cli('envíe textos, fotos y logotipo', 'folder');
+  const vs = p.webs || [];
+  const pend = (p.revision?.comentarios || []).filter(c => !c.hecho).length;
+  if (et === 'diseno') {
+    if (!vs.length) return eq('Subir la primera versión de la web', 'upload', 'Cuando la tengas, súbela en «Web del cliente» y envíasela.');
+    return eq('Enviar la versión al cliente', 'send', 'Revísala en el visor y pulsa «Enviar».');
+  }
+  if (et === 'revision') {
+    if (p.revision?.estado === 'cambios') return pend ? eq(`Hacer ${pend} cambio${pend === 1 ? '' : 's'} que pide el cliente`, 'pen') : eq('Subir y enviar la versión con los cambios', 'upload');
+    if (!webCliente(p) && !p.urlVista) return eq('Enviar la vista previa al cliente', 'send');
+    return cli('revise y apruebe la web', 'eye');
+  }
+  if (et === 'pago') return pago === 'pagado' ? eq('Publicar la web', 'globe', 'Pon la dirección de la web publicada y pásala a «Publicada».') : cli('haga el pago final', 'euro');
+  return null;
+}
+
+/* Mensajes para recordar al cliente lo que le toca (se envían por la conversación del proyecto) */
+const saludo = p => `Hola ${(p.clienteNombre || '').split(' ')[0] || ''}`.trim();
+export const RECORDATORIOS = {
+  recibido: p => `${saludo(p)}, ¿qué tal? Para empezar con tu web solo falta la señal. La tienes en «Mis proyectos» → «Pagos». Si tienes cualquier duda, escríbenos por aquí.`,
+  dominio: p => `${saludo(p)}, para seguir con tu web necesitamos que elijas el dominio (la dirección de tu web). Lo tienes en «Mis proyectos» → «Estado». Te lleva un minuto.`,
+  contenido: p => `${saludo(p)}, ¿cómo vas con el contenido? Cuando nos envíes los textos, las fotos y el logotipo empezamos con el diseño. Puedes subirlo todo en «Mis proyectos» y, si te falta algo, mándanos lo que tengas y lo vamos completando.`,
+  revision: p => `${saludo(p)}, tu web está lista para revisar. Ábrela en «Mis proyectos», recórrela con calma y dinos si la apruebas o qué te gustaría cambiar.`,
+  pago: p => `${saludo(p)}, ¡ya casi está! Solo falta el pago final para publicar tu web. Lo tienes en «Mis proyectos» → «Pagos».`
+};
+
+/* Todo lo que ha pedido y enviado el cliente en un texto (para tenerlo a mano mientras se hace la web) */
+export function fichaTexto(p) {
+  const r = p.respuestas || {}, c = p.contenido || {};
+  const linea = (k, v) => (v ? `${k}: ${v}` : '');
+  const bloque = (t, L) => { L = L.filter(Boolean); return L.length ? `## ${t}\n${L.join('\n')}` : ''; };
+  return [
+    `# ${r.negocio || p.planNombre} · ${refPedido(p.id)}`,
+    bloque('Pedido', [
+      linea('Tipo de web', p.planNombre), linea('Diseño de partida', plantillaPorId(p.plantilla)?.nombre || 'A medida'),
+      linea('Extras', (p.extras || []).map(x => x.nombre).join(', ')), p.urgente ? 'Entrega urgente: sí' : '',
+      linea('Entrega prevista', fecha(fechaEntrega(p))), linea('Dominio', dominioTexto(p.dominio))
+    ]),
+    bloque('Cliente', [linea('Nombre', p.clienteNombre), linea('Email', p.clienteEmail), linea('Teléfono', r.telefono)]),
+    bloque('Cuestionario', [
+      linea('Sector', r.sector), linea('Objetivo', r.objetivo), linea('Web actual', r.webActual), linea('Estilo', r.estilo),
+      linea('Color', r.color), linea('Logotipo', r.logo), linea('Textos y fotos', r.contenido), linea('Plazo', r.plazo), linea('Comentarios', r.comentarios)
+    ]),
+    bloque('Contenido', [
+      linea('Sobre el negocio', c.sobre), linea('Servicios y precios', c.servicios), linea('Horario y dirección', c.horario),
+      linea('Redes', c.redes), linea('Fotos', c.fotos), linea('Logotipo', c.logo),
+      ...MAS_CONTENIDO.map(([k, label]) => linea(label, c[k]))
+    ]),
+    bloque('Cambios pedidos', (p.revision?.comentarios || []).map(x => `- ${x.hecho ? '[hecho] ' : ''}${x.texto}${x.v ? ` (versión ${x.v})` : ''}`))
+  ].filter(Boolean).join('\n\n');
+}

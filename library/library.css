@@ -29,7 +29,6 @@ html[data-tema=claro] .lb{--lb-puntos:rgba(20,20,26,.11)}
 .lb-ic-btn{position:relative;min-width:44px;height:44px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;transition:border-color var(--t-medio) var(--suave),background-color var(--t-medio) var(--suave)}
 .lb-ic-btn:hover{border-color:var(--line2)}
 .lb-ic-btn svg{width:19px;height:19px}
-.lb-sel b{font-family:var(--fm);font-size:13px;color:var(--accent)}
 .lb-web{min-height:44px}
 
 /* ---------- Pestañas de categoría ---------- */
@@ -194,7 +193,6 @@ dialog.lb-dlg::backdrop{background:rgba(0,0,0,.66);backdrop-filter:blur(6px);-we
 .lb-aviso.atribucion svg{color:var(--warn)}
 .lb-aviso b{color:var(--text)}
 .lb-aviso a{text-decoration:underline;text-underline-offset:3px;word-break:break-all}
-.btn.en-pedido{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 
 /* Resaltado de código */
 .hl-c{color:#7d7a72;font-style:italic}
@@ -212,10 +210,6 @@ html[data-tema=claro] .hl-n{color:#a16207}
 html[data-tema=claro] .hl-p{color:#0369a1}
 
 /* Selección para el pedido (equipo) */
-.lb-sel-l{display:flex;flex-direction:column;gap:6px;margin:14px 0}
-.lb-sel-l li{list-style:none;display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:6px 6px 6px 12px}
-.lb-sel-l li span{flex:1;min-width:0;font-size:14px}
-.lb-sel-l li small{display:block;color:var(--muted);font-size:12px}
 .lb-caja.lb-caja-sm{display:block;width:min(520px,100%);height:auto;max-height:100%;overflow:auto;padding:22px}
 
 /* Safari del iPhone: como en el resto de la web, la barra va fija en el móvil (pinta bien la zona de la hora) */

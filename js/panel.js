@@ -3,16 +3,15 @@
    ========================================================== */
 import { CONFIG, PLANES } from '../config.js';
 import { plantillaPorId, activarPlantilla } from './plantillas.js';
-import { ETAPAS, etapaDe, barraEtapas, estadoParaEtapa, entregasCliente, urlVistaPrevia, fechaEntrega, diasRestantes, plazoTexto, plazoClase, conHistorial, lineaTiempo, lineaTiempoHTML } from './proyecto.js';
+import { ETAPAS, etapaDe, barraEtapas, estadoParaEtapa, entregasCliente, urlVistaPrevia, fechaEntrega, diasRestantes, plazoTexto, plazoClase, conHistorial, lineaTiempo, lineaTiempoHTML, siguientePaso, RECORDATORIOS, fichaTexto, dominioTexto } from './proyecto.js';
 import { contar } from './efectos.js';
 import * as store from './store.js';
 import {
   $, $$, esc, euros, fecha, fechaCorta, haceCuanto, icono, avatar, toast, abrir, cerrar, arrancar, pedirLogin, mailLink, refPedido,
-  ESTADOS, PAGOS, METODOS, cargandoHTML, errorCargaHTML, metaHTML, ocupado, campo, estrellas, etiquetas, TAREAS, progreso, copiar, descargar
+  ESTADOS, PAGOS, METODOS, cargandoHTML, errorCargaHTML, metaHTML, ocupado, campo, estrellas, etiquetas, TAREAS, progreso, copiar, descargar, tamano
 } from './ui.js';
-import { montarHilo, montarArchivos, abrirRecibo } from './colabora.js';
-import { abrirMegaPrompt } from './megaprompt.js';
-import { abrirGeneradorWeb } from './generador.js';
+import { montarHilo, montarArchivos, abrirRecibo, descargarArchivosCliente } from './colabora.js';
+import { prepararArchivos, crearVersion, abrirVisor, enlaceVista } from './vistaweb.js';
 
 await arrancar('panel');
 
@@ -67,7 +66,7 @@ addEventListener('hashchange', () => {
 document.addEventListener('aviso', () => { if (!dlg.open) cargar(true); });
 // Al volver a la web tras un rato en otra app, se actualizan los datos sin tocar lo que estés escribiendo
 let ocultoDesde = 0;
-// El generador de webs con IA avisa cuando envía una versión al cliente
+// Otras partes del panel (por ejemplo, el visor de la web) avisan cuando cambia un pedido
 document.addEventListener('pedido-cambiado', async e => {
   await cargar(true);
   if (dlg.open && e.detail) abrirPedido(e.detail);
@@ -137,7 +136,7 @@ function badges() {
     pedidos: datos.pedidos.filter(p => p.estado === 'nuevo' || p.pagoEstado === 'verificando').length,
     candidaturas: datos.cands.filter(c => c.estado === 'pendiente').length,
     resenas: datos.resenas.filter(r => !r.aprobada).length,
-    mios: datos.pedidos.filter(p => p.asignado === U.uid && activo(p)).length,
+    mios: datos.pedidos.filter(p => p.asignado === U.uid && activo(p) && siguientePaso(p)?.quien === 'equipo').length,
     soporte: datos.tickets.filter(t => t.estado === 'abierto').length,
     clientes: 0,
     agenda: datos.pedidos.filter(p => (U.role === 'owner' || p.asignado === U.uid) && (diasRestantes(p) ?? 1) < 0).length,
@@ -162,6 +161,7 @@ function pintar() {
 function filaPedido(p, { coger = false } = {}) {
   const e = ESTADOS[p.estado] || ESTADOS.nuevo;
   const pl = plantillaPorId(p.plantilla);
+  const paso = siguientePaso(p);
   return `
   <article class="row" data-open="${p.id}" tabindex="0" role="button">
     <div class="row-main">
@@ -171,6 +171,7 @@ function filaPedido(p, { coger = false } = {}) {
         ${p.cancelacion && p.estado !== 'cancelado' ? '<span class="pill p-off">Pide cancelar</span>' : ''}
         ${plazoTexto(p) ? `<span class="pill plazo ${plazoClase(p)}">${icono('clock')} ${plazoTexto(p)}</span>` : ''}</div>
       <small>${esc(p.planNombre)} · ${pl ? esc(pl.nombre) : 'A medida'} · ${esc(p.clienteNombre)} · ${haceCuanto(p.createdAt)}</small>
+      ${paso ? `<span class="paso ${paso.quien}">${icono(paso.ic)}<span>${esc(paso.txt)}</span></span>` : ''}
       ${p.estado !== 'cancelado' ? `<div class="row-prog" title="Progreso ${progreso(p)} %"><i style="--w:${progreso(p)}%"></i></div>` : ''}
     </div>
     <div class="row-side">
@@ -218,6 +219,7 @@ function resumen() {
   const pendientes = [
     ...P.filter(p => p.pagoEstado === 'verificando').map(p => ({ ic: 'euro', t: `Verificar pago de ${neg(p)}`, id: p.id })),
     ...cancelar.map(p => ({ ic: 'alert', t: `${neg(p)} pide cancelar`, id: p.id })),
+    ...P.filter(p => activo(p) && p.revision?.estado === 'cambios' && (p.revision.comentarios || []).some(c => !c.hecho)).slice(0, 5).map(p => ({ ic: 'pen', t: `${neg(p)}: el cliente pide cambios`, id: p.id })),
     ...tarde.slice(0, 5).map(p => ({ ic: 'clock', t: `${neg(p)}: ${plazoTexto(p).toLowerCase()}`, id: p.id })),
     ...P.filter(p => p.estado === 'nuevo' && !p.asignado).slice(0, 5).map(p => ({ ic: 'inbox', t: `Asignar ${neg(p)}`, id: p.id })),
     ...abiertas.slice(0, 5).map(t => ({ ic: 'help', t: `Responder: ${t.asunto}`, go: 'soporte' }))
@@ -318,6 +320,7 @@ function tablero(lista) {
         <article class="kcard" draggable="true" data-open="${p.id}" data-id="${p.id}" tabindex="0">
           <div class="kc-t"><b>${esc(neg(p))}</b><span>${euros(p.total)}</span></div>
           <small>${esc(p.planNombre)} · ${esc(p.clienteNombre)}</small>
+          ${(paso => paso ? `<span class="paso ${paso.quien}">${icono(paso.ic)}<span>${esc(paso.txt)}</span></span>` : '')(siguientePaso(p))}
           <div class="kc-tags">${p.pagoEstado === 'verificando' ? '<span class="pill p-pend">Verificar pago</span>' : ''}${p.urgente ? '<span class="pill p-off">Urgente</span>' : ''}</div>
           <div class="kc-f"><div class="row-prog"><i style="--w:${progreso(p)}%"></i></div>${p.asignadoNombre ? avatar({ name: p.asignadoNombre }, 'sm') : '<span class="who none">—</span>'}</div>
         </article>`).join('') || '<p class="col-empty">Suelta aquí</p>'}</div>
@@ -674,15 +677,24 @@ Un saludo.`],
 ];
 
 /* ---------- TRABAJADOR ---------- */
+let fMios = 'todos';
 function mios() {
-  const L = datos.pedidos.filter(p => p.asignado === U.uid && activo(p)).sort((a, b) => fechaEntrega(a) - fechaEntrega(b));
+  const todos = datos.pedidos.filter(p => p.asignado === U.uid && activo(p));
+  // Primero lo que te toca a ti; dentro de cada grupo, lo que se entrega antes
+  const orden = p => (siguientePaso(p)?.quien === 'equipo' ? 0 : 1);
+  todos.sort((a, b) => orden(a) - orden(b) || fechaEntrega(a) - fechaEntrega(b));
+  const tuyos = todos.filter(p => siguientePaso(p)?.quien === 'equipo');
+  const espera = todos.filter(p => siguientePaso(p)?.quien === 'cliente');
+  const L = fMios === 'tuyos' ? tuyos : fMios === 'cliente' ? espera : todos;
   body.innerHTML = `
     <div class="kpis small">
-      <div class="kpi"><small>Activos</small><b>${L.length}</b></div>
-      <div class="kpi"><small>En revisión</small><b>${L.filter(p => p.estado === 'revision').length}</b></div>
+      <div class="kpi ${tuyos.length ? 'aviso' : ''}"><small>Te toca a ti</small><b>${tuyos.length}</b></div>
+      <div class="kpi"><small>Esperando al cliente</small><b>${espera.length}</b></div>
       <div class="kpi"><small>Entregados</small><b>${datos.pedidos.filter(p => p.asignado === U.uid && p.estado === 'entregado').length}</b></div>
     </div>
-    <div class="rows card flush">${L.map(p => filaPedido(p)).join('') || vacio('coffee', 'No tienes encargos activos', 'Mira en «Disponibles» para coger uno.')}</div>`;
+    ${todos.length ? `<div class="opts filters">${[['todos', 'Todos', todos.length], ['tuyos', 'Te toca', tuyos.length], ['cliente', 'Esperando al cliente', espera.length]].map(([k, t, n]) => `<label class="opt ${!n && k !== 'todos' ? 'cero' : ''}"><input type="radio" name="fmios" value="${k}" ${fMios === k ? 'checked' : ''}><span><i>${t} · ${n}</i></span></label>`).join('')}</div>` : ''}
+    <div class="rows card flush">${L.map(p => filaPedido(p)).join('') || (todos.length ? vacio('check', 'Nada por aquí', 'Prueba con otro filtro.') : vacio('coffee', 'No tienes encargos activos', 'Mira en «Disponibles» para coger uno.'))}</div>`;
+  $$('input[name=fmios]').forEach(r => r.addEventListener('change', () => { fMios = r.value; mios(); }));
 }
 function disponibles() {
   const L = datos.pedidos.filter(p => !p.asignado && p.estado === 'nuevo');
@@ -899,11 +911,14 @@ function abrirPedido(id) {
   const senal = (p.total || 0) * CONFIG.senal / 100;
   const pago = p.pagoEstado || 'pendiente';
   const et = ETAPAS.find(e => e.id === etapaDe(p));
+  const paso = siguientePaso(p);
+  const recordar = paso?.quien === 'cliente' && puedeEditar && RECORDATORIOS[etapaDe(p)];
 
   box.innerHTML = `
     <div class="od-head">
       <div class="od-head-t">${metaHTML([refPedido(p.id), fecha(p.createdAt)])}<h2 id="odTitle">${esc(neg(p))}</h2>${metaHTML([p.planNombre, pl ? 'Diseño ' + pl.nombre : 'Diseño a medida'])}</div>
       <div class="od-head-r">
+        <button class="btn btn-sm btn-ghost" id="odFicha" title="Copia en un texto todo lo que ha pedido y enviado el cliente"><span>Copiar ficha</span>${icono('copy')}</button>
         <button class="btn btn-sm btn-ghost" id="odRecibo" title="Resumen imprimible del pedido"><span>Recibo</span>${icono('printer')}</button>
         ${pl ? `<button class="btn btn-sm btn-ghost" id="odExport" title="Descarga el diseño con el nombre y color del cliente"><span>Exportar HTML</span>${icono('download')}</button>` : ''}
         <button class="icon-btn" data-close aria-label="Cerrar">${icono('x')}</button>
@@ -918,6 +933,12 @@ function abrirPedido(id) {
     <div class="od-body od-cols">
       <section class="od-col">
         <h4 class="od-h">Gestión</h4>
+        ${paso ? `<div class="od-paso ${paso.quien}">
+          <span class="od-paso-ic">${icono(paso.ic)}</span>
+          <div><b>${esc(paso.txt)}</b>
+            ${recordar ? `<small>${p.recordado ? `Último recordatorio ${haceCuanto(p.recordado)}` : 'Aún no se le ha recordado'}</small>` : paso.ayuda ? `<small>${esc(paso.ayuda)}</small>` : ''}</div>
+          ${recordar ? `<button class="btn btn-sm btn-ghost" id="odRecordar" title="Le escribe un mensaje amable en su proyecto">${icono('bell')}<span>Recordárselo</span></button>` : ''}
+        </div>` : ''}
         <div class="od-fecha">
           <label><span>Entrega prevista</span><input type="date" id="odFecha" value="${aFechaInput(fechaEntrega(p))}" ${puedeEditar ? '' : 'disabled'}></label>
           ${plazoTexto(p) ? `<span class="pill plazo ${plazoClase(p)}">${icono('clock')} ${plazoTexto(p)}</span>` : ''}
@@ -936,18 +957,9 @@ function abrirPedido(id) {
             ? `${icono('euro')}<span>El cliente indica que ha pagado ${p.pagoFase === 'resto' ? 'el resto' : 'la señal'} (<b class="nw">${euros(p.pagoFase === 'resto' ? p.total - senal : senal)}</b>) por <b>${METODOS[p.pagoMetodo] || p.pagoMetodo}</b> ${p.pagoAviso ? haceCuanto(p.pagoAviso) : ''}. Compruébalo en tu banco y márcalo como <b>Pagado</b> (o «Señal pagada»).</span>`
             : p.pagoMetodo ? `Último pago por ${METODOS[p.pagoMetodo] || p.pagoMetodo}.` : `Señal: ${euros(senal)} · Resto: ${euros((p.total || 0) - senal)}`}</p>
         </div>
-        <button type="button" class="od-ia od-ia-web" id="odWebIA">
-          <span class="od-ia-ic">${icono('sparkle')}</span>
-          <span><b>Crear la web con IA</b><small>Mira el pedido, los mensajes y las fotos del cliente y crea su web en HTML, revisada desde 9 puntos de vista</small></span>
-          ${icono('arrow')}
-        </button>
-        <button type="button" class="od-ia od-ia-sec" id="odPrompt">
-          <span class="od-ia-ic">${icono('file')}</span>
-          <span><b>Mega prompt</b><small>Todo lo que ha pedido el cliente en un texto, para usarlo en otra herramienta</small></span>
-          ${icono('arrow')}
-        </button>
+        ${bloqueWeb(p, puedeEditar)}
         <form class="od-urls" id="odUrls" novalidate>
-          ${campo({ id: 'odVista', name: 'urlVista', label: 'Enlace de la vista previa para el cliente', type: 'url', value: p.urlVista || '', attrs: puedeEditar ? '' : 'disabled' })}
+          ${campo({ id: 'odVista', name: 'urlVista', label: 'Enlace externo de la vista previa (opcional)', type: 'url', value: p.urlVista || '', attrs: puedeEditar ? '' : 'disabled' })}
           ${campo({ id: 'odWeb', name: 'urlWeb', label: 'Dirección de la web publicada', type: 'url', value: p.urlWeb || '', attrs: puedeEditar ? '' : 'disabled' })}
           ${puedeEditar ? `<button class="btn btn-sm btn-ghost" type="submit"><span>Guardar enlaces</span></button>` : ''}
         </form>
@@ -995,7 +1007,7 @@ function abrirPedido(id) {
       <section class="od-col od-col-tabs">
         <nav class="mp-tabs od-tabs" role="tablist">${OD_PEST.map(([k, t, ic]) => `<button type="button" role="tab" data-odp="${k}" class="${odPest === k ? 'on' : ''}">${icono(ic)}<span>${t}</span></button>`).join('')}</nav>
         <div class="od-pest" id="odPest">
-          <div data-odv="enviado" hidden>${entregasCliente(p)}</div>
+          <div data-odv="enviado" hidden>${entregasCliente(p, { editable: puedeEditar })}</div>
           <div data-odv="historial" hidden>${lineaTiempoHTML(p)}</div>
           <div data-odv="notas" hidden>
             <p class="muted" style="font-size:13px;margin:6px 0 10px">Solo las ve el equipo.</p>
@@ -1086,8 +1098,25 @@ function abrirPedido(id) {
     guardar({ urlVista: limpio(f.get('urlVista')), urlWeb: limpio(f.get('urlWeb')) }, 'Enlaces guardados', 'Enlaces actualizados');
   });
   $('#odExport', box)?.addEventListener('click', e => exportarHTML(p, e.currentTarget));
-  $('#odPrompt', box)?.addEventListener('click', () => abrirMegaPrompt(p));
-  $('#odWebIA', box)?.addEventListener('click', () => abrirGeneradorWeb(p));
+  $('#odFicha', box)?.addEventListener('click', () => copiar(fichaTexto(p)));
+  $('#odRecordar', box)?.addEventListener('click', async e => {
+    const b = e.currentTarget;
+    if (p.recordado && Date.now() - p.recordado < 864e5 && !confirm('Ya se le recordó hace menos de un día. ¿Enviar otro recordatorio?')) return;
+    ocupado(b, true);
+    try {
+      await store.enviarMensaje(p.id, RECORDATORIOS[etapaDe(p)](p));
+      await guardar({ recordado: Date.now() }, 'Recordatorio enviado. El cliente recibe un aviso.', 'Recordatorio enviado al cliente');
+    } catch (err) { toast(err.message, 'err'); ocupado(b, false); }
+  });
+  // Cambios que ha pedido el cliente: el equipo los marca como hechos
+  $$('[data-hecho]', box).forEach(c => c.addEventListener('change', () => {
+    const rv = p.revision || {};
+    const comentarios = (rv.comentarios || []).map((x, i) => (i === +c.dataset.hecho ? { ...x, hecho: c.checked ? Date.now() : 0 } : x));
+    const quedan = comentarios.filter(x => !x.hecho).length;
+    odPest = 'enviado';
+    guardar({ revision: { ...rv, comentarios } }, quedan ? `Quedan ${quedan} cambio${quedan === 1 ? '' : 's'} por hacer` : 'Todos los cambios hechos. Sube la versión nueva y envíasela.');
+  }));
+  montarWeb(p, puedeEditar, guardar);
   $('#odCoger', box)?.addEventListener('click', async e => {
     const b = e.currentTarget;
     ocupado(b, true);
@@ -1110,6 +1139,162 @@ function abrirPedido(id) {
     catch (err) { toast(err.message, 'err'); }
   });
   if (!dlg.open) abrir(dlg);
+}
+
+/* ==========================================================
+   WEB DEL CLIENTE: versiones subidas por el equipo
+   Se sube el .zip, la carpeta o el index.html con sus archivos;
+   cada subida es una versión nueva que se puede ver, descargar,
+   enviar al cliente para que la revise o borrar.
+   ========================================================== */
+const versionesDe = p => (p.webs || []).slice().sort((a, b) => b.n - a.n);
+function bloqueWeb(p, puedeEditar) {
+  const vs = versionesDe(p);
+  const pendientes = (p.revision?.comentarios || []).filter(c => !c.hecho).length;
+  return `<section class="od-web" aria-labelledby="odWebT">
+    <div class="od-web-h"><b id="odWebT">Web del cliente</b>${vs.length ? `<small>${vs.length} versi${vs.length === 1 ? 'ón' : 'ones'}</small>` : ''}
+      <button type="button" class="link-btn" id="odBajarCli" title="Fotos, logotipo y documentos que ha subido el cliente, en un .zip">${icono('download')} Archivos del cliente</button></div>
+    ${p.revision?.estado === 'cambios' && pendientes ? `<p class="od-web-aviso">${icono('alert')}<span>El cliente ha pedido ${pendientes} cambio${pendientes === 1 ? '' : 's'}. Márcalos como hechos en «Del cliente» y sube la versión nueva.</span></p>` : ''}
+    ${puedeEditar ? `
+    <div class="od-drop" id="odDrop" role="group" aria-label="Subir una versión de la web">
+      <span class="od-drop-ic">${icono('upload')}</span>
+      <span class="od-drop-t"><b>Subir una versión</b><small>Arrastra aquí el .zip, la carpeta o el index.html con sus archivos</small></span>
+      <span class="od-drop-btns">
+        <label class="btn btn-sm btn-primary"><input type="file" id="odWebIn" multiple hidden accept=".zip,.html,.htm,.css,.js,.mjs,.json,.svg,.webmanifest,image/*,video/*,audio/*,.woff,.woff2,.ttf,.otf">${icono('file')}<span>Archivos o .zip</span></label>
+        <label class="btn btn-sm btn-ghost"><input type="file" id="odWebDir" hidden webkitdirectory directory multiple>${icono('folder')}<span>Carpeta</span></label>
+      </span>
+    </div>
+    <div class="od-prep" id="odPrep" hidden></div>` : ''}
+    ${vs.length ? `<ul class="od-vers">${vs.map(v => {
+      const cli = p.webCliente === v.id;
+      return `<li class="${cli ? 'cli' : ''}">
+        <button type="button" class="od-ver" data-ver-v="${esc(v.id)}" title="Ver la versión ${v.n}">
+          <span class="od-ver-n">v${v.n}</span>
+          <span class="od-ver-t"><b>${cli ? 'La ve el cliente' : `Versión ${v.n}`}</b><small>${haceCuanto(v.t)}${v.autor ? ` · ${esc(v.autor)}` : ''} · ${tamano(v.bytes || 0)}${v.paginas?.length > 1 ? ` · ${v.paginas.length} páginas` : ''}</small>${v.nota ? `<small class="od-ver-nota">${esc(v.nota)}</small>` : ''}</span>
+          ${icono('eye')}
+        </button>
+        ${puedeEditar ? `<span class="od-ver-acc">
+          ${cli ? '' : `<button type="button" class="btn btn-sm btn-ghost" data-enviar-v="${esc(v.id)}">${icono('send')}<span>Enviar</span></button>`}
+          <button type="button" class="icon-btn sm" data-borrar-v="${esc(v.id)}" aria-label="Borrar la versión ${v.n}" title="Borrar">${icono('trash')}</button>
+        </span>` : ''}
+      </li>`;
+    }).join('')}</ul>` : `<p class="od-web-vacio">${puedeEditar ? 'Todavía no hay ninguna versión. Cuando subas la primera, podrás verla en móvil, tableta y ordenador y enviársela al cliente para que la apruebe.' : 'Todavía no hay ninguna versión subida.'}</p>`}
+  </section>`;
+}
+
+/** Enviar una versión al cliente: pasa a «Revisión» y le llega un mensaje con aviso */
+async function enviarVersion(p, v, guardar) {
+  const cambios = { webCliente: v.id, revision: { ...(p.revision || {}), estado: 'pendiente', t: Date.now() } };
+  if (etapaDe(p) !== 'revision') Object.assign(cambios, { etapa: 'revision', estado: estadoParaEtapa('revision', p.estado) });
+  const ok = await guardar(cambios, `Versión ${v.n} enviada. El cliente ya puede verla y aprobarla.`, `Versión ${v.n} enviada al cliente`);
+  if (!ok) throw new Error('No se ha podido enviar la versión');
+  store.enviarMensaje(p.id, `Ya puedes ver la versión ${v.n} de tu web en «Mis proyectos». Recórrela en el móvil y en el ordenador y, desde la misma vista previa, apruébala o dinos qué cambiarías.${v.nota ? `\n\nEn esta versión: ${v.nota}` : ''}`).catch(() => {});
+}
+
+function montarWeb(p, puedeEditar, guardar) {
+  const zona = $('.od-web', box);
+  if (!zona) return;
+  const enlace = (v, pag) => enlaceVista(p, v, pag);
+  zona.addEventListener('click', async e => {
+    const ver = e.target.closest('[data-ver-v]');
+    if (ver) {
+      const v = (p.webs || []).find(w => w.id === ver.dataset.verV);
+      return v && abrirVisor({ p, version: v, modo: 'equipo', enlace, alEnviar: puedeEditar ? w => enviarVersion(p, w, guardar) : null });
+    }
+    const env = e.target.closest('[data-enviar-v]');
+    if (env) {
+      const v = (p.webs || []).find(w => w.id === env.dataset.enviarV);
+      if (!v) return;
+      ocupado(env, true);
+      try { await enviarVersion(p, v, guardar); } catch (err) { toast(err.message, 'err'); ocupado(env, false); }
+      return;
+    }
+    const bo = e.target.closest('[data-borrar-v]');
+    if (bo) {
+      const v = (p.webs || []).find(w => w.id === bo.dataset.borrarV);
+      if (!v || !confirm(`¿Borrar la versión ${v.n}?${p.webCliente === v.id ? ' El cliente dejará de verla.' : ''} No se puede deshacer.`)) return;
+      ocupado(bo, true);
+      try {
+        await store.borrarWeb(v);
+        await guardar({ webs: (p.webs || []).filter(w => w.id !== v.id), ...(p.webCliente === v.id ? { webCliente: '' } : {}) }, `Versión ${v.n} borrada`, `Versión ${v.n} borrada`);
+      } catch (err) { toast(err.message, 'err'); ocupado(bo, false); }
+      return;
+    }
+    const cli = e.target.closest('#odBajarCli');
+    if (cli) descargarArchivosCliente(p, cli);
+  });
+  if (!puedeEditar) return;
+
+  const drop = $('#odDrop', zona), prep = $('#odPrep', zona);
+  let lista = null;
+  async function elegir(files) {
+    files = [...files];
+    if (!files.length) return;
+    prep.hidden = false;
+    prep.innerHTML = `<p class="od-prep-c">${icono('refresh')} Revisando los archivos…</p>`;
+    try { lista = await prepararArchivos(files); }
+    catch (err) { lista = null; prep.innerHTML = `<p class="od-prep-err">${icono('alert')}<span>${esc(err.message)}</span></p>`; return; }
+    const n = Math.max(0, ...(p.webs || []).map(w => w.n || 0)) + 1;
+    prep.innerHTML = `
+      <div class="od-prep-r">${icono('check')}<span><b>Versión ${n}</b> · ${esc(lista.entrada)}${lista.paginas.length > 1 ? ` y ${lista.paginas.length - 1} página${lista.paginas.length === 2 ? '' : 's'} más` : ''} · ${lista.archivos.length} archivo${lista.archivos.length === 1 ? '' : 's'} · ${tamano(lista.bytes)}</span></div>
+      ${lista.avisos.map(a => `<p class="od-prep-av">${icono('alert')}<span>${esc(a)}</span></p>`).join('')}
+      ${campo({ id: 'odNotaV', label: 'Qué cambia en esta versión (opcional, lo ve el cliente)', type: 'textarea', attrs: 'maxlength="500" rows="2"' })}
+      <div class="arch-prog" id="odWebProg" hidden><i></i><span></span></div>
+      <div class="od-prep-btns">
+        <button type="button" class="btn btn-sm btn-ghost" id="odPrepNo">Cancelar</button>
+        <button type="button" class="btn btn-sm btn-ghost" id="odPrepSubir">${icono('upload')}<span>Subir</span></button>
+        <button type="button" class="btn btn-sm btn-primary" id="odPrepEnviar">${icono('send')}<span>Subir y enviar al cliente</span></button>
+      </div>`;
+    etiquetas(prep);
+    $('#odPrepNo', prep).addEventListener('click', () => { lista = null; prep.hidden = true; prep.innerHTML = ''; });
+    $('#odPrepSubir', prep).addEventListener('click', e => subir(e.currentTarget, false));
+    $('#odPrepEnviar', prep).addEventListener('click', e => subir(e.currentTarget, true));
+  }
+  async function subir(btn, enviar) {
+    if (!lista) return;
+    const prog = $('#odWebProg', prep);
+    $$('.od-prep-btns .btn', prep).forEach(b => (b.disabled = true));
+    ocupado(btn, true);
+    prog.hidden = false;
+    try {
+      const v = await crearVersion(p, lista, {
+        nota: $('#odNotaV', prep)?.value,
+        alProgreso: (hecho, total, ruta) => { $('i', prog).style.width = `${Math.round(hecho / total * 100)}%`; $('span', prog).textContent = `Subiendo ${tamano(hecho)} de ${tamano(total)} · ${ruta}`; }
+      });
+      const webs = [...(p.webs || []), v];
+      const ok = await guardar({ webs }, enviar ? '' : `Versión ${v.n} subida. Ábrela para revisarla antes de enviarla.`, `Versión ${v.n} subida`);
+      if (!ok) { await store.borrarWeb(v).catch(() => {}); return; }
+      if (enviar) await enviarVersion(p, v, guardar);
+    } catch (err) {
+      toast(err.message, 'err');
+      $$('.od-prep-btns .btn', prep).forEach(b => (b.disabled = false));
+      ocupado(btn, false);
+      prog.hidden = true;
+    }
+  }
+  $('#odWebIn', zona).addEventListener('change', e => { elegir(e.target.files); e.target.value = ''; });
+  $('#odWebDir', zona).addEventListener('change', e => { elegir(e.target.files); e.target.value = ''; });
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); if (ev === 'drop' || !drop.contains(e.relatedTarget)) drop.classList.remove('over'); }));
+  drop.addEventListener('drop', async e => elegir(await archivosSoltados(e.dataTransfer)));
+}
+
+/* Al soltar una carpeta, el navegador solo da la carpeta: se recorre para sacar sus archivos con su ruta */
+async function archivosSoltados(dt) {
+  const entradas = [...(dt.items || [])].map(i => i.webkitGetAsEntry?.()).filter(Boolean);
+  if (!entradas.length || entradas.every(x => x.isFile)) return [...dt.files];
+  const salida = [];
+  const leer = (entrada, ruta) => new Promise(ok => {
+    if (entrada.isFile) return entrada.file(f => { const x = new File([f], f.name, { type: f.type }); Object.defineProperty(x, 'webkitRelativePath', { value: ruta + f.name }); salida.push(x); ok(); }, () => ok());
+    const lector = entrada.createReader(), hijos = [];
+    const tanda = () => lector.readEntries(async L => {
+      if (!L.length) { for (const h of hijos) await leer(h, ruta + entrada.name + '/'); return ok(); }
+      hijos.push(...L); tanda();
+    }, () => ok());
+    tanda();
+  });
+  for (const x of entradas) await leer(x, '');
+  return salida;
 }
 
 /* ==========================================================

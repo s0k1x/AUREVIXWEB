@@ -21,13 +21,14 @@
 | `js/plantillas.js` | Textos, colores y fotos de los 6 diseños (puedes añadir más) |
 | `js/store.js` | Login y base de datos (Supabase o modo demo) |
 | `supabase/esquema.sql` | Tablas y permisos de la base de datos |
-| `supabase/functions/asistente/index.ts` | Función que habla con Gemini (la clave nunca va en la web) |
-| `supabase/functions/asistente/libreria.ts` | Librería para la IA (v31): modo `web-recursos` y componentes e iconos para `web-html`. Cómo desplegarlo: `INTEGRAR-LIBRERIA.md` |
+| `supabase/functions/asistente/index.ts` | Función que habla con Gemini para el chat y «Te ayudo a elegir» (la clave nunca va en la web) |
+| `js/vistaweb.js` | Web del cliente (v43): subir versiones (.zip, carpeta o archivos) y el visor en móvil, tableta y ordenador |
+| `vista-previa.html`, `js/vista.js` | La vista previa en su propia página (`/vista-previa?p=…&v=…`) |
 | `manifest.json`, `sw.js`, `icons/` | Lo que la hace instalable como app (PWA) |
 | `library/` | Librería de componentes en `aurevixweb.es/library` (v31): página, índice y núcleo compartido con el generador |
 | `library/extra.json`, `library/extra/` | Componentes que añades tú a mano desde el móvil (ver sección 21) |
 | `scripts/generar-indice.mjs` | Regenera `library/indice.json` y `library/iconos.json` a partir de `biblioteca-ui/` (necesita ordenador con Node) |
-| `js/zip.js` | Crea archivos .zip (lo usan el generador y la librería) |
+| `js/zip.js` | Crea archivos .zip (lo usan la librería, la web del cliente y «Archivos del cliente») |
 | `robots.txt`, `.nojekyll` | Que los buscadores no indexen la librería · que GitHub Pages publique `biblioteca-ui/` tal cual |
 
 ## 1. Cambia tus datos
@@ -102,7 +103,8 @@ En *Panel → Pedidos* abre un pedido: arriba tienes la barra de etapas. Pulsa u
 Cuando el cliente completa el dominio, el contenido o aprueba la revisión, la etapa avanza sola.
 En la ficha del pedido tienes, en tres columnas: gestión (estado, pago, enlaces, tareas internas),
 datos del cliente y del pedido, y todo lo que ha enviado el cliente.
-- **Enlace de la vista previa**: si lo rellenas, es lo que abre el cliente en la etapa Revisión.
+- **Web del cliente** (v43): sube aquí cada versión de la web y envíasela al cliente (ver sección 30).
+- **Enlace externo de la vista previa** (opcional): si la web está publicada en otro sitio, el cliente también ve ese enlace en la etapa Revisión.
 - **Dirección de la web publicada**: es el botón «Visitar mi web» que ve el cliente al final.
 - **Exportar HTML**: descarga el diseño elegido como un único archivo `.html`, con el nombre y el color del cliente,
   listo para editarlo y publicarlo (menú, carrito, reservas y animaciones incluidos).
@@ -591,3 +593,54 @@ Medido en un móvil con la CPU 4 veces más lenta (Chromium, no iPhone real). En
 ### v42 — sin fundido entre páginas (arregla el parpadeo al recargar en Chrome)
 - Se quita `@view-transition { navigation: auto }` y el `view-transition-name` de la cabecera (`animaciones.css`). Es una función solo de Chrome que hace un fundido entre la página anterior y la nueva; al recargar dejaba a medias un fundido entre el tema claro y el oscuro, con trozos de la página anterior y recuadros grises en el logo. Safari no la usa, así que se vuelve a ver igual en todos los navegadores. `sw.js` v42.
 - Medidas de fluidez en las demás vistas (Chromium con CPU ×4): panel de propietario, de trabajador y de cliente, ajustes e inicio con sesión, sin fotogramas lentos.
+
+## 30. Versión v43 — subir la web del cliente y vista previa; sin «Crear la web con IA» ni «Mega prompt»
+
+### Qué se ha quitado
+- **«Crear la web con IA»** y **«Mega prompt con IA»**: fuera de la ficha del pedido, del panel, de la librería («Usar en mi pedido»)
+  y de la función de Supabase (`web.ts`, `libreria.ts` e `INTEGRAR-LIBRERIA.md` borrados; `index.ts` solo tiene el chat y
+  «Te ayudo a elegir»). En su lugar, **«Copiar ficha»** copia en un texto todo lo que ha pedido y enviado el cliente.
+- La tabla `webs_ia` de Supabase ya no se usa (estaba vacía). Se puede borrar cuando quieras; no hace falta.
+
+### Web del cliente (ficha del pedido → «Gestión»)
+1. **Subir una versión**: arrastra el `.zip`, la carpeta de la web o el `index.html` con sus archivos (CSS, JS, fotos, fuentes).
+   También con los botones «Archivos o .zip» y «Carpeta». Se quita sola la carpeta que lo envuelve todo y se ignoran
+   `__MACOSX`, `.DS_Store` y similares. Límites: 25 MB por archivo, 80 MB y 400 archivos por versión.
+2. Antes de subir ves el resumen (páginas, archivos, peso y avisos, por ejemplo fotos de más de 1,5 MB) y puedes escribir
+   **qué cambia** en esa versión (lo ve el cliente). «Subir» la guarda; «Subir y enviar al cliente» además se la envía.
+3. **Enviar al cliente**: el proyecto pasa a «Revisión», el cliente recibe un mensaje con aviso y en «Mis proyectos» le aparece
+   **«Ver tu web · versión N»**. Cada versión se puede ver, descargar en `.zip` o borrar.
+4. **Visor**: la web se ve como en un **móvil, una tableta o un ordenador**, con todas sus páginas (los enlaces entre páginas
+   funcionan y hay un selector de página), estilos, scripts, fotos y fuentes. Va aislada (iframe `sandbox`): su código no puede
+   leer la sesión ni los datos de AurevixWeb. Los formularios y los botones de llamar o escribir no se envían en la vista
+   previa (sale un aviso). Si la página apunta a archivos que no se han subido, el visor se lo dice al equipo.
+5. **El cliente** la aprueba o pide cambios **desde el mismo visor**. Los cambios se guardan con la versión y la página que
+   estaba viendo. En la ficha → «Del cliente» el equipo los va **marcando como hechos**.
+6. Cada versión tiene su propia página: `/vista-previa?p=PEDIDO&v=VERSIÓN` (botón «Abrir en otra pestaña»). Hay que entrar con
+   la cuenta del cliente o del equipo, porque los archivos son privados.
+
+Los archivos van en Supabase Storage, en la carpeta del pedido (`archivos/PEDIDO/web/VERSIÓN/…`), con los mismos permisos que
+ya tenía: el equipo sube y el cliente solo puede leer los de sus pedidos. La lista de versiones va en el pedido (campo `webs`).
+**No hace falta ejecutar ningún SQL ni volver a desplegar nada.**
+
+### Para el equipo
+- **Siguiente paso** en cada pedido (filas, tablero y ficha): qué toca ahora y si le toca al equipo o al cliente
+  (comprobar un pago, subir la primera versión, hacer los cambios pedidos, publicar…).
+- **Mis encargos**: primero lo que te toca a ti, con filtros «Te toca» y «Esperando al cliente». El número de la pestaña
+  cuenta solo los encargos con algo que hacer.
+- **Recordárselo**: cuando se espera al cliente, un botón le escribe un recordatorio amable según la etapa y guarda la fecha.
+- **Archivos del cliente**: descarga en un `.zip` todo lo que ha subido el cliente.
+- **Para hoy** (propietario): también los proyectos en los que el cliente ha pedido cambios.
+- Una respuesta rápida nueva para pedir el horario y la dirección.
+
+### Qué tienes que hacer
+1. Unir la rama a `main` (pull request) para publicarla. El service worker pasa a **v43**.
+2. Opcional: en Supabase → *Edge Functions → asistente*, desplegar el nuevo `index.ts`. La función que está desplegada todavía
+   tiene los modos de la IA para webs; como la web ya no los usa, no pasa nada si se queda así.
+
+### Probado
+En una copia en modo demo con Chromium (1440 px, 1280 px e iPhone 13; tema oscuro y claro): subida de `.zip` con
+`__MACOSX`, de varios archivos y de carpeta; CSS con `@import` y `url()`, JS, fotos y `srcset`; enlaces entre páginas
+con ancla; formularios y enlaces de teléfono; envío al cliente; cambios desde el visor; marcar cambios como hechos;
+aprobación (pasa a «Pago final»); la página `/vista-previa`; y versiones a las que les faltan archivos. Sin errores de JavaScript.
+**No probado:** con Supabase real (subida a Storage y enlaces temporales) ni en un iPhone real.

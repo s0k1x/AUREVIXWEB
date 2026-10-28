@@ -495,101 +495,9 @@ export async function borrarResena(id) {
 export const iaDisponible = () => !modoDemo;
 export async function preguntarIA(cuerpo) {
   if (modoDemo) throw new Error('demo');
-  const { data, error } = await limite(sb.functions.invoke('asistente', { body: cuerpo }), cuerpo?.modo === 'prompt' ? 80000 : 40000);
+  const { data, error } = await limite(sb.functions.invoke('asistente', { body: cuerpo }), 40000);
   if (error) throw new Error('El asistente no está disponible ahora mismo');
   return data;
-}
-
-/* ---------- Crear la web del cliente con IA (solo equipo) ----------
-   Cada paso llama a la función «asistente» y la respuesta llega en
-   directo: alTexto(trozo) con lo que va escribiendo y alPensar(trozo)
-   con lo que va pensando. Devuelve { texto, modelo, motivo, uso, componentes, iconos }
-   (componentes e iconos: los de la librería que la función ha pasado a la IA). */
-export async function iaWeb(cuerpo, { alTexto, alPensar, senal } = {}) {
-  if (modoDemo) throw new Error('La IA no está disponible en el modo demo');
-  const { data } = await limite(sb.auth.getSession(), 10000);
-  const token = data?.session?.access_token;
-  if (!token) throw new Error('Tu sesión ha caducado. Vuelve a entrar.');
-  const ctrl = new AbortController();
-  senal?.addEventListener?.('abort', () => ctrl.abort());
-  let quieto;
-  const vigilar = () => { clearTimeout(quieto); quieto = setTimeout(() => ctrl.abort('quieto'), 120000); };
-  vigilar();
-  let r;
-  try {
-    r = await fetch(`${CONFIG.supabase.url}/functions/v1/asistente`, {
-      method: 'POST', signal: ctrl.signal,
-      headers: { 'Content-Type': 'application/json', apikey: CONFIG.supabase.anonKey, Authorization: `Bearer ${token}` },
-      body: JSON.stringify(cuerpo)
-    });
-  } catch (e) {
-    clearTimeout(quieto);
-    throw new Error(senal?.aborted ? 'Cancelado' : navigator.onLine === false ? SIN_RED : 'No se ha podido conectar con la IA');
-  }
-  if (!r.ok || !r.body) {
-    clearTimeout(quieto);
-    let m = '';
-    try { m = (await r.json()).error; } catch { /* sin cuerpo */ }
-    throw new Error(r.status === 403 ? 'Solo el equipo puede crear webs con IA' : m || `La IA no responde (${r.status}). Revisa la función «asistente» en Supabase.`);
-  }
-  const lector = r.body.getReader(), dec = new TextDecoder();
-  let resto = '', texto = '', fin = null, fallo = '';
-  try {
-    while (true) {
-      const { done, value } = await lector.read();
-      if (done) break;
-      vigilar();
-      resto += dec.decode(value, { stream: true });
-      let i;
-      while ((i = resto.indexOf('\n\n')) >= 0) {
-        const bloque = resto.slice(0, i); resto = resto.slice(i + 2);
-        const linea = bloque.split('\n').find(l => l.startsWith('data:'));
-        if (!linea) continue;
-        let d; try { d = JSON.parse(linea.slice(5)); } catch { continue; }
-        if (d.t) { texto += d.t; alTexto?.(d.t, texto); }
-        if (d.p) alPensar?.(d.p);
-        if (d.error) fallo = d.error;
-        if (d.fin) fin = d;
-      }
-    }
-  } catch (e) {
-    throw new Error(senal?.aborted ? 'Cancelado' : 'La conexión con la IA se ha cortado. Vuelve a intentarlo.');
-  } finally { clearTimeout(quieto); }
-  if (fallo) throw new Error(fallo);
-  if (!fin) throw new Error('La IA no ha terminado (puede que la función de Supabase llegara a su tiempo máximo). Vuelve a intentarlo.');
-  return { texto, modelo: fin.modelo, motivo: fin.motivo, uso: fin.uso, componentes: fin.componentes || null, iconos: fin.iconos || null };
-}
-
-/* Versiones de la web creada con IA (tabla webs_ia, solo equipo) */
-export async function websIA(pedidoId) {
-  necesitaUsuario();
-  if (modoDemo) return recientes(local.get('webs_ia', []).filter(w => w.pedido === pedidoId));
-  const r = await limite(sb.from('webs_ia').select('id, uid, datos, created_at').eq('pedido', pedidoId).order('created_at', { ascending: false }).limit(20), 15000);
-  return comprobar(r).map(f => ({ ...(f.datos || {}), id: f.id, uid: f.uid }));
-}
-export async function guardarWebIA(pedidoId, datos) {
-  const u = necesitaUsuario();
-  const doc = { ...datos, pedido: pedidoId, autor: u.name, createdAt: Date.now() };
-  if (modoDemo) {
-    const w = { ...doc, id: nuevoId(), uid: u.uid };
-    try { local.set('webs_ia', [w, ...local.get('webs_ia', [])].slice(0, 12)); } catch { /* sin espacio */ }
-    return w;
-  }
-  const f = comprobar(await limite(sb.from('webs_ia').insert({ uid: u.uid, pedido: pedidoId, datos: doc }).select('id, uid, datos').single(), 20000));
-  return { ...f.datos, id: f.id, uid: f.uid };
-}
-/** La versión que el equipo ha enviado al cliente para revisar */
-export async function webIACompartida(id) {
-  necesitaUsuario();
-  if (modoDemo) return local.get('webs_ia', []).find(w => w.id === id) || null;
-  const r = await limite(sb.from('webs_ia').select('id, datos').eq('id', id).maybeSingle(), 15000);
-  const f = comprobar(r);
-  return f ? { ...f.datos, id: f.id } : null;
-}
-export async function borrarWebIA(id) {
-  necesitaUsuario();
-  if (modoDemo) { local.set('webs_ia', local.get('webs_ia', []).filter(w => w.id !== id)); return; }
-  comprobar(await limite(sb.from('webs_ia').delete().eq('id', id)));
 }
 
 /* ==========================================================
@@ -878,4 +786,93 @@ export async function borrarArchivo(a) {
   if (modoDemo) { local.set('archivos', local.get('archivos', []).filter(x => x.ruta !== a.ruta)); return; }
   const { error } = await limite(sb.storage.from('archivos').remove([a.ruta]));
   if (error) throw new Error(traducirError(error));
+}
+
+/* ==========================================================
+   WEB DEL CLIENTE (versiones que sube el equipo)
+   Cada versión es una carpeta en Storage: {pedido}/web/{versión}/…
+   (la lista de «Archivos» no la enseña porque solo muestra los archivos
+   sueltos de la carpeta del pedido). Los datos de cada versión van en
+   el pedido (campo «webs»), así que no hace falta tocar la base de datos.
+   ========================================================== */
+const MAX_WEB_DEMO = 4 * 1024 * 1024;
+// Cada parte de la ruta, sin caracteres raros; la ruta original se guarda aparte
+const claveWeb = (pedidoId, version, ruta) => `${pedidoId}/web/${version}/${ruta.split('/').map(limpiarNombre).join('/')}`;
+const aDataURL = blob => new Promise((ok, mal) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = mal; r.readAsDataURL(blob); });
+
+/** Sube los archivos de una versión. archivos: [{ ruta, blob, tipo }]. Devuelve [{ ruta, clave, tam, tipo }] */
+export async function subirWeb(pedidoId, version, archivos, { alProgreso } = {}) {
+  necesitaUsuario();
+  const total = archivos.reduce((s, a) => s + a.blob.size, 0);
+  const hechos = [];
+  let bytes = 0;
+  if (modoDemo) {
+    if (total > MAX_WEB_DEMO) throw new Error('En el modo demo la web puede ocupar como mucho 4 MB');
+    const guardados = local.get('webfiles', {});
+    for (const a of archivos) {
+      const clave = claveWeb(pedidoId, version, a.ruta);
+      guardados[clave] = await aDataURL(a.blob);
+      hechos.push({ ruta: a.ruta, clave, tam: a.blob.size, tipo: a.tipo });
+      bytes += a.blob.size; alProgreso?.(bytes, total, a.ruta);
+    }
+    try { local.set('webfiles', guardados); } catch { throw new Error('No queda espacio en este navegador para la web'); }
+    return hechos;
+  }
+  // Cuatro subidas a la vez: bastante más rápido y sin saturar la conexión del móvil
+  const cola = [...archivos];
+  const subirUno = async () => {
+    for (let a = cola.shift(); a; a = cola.shift()) {
+      const clave = claveWeb(pedidoId, version, a.ruta);
+      let r = await sb.storage.from('archivos').upload(clave, a.blob, { contentType: a.tipo || 'application/octet-stream', upsert: true });
+      if (r.error) r = await sb.storage.from('archivos').upload(clave, a.blob, { contentType: a.tipo || 'application/octet-stream', upsert: true });
+      if (r.error) throw new Error(`No se ha podido subir «${a.ruta}»: ${traducirError(r.error)}`);
+      hechos.push({ ruta: a.ruta, clave, tam: a.blob.size, tipo: a.tipo });
+      bytes += a.blob.size; alProgreso?.(bytes, total, a.ruta);
+    }
+  };
+  try {
+    await Promise.all(Array.from({ length: Math.min(4, archivos.length) }, subirUno));
+  } catch (e) {
+    // Si algo falla a medias no se deja una versión incompleta en Storage
+    if (hechos.length) await sb.storage.from('archivos').remove(hechos.map(h => h.clave)).catch(() => {});
+    throw e;
+  }
+  return hechos;
+}
+
+/** Contenido de un archivo de la web (Blob) */
+export async function archivoWeb(a) {
+  if (modoDemo) {
+    const url = local.get('webfiles', {})[a.clave];
+    if (!url) throw new Error(`Falta «${a.ruta}» en esta versión`);
+    return (await fetch(url)).blob();
+  }
+  const { data, error } = await limite(sb.storage.from('archivos').download(a.clave), 30000);
+  if (error) throw new Error(`No se ha podido abrir «${a.ruta}»: ${traducirError(error)}`);
+  return data;
+}
+
+/** Enlaces temporales (1 h) para fotos, vídeos y fuentes de la web: Map clave → url */
+export async function enlacesWeb(lista) {
+  const m = new Map();
+  if (!lista.length) return m;
+  if (modoDemo) { const g = local.get('webfiles', {}); lista.forEach(a => g[a.clave] && m.set(a.clave, g[a.clave])); return m; }
+  for (let i = 0; i < lista.length; i += 100) {
+    const parte = lista.slice(i, i + 100).map(a => a.clave);
+    const { data, error } = await limite(sb.storage.from('archivos').createSignedUrls(parte, 3600), 20000);
+    if (error) throw new Error(traducirError(error));
+    (data || []).forEach(d => d.signedUrl && m.set(d.path, d.signedUrl));
+  }
+  return m;
+}
+
+/** Borra todos los archivos de una versión */
+export async function borrarWeb(version) {
+  necesitaUsuario();
+  const claves = (version.archivos || []).map(a => a.clave);
+  if (modoDemo) { const g = local.get('webfiles', {}); claves.forEach(c => delete g[c]); local.set('webfiles', g); return; }
+  for (let i = 0; i < claves.length; i += 100) {
+    const { error } = await limite(sb.storage.from('archivos').remove(claves.slice(i, i + 100)));
+    if (error) throw new Error(traducirError(error));
+  }
 }
