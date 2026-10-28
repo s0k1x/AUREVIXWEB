@@ -119,7 +119,6 @@ html[data-movimiento=reducido] .cinta-track,html[data-movimiento=reducido] .vt-m
 .dom-campo:focus-within{border-color:var(--accent)}
 .dom.dom-mal .dom-campo:not(.dom-cor-campo){border-color:var(--danger)}
 .dom-www{color:var(--dim);font-size:16px;flex:none;font-family:var(--fb);padding:0;display:block}
-.dom-in,.dom-cin{flex:1;min-width:0;height:100%;border:0;background:none;color:var(--text);font:600 17px var(--fb);padding:0 2px;outline:none}
 .dom-suf{flex:none;color:var(--accent);font-weight:700;font-size:17px}
 .dom[data-tipo=propio] .dom-suf,.dom[data-tipo=propio] .dom-exts{display:none}
 .dom-exts{display:flex;flex-wrap:wrap;gap:6px}
@@ -132,7 +131,6 @@ html[data-movimiento=reducido] .cinta-track,html[data-movimiento=reducido] .vt-m
 .dom-cor{display:grid;gap:8px;margin-top:6px}
 .dom-cor .q-label{margin:0}
 .dom-cor-campo{padding-right:12px}
-.dom-cin{flex:0 1 auto;width:5ch;min-width:24px;max-width:60%;padding-right:0}
 .dom-arroba{flex:1;min-width:0;color:var(--muted);font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dom-arroba b{color:var(--text);font-weight:600}
 .dom-chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -153,33 +151,14 @@ html[data-tema=claro] .dom-suf{color:#4f850c}
   .dom-ver{grid-template-columns:1fr}
 }
 
-/* ---------- Botón de idioma ES / EN ---------- */
-.idioma-btn{display:inline-flex;align-items:center;gap:2px;height:40px;padding:4px;border-radius:99px;border:1px solid var(--line);background:none;color:var(--muted);font:600 12.5px/1 var(--fb);cursor:pointer;flex:none;transition:border-color .18s ease,transform .16s cubic-bezier(.23,1,.32,1)}
-.idioma-btn span{display:grid;place-items:center;min-width:30px;height:30px;border-radius:99px;transition:background-color .18s ease,color .18s ease}
-.idioma-btn span.on{background:var(--text);color:var(--bg)}
-@media (hover:hover){.idioma-btn:hover{border-color:var(--line2)}}
-.idioma-btn:active{transform:scale(.95)}
+/* ---------- Idioma ---------- */
 .head-right{gap:8px}
-@media (max-width:560px){
-  .idioma-btn{height:40px;width:40px;padding:0;justify-content:center}
-  .idioma-btn span.on{display:none}
-  .idioma-btn span{background:none;min-width:0}
-}
 .aviso-idioma{margin:0 0 20px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:14px;color:var(--muted)}
 /* La cuenta y la campana nunca se aplastan */
 .user-btn,.head-right > *,.auth-slot > *{flex:none}
 .user-btn .avatar,.avatar{flex:none;aspect-ratio:1}
 .header .logo{min-width:0;flex:0 1 auto}
 .header .logo [data-marca]{min-width:0;overflow:hidden}
-.idioma-btn em{display:none}
-.nav .idioma-menu{display:none}
-@media (max-width:760px){
-  .head-right > .idioma-btn{display:none}
-  .nav .idioma-menu{display:flex;width:auto;height:auto;margin-top:6px;padding:12px 16px;gap:10px;border-radius:14px;justify-content:flex-start;align-self:flex-start}
-  .nav .idioma-menu span{display:grid;background:none;color:var(--muted);min-width:0;height:auto}
-  .nav .idioma-menu span.on{display:none}
-  .nav .idioma-menu em{display:inline;font-style:normal;font-size:15px;color:var(--text)}
-}
 
 /* ---------- v52 · Cabecera del móvil que cabe siempre (también en Safari, que no encoge el logo) ---------- */
 @media (max-width:430px){
@@ -204,4 +183,132 @@ html[data-tema=claro] .dom-suf{color:#4f850c}
 /* Con la letra grande todo ocupa más: el nombre se queda en el logo hasta 390 px */
 @media (max-width:390px){
   html[data-texto]:not([data-texto=normal]) .header [data-marca]{display:none}
+}
+
+/* ==========================================================
+   v53 · Dominio y correo (nuevo diseño)
+   ========================================================== */
+.dom{gap:18px}
+.dom-sec{display:grid;gap:10px;min-width:0}
+.dom-h{margin:0;font-size:15px;font-weight:700;letter-spacing:0}
+.dom-op b{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dom-gratis,.dom-precio-op{font-style:normal;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:99px;line-height:1.4}
+.dom-gratis{background:rgba(74,222,128,.14);color:var(--ok)}
+.dom-precio-op{background:var(--accent-soft);color:var(--accent)}
+html[data-tema=claro] .dom-precio-op{color:#4f850c}
+/* Una línea que se lee tal cual: www.tunegocio.es / tunegocio@gmail.com */
+.dom-linea{position:relative;display:flex;align-items:center;flex-wrap:nowrap;min-width:0;min-height:56px;padding:0 44px 0 16px;border:1px solid var(--line2);border-radius:14px;background:var(--field);cursor:text;font-size:18px;font-weight:600;overflow:hidden;transition:border-color .2s ease,box-shadow .2s ease}
+.dom-linea:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.dom-linea.mal{border-color:var(--danger);box-shadow:0 0 0 3px rgba(248,113,113,.15)}
+.dom-fijo{flex:none;color:var(--dim);font-weight:500;white-space:nowrap}
+.dom-fijo b{color:var(--muted);font-weight:600}
+.dom-suf{flex:none;color:var(--accent);font-weight:700;font-size:inherit}
+html[data-tema=claro] .dom-suf{color:#4f850c}
+.dom-auto{display:inline-grid;grid-template-columns:minmax(0,max-content);min-width:0;max-width:100%}
+.dom-auto::after{content:attr(data-v);grid-area:1/1;visibility:hidden;white-space:pre;font:inherit;padding:0 1px 0 0}
+.dom-auto input{grid-area:1/1;width:0;max-width:none;min-width:100%;height:auto;flex:none;border:0;padding:0;margin:0;background:none;color:var(--text);font:inherit;outline:none}
+.dom-auto input::placeholder{color:var(--dim);opacity:1}
+.dom-lapiz{position:absolute;right:16px;top:50%;width:16px;height:16px;transform:translateY(-50%);fill:none;stroke:var(--dim);stroke-width:2;stroke-linejoin:round;pointer-events:none;transition:stroke .2s ease}
+.dom-linea:focus-within .dom-lapiz{stroke:var(--accent)}
+.dom[data-tipo=propio] .dom-solo-nuevo{display:none}
+.dom[data-correo-tipo=gmail] .dom-cor-dom,.dom[data-correo-tipo=dominio] .dom-cor-gmail{display:none}
+.dom-cor{display:grid;gap:8px;margin:0;animation:domAparece .25s cubic-bezier(.23,1,.32,1)}
+@keyframes domAparece{from{opacity:0;transform:translateY(-4px)}}
+.dom-nota a{color:var(--accent)}
+.dom[data-correo-tipo=gmail] ~ [data-solo-correo-dominio]{display:none}
+.dom-ver{margin-top:2px}
+@media (max-width:420px){
+  .dom-linea{font-size:16px;padding-left:14px}
+  .dom-op span{flex-direction:column;align-items:flex-start;gap:2px}
+}
+@media (prefers-reduced-motion:reduce){.dom-cor{animation:none}}
+
+/* ==========================================================
+   v53 · Formulario de contenido del proyecto (por apartados)
+   ========================================================== */
+.ac-cont{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.cs-intro{margin:0;font-size:14px;color:var(--muted);line-height:1.5}
+.cs{margin:0;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--card);display:grid;gap:14px;min-width:0}
+.cs > legend{float:left;width:100%;display:flex;align-items:center;gap:10px;margin:0;padding:0;font-size:15.5px;font-weight:700}
+.cs > legend + *{clear:both}
+.cs-n{display:grid;place-items:center;width:26px;height:26px;flex:none;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:700}
+html[data-tema=claro] .cs-n{color:#4f850c}
+.cs-nota{margin:0;font-size:13px;color:var(--muted)}
+.cq{display:grid;gap:4px;min-width:0}
+.cq > label{font-size:14px;font-weight:600;color:var(--text);line-height:1.35}
+.cq > small{font-size:12.5px;color:var(--muted);line-height:1.4;margin-top:-2px}
+.cq textarea,.cq input{width:100%;min-width:0;margin-top:4px;padding:12px 14px;border:1px solid var(--line2);border-radius:12px;background:var(--field);color:var(--text);font:inherit;font-size:16px;line-height:1.45;outline:none;resize:vertical;transition:border-color .2s ease,box-shadow .2s ease}
+.cq input{min-height:48px}
+.cq textarea::placeholder,.cq input::placeholder{color:var(--dim);opacity:1}
+.cq textarea:focus,.cq input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.cs-subir{display:grid;gap:6px;justify-items:start}
+.cs-subir small{font-size:12.5px;color:var(--muted);line-height:1.4}
+.cs-mas{border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:hidden}
+.cs-mas > summary{list-style:none;display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;min-height:60px}
+.cs-mas > summary::-webkit-details-marker{display:none}
+.cs-mas > summary > span:nth-child(2){flex:1;display:grid;gap:2px;min-width:0}
+.cs-mas > summary b{font-size:15px}
+.cs-mas > summary small{font-size:12.5px;color:var(--muted);line-height:1.4}
+.cs-mas > summary > svg{width:18px;height:18px;flex:none;color:var(--muted);transition:transform .25s cubic-bezier(.23,1,.32,1)}
+.cs-mas[open] > summary > svg{transform:rotate(180deg)}
+.cs-mas-c{display:grid;gap:14px;padding:4px 16px 16px;border-top:1px solid var(--line)}
+.cs-mas-c .cq:first-child{padding-top:12px}
+.ac-cont .ac-btns{display:flex;flex-wrap:wrap;gap:10px}
+@media (max-width:560px){
+  .cs{padding:14px}
+  .ac-cont .ac-btns .btn{flex:1 1 100%}
+}
+
+/* v53 · Botones con texto largo y dato del dominio en «Mis proyectos» */
+.btn-largo{height:auto;min-height:48px;padding:10px 18px;white-space:normal;text-align:center;line-height:1.3;letter-spacing:.05em;max-width:100%}
+.btn-largo span{min-width:0}
+.mp-dato-ancho{grid-column:1/-1}
+.mp-dato b,.mp-dato small{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;overflow-wrap:normal}
+.mp-dato b em{font-style:normal;font-weight:400;color:var(--muted);font-size:13px}
+.mp-dato small{grid-column:2;font-size:13px;color:var(--muted);margin-top:2px}
+@media (max-width:640px){.mp-dato small{grid-column:1/-1}}
+
+/* v53 · App instalada (pantalla completa): nada queda debajo de la hora y la batería */
+@media (max-width:760px){
+  .dlg-wiz .wiz-head{padding-top:calc(16px + env(safe-area-inset-top))}
+  dialog.dlg:not(.dlg-wiz):not(.dlg-ficha):not(.dlg-side){padding-top:max(16px, calc(env(safe-area-inset-top) + 8px));padding-bottom:max(16px, env(safe-area-inset-bottom))}
+}
+
+/* ==========================================================
+   v53 · Interruptor de idioma ES | EN y transición
+   ========================================================== */
+.idioma-sw{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;align-items:center;height:40px;padding:4px;border-radius:99px;border:1px solid var(--line2);background:var(--card);flex:none;isolation:isolate}
+.idioma-sw button{position:relative;z-index:1;min-width:36px;height:100%;padding:0 10px;border:0;border-radius:99px;background:none;color:var(--muted);font:700 12.5px/1 var(--fb);letter-spacing:.04em;cursor:pointer;transition:color .25s ease}
+.idioma-sw button[aria-checked=true]{color:var(--ink)}
+.idioma-sw button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.isw-pastilla{position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:99px;background:var(--accent);transition:transform .35s cubic-bezier(.23,1,.32,1)}
+.idioma-sw[data-v=en] .isw-pastilla{transform:translateX(100%)}
+html[data-tema=claro] .idioma-sw button[aria-checked=true]{color:#fff}
+html[data-tema=claro] .isw-pastilla{background:#4f850c}
+/* En el menú del móvil: grande, con el nombre del idioma */
+.nav .idioma-menu{display:none}
+@media (max-width:760px){
+  .head-right > .idioma-sw{display:none}
+  .nav .idioma-sw.idioma-menu{display:inline-grid;width:min(100%,280px);height:50px;margin-top:14px}
+  .nav .idioma-sw.idioma-menu button{font-size:14.5px;letter-spacing:0;font-weight:600}
+}
+/* Cortina */
+.idioma-cortina{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:var(--bg,#0c0c0e);color:var(--text,#f3f1ea);clip-path:circle(0 at var(--x) var(--y));animation:icEntra .6s cubic-bezier(.65,0,.35,1) forwards;pointer-events:all}
+.idioma-cortina.sale{clip-path:circle(150% at var(--x) var(--y));animation:none;transition:clip-path .7s cubic-bezier(.65,0,.35,1),opacity .7s ease}
+.idioma-cortina.sale.abre{clip-path:circle(0 at 50% 50%);pointer-events:none}
+@keyframes icEntra{to{clip-path:circle(150% at var(--x) var(--y))}}
+.ic-texto{display:grid;justify-items:center;gap:10px;text-align:center}
+.ic-texto small{font:600 12.5px/1 var(--fb,system-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#a19f96);opacity:0;animation:icSube .4s .25s cubic-bezier(.23,1,.32,1) forwards}
+.ic-texto b{display:flex;font:800 clamp(44px,12vw,96px)/1 var(--fd,system-ui);letter-spacing:-.03em;color:var(--accent,#c8f560)}
+.ic-texto b span{display:inline-block;opacity:0;transform:translateY(.4em);animation:icSube .45s calc(.22s + var(--i) * .035s) cubic-bezier(.23,1,.32,1) forwards}
+.idioma-cortina.sale .ic-texto small,.idioma-cortina.sale .ic-texto b span{opacity:1;transform:none;animation:none}
+.idioma-cortina.sale.abre .ic-texto{transform:scale(.92);opacity:0;transition:transform .5s cubic-bezier(.23,1,.32,1),opacity .35s ease}
+@keyframes icSube{to{opacity:1;transform:none}}
+html[data-tema=claro] .ic-texto b{color:#4f850c}
+
+/* v53 · «Mis proyectos» en el móvil: sin doble marco (diálogo + tarjeta) y con más ancho para el contenido */
+@media (max-width:640px){
+  #pedidosDlg > .dlg-box{padding-left:12px;padding-right:12px}
+  #pedidosDlg .mp-proyecto.abierto{padding:14px 6px;border-color:transparent;background:transparent}
+  #pedidosDlg .mp-proyecto.abierto + .mp-proyecto,#pedidosDlg .mp-proyecto + .mp-proyecto.abierto{margin-top:6px}
 }

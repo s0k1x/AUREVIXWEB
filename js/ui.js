@@ -297,7 +297,7 @@ export function pintarCabecera(activa = '') {
     </div>`;
   $('.head-right', h).prepend(botonIdioma());
   // En el móvil el idioma va dentro del menú (en la cabecera no cabe junto a la campana y la cuenta)
-  const enMenu = botonIdioma();
+  const enMenu = botonIdioma({ largo: true });
   enMenu.classList.add('idioma-menu');
   $('#nav', h).append(enMenu);
   const menuBtn = $('#menuBtn');
