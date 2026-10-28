@@ -955,11 +955,12 @@ section[id],[id].ancla{scroll-margin-top:84px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* Siguiente paso (filas, tablero y ficha del pedido) */
-.paso{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:12.5px;line-height:1.3;color:var(--muted);min-width:0}
-.paso svg{width:14px;height:14px;flex:none}
-.paso span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.paso.equipo{color:var(--accent)}
-.kcard .paso{display:flex;margin:2px 0 8px}
+/* «Siguiente paso» en las listas del panel (no confundir con .paso, los pasos del pedido) */
+.sig-paso{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:12.5px;line-height:1.3;color:var(--muted);min-width:0}
+.sig-paso svg{width:14px;height:14px;flex:none}
+.sig-paso span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sig-paso.equipo{color:var(--accent)}
+.kcard .sig-paso{display:flex;margin:2px 0 8px}
 .od-paso{display:flex;align-items:center;flex-wrap:wrap;gap:10px 12px;margin:0 0 14px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card2)}
 .od-paso.equipo{border-color:rgba(200,245,96,.35);background:var(--accent-soft)}
 .od-paso-ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--card);color:var(--muted);border:1px solid var(--line)}
@@ -1154,9 +1155,7 @@ body.vista-body .demo-banner,body.vista-body .anuncio,body.vista-body::before{di
 .aviso-legal-ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;background:rgba(251,191,36,.12);color:var(--warn)}
 .aviso-legal-ic svg{width:20px;height:20px}
 
-/* Resumen del pedido: los textos legales se leen enteros (.paso span los cortaba en una línea) */
-.paso .rs-legal span,.paso .rs-terms span{white-space:normal;overflow:visible;text-overflow:clip}
-.paso .rs-inicio > span{display:block}
+
 .rs-terms .gl-checkbox{align-items:flex-start}
 .rs-terms .gl-checkbox__label{min-width:0}
 /* Botón final: el texto legal completo («pedido con obligación de pago», art. 98.2 TRLGDCU) cabe en el móvil */
