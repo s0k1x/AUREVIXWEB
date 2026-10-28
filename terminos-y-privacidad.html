@@ -35,29 +35,52 @@
   <script>/* Al recargar o volver atrás no se repiten las animaciones de entrada */try{var n=performance.getEntriesByType('navigation')[0];if(n&&(n.type==='reload'||n.type==='back_forward'))document.documentElement.classList.add('sin-entrada')}catch(e){}</script>
   <link rel="preload" as="image" href="icons/logo-a.png">
   <link rel="preload" as="image" href="icons/nombre.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="preload" href="fuentes/instrument-sans-latin-046090.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fuentes/bricolage-grotesque-latin-a97232.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fuentes/fuentes.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="componentes.css">
   <link rel="stylesheet" href="animaciones.css">
   <link rel="stylesheet" href="funciones.css">
   <link rel="stylesheet" href="tema-claro.css">
   <style>
-    .legal{max-width:calc(820px + 2 * var(--gutter));padding-top:50px;padding-bottom:80px}
-    .legal h1{font-size:clamp(36px,6vw,54px);font-weight:800;margin:14px 0 10px}
-    .legal .upd{color:var(--muted);font-size:14px;margin-bottom:30px}
-    .legal nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px}
-    .legal h2{font-size:28px;margin:46px 0 14px;scroll-margin-top:90px}
-    .legal h3{font-size:18px;margin:26px 0 8px;font-family:var(--fb);font-weight:600;letter-spacing:0}
-    .legal p,.legal li{color:#cfccc3;font-size:15.5px;line-height:1.7}
-    .legal ul{padding-left:20px;display:grid;gap:6px}
+    .legal{display:grid;grid-template-columns:230px minmax(0,1fr);gap:56px;padding-top:50px;padding-bottom:90px;max-width:1180px}
+    .legal-ind{position:sticky;top:96px;align-self:start;display:grid;gap:2px;font-size:14px}
+    .legal-ind b{font-size:13px;color:var(--muted);font-weight:600;margin:0 0 8px 10px}
+    .legal-ind a{padding:7px 10px;border-radius:9px;color:var(--muted);transition:background-color .18s ease,color .18s ease}
+    .legal-ind a:hover{background:var(--card);color:var(--text)}
+    .legal-ind a.on{background:var(--card2);color:var(--text)}
+    .legal-cuerpo{max-width:70ch;min-width:0}
+    .legal h1{font-size:clamp(34px,5.4vw,52px);font-weight:800;margin:0 0 10px;text-wrap:balance}
+    .legal .upd{color:var(--muted);font-size:14px;margin-bottom:22px}
+    .legal .resumen{padding:18px 20px;border-radius:16px;background:var(--card);border:1px solid var(--line);margin:0 0 10px}
+    .legal .resumen ul{gap:8px}
+    .legal h2{font-size:clamp(24px,3.4vw,30px);margin:56px 0 14px;scroll-margin-top:96px;text-wrap:balance}
+    .legal h3{font-size:17.5px;margin:28px 0 8px;font-family:var(--fb);font-weight:600;letter-spacing:0;scroll-margin-top:96px}
+    .legal p,.legal li,.legal dd{color:#cfccc3;font-size:15.5px;line-height:1.7}
+    .legal p{margin:0 0 12px}
+    .legal ul,.legal ol{padding-left:20px;display:grid;gap:6px;margin:0 0 12px}
     .legal .box{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line);margin:16px 0}
+    .legal dl{display:grid;grid-template-columns:minmax(110px,auto) 1fr;gap:8px 18px;margin:0}
+    .legal dt{color:var(--muted);font-size:14px;padding-top:2px}
+    .legal dd{margin:0;color:var(--text);overflow-wrap:anywhere}
     .legal b{color:var(--text)}
-    .legal table{width:100%;border-collapse:collapse;font-size:14.5px;margin:12px 0}
-    .legal th,.legal td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);color:#cfccc3;vertical-align:top}
-    .legal th{color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.06em}
+    .legal-cuerpo a:not(.btn){color:var(--accent);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+    .legal .tabla{overflow-x:auto;margin:12px 0 16px;border:1px solid var(--line);border-radius:14px}
+    .legal table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+    .legal th,.legal td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);color:#cfccc3;vertical-align:top}
+    .legal tr:last-child td{border-bottom:0}
+    .legal th{color:var(--muted);font-size:12.5px;font-weight:600;background:var(--card)}
+    .legal td code{font:500 12.5px var(--fm);color:var(--text)}
+    .legal .modelo{padding:20px 22px;border:1px dashed var(--line2);border-radius:14px;background:var(--bg2)}
+    .legal .modelo p{margin:0 0 8px}
     html[data-tema=claro] .legal p,html[data-tema=claro] .legal li,html[data-tema=claro] .legal td{color:#36342f}
+    @media (max-width:900px){
+      .legal{grid-template-columns:1fr;gap:0;padding-top:30px}
+      .legal-ind{position:static;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px}
+      .legal-ind b{width:100%;margin:0 0 2px}
+      .legal-ind a{border:1px solid var(--line);font-size:13.5px}
+    }
   </style>
   <script>/* Sin zoom (ni doble toque ni pellizco) */document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});document.addEventListener('gesturechange',function(e){e.preventDefault()},{passive:false})</script>
 </head>
@@ -65,101 +88,186 @@
 <div class="splash listo" id="splash0" aria-hidden="true"><div class="brand-card splash-card"><div class="border"></div><div class="content"><div class="logo"><div class="logo1"><img src="icons/logo-a.png" alt=""></div><div class="logo2"><img src="icons/nombre.png" alt="AurevixWeb"></div></div><span class="logo-bottom-text">Webs profesionales</span></div><span class="bottom-text">Diseño web</span></div></div>
 <script>(function(){var s=document.getElementById('splash0'),h=document.documentElement;if(!s)return;if(!h.classList.contains('intro')){s.remove();return}try{sessionStorage.setItem('tm_intro','1')}catch(e){}s.classList.add('vivo');var c=s.querySelector('.brand-card');setTimeout(function(){c&&c.classList.add('on')},200);var t0=Date.now(),done=false;function fin(){if(done)return;done=true;h.classList.remove('intro');s.classList.add('out');setTimeout(function(){s.remove()},600)}function tick(){var e=Date.now()-t0;if(e>=2300&&(document.readyState==='complete'||e>=4500))fin();else setTimeout(tick,100)}tick();s.addEventListener('click',fin)})();</script>
   <header id="header"></header>
-  <main class="wrap legal">
-    <span class="eyebrow">Legal</span>
-    <h1>Términos y privacidad</h1>
-    <p class="upd">Última actualización: <span id="upd"></span></p>
-    <nav><a class="btn btn-sm btn-ghost" href="#terminos">Términos</a><a class="btn btn-sm btn-ghost" href="#propiedad">Propiedad intelectual</a><a class="btn btn-sm btn-ghost" href="#privacidad">Privacidad</a><a class="btn btn-sm btn-ghost" href="#cookies">Cookies</a></nav>
+  <main class="wrap legal" id="contenido">
+    <nav class="legal-ind" aria-label="Índice">
+      <b>En esta página</b>
+      <a href="#aviso-legal">Aviso legal</a>
+      <a href="#condiciones">Condiciones de contratación</a>
+      <a href="#desistimiento">Desistimiento</a>
+      <a href="#garantia">Garantía y reclamaciones</a>
+      <a href="#propiedad">Propiedad intelectual</a>
+      <a href="#privacidad">Privacidad</a>
+      <a href="#cookies">Cookies</a>
+      <a href="#opiniones">Opiniones</a>
+    </nav>
+    <div class="legal-cuerpo">
+    <h1>Aviso legal, condiciones y privacidad</h1>
+    <p class="upd">Versión vigente desde el <span data-cond></span>.</p>
+    <div class="resumen">
+      <p><b>Lo importante, en corto</b></p>
+      <ul>
+        <li>Los precios son finales, con el <span data-iva></span> de IVA incluido. Se paga solo por transferencia bancaria.</li>
+        <li>Pagas una señal del <span data-senal></span> al empezar y el resto cuando apruebas la web.</li>
+        <li>Tienes 14 días naturales para desistir del contrato sin dar explicaciones, desde «Mis proyectos».</li>
+        <li>No usamos cookies de publicidad ni de seguimiento, y no vendemos tus datos.</li>
+      </ul>
+    </div>
 
-    <div class="box" id="titular"></div>
+    <h2 id="aviso-legal">Aviso legal</h2>
+    <p>En cumplimiento del artículo 10 de la Ley 34/2002, de servicios de la sociedad de la información y de comercio electrónico (LSSI-CE), estos son los datos del titular de la web:</p>
+    <div class="box"><dl>
+      <dt>Titular</dt><dd data-l="titular"></dd>
+      <dt>NIF</dt><dd data-l="nif"></dd>
+      <dt>Domicilio</dt><dd data-l="domicilio"></dd>
+      <dt>Correo</dt><dd data-l="email"></dd>
+      <dt>Actividad</dt><dd data-l="actividad"></dd>
+      <dt>Nombre comercial</dt><dd data-lmarca></dd>
+      <dt>Web</dt><dd data-web></dd>
+    </dl></div>
+    <p>El titular es un profesional autónomo; la actividad no requiere inscripción en un registro público ni autorización administrativa previa. El uso de la web implica aceptar este aviso legal.</p>
 
-    <h2 id="terminos">Términos y condiciones</h2>
-    <h3>1. Objeto</h3>
-    <p>Estas condiciones regulan la contratación de servicios de diseño y desarrollo de páginas web a través de esta web. Al confirmar un pedido declaras haberlas leído y aceptado.</p>
-    <h3>2. Pedido y presupuesto</h3>
-    <p>Los precios mostrados son precios de partida. El total se calcula en el cuestionario según el tipo de web, los extras y el plazo elegidos, y se muestra antes de confirmar. Tras recibir el pedido nos pondremos en contacto contigo para revisar los detalles; si hubiera que ajustar algo, te lo comunicaremos antes de empezar.</p>
-    <h3>3. Pagos</h3>
+    <h2 id="condiciones">Condiciones de contratación</h2>
+    <p>Estas condiciones generales (Ley 7/1998 y Real Decreto Legislativo 1/2007, Ley General para la Defensa de los Consumidores y Usuarios, «TRLGDCU») regulan la contratación a distancia de servicios de diseño y desarrollo de páginas web a través de esta web. Se aceptan al confirmar el pedido y se guarda la versión aceptada. Puedes guardarlas o imprimirlas desde esta página.</p>
+    <h3>1. Quién puede contratar</h3>
+    <p>Personas mayores de edad con capacidad para contratar, ya sean consumidores o profesionales. Las condiciones que protegen a los consumidores (desistimiento, garantía) solo se aplican cuando contratas para un fin ajeno a una actividad empresarial o profesional, salvo que la ley diga otra cosa.</p>
+    <h3>2. Cómo se contrata</h3>
+    <ol>
+      <li>Eliges el tipo de web y respondes al cuestionario.</li>
+      <li>Antes de confirmar ves el resumen con el precio total, los extras, el plazo, estas condiciones y el derecho de desistimiento, y puedes corregir cualquier dato volviendo atrás.</li>
+      <li>El contrato se celebra al pulsar «Confirmar pedido con obligación de pago». Recibes la referencia en pantalla y en «Mis proyectos», desde donde puedes descargar el resumen del pedido.</li>
+    </ol>
+    <p>El contrato se celebra en español. Guardamos el pedido y lo tienes siempre disponible en tu cuenta.</p>
+    <h3>3. Precio e impuestos</h3>
+    <p>Todos los precios están en euros y son <b>precios finales con el <span data-iva></span> de IVA incluido</b>. Los precios «desde» son el punto de partida de cada tipo de web; el total exacto, con extras, entrega urgente y descuentos, se muestra antes de confirmar. Si después de hablar contigo hubiera que cambiar el alcance del trabajo, te enviaremos un nuevo presupuesto y solo se aplicará si lo aceptas por escrito.</p>
+    <h3>4. Pago</h3>
     <ul>
-      <li>Para empezar se abona una señal del <b data-senal></b> del total. El resto se paga al entregar la web.</li>
-      <li>Formas de pago: las que aparecen al pagar (Bizum y transferencia bancaria). No almacenamos datos de tarjetas ni de cuentas bancarias de los clientes.</li>
-      <li>El trabajo comienza cuando se confirma la recepción de la señal.</li>
-      <li>Códigos de descuento: se aplican al revisar el pedido y no son acumulables. El descuento de bienvenida solo vale para la primera web de cada cliente; si se usa en un pedido posterior, se retira y se cobra el precio sin descuento.</li>
+      <li>La única forma de pago es la <b>transferencia bancaria</b> a la cuenta que aparece al pagar. No cobramos comisiones y no pedimos ni guardamos datos de tarjetas.</li>
+      <li>Se abona una señal del <span data-senal></span> del total para empezar y el resto cuando la web está terminada y la has aprobado. Si contratas el mantenimiento mensual, se cobra aparte cada mes desde la publicación.</li>
+      <li>Por cada pago emitimos la factura correspondiente, con tus datos de facturación (Ajustes → Facturación).</li>
+      <li>Los códigos de descuento no son acumulables. El descuento de bienvenida solo vale para la primera web de cada cliente.</li>
     </ul>
-    <h3>4. Plazos y revisiones</h3>
-    <p>El plazo de entrega va de una semana a un mes según el tipo de web, y se indica en cada plan y en «Mis proyectos». Los plazos empiezan a contar desde que se recibe la señal y el contenido necesario (textos, fotos, logotipo) y pueden ampliarse si el contenido llega tarde o se piden cambios importantes. Cada plan incluye las revisiones razonables para ajustar el diseño acordado.</p>
-    <h3>4 bis. Comunicaciones</h3>
-    <p>Atendemos exclusivamente por escrito: por correo electrónico a <b data-email></b>, mediante el formulario de contacto o desde la sección «Mis proyectos» de tu cuenta (mensajes y soporte). Las comunicaciones hechas por estos canales tienen plena validez a efectos del pedido.</p>
-    <h3>5. Contenido del cliente</h3>
-    <p>Eres responsable de tener derechos sobre los textos, imágenes y marcas que nos facilites. Los diseños de partida son una base que adaptamos a tu negocio.</p>
-    <h3>6. Propiedad de la web entregada</h3>
-    <p>Una vez abonado el total, te cedemos el derecho de uso de la web entregada para tu negocio, sin límite de tiempo. El dominio y el contenido que nos facilitas son tuyos. Los diseños de partida, plantillas, componentes y el código base siguen siendo propiedad de AurevixWeb (ver «Propiedad intelectual»): no se pueden revender, sublicenciar ni reutilizar para otras webs sin autorización escrita. Podemos mostrar tu web en nuestro portfolio salvo que nos indiques lo contrario.</p>
-    <h3>7. Cancelación</h3>
-    <p>Puedes cancelar el pedido antes de que empecemos a trabajar y te devolveremos la señal. Si ya hemos empezado, la señal cubre el trabajo realizado hasta ese momento.</p>
+    <h3>5. Plazos y ejecución</h3>
+    <p>El plazo de entrega de cada tipo de web aparece en su ficha y en «Mis proyectos». Cuenta desde que recibimos la señal y el contenido necesario (textos, fotos y logotipo) y puede ampliarse si el contenido llega tarde o pides cambios importantes. Si no nos pides expresamente que empecemos antes, el trabajo empieza cuando termina el plazo de desistimiento de 14 días. Cada plan incluye las revisiones razonables para ajustar el diseño acordado; la web se te enseña en una vista previa antes de aprobarla.</p>
+    <h3>6. Tu contenido</h3>
+    <p>Eres responsable de tener derechos sobre los textos, imágenes y marcas que nos facilites y de que la información de tu web sea veraz. No publicaremos contenidos ilícitos.</p>
+    <h3>7. Propiedad de la web entregada</h3>
+    <p>Una vez pagado el total, te cedemos el uso de la web entregada para tu negocio, sin límite de tiempo. El dominio y el contenido que nos das son tuyos. Los diseños de partida, plantillas, componentes y el código base siguen siendo de su titular (ver «Propiedad intelectual»). Solo mostraremos tu web en nuestro portfolio si nos das permiso.</p>
     <h3>8. Mantenimiento</h3>
-    <p>El mantenimiento mensual, si lo contratas, se puede cancelar en cualquier momento avisando con 15 días de antelación.</p>
-    <h3>9. Opiniones</h3>
-    <p>Las opiniones que publiques deben reflejar tu experiencia real. Las revisamos antes de mostrarlas y podemos no publicar las que contengan datos personales, insultos o spam.</p>
+    <p>El mantenimiento mensual se puede cancelar en cualquier momento, con efecto al final del mes en curso, escribiendo al correo de contacto o desde «Ayuda y soporte».</p>
+    <h3>9. Comunicaciones</h3>
+    <p>Atendemos por escrito: por correo a <span data-email></span>, por el formulario de contacto o desde «Mis proyectos» (mensajes y soporte). Respondemos en un plazo máximo de 24 horas laborables.</p>
+    <h3>10. Ley aplicable</h3>
+    <p>Estas condiciones se rigen por la ley española. Si eres consumidor, son competentes los juzgados de tu domicilio.</p>
 
-    <h2 id="propiedad">Propiedad intelectual y licencia</h2>
-    <p><b>© AurevixWeb. Todos los derechos reservados.</b></p>
-    <p>Esta web y todos sus elementos —diseño, aspecto visual, estructura, textos, logotipos, marca «AurevixWeb», iconos, ilustraciones, imágenes propias, diseños de partida, plantillas, animaciones y código fuente (HTML, CSS y JavaScript)— son propiedad exclusiva de AurevixWeb o de sus licenciantes y están protegidos por el Real Decreto Legislativo 1/1996 (Ley de Propiedad Intelectual), la Ley 17/2001 de Marcas y los tratados internacionales aplicables.</p>
+    <h2 id="desistimiento">Derecho de desistimiento</h2>
+    <p>Si eres consumidor, tienes derecho a desistir del contrato en un plazo de <b>14 días naturales</b> sin dar ninguna explicación (artículos 102 a 108 del TRLGDCU). El plazo empieza el día en que confirmas el pedido.</p>
+    <h3>Cómo desistir</h3>
     <ul>
-      <li>Queda <b>prohibida</b> la reproducción, distribución, comunicación pública, transformación, copia, descarga para su reutilización, extracción, ingeniería inversa o cualquier otra forma de explotación, total o parcial, de esta web o de sus elementos, por cualquier medio, sin la <b>autorización previa y por escrito</b> de AurevixWeb.</li>
-      <li>No se concede ninguna licencia ni derecho sobre la web por el mero hecho de visitarla. Solo puedes verla para tu uso personal y para contratar nuestros servicios.</li>
-      <li>Queda prohibido copiar o imitar los diseños de partida para crear webs propias o de terceros, así como usar la marca o el logotipo de AurevixWeb sin permiso.</li>
-      <li>Queda prohibido el uso de robots, scrapers u otras herramientas automáticas para extraer contenido o datos de la web, incluido su uso para entrenar sistemas de inteligencia artificial.</li>
-      <li>Las fotografías de los diseños de ejemplo proceden de bancos de imágenes con licencia libre y pertenecen a sus autores.</li>
+      <li><b>Desde la web</b>: en «Mis proyectos», abre el proyecto y pulsa <b>«Desistir del contrato»</b>. Te pedimos una confirmación y te damos un justificante con la fecha y la hora.</li>
+      <li>O enviándonos una declaración clara por correo a <span data-email></span>. Puedes usar el modelo de abajo, aunque no es obligatorio.</li>
     </ul>
-    <p>El incumplimiento de estas condiciones podrá dar lugar a las acciones civiles y penales que correspondan. Para solicitar una autorización, escribe a <b data-email></b>.</p>
+    <p>Basta con que envíes la comunicación antes de que termine el plazo. Te confirmaremos la recepción por correo.</p>
+    <h3>Qué pasa después</h3>
+    <p>Te devolveremos todos los pagos recibidos sin demora indebida y, como máximo, en 14 días naturales desde que nos comunicas el desistimiento, por transferencia a la cuenta que nos indiques, sin ningún coste para ti.</p>
+    <h3>Si nos pediste empezar antes</h3>
+    <p>Si al hacer el pedido marcaste que querías que empezáramos durante el plazo de desistimiento y después desistes, tendrás que pagar la parte proporcional del trabajo ya hecho hasta ese momento (artículo 108.3 del TRLGDCU). Si el servicio ya se ha prestado por completo —la web está terminada y entregada—, ya no se puede desistir, porque así lo aceptaste expresamente (artículo 103.a).</p>
+    <h3>Modelo de formulario de desistimiento</h3>
+    <div class="modelo">
+      <p>A la atención de <span data-l="titular"></span>, <span data-l="domicilio"></span>, <span data-l="email"></span>:</p>
+      <p>Por la presente le comunico que desisto de mi contrato de prestación del siguiente servicio: ____________</p>
+      <p>Pedido el (fecha) y referencia: ____________</p>
+      <p>Nombre del consumidor: ____________</p>
+      <p>Domicilio del consumidor: ____________</p>
+      <p>Firma del consumidor (solo si se envía en papel) y fecha: ____________</p>
+    </div>
+
+    <h2 id="garantia">Garantía y reclamaciones</h2>
+    <p>Respondemos de que la web entregada sea conforme con lo contratado, en los términos y plazos de los artículos 114 y siguientes del TRLGDCU. Si algo no funciona como debe, escríbenos y lo arreglaremos sin coste.</p>
+    <p>Si tienes una queja, escríbenos a <span data-email></span> o desde «Ayuda y soporte»: te responderemos en un máximo de un mes. Tenemos hojas de reclamaciones a tu disposición; pídenoslas por correo. También puedes acudir a los servicios de consumo de tu comunidad autónoma o de tu ayuntamiento.</p>
+
+    <h2 id="propiedad">Propiedad intelectual</h2>
+    <p><b>© <span data-lmarca></span>. Todos los derechos reservados.</b> La web y sus elementos —diseño, textos, marca y logotipo, iconos, diseños de partida, plantillas, animaciones y código fuente— pertenecen a su titular o a sus licenciantes y están protegidos por el Real Decreto Legislativo 1/1996 (Ley de Propiedad Intelectual) y la Ley 17/2001 de Marcas.</p>
+    <ul>
+      <li>No se permite reproducir, distribuir, transformar ni reutilizar la web o sus elementos sin autorización previa y por escrito.</li>
+      <li>Visitar la web no da ninguna licencia: solo puedes verla para tu uso personal y para contratar nuestros servicios.</li>
+      <li>No se permite usar robots o herramientas automáticas para extraer contenido, tampoco para entrenar sistemas de inteligencia artificial.</li>
+      <li>Las fotografías de los diseños de ejemplo proceden de Pexels (licencia libre) y pertenecen a sus autores. Las fuentes tipográficas tienen licencia SIL Open Font License (ver <a href="fuentes/OFL.txt">fuentes/OFL.txt</a>).</li>
+    </ul>
 
     <h2 id="privacidad">Política de privacidad</h2>
+    <p>Tratamos tus datos de acuerdo con el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).</p>
     <h3>Responsable</h3>
-    <p>El responsable del tratamiento es el titular indicado arriba.</p>
-    <h3>Qué datos tratamos y para qué</h3>
+    <p><span data-l="titular"></span> (NIF <span data-l="nif"></span>), <span data-l="domicilio"></span>. Contacto: <span data-l="email"></span>.</p>
+    <h3>Qué datos tratamos, para qué y con qué base legal</h3>
+    <div class="tabla"><table>
+      <thead><tr><th>Datos</th><th>Para qué</th><th>Base legal</th><th>Cuánto tiempo</th></tr></thead>
+      <tbody>
+        <tr><td><b>Cuenta</b>: nombre, correo y foto (si entras con Google)</td><td>Identificarte y que sigas tus proyectos</td><td>Contrato (art. 6.1.b RGPD)</td><td>Hasta que borres tu cuenta</td></tr>
+        <tr><td><b>Pedidos</b>: cuestionario, teléfono, contenido, dominio</td><td>Preparar y hacer tu web</td><td>Contrato (6.1.b)</td><td>Mientras dure el servicio y después 6 años (art. 30 del Código de Comercio)</td></tr>
+        <tr><td><b>Mensajes, archivos y la web subida</b></td><td>Hacer tu web, enseñártela y atenderte</td><td>Contrato (6.1.b)</td><td>Mientras tengas cuenta, para poder hacerte cambios; puedes pedir que los borremos cuando quieras</td></tr>
+        <tr><td><b>Facturación y pagos</b>: razón social, NIF, dirección, avisos de pago</td><td>Emitir facturas y llevar la contabilidad</td><td>Obligación legal (6.1.c)</td><td>Los plazos de la normativa mercantil y tributaria (hasta 6 años)</td></tr>
+        <tr><td><b>Consultas y contacto</b></td><td>Responderte</td><td>Tu solicitud (6.1.b) o tu consentimiento (6.1.a)</td><td>Hasta 1 año después de resolverla</td></tr>
+        <tr><td><b>Candidaturas</b>: nombre, teléfono, experiencia, enlaces</td><td>El proceso de selección</td><td>Consentimiento (6.1.a)</td><td>12 meses</td></tr>
+        <tr><td><b>Vendedores y creadores</b>: datos de cobro (titular, IBAN, NIF), ventas y vídeos</td><td>Pagar comisiones y vídeos</td><td>Contrato (6.1.b) y obligación legal (6.1.c)</td><td>Mientras dure la colaboración y los plazos legales</td></tr>
+        <tr><td><b>Opiniones</b></td><td>Publicarlas con tu nombre si las aprobamos</td><td>Consentimiento (6.1.a)</td><td>Hasta que pidas quitarlas</td></tr>
+        <tr><td><b>Datos técnicos</b>: registros de acceso e IP</td><td>Seguridad de la web y evitar abusos</td><td>Interés legítimo (6.1.f)</td><td>Los que fijan los proveedores (normalmente días)</td></tr>
+      </tbody>
+    </table></div>
+    <p>No tomamos decisiones automatizadas ni elaboramos perfiles. No enviamos publicidad. Los datos marcados como obligatorios en cada formulario son necesarios para atenderte; sin ellos no podríamos prestar el servicio.</p>
+    <h3>Quién más trata tus datos</h3>
+    <p>No vendemos ni cedemos tus datos a terceros, salvo obligación legal. Usamos estos proveedores, que tratan datos por nuestra cuenta con contrato de encargo de tratamiento:</p>
     <ul>
-      <li><b>Cuenta</b> (nombre, email y foto si entras con Google): para identificarte y que puedas seguir tus pedidos.</li>
-      <li><b>Pedidos</b> (respuestas del cuestionario, teléfono): para preparar tu presupuesto, hacer tu web y contactarte.</li>
-      <li><b>Mensajes, archivos y consultas</b> (lo que escribes y subes en «Mis proyectos», en soporte o en el formulario de contacto): para hacer tu web y atenderte.</li>
-      <li><b>Datos de facturación y de cobro</b> (razón social, NIF, dirección, IBAN de los vendedores): para emitir recibos y pagar comisiones. Solo los ve el propietario.</li>
-      <li><b>Avisos</b>: para informarte de cambios en tus proyectos.</li>
-      <li><b>Candidaturas</b> (nombre, teléfono, experiencia, enlaces): para el proceso de selección.</li>
-      <li><b>Opiniones</b>: para publicarlas en la web con tu nombre si las aprobamos.</li>
+      <li><b>Supabase Inc.</b> (cuentas, base de datos y archivos). Los datos se guardan en servidores de la Unión Europea (Irlanda).</li>
+      <li><b>GitHub Inc.</b> (alojamiento de la web): registra la IP de las visitas por seguridad.</li>
+      <li><b>Google</b>: inicio de sesión con Google, si lo eliges, y el asistente del chat, que envía tus mensajes a Gemini para generar la respuesta. No escribas datos personales en el chat.</li>
+      <li><b>Pexels</b>: sirve las fotos de los diseños de ejemplo, por lo que recibe la IP de quien las ve.</li>
+      <li><b>Trustpilot A/S</b>: solo si eres cliente y te invitamos a dejar una opinión allí; recibe tu nombre y correo para enviarte la invitación (interés legítimo, y puedes oponerte).</li>
     </ul>
-    <h3>Base legal</h3>
-    <p>La ejecución del contrato o de las medidas precontractuales que solicitas y, en el caso de las candidaturas y opiniones, tu consentimiento.</p>
-    <h3>Conservación</h3>
-    <p>Mientras dure la relación y durante los plazos legales que correspondan. Las candidaturas no seleccionadas se conservan un máximo de 12 meses.</p>
-    <h3>Con quién se comparten</h3>
-    <p>Usamos proveedores que tratan datos por nuestra cuenta: Supabase (alojamiento de cuentas, datos y archivos), Google (inicio de sesión con Google y asistente con inteligencia artificial Gemini, solo con los mensajes que escribes en el chat), GitHub Pages (alojamiento de la web). Las fuentes tipográficas se cargan desde Google Fonts y las imágenes de los diseños de ejemplo desde Pexels. No vendemos tus datos.</p>
+    <p>Algunos de estos proveedores son de Estados Unidos. Las transferencias internacionales se amparan en el Marco de Privacidad de Datos UE-EE. UU. o en las cláusulas contractuales tipo de la Comisión Europea. Las fuentes tipográficas están alojadas en esta web, así que no se piden a Google Fonts.</p>
     <h3>Tus derechos</h3>
-    <p>Puedes pedir acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <b data-email></b>. Desde <a href="ajustes#privacidad">Ajustes → Privacidad</a> puedes descargar una copia de tus datos y solicitar la eliminación de tu cuenta. También puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+    <p>Puedes pedir el <b>acceso</b>, la <b>rectificación</b>, la <b>supresión</b>, la <b>limitación</b>, la <b>portabilidad</b> y la <b>oposición</b>, y retirar tu consentimiento en cualquier momento, escribiendo a <span data-l="email"></span>. Desde <a href="ajustes#privacidad">Ajustes → Privacidad</a> puedes descargar tus datos y pedir que borremos tu cuenta. Si crees que no los tratamos bien, puedes reclamar ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener">aepd.es</a>).</p>
+    <h3>Seguridad</h3>
+    <p>La web va siempre cifrada (HTTPS). Cada cliente solo puede ver sus propios proyectos y archivos, que no son públicos. Las vistas previas de las webs se abren aisladas y no pueden leer tu sesión.</p>
 
     <h2 id="cookies">Política de cookies</h2>
-    <p>Usamos cookies y tecnologías parecidas (almacenamiento local del navegador) solo para que la web funcione y, si lo aceptas, para recordar tus preferencias. <b>No usamos cookies de publicidad, de seguimiento ni de estadísticas.</b></p>
-    <table>
-      <thead><tr><th>Tipo</th><th>Para qué</th><th>Duración</th></tr></thead>
+    <p>Usamos solo almacenamiento <b>técnico</b>, necesario para que la web funcione, y de <b>preferencias</b>, que solo se guarda si lo aceptas. <b>No usamos cookies de publicidad, de seguimiento ni de estadísticas, ni de terceros.</b></p>
+    <div class="tabla"><table>
+      <thead><tr><th>Nombre</th><th>Tipo</th><th>Para qué</th><th>Duración</th></tr></thead>
       <tbody>
-        <tr><td><b>Necesarias</b></td><td>Mantener tu sesión iniciada (Supabase), la seguridad del inicio de sesión, tu elección sobre cookies y el funcionamiento sin conexión (caché de la app).</td><td>Hasta que cierres sesión o borres los datos del navegador</td></tr>
-        <tr><td><b>Preferencias</b></td><td>Tema claro u oscuro, tamaño de letra, borrador del cuestionario de compra, vista del panel y copia de los ajustes de la web para cargar más rápido.</td><td>Hasta que las borres o cambies tu elección</td></tr>
-        <tr><td><b>Estadísticas</b></td><td>No se usan.</td><td>—</td></tr>
+        <tr><td><code>sb-…-auth-token</code></td><td>Necesaria</td><td>Mantener tu sesión iniciada (Supabase)</td><td>Hasta que cierres sesión</td></tr>
+        <tr><td><code>tm_cookies</code></td><td>Necesaria</td><td>Recordar tu elección sobre cookies</td><td>Hasta que la cambies</td></tr>
+        <tr><td>Caché de la app, <code>tm_ajustes_web</code></td><td>Necesaria</td><td>Que la web abra rápido y funcione sin conexión (copia de los precios y avisos públicos de la web)</td><td>Hasta la próxima versión</td></tr>
+        <tr><td><code>tm_apariencia</code>, <code>tm_borrador</code>, <code>tm_vista</code>, <code>tm_visor_disp</code></td><td>Preferencias que eliges tú</td><td>Tema, tamaño de letra, borrador del pedido y cómo ves el panel y la vista previa. Si rechazas las cookies, no se guardan</td><td>Hasta que las borres o rechaces</td></tr>
+        <tr><td><code>tm_ref</code></td><td>Preferencias (solo si aceptas)</td><td>Recordar el vendedor que te recomendó si llegas desde su enlace. Sin tu permiso solo vale mientras tienes la página abierta</td><td>30 días</td></tr>
       </tbody>
-    </table>
-    <p>Puedes cambiar tu elección en cualquier momento desde el enlace «Cookies» del pie de página o en <a href="ajustes#privacidad">Ajustes → Privacidad y cookies</a>. También puedes borrarlas desde la configuración de tu navegador. Los servicios externos que cargan recursos (Google Fonts, Pexels) pueden recibir tu dirección IP al descargar fuentes e imágenes.</p>
+    </table></div>
+    <p>Puedes cambiar tu elección cuando quieras desde «Cookies» en el pie de página o en Ajustes → Privacidad, y borrarlas desde tu navegador.</p>
     <p><button class="btn btn-sm btn-ghost" data-cookies>Configurar cookies</button></p>
 
-    <div class="box"><p style="margin:0;font-size:14px">Aviso: este texto es una plantilla orientativa. Revísalo con un profesional antes de publicar la web.</p></div>
+    <h2 id="opiniones">Opiniones de clientes</h2>
+    <p>Solo pueden opinar los clientes que han contratado una web con nosotros y la tienen publicada: el botón para valorar aparece en su proyecto al final. Revisamos cada opinión antes de publicarla y no la modificamos. Publicamos tanto las positivas como las negativas; solo descartamos las que tienen insultos, datos personales de terceros o spam. No pagamos ni damos descuentos a cambio de opiniones.</p>
+    </div>
   </main>
   <footer id="footer"></footer>
 
   <script type="module">
     import { CONFIG } from './config.js';
-    import { $, $$, esc, arrancar } from './js/ui.js';
-    const L = CONFIG.legal || {};
-    $('#titular').innerHTML = `<p style="margin:0"><b>Titular:</b> ${esc(L.titular)} · <b>NIF:</b> ${esc(L.nif)} · <b>Domicilio:</b> ${esc(L.domicilio)} · <b>Email:</b> ${esc(L.email)}</p>`;
-    $('#upd').textContent = new Date(document.lastModified).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+    import { $$, arrancar } from './js/ui.js';
     await arrancar('terminos');
-    $$('[data-senal]').forEach(e => (e.textContent = CONFIG.senal + ' %'));
-    $$('[data-email]').forEach(e => (e.textContent = CONFIG.email || L.email));
+    // Los datos se pintan después de cargar los ajustes del negocio (pueden cambiarse desde Ajustes → Negocio)
+    const L = CONFIG.legal || {};
+    const pon = (sel, v) => $$(sel).forEach(e => (e.textContent = v || '—'));
+    ['titular', 'nif', 'domicilio', 'email', 'actividad'].forEach(k => pon(`[data-l="${k}"]`, L[k]));
+    pon('[data-lmarca]', CONFIG.marca);
+    pon('[data-web]', CONFIG.dominio || location.host);
+    pon('[data-senal]', CONFIG.senal + ' %');
+    pon('[data-iva]', (CONFIG.iva || 0) + ' %');
+    pon('[data-email]', CONFIG.email || L.email);
+    pon('[data-cond]', new Date(CONFIG.condiciones || document.lastModified).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }));
+    // Índice: marca el apartado que se está leyendo
+    const enlaces = $$('.legal-ind a');
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) enlaces.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id)); }), { rootMargin: '-20% 0px -70% 0px' });
+    $$('.legal h2[id]').forEach(h => io.observe(h));
   </script>
 </body>
 </html>

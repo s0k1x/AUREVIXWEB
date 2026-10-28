@@ -171,49 +171,14 @@ input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;bo
 .stars::after{content:"★★★★★";position:absolute;inset:0;width:calc(var(--v) / 5 * 100%);overflow:hidden;color:#ffa723;white-space:nowrap}
 
 /* ----------------------------------------------------------
-   10. MÉTODOS DE PAGO  (Uiverse · SmookyDev, sin Tailwind)
+   10. PAGO POR TRANSFERENCIA (importe y datos para copiar)
    ---------------------------------------------------------- */
-.pay-methods{display:grid;gap:8px}
-.pm{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.02);cursor:pointer;overflow:hidden;transition:all .5s}
-.pm:hover{background:rgba(255,255,255,.05)}
-.pm-l{display:flex;align-items:center;gap:12px;min-width:0}
-.pm-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.06);flex:none;transition:all .5s}
-.pm-ic svg{width:22px;height:22px}
-.pm-tx b{display:block;font-size:15px}
-.pm-tx small{display:block;font-size:12.5px;color:var(--muted);transform:translateY(110%);opacity:0;transition:all .6s;white-space:nowrap}
-.pm input{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--line2);flex:none;transition:all .3s;margin:0}
-.pm:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
-.pm:has(input:checked) .pm-ic{background:var(--accent);color:var(--ink)}
-.pm:has(input:checked) .pm-tx b{color:#eaffb8}
-.pm:has(input:checked) .pm-tx small{transform:none;opacity:1}
-.pm input:checked{border:6px solid var(--accent);background:var(--ink)}
-.pm input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.pm-tag{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:99px;background:rgba(74,222,128,.14);color:var(--ok);margin-left:6px;vertical-align:middle}
-
-/* ----------------------------------------------------------
-   11. TARJETA QUE GIRA  (Uiverse · Praashoo7, adaptada)
-   ---------------------------------------------------------- */
-.flip-card{background:transparent;width:280px;height:176px;perspective:1000px;color:#fff;margin:0 auto;cursor:pointer;font-size:16px}
-.flip-card-inner{position:relative;width:100%;height:100%;text-align:left;transition:transform .8s;transform-style:preserve-3d}
-.flip-card:hover .flip-card-inner,.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
-.flip-card-front,.flip-card-back{position:absolute;inset:0;border-radius:1rem;-webkit-backface-visibility:hidden;backface-visibility:hidden;overflow:hidden;
-  box-shadow:rgba(0,0,0,.4) 0 2px 2px,rgba(0,0,0,.3) 0 7px 13px -3px,rgba(255,255,255,.06) 0 -1px 0 inset}
-.flip-card-front{background:radial-gradient(circle at 85% 0%,rgba(200,245,96,.35),transparent 55%),linear-gradient(135deg,#1d1d24,#0f0f13)}
-.flip-card-back{background:#17171c;transform:rotateY(180deg)}
-.fcd-brand{position:absolute;top:16px;right:18px;font-family:var(--fd);font-weight:800;font-size:15px;letter-spacing:.02em;color:var(--accent)}
-.fcd-chip{position:absolute;top:44px;left:20px;width:40px;height:30px;border-radius:6px;background:linear-gradient(135deg,#e9d18f,#b8934a 60%,#e9d18f);box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
-.fcd-chip::before{content:"";position:absolute;inset:7px 0;border-top:1px solid rgba(0,0,0,.3);border-bottom:1px solid rgba(0,0,0,.3)}
-.fcd-chip::after{content:"";position:absolute;inset:0 13px;border-left:1px solid rgba(0,0,0,.3);border-right:1px solid rgba(0,0,0,.3)}
-.fcd-nfc{position:absolute;top:48px;left:70px;width:20px;height:20px;color:rgba(255,255,255,.7)}
-.fcd-num{position:absolute;left:20px;top:92px;font-family:ui-monospace,monospace;font-size:15px;letter-spacing:.14em;font-weight:700}
-.fcd-name{position:absolute;left:20px;bottom:18px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fcd-amount{position:absolute;right:18px;bottom:16px;text-align:right}
-.fcd-amount small{display:block;font-size:8px;letter-spacing:.14em;opacity:.6}
-.fcd-amount b{font-family:var(--fd);font-size:18px}
-.fcd-strip{position:absolute;left:0;right:0;top:22px;height:34px;background:repeating-linear-gradient(45deg,#303030,#303030 10px,#202020 10px,#202020 20px)}
-.fcd-sign{position:absolute;left:16px;top:72px;width:150px;height:28px;background:#fff;border-radius:3px}
-.fcd-cvv{position:absolute;left:176px;top:72px;width:70px;height:28px;background:#fff;border-radius:3px;color:#000;font-weight:700;display:grid;place-items:center;font-size:13px}
-.fcd-secure{position:absolute;left:16px;bottom:16px;font-size:11px;color:rgba(255,255,255,.6)}
+.pago-total{display:grid;gap:2px;justify-items:center;text-align:center;padding:20px 16px;margin:4px 0 18px;border-radius:16px;background:var(--accent-soft);border:1px solid rgba(200,245,96,.3)}
+.pago-total small{font-size:13px;color:var(--muted)}
+.pago-total b{font-family:var(--fd);font-size:clamp(34px,8vw,44px);letter-spacing:-.03em;line-height:1.1;font-variant-numeric:tabular-nums}
+.pago-total span{font-size:12.5px;color:var(--muted)}
+.pay-how{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.5;margin:0 0 10px}
+.pay-how svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--accent)}
 
 /* ----------------------------------------------------------
    12. BOTÓN DE PAGO CON TERMINAL  (Uiverse · Admin12121, adaptado)

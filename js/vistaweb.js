@@ -12,6 +12,7 @@ import * as store from './store.js';
 import { $, $$, esc, icono, toast, abrir, cerrar, ocupado, fecha, haceCuanto, tamano, refPedido, spinner } from './ui.js';
 import { conSinZoom } from './sinzoom.js';
 import { crearZip } from './zip.js';
+import { prefsPermitidas } from './cookies.js';
 
 /* ---------- Límites ---------- */
 export const MAX_ARCHIVO = 25 * 1024 * 1024; // el mismo que el de la carpeta de archivos
@@ -424,7 +425,7 @@ export function montarVisor(raiz, opciones) {
 
   $$('[data-disp]', raiz).forEach(b => b.addEventListener('click', () => {
     disp = b.dataset.disp;
-    try { localStorage.setItem('tm_visor_disp', disp); } catch { /* sin guardar */ }
+    if (prefsPermitidas()) try { localStorage.setItem('tm_visor_disp', disp); } catch { /* sin guardar */ }
     $$('[data-disp]', raiz).forEach(x => x.setAttribute('aria-pressed', x === b));
     encajar();
   }));

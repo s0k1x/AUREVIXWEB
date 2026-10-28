@@ -1,4 +1,5 @@
 /* --- style.css --- */
+html[data-tema=claro] .pago-total{border-color:rgba(79,133,12,.28)}
 html[data-tema=claro] .btn-primary:hover{background:#5c9a10}
 html[data-tema=claro] .btn-ghost{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .icon-btn{background:rgba(20,20,26,0.027)}
@@ -47,15 +48,6 @@ html[data-tema=claro] .search-group .input::placeholder{color:#6f6c64}
 html[data-tema=claro] .search-group .input:hover{box-shadow:0 0 0 2.5px #d9d7cf,0 0 25px -15px #000}
 html[data-tema=claro] .search-icon{fill:#6f6c64}
 html[data-tema=claro] .rating > label{color:#c9c6bc}
-html[data-tema=claro] .pm{background:rgba(20,20,26,0.018)}
-html[data-tema=claro] .pm:hover{background:rgba(20,20,26,0.045)}
-html[data-tema=claro] .pm-ic{background:rgba(20,20,26,0.054)}
-html[data-tema=claro] .pm:has(input:checked) .pm-tx b{color:#2e4f0a}
-html[data-tema=claro] .flip-card-front,html[data-tema=claro] .flip-card-back{box-shadow:rgba(0,0,0,.4) 0 2px 2px,rgba(0,0,0,.3) 0 7px 13px -3px,rgba(20,20,26,0.054) 0 -1px 0 inset}
-html[data-tema=claro] .flip-card-front{background:radial-gradient(circle at 85% 0%,rgba(79,133,12,.35),transparent 55%),linear-gradient(135deg,#ffffff,#0f0f13)}
-html[data-tema=claro] .flip-card-back{background:#f4f3ee}
-html[data-tema=claro] .fcd-nfc{color:rgba(20,20,26,0.63)}
-html[data-tema=claro] .fcd-secure{color:rgba(20,20,26,0.54)}
 html[data-tema=claro] .pay-cta .pc-card-line{background:#6aa61c}
 html[data-tema=claro] .pay-cta .pc-euro{color:#d8eeac}
 html[data-tema=claro] .brand-card{--bg:#ffffff}
@@ -149,7 +141,6 @@ html[data-tema=claro] .btn-primary,html[data-tema=claro] .msg.yo,html[data-tema=
 html[data-tema=claro] .btn-dark{background:#16161b;color:#c8f560}
 html[data-tema=claro] .kpis .kpi:first-child{color:#fff}
 html[data-tema=claro] .kpis .kpi:first-child small,html[data-tema=claro] .kpis .kpi:first-child span{color:rgba(255,255,255,.78)}
-html[data-tema=claro] .etapas .hecha .et-ic,html[data-tema=claro] .pg-fila.ok .pg-ic,html[data-tema=claro] .pm:has(input:checked) .pm-ic{color:#fff}
 html[data-tema=claro] .wordmark,html[data-tema=claro] .brand-card .logo2 img,html[data-tema=claro] .splash-nombre{content:url(icons/nombre-oscuro.png)}
 html[data-tema=claro] .toast{background:#16161b;color:#fff}
 html[data-tema=claro] .header.scrolled,html[data-tema=claro] .header.open{border-color:var(--line)}

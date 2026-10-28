@@ -8,9 +8,10 @@ import { contar } from './efectos.js';
 import * as store from './store.js';
 import {
   $, $$, esc, euros, fecha, fechaCorta, haceCuanto, icono, avatar, toast, abrir, cerrar, arrancar, pedirLogin, mailLink, refPedido,
-  ESTADOS, PAGOS, METODOS, cargandoHTML, errorCargaHTML, metaHTML, ocupado, campo, estrellas, etiquetas, TAREAS, progreso, copiar, descargar, tamano
+  ESTADOS, PAGOS, METODOS, cargandoHTML, errorCargaHTML, metaHTML, ocupado, campo, estrellas, etiquetas, TAREAS, progreso, copiar, descargar, tamano, datosLegalesPendientes
 } from './ui.js';
 import { montarHilo, montarArchivos, abrirRecibo, descargarArchivosCliente } from './colabora.js';
+import { prefsPermitidas } from './cookies.js';
 import { prepararArchivos, crearVersion, abrirVisor, enlaceVista } from './vistaweb.js';
 
 await arrancar('panel');
@@ -225,11 +226,16 @@ function resumen() {
     ...abiertas.slice(0, 5).map(t => ({ ic: 'help', t: `Responder: ${t.asunto}`, go: 'soporte' }))
   ];
 
+  const faltan = datosLegalesPendientes();
   body.innerHTML = `
+    ${faltan.length ? `<a class="card aviso-legal" href="ajustes#negocio">
+      <span class="aviso-legal-ic">${icono('alert')}</span>
+      <span><b>Antes de vender, completa tus datos</b><small>Faltan: ${esc(faltan.join(', '))}. Son obligatorios en el aviso legal, las condiciones y los recibos, y los clientes los necesitan para pagarte. Se cambian en Ajustes → Negocio.</small></span>
+      ${icono('arrow')}</a>` : ''}
     <div class="kpis">
       ${kpi('Pedidos nuevos', P.filter(p => p.estado === 'nuevo').length, 'sin empezar', 'pedidos')}
       ${kpi('Cobrado', euros(cobrado), `de ${euros(volumen)} en pedidos`)}
-      ${kpi('Pagos por verificar', P.filter(p => p.pagoEstado === 'verificando').length, 'revisa Bizum / banco', 'pedidos')}
+      ${kpi('Pagos por verificar', P.filter(p => p.pagoEstado === 'verificando').length, 'revisa el banco', 'pedidos')}
       ${kpi('Retrasados', tarde.length, 'pasada la fecha de entrega', 'agenda', tarde.length ? 'mal' : '')}
       ${kpi('Consultas sin responder', abiertas.length, 'soporte y contacto', 'soporte', abiertas.length ? 'aviso' : '')}
       ${kpi('Ticket medio', euros(ticketMedio), `${vivos.length} pedido${vivos.length === 1 ? '' : 's'}`)}
@@ -293,7 +299,7 @@ function vistaPedidos() {
     ${vista === 'tablero' ? tablero(lista) : `<div class="rows card flush">${lista.map(p => filaPedido(p)).join('') || vacio('search', 'No hay pedidos aquí')}</div>`}`;
   $$('[data-vista]').forEach(b => b.addEventListener('click', () => {
     vista = b.dataset.vista;
-    try { localStorage.setItem('tm_vista', vista); } catch {}
+    if (prefsPermitidas()) try { localStorage.setItem('tm_vista', vista); } catch {}
     vistaPedidos();
   }));
   $('#csv').addEventListener('click', () => exportarCSV(lista));
@@ -633,12 +639,12 @@ function ventas() {
     if (!box.hidden) { box.hidden = true; return; }
     ocupado(e.currentTarget, true);
     try {
-      const { default: qrcode } = await import('https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/+esm');
+      const { default: qrcode } = await import('./vendor/qrcode.js');
       const q = qrcode(0, 'M'); q.addData(enlace); q.make();
       const url = q.createDataURL(8, 16);
       box.innerHTML = `<img src="${url}" alt="Código QR de tu enlace" width="220" height="220"><div><b>Tu código QR</b><p class="muted">Imprímelo en tarjetas o enséñalo en el móvil: al escanearlo se abre la web con tu enlace de ventas.</p><a class="btn btn-sm btn-primary" href="${url}" download="qr-${CONFIG.marca.toLowerCase()}.gif">${icono('download')}<span>Descargar</span></a></div>`;
       box.hidden = false;
-    } catch { toast('No se ha podido crear el código QR. Comprueba la conexión.', 'err'); }
+    } catch { toast('No se ha podido crear el código QR.', 'err'); }
     ocupado(e.currentTarget, false);
   });
   $('#objForm')?.addEventListener('submit', async e => {
@@ -846,7 +852,7 @@ body.addEventListener('click', async e => {
       try {
         const c = await store.leerPrivado(d.cobro);
         const u = datos.usuarios.find(x => x.uid === d.cobro);
-        alert(`Datos de cobro de ${u?.name || 'vendedor'}\n\nTitular: ${c.cobroTitular || '—'}\nIBAN: ${c.cobroIban || '—'}\nBizum: ${c.cobroBizum || '—'}\nNIF: ${c.nif || '—'}`);
+        alert(`Datos de cobro de ${u?.name || 'vendedor'}\n\nTitular: ${c.cobroTitular || '—'}\nIBAN: ${c.cobroIban || '—'}\nNIF: ${c.nif || '—'}`);
       } catch (err) { toast(err.message, 'err'); }
       return ocupado(t, false);
     }
@@ -928,7 +934,8 @@ function abrirPedido(id) {
       <div class="od-etapas-h"><span>Etapa del proyecto</span><b>${esc(et.txt)}</b>${puedeEditar ? '<small>Pulsa una etapa para cambiarla. El cliente la ve en «Mis proyectos».</small>' : ''}</div>
       ${barraEtapas(p, { editable: puedeEditar })}
     </div>
-    ${p.cancelacion && p.estado !== 'cancelado' ? `<div class="od-alerta">${icono('alert')}<div><b>El cliente pide cancelar el pedido</b><small>${haceCuanto(p.cancelacion.t)}${p.cancelacion.motivo ? ' · «' + esc(p.cancelacion.motivo) + '»' : ''}</small></div>
+    ${p.cancelacion && p.estado !== 'cancelado' ? `<div class="od-alerta">${icono('alert')}<div><b>${p.cancelacion.desistimiento ? 'El cliente ha ejercido su derecho de desistimiento' : 'El cliente pide cancelar el pedido'}</b><small>${new Date(p.cancelacion.t).toLocaleString('es-ES')}${p.cancelacion.motivo ? ' · «' + esc(p.cancelacion.motivo) + '»' : ''}${p.cancelacion.desistimiento ? ` · Confírmaselo por correo y devuélvele lo pagado por transferencia en 14 días como máximo${p.inicioAnticipado ? ' (puedes descontar la parte proporcional del trabajo hecho: pidió empezar antes)' : ''}.` : ''}</small>
+        ${p.cancelacion.desistimiento ? `<a class="link-btn" href="${mailLink(`Confirmación de tu desistimiento ${refPedido(p.id)}`, `Hola ${p.clienteNombre.split(' ')[0]},\n\nConfirmamos que hemos recibido tu desistimiento del pedido ${refPedido(p.id)} (${p.planNombre}) el ${new Date(p.cancelacion.t).toLocaleString('es-ES')}. Te devolveremos lo pagado por transferencia en un plazo máximo de 14 días.\n\nUn saludo,\n${CONFIG.marca}`, p.clienteEmail)}">${icono('mail')} Enviar la confirmación por correo</a>` : ''}</div>
       ${esOwner ? `<button class="btn btn-sm btn-danger" id="odCancelSi"><span>Cancelar pedido</span></button><button class="btn btn-sm btn-ghost" id="odCancelNo"><span>Descartar</span></button>` : ''}</div>` : ''}
     <div class="od-body od-cols">
       <section class="od-col">
@@ -987,6 +994,7 @@ function abrirPedido(id) {
         <div class="kvs">
           ${p.ref ? `<div class="kv"><span>Vendido por</span><b>${esc(nombreDe(p.ref))} · ${PCT} % = ${euros(comision(p))} ${p.comisionPagada ? '(pagada)' : ''}</b></div>` : ''}
           ${fila('Tipo de web', p.planNombre)}
+          <div class="kv"><span>Empezar</span><b>${p.inicioAnticipado ? 'Ya (lo pidió el cliente)' : p.aceptaTerminos && Date.now() < (p.createdAt || 0) + 14 * 864e5 ? `A partir del ${fecha((p.createdAt || 0) + 14 * 864e5)}` : 'Ya'}</b></div>
           <div class="kv"><span>Diseño</span><b>${pl ? `${esc(pl.nombre)} <a class="link-btn" href="${prevURL}" target="_blank" rel="noopener">ver ${icono('external')}</a>` : 'Desde cero'}</b></div>
           ${fila('Precio base', euros(p.precioBase || 0))}
           ${(p.extras || []).map(x => fila(x.nombre, '+' + euros(x.precio) + (x.mensual ? '/mes' : ''))).join('')}
@@ -1315,6 +1323,20 @@ async function exportarHTML(p, btn) {
     const doc = f.contentDocument;
     for (let i = 0; i < 40 && !doc.querySelector('#site nav'); i++) await new Promise(ok => setTimeout(ok, 100));
     const copia = doc.documentElement.cloneNode(true);
+    // Las fuentes van dentro del archivo: así la web del cliente no depende de AurevixWeb ni de Google Fonts
+    const lf = copia.querySelector('link[data-fuentes]');
+    if (lf) {
+      try {
+        let css = await (await fetch(lf.href)).text();
+        const base = new URL('.', lf.href);
+        for (const [m, ruta] of [...css.matchAll(/url\(([^)]+\.woff2)\)/g)]) {
+          const b = await (await fetch(new URL(ruta, base))).blob();
+          const dataUrl = await new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(b); });
+          css = css.replace(m, `url(${dataUrl})`);
+        }
+        const st = doc.createElement('style'); st.textContent = css; lf.replaceWith(st);
+      } catch { /* sin fuentes propias: se verá con las del sistema */ }
+    }
     copia.querySelectorAll('script, .ribbon').forEach(x => x.remove());
     copia.querySelector('meta[name=robots]')?.remove();
     copia.querySelectorAll('img').forEach(img => img.classList.remove('ok'));

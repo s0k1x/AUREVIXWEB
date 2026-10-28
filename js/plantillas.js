@@ -58,7 +58,7 @@ export const PLANTILLAS = [
     cinta: ['Envío 24/48 h', 'Devoluciones gratis', 'Hecho en pequeñas tiradas', 'Pago seguro', 'Nueva colección'],
     secciones: [
       { tipo: 'productos', id: 'tienda', kicker: 'Tienda', titulo: 'Lo más vendido', items: [['Sudadera Básica', '39 €', 'Nuevo', 9594679], ['Gorra Logo', '22 €', '', 1510509], ['Taza Cerámica', '14 €', '', 11075707], ['Tote Bag', '18 €', '-20%', 4068314], ['Camiseta Oversize', '25 €', '', 12039633], ['Pack Pegatinas', '6 €', '', 17567386]] },
-      { tipo: 'ventajas', items: [['truck', 'Envío 24/48 h', 'Gratis a partir de 40 €.'], ['undo', 'Devoluciones', '30 días sin preguntas.'], ['lock', 'Pago seguro', 'Bizum o transferencia.']] },
+      { tipo: 'ventajas', items: [['truck', 'Envío 24/48 h', 'Gratis a partir de 40 €.'], ['undo', 'Devoluciones', '30 días sin preguntas.'], ['lock', 'Pago seguro', 'Varias formas de pago.']] },
       { tipo: 'opiniones', kicker: 'Opiniones', titulo: 'Clientes felices', nota: '4,9', total: 1240, items: [['Marta García', 'Calidad increíble y llegó al día siguiente.'], ['Dani Ramos', 'La sudadera es comodísima. Repetiré.'], ['Lucía Fernández', 'Todo precioso, hasta el paquete.']] },
       { tipo: 'cta', titulo: '10 % en tu primer pedido', texto: 'Escríbenos y te mandamos tu código.', boton: 'Quiero mi descuento', img: 5490969 }
     ]
@@ -280,7 +280,9 @@ export function pintarPlantilla(raiz, id, opciones = {}) {
 
   const l = document.createElement('link');
   l.rel = 'stylesheet';
-  l.href = `https://fonts.googleapis.com/css2?${p.fuentes.url}&display=swap`;
+  // Fuentes alojadas en la propia web (fuentes/plantillas/): sin Google Fonts, no se envía la IP del visitante a Google
+  l.href = new URL(`../fuentes/plantillas/${p.id}.css`, import.meta.url).href;
+  l.dataset.fuentes = p.id;
   document.head.appendChild(l);
   document.title = marca;
 

@@ -278,7 +278,6 @@ dialog.dlg-prev{padding:0}
 .mp-pay .pay-cta .left-side{width:92px}
 .pago{max-width:480px}
 .pago-sub{margin:-12px 0 20px;font-size:14px}
-.pago .flip-card{margin-bottom:6px}
 .pay-detail{margin:14px 0 16px;padding:14px;border-radius:14px;background:var(--field);border:1px solid var(--line)}
 .pay-detail:empty{display:none}
 .pay-how{font-size:14px;color:var(--muted);margin-bottom:8px}
@@ -298,7 +297,6 @@ dialog.dlg-prev{padding:0}
   .op-grid{grid-template-columns:1fr}
   .op-score > b{font-size:44px}
   .op-actions .btn{width:100%}
-  .flip-card{width:260px;height:164px;font-size:15px}
   .pay-cta .right-side b{font-size:21px}
 }
 

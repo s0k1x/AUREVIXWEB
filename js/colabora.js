@@ -6,7 +6,7 @@
    ========================================================== */
 import { CONFIG } from '../config.js';
 import * as store from './store.js';
-import { $, $$, esc, euros, fecha, haceCuanto, icono, toast, ocupado, tamano, refPedido, avatar, PAGOS, METODOS, errorCarga } from './ui.js';
+import { $, $$, esc, euros, fecha, haceCuanto, icono, toast, ocupado, tamano, refPedido, avatar, PAGOS, METODOS, errorCarga, desgloseIVA } from './ui.js';
 
 /* ==========================================================
    MENSAJES
@@ -254,12 +254,13 @@ export async function abrirRecibo(p, fase) {
       ${filas.map(([c, v]) => `<tr><td>${esc(c)}</td><td>${euros(v || 0)}</td></tr>`).join('')}
     </tbody></table>
     <div class="tot">
-      <div><span>Total del proyecto</span><b>${euros(p.total || 0)}</b></div>
+      ${(p.iva ?? CONFIG.iva) ? (iv => `<div><span>Base imponible</span><span>${euros(iv.base)}</span></div><div><span>IVA (${iv.pct} %)</span><span>${euros(iv.cuota)}</span></div>`)(desgloseIVA(p.total || 0)) : ''}
+      <div><span>Total del proyecto${(p.iva ?? CONFIG.iva) ? ' (IVA incluido)' : ''}</span><b>${euros(p.total || 0)}</b></div>
       ${fase ? `<div class="big"><span>${concepto}</span><span>${euros(importe)}</span></div>` : ''}
       <div><span>Estado</span><span class="estado ${p.pagoEstado === 'pagado' || (fase === 'senal' && p.pagoEstado === 'senal') ? '' : 'no'}">${esc((PAGOS[p.pagoEstado || 'pendiente'] || PAGOS.pendiente).txt)}</span></div>
       ${p.pagoMetodo ? `<div><span>Forma de pago</span><span>${esc(METODOS[p.pagoMetodo] || p.pagoMetodo)}</span></div>` : ''}
     </div>
-    <footer>Este documento es un justificante del pago de tu proyecto «${esc(p.respuestas?.negocio || p.planNombre)}». Si necesitas factura con datos fiscales, revisa tus datos de facturación en «Ajustes» y escríbenos a ${esc(CONFIG.email)}.<br>© ${new Date().getFullYear()} ${esc(CONFIG.marca)}. Todos los derechos reservados.</footer>
+    <footer>Este documento es un justificante del pago de tu proyecto «${esc(p.respuestas?.negocio || p.planNombre)}» y <b>no sustituye a la factura</b>, que te enviamos por cada pago. Para que salga a nombre de tu empresa, revisa tus datos en «Ajustes → Facturación». Condiciones de contratación, derecho de desistimiento (14 días) y política de privacidad: ${esc(location.origin)}/terminos-y-privacidad. Consultas: ${esc(CONFIG.legal?.email || CONFIG.email)}.<br>© ${new Date().getFullYear()} ${esc(CONFIG.marca)}. Todos los derechos reservados.</footer>
   </div></body></html>`;
   const w = window.open('', '_blank');
   if (!w) {

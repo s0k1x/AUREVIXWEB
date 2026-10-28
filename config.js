@@ -32,11 +32,9 @@ export const CONFIG = {
   // Emails que entran como PROPIETARIO (acceso total al panel)
   propietarios: ['aurevixweb@gmail.com'],
 
-  /* FORMAS DE PAGO: deja en '' las que no quieras mostrar
-     · bizum y transferencia: gratis, tú confirmas el pago en el panel
-     (Lo normal es cambiarlos desde Ajustes → Negocio → «Cobros y comisiones») */
+  /* FORMA DE PAGO: solo transferencia bancaria (gratis; tú confirmas el pago en el panel)
+     (Lo normal es cambiarlo desde Ajustes → Negocio → «Cobros y comisiones») */
   pagos: {
-    bizum: '600 000 000',
     iban: 'ES00 0000 0000 0000 0000 0000',
     titular: 'Tu nombre y apellidos'
   },
@@ -50,13 +48,21 @@ export const CONFIG = {
   // Inicio de sesión con GitHub además de Google (actívalo también en Supabase)
   loginGithub: false,
 
-  // Datos legales para la página de términos y privacidad
+  // Impuestos: los precios de la web llevan el IVA incluido (obligatorio mostrar el precio final al consumidor)
+  iva: 21,
+
+  /* DATOS LEGALES (aviso legal, condiciones, privacidad y recibos). Vendes como autónomo: nombre y apellidos,
+     NIF y domicilio profesional. Mientras estén los de ejemplo, el panel del propietario avisa de que faltan.
+     Lo normal es rellenarlos desde Ajustes → Negocio → «Datos legales». */
   legal: {
     titular: 'Tu nombre y apellidos',
     nif: '00000000X',
-    domicilio: 'Tu ciudad, España',
-    email: 'aurevixweb@gmail.com'
+    domicilio: 'Tu dirección completa, código postal y ciudad',
+    email: 'aurevixweb@gmail.com',
+    actividad: 'Diseño y desarrollo de páginas web'
   },
+  // Fecha de la versión vigente de las condiciones (se guarda en cada pedido)
+  condiciones: '2026-10-28',
 
   // SUPABASE: login real, base de datos, archivos y asistente con IA (Gemini)
   supabase: {
@@ -102,7 +108,7 @@ export const PLANES = [
   {
     id: 'tienda', nombre: 'Tienda online', precio: 690, entrega: '3–4 semanas', dias: 30, icono: 'tienda',
     desc: 'Catálogo, carrito y pago online para vender tus productos sin pagar comisiones a marketplaces.',
-    incluye: ['Catálogo y carrito', 'Pago con Bizum o transferencia', 'Panel para gestionar productos', 'Hasta 50 productos'],
+    incluye: ['Catálogo y carrito', 'Pago por transferencia bancaria', 'Panel para gestionar productos', 'Hasta 50 productos'],
     plantillas: ['kiosko', 'brasa']
   },
   {

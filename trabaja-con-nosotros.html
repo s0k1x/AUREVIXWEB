@@ -36,9 +36,9 @@
   <script>/* Al recargar o volver atrás no se repiten las animaciones de entrada */try{var n=performance.getEntriesByType('navigation')[0];if(n&&(n.type==='reload'||n.type==='back_forward'))document.documentElement.classList.add('sin-entrada')}catch(e){}</script>
   <link rel="preload" as="image" href="icons/logo-a.png">
   <link rel="preload" as="image" href="icons/nombre.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="preload" href="fuentes/instrument-sans-latin-046090.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fuentes/bricolage-grotesque-latin-a97232.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fuentes/fuentes.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="componentes.css">
   <link rel="stylesheet" href="animaciones.css">
@@ -176,7 +176,7 @@
         <ul class="vp-reglas reveal">
           <li><i data-i="check"></i>Te enviamos ideas y diseños de ejemplo para grabar</li>
           <li><i data-i="check"></i>Envías el enlace desde tu panel y te avisamos al revisarlo</li>
-          <li><i data-i="check"></i>Cobras a final de mes por Bizum o transferencia</li>
+          <li><i data-i="check"></i>Cobras a final de mes por transferencia bancaria</li>
           <li><i data-i="check"></i>Sin exclusividad: sigues con tu contenido de siempre</li>
         </ul>
       </div>
@@ -222,7 +222,7 @@
             <details><summary>¿Cuándo cobro mi comisión?</summary><p>Cuando el cliente ha completado el pago de su web. En tu panel ves qué comisiones están pendientes y cuáles están disponibles.</p></details>
             <details><summary>¿Cómo funciona el pago por vídeo?</summary><p>Publicas el vídeo en tu cuenta y pegas el enlace en tu panel («Mis vídeos»). Lo revisamos y, si cumple las condiciones, queda aprobado y lo cobras a final de mes. Si supera las visualizaciones del bonus, te sumamos el extra.</p></details>
             <details><summary>¿Hay un mínimo de ventas?</summary><p>No. No hay objetivos mínimos.</p></details>
-            <details><summary>¿Qué tipo de relación es?</summary><p>Es una colaboración independiente. Al incorporarte te explicamos cómo se facturan las comisiones.</p></details>
+            <details><summary>¿Qué tipo de relación es?</summary><p>Es una colaboración mercantil independiente, no un contrato de trabajo: tú decides cuándo y cómo vendes o creas contenido, sin horario ni exclusividad. Para cobrar tienes que emitir factura de tus comisiones y vídeos, normalmente como trabajador autónomo; si vendes de forma muy puntual, consulta con una gestoría cómo declararlo. Antes de empezar firmamos un acuerdo de colaboración por escrito.</p></details>
           </div>
         </div>
 
@@ -245,7 +245,7 @@
     import { CONFIG, PLANES } from './config.js';
     import * as store from './js/store.js';
     import { iniciarChat } from './js/asistente.js';
-    import { $, $$, esc, euros, icono, toast, arrancar, conSesion, fecha, campo, desplegable, opciones, aceptarTerminos, terminosAceptados, ocupado, etiquetas } from './js/ui.js';
+    import { $, $$, esc, euros, icono, toast, arrancar, conSesion, fecha, campo, desplegable, opciones, aceptarTerminos, terminosAceptados, ocupado, etiquetas, infoDatos } from './js/ui.js';
 
     const PCT = CONFIG.comision ?? 30;
     $$('[data-comision]').forEach(e => (e.textContent = PCT));
@@ -263,7 +263,7 @@
       ${opciones('experiencia', ['Ninguna, pero tengo ganas', 'Algo', 'Bastante'])}
       ${campo({ id: 'cPort', name: 'portfolio', label: 'Tus redes o algo que hayas hecho', hint: 'Opcional: tu Instagram, TikTok o un enlace' })}
       ${campo({ id: 'cMsg', name: 'mensaje', label: 'Cuéntanos tu experiencia', type: 'textarea', required: true })}
-      <div class="cand-terms">${aceptarTerminos('cTerms', 'Acepto la <a href="terminos-y-privacidad#privacidad" target="_blank">política de privacidad</a> y que guardéis mis datos para este proceso')}</div>`;
+      <div class="cand-terms">${aceptarTerminos('cTerms', 'Acepto la <a href="terminos-y-privacidad#privacidad" target="_blank">política de privacidad</a> y que guardéis mis datos para este proceso')}${infoDatos('gestionar tu candidatura y contactarte durante el proceso de selección; la conservamos 12 meses')}</div>`;
 
     await arrancar('trabaja');
     iniciarChat();
