@@ -73,29 +73,44 @@ export function accionCliente(p, botonPagoHTML) {
     const nombre = tipo === 'propio' ? elegido : (elegido ? elegido.replace(/\.[a-z.]+$/, '') : sugerirNombre(r.negocio));
     return `${cab}
     <form class="ac-form" data-form="dominio" data-id="${id}" novalidate>
-      ${dominioHTML({ tipo, nombre, ext: EXTENSIONES.includes(ext) ? ext : '.es', correo: (d.correo || r.correo || 'info@').split('@')[0] || 'info' })}
+      ${(() => {
+        const cor = d.correo || r.correo || '';
+        const correoTipo = d.correoTipo || r.correoTipo || (/@gmail\.com$/.test(cor) ? 'gmail' : cor ? 'dominio' : 'gmail');
+        const local = cor.split('@')[0] || '';
+        return dominioHTML({ tipo, nombre, ext: EXTENSIONES.includes(ext) ? ext : '.es', correoTipo, gmail: correoTipo === 'gmail' ? local : '', correo: correoTipo === 'dominio' ? local || 'info' : 'info' });
+      })()}
+      ${!(p.extras || []).some(x => x.id === 'correo') ? '<p class="ac-nota" data-solo-correo-dominio>El correo con tu dominio no estaba en tu pedido: si lo eliges, te confirmamos el precio antes de crearlo.</p>' : ''}
       <div class="ac-btns"><button class="btn btn-primary" type="submit"><span>Guardar dominio</span>${icono('arrow')}</button></div>
     </form>`;
   }
 
   if (et === 'contenido') {
     const c = p.contenido || {};
+    // Pregunta con su título encima de la caja (no dentro: con títulos largos se pisaban con la línea)
+    const q = (k, titulo, ayuda, { tipo = 'textarea', ejemplo = '', filas = 3 } = {}) => {
+      const idc = `${k}-${id}`, v = esc(c[k] || '');
+      const caja = tipo === 'textarea'
+        ? `<textarea id="${idc}" name="${k}" rows="${filas}" placeholder="${esc(ejemplo)}">${v}</textarea>`
+        : `<input id="${idc}" name="${k}" type="${tipo}" value="${v}" placeholder="${esc(ejemplo)}"${tipo === 'url' ? ' inputmode="url" autocapitalize="off" spellcheck="false"' : ''}>`;
+      return `<div class="cq"><label for="${idc}">${esc(titulo)}</label>${ayuda ? `<small>${esc(ayuda)}</small>` : ''}${caja}</div>`;
+    };
+    const sec = (n, titulo, cuerpo, nota = '') => `<fieldset class="cs"><legend><span class="cs-n">${n}</span>${esc(titulo)}</legend>${nota ? `<p class="cs-nota">${nota}</p>` : ''}${cuerpo}</fieldset>`;
+    const MAS = MAS_CONTENIDO.filter(([k]) => k !== 'contactoWeb' && k !== 'zona');
     return `${cab}
-    <form class="ac-form ac-grid" data-form="contenido" data-id="${id}" novalidate>
-      ${campo({ id: `sobre-${id}`, name: 'sobre', label: 'Sobre tu negocio', type: 'textarea', hint: 'Quiénes sois, desde cuándo, qué os diferencia', value: c.sobre || '' })}
-      ${campo({ id: `serv-${id}`, name: 'servicios', label: 'Servicios y precios', type: 'textarea', value: c.servicios || '' })}
-      ${campo({ id: `hor-${id}`, name: 'horario', label: 'Horario y dirección', type: 'textarea', value: c.horario || '' })}
-      ${campo({ id: `redes-${id}`, name: 'redes', label: 'Redes sociales', hint: 'Instagram, Facebook, TikTok…', value: c.redes || '' })}
-      ${campo({ id: `fotos-${id}`, name: 'fotos', label: 'Enlace a tus fotos (opcional)', type: 'url', hint: 'También puedes subirlas en la pestaña «Archivos»', value: c.fotos || '' })}
-      ${campo({ id: `logo-${id}`, name: 'logo', label: 'Enlace al logotipo', type: 'url', hint: 'Si ya tienes uno', value: c.logo || '' })}
-      <details class="ac-mas"${MAS_CONTENIDO.some(([k]) => c[k]) ? ' open' : ''}>
-        <summary>${icono('sparkle')}<span><b>Más detalles para una web a tu medida</b><small>Opcional, pero cuanto más nos cuentes, mejor sale tu web (y antes)</small></span></summary>
-        <div class="ac-grid">${MAS_CONTENIDO.map(([k, label, hint, type]) => campo({ id: `${k}-${id}`, name: k, label, hint, type: type || 'textarea', value: c[k] || '' })).join('')}</div>
+    <form class="ac-form ac-cont" data-form="contenido" data-id="${id}" novalidate>
+      <p class="cs-intro">Rellena lo que tengas: con los apartados 1 y 2 ya podemos empezar. Lo que falte lo completamos juntos por mensaje.</p>
+      ${sec(1, 'Tu negocio', q('sobre', 'Cuéntanos sobre tu negocio', 'Quiénes sois, desde cuándo y qué os hace diferentes', { ejemplo: 'Ej.: Somos una peluquería familiar en Triana desde 2010, especializada en color…', filas: 4 }))}
+      ${sec(2, 'Servicios y precios', q('servicios', 'Qué ofreces y cuánto cuesta', 'Un servicio por línea, con su precio si quieres que salga en la web', { ejemplo: 'Corte de pelo · 15 €\nTinte · desde 35 €', filas: 5 }))}
+      ${sec(3, 'Dónde y cuándo', q('horario', 'Horario', '', { ejemplo: 'L–V de 9:30 a 20:00 · Sábados de 10:00 a 14:00', filas: 2 }) + q('zona', 'Dirección o zona donde trabajas', 'Calle, número y ciudad, o las zonas a las que vas', { ejemplo: 'C/ Pureza 12, Sevilla', filas: 2 }))}
+      ${sec(4, 'Redes y contacto en la web', q('redes', 'Redes sociales', 'Pega los enlaces o escribe tu usuario', { tipo: 'text', ejemplo: '@tunegocio en Instagram' }) + q('contactoWeb', 'Teléfono, correo o WhatsApp que se publican', 'Pueden ser distintos de los de tu pedido', { tipo: 'text', ejemplo: '612 345 678 · hola@tunegocio.es' }))}
+      ${sec(5, 'Fotos y logotipo', `<div class="cs-subir"><button class="btn btn-ghost" type="button" data-ir-pestana="archivos">${icono('upload')}<span>Subir fotos y logotipo</span></button><small>Desde el móvil o el ordenador, en la pestaña «Archivos». Fotos del local, del equipo y de tus trabajos.</small></div>` + q('fotos', 'O un enlace a tus fotos', 'Google Drive, Dropbox, WeTransfer…', { tipo: 'url', ejemplo: 'https://' }) + q('logo', 'Enlace a tu logotipo (si ya lo tienes)', '', { tipo: 'url', ejemplo: 'https://' }))}
+      <details class="cs-mas"${MAS.some(([k]) => c[k]) ? ' open' : ''}>
+        <summary><span class="cs-n">+</span><span><b>Más detalles (opcional)</b><small>Lo que más mejora una web: a quién te diriges, qué te diferencia, opiniones…</small></span>${icono('down')}</summary>
+        <div class="cs-mas-c">${MAS.map(([k, label, hint, type]) => q(k, label, hint, { tipo: type || 'textarea', filas: 2 })).join('')}</div>
       </details>
       <div class="ac-btns">
         <button class="btn btn-primary" type="submit"><span>Enviar contenido</span>${icono('arrow')}</button>
-        <button class="btn btn-ghost" type="button" data-ir-pestana="archivos"><span>Subir fotos y logotipo</span>${icono('upload')}</button>
-        <a class="btn btn-ghost" href="${mailLink(`Contenido de mi web ${refPedido(p.id)}`, `Hola, os envío el contenido de mi web «${r.negocio || p.planNombre}» (${refPedido(p.id)}).`)}"><span>Enviarlo por correo</span></a>
+        <a class="btn btn-ghost" href="${mailLink(`Contenido de mi web ${refPedido(p.id)}`, `Hola, os envío el contenido de mi web «${r.negocio || p.planNombre}» (${refPedido(p.id)}).`)}"><span>Prefiero enviarlo por correo</span></a>
       </div>
     </form>`;
   }
@@ -139,7 +154,7 @@ export function accionCliente(p, botonPagoHTML) {
   return `${cab}<div class="ac-form">
     ${et === 'recibido' ? `<div class="mp-pay">${botonPagoHTML}</div>` : ''}
     ${et === 'recibido' && (p.pagoEstado || 'pendiente') === 'pendiente' && !puedeDesistir(p) ? (p.cancelacion ? `<p class="ac-nota">${icono('clock')} Has pedido cancelar este pedido. Te confirmaremos la cancelación por correo.</p>` : `<button type="button" class="link-btn ac-cancel" data-cancelar="${id}">Solicitar la cancelación del pedido</button>`) : ''}
-    ${et === 'diseno' && pl ? `<a class="btn btn-ghost" href="${esc(urlVistaPrevia(p))}" target="_blank" rel="noopener"><span>Ver el diseño de partida (${esc(pl.nombre)})</span>${icono('external')}</a>` : ''}
+    ${et === 'diseno' && pl ? `<a class="btn btn-ghost btn-largo" href="${esc(urlVistaPrevia(p))}" target="_blank" rel="noopener">${icono('eye')}<span>Ver tu diseño: ${esc(pl.nombre)}</span></a>` : ''}
     ${et === 'diseno' && webCliente(p) ? `<button type="button" class="btn btn-ghost" data-ver-web="${id}"><span>Ver la última versión de tu web</span>${icono('eye')}</button>` : ''}
   </div>`;
 }
@@ -179,7 +194,7 @@ export function leerFormulario(form, p) {
   if (form.dataset.form === 'dominio') {
     const r = leerDominio(form);
     if (!r.ok) throw new Error(r.motivo);
-    return { dominio: { nombre: r.dominio, tipo: r.tipo, correo: r.correo, t: Date.now() }, etapa: 'contenido' };
+    return { dominio: { nombre: r.dominio, tipo: r.tipo, correoTipo: r.correoTipo, correo: r.correo, t: Date.now() }, etapa: 'contenido' };
   }
   if (form.dataset.form === 'contenido') {
     const c = Object.fromEntries(['sobre', 'servicios', 'horario', 'redes', 'fotos', 'logo', ...MAS_CONTENIDO.map(([k]) => k)].map(k => [k, String(f.get(k) || '').trim().slice(0, 4000)]));

@@ -24,11 +24,44 @@ function elegido() {
 export const IDIOMA = elegido();
 export const enIngles = IDIOMA === 'en';
 
-export function cambiarIdioma(v) {
+/* ---------- Transición al cambiar de idioma ----------
+   Un círculo crece desde donde se ha tocado y escribe el idioma nuevo
+   letra a letra; la página se recarga traducida y el círculo se abre. */
+const PALABRA = { es: 'Español', en: 'English' };
+const quieto = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.movimiento === 'reducido';
+function cortina(v, x, y, saliendo) {
+  const c = document.createElement('div');
+  c.className = 'idioma-cortina' + (saliendo ? ' sale' : '');
+  c.dataset.noTraducir = '';
+  c.setAttribute('aria-hidden', 'true');
+  c.style.setProperty('--x', `${x}px`);
+  c.style.setProperty('--y', `${y}px`);
+  c.innerHTML = `<div class="ic-texto"><small>${v === 'en' ? 'Idioma · Language' : 'Language · Idioma'}</small><b>${[...PALABRA[v]].map((l, i) => `<span style="--i:${i}">${l}</span>`).join('')}</b></div>`;
+  // Fuera del body: el body puede estar oculto mientras se traduce
+  document.documentElement.appendChild(c);
+  return c;
+}
+
+export function cambiarIdioma(v, origen) {
   guardar(v);
   const u = new URL(location.href);
   u.searchParams.delete('lang');
-  location.replace(u.href);
+  if (quieto()) return location.replace(u.href);
+  const r = origen?.getBoundingClientRect?.();
+  const x = r ? r.left + r.width / 2 : innerWidth / 2, y = r ? r.top + r.height / 2 : innerHeight / 2;
+  try { sessionStorage.setItem('tm_idioma_anim', JSON.stringify({ v, x, y })); } catch { /* sin almacenamiento */ }
+  cortina(v, x, y, false);
+  setTimeout(() => location.replace(u.href), 900);
+}
+
+/** Al llegar a la página después de cambiar de idioma: la cortina se abre */
+function abrirCortina() {
+  let d = null;
+  try { d = JSON.parse(sessionStorage.getItem('tm_idioma_anim') || 'null'); sessionStorage.removeItem('tm_idioma_anim'); } catch { /* nada */ }
+  if (!d || quieto()) return;
+  const c = cortina(d.v, d.x, d.y, true);
+  requestAnimationFrame(() => requestAnimationFrame(() => c.classList.add('abre')));
+  setTimeout(() => c.remove(), 1100);
 }
 
 /* ---------- Traductor ---------- */
@@ -86,22 +119,32 @@ export function traducir(raiz = document.body) {
 }
 
 /* ---------- Botón ES / EN ---------- */
-export function botonIdioma() {
-  const b = document.createElement('button');
-  b.type = 'button';
-  b.className = 'idioma-btn';
-  b.dataset.noTraducir = '';
-  b.setAttribute('aria-label', enIngles ? 'Cambiar a español' : 'Switch to English');
-  b.title = enIngles ? 'Español' : 'English';
-  b.innerHTML = `<span class="${enIngles ? '' : 'on'}">ES</span><span class="${enIngles ? 'on' : ''}">EN</span><em>${enIngles ? 'Ver en español' : 'View in English'}</em>`;
-  b.addEventListener('click', () => cambiarIdioma(enIngles ? 'es' : 'en'));
-  return b;
+/* Interruptor ES | EN con una pastilla que se desliza */
+export function botonIdioma({ largo = false } = {}) {
+  const g = document.createElement('div');
+  g.className = 'idioma-sw' + (largo ? ' largo' : '');
+  g.dataset.noTraducir = '';
+  g.dataset.v = IDIOMA;
+  g.setAttribute('role', 'radiogroup');
+  g.setAttribute('aria-label', enIngles ? 'Language' : 'Idioma');
+  g.innerHTML = `<i class="isw-pastilla" aria-hidden="true"></i>
+    <button type="button" role="radio" data-v="es" aria-checked="${!enIngles}" lang="es">${largo ? 'Español' : 'ES'}</button>
+    <button type="button" role="radio" data-v="en" aria-checked="${enIngles}" lang="en">${largo ? 'English' : 'EN'}</button>`;
+  g.addEventListener('click', e => {
+    const b = e.target.closest('button[data-v]');
+    if (!b || b.dataset.v === IDIOMA) return;
+    g.dataset.v = b.dataset.v;
+    g.querySelectorAll('button').forEach(x => x.setAttribute('aria-checked', String(x === b)));
+    // Primero se desliza la pastilla y luego entra la cortina
+    setTimeout(() => cambiarIdioma(b.dataset.v, b), quieto() ? 0 : 180);
+  });
+  return g;
 }
 
 /* ---------- Arranque ---------- */
 export async function iniciarIdioma() {
   document.documentElement.lang = IDIOMA;
-  if (!enIngles) return;
+  if (!enIngles) { abrirCortina(); return; }
   const m = await import('./idioma-en.js');
   EN = m.EN; PATRONES = m.PATRONES;
   document.title = T(document.title);
@@ -122,6 +165,7 @@ export async function iniciarIdioma() {
     h.innerHTML = t.split(/\s+/).map((w, i) => `<span class="w" aria-hidden="true"><span style="--i:${i}">${esc(w)}</span></span>`).join(' ');
   });
   traducir(document.body);
+  abrirCortina();
   // Lo que aparece o cambia después también se traduce
   let cola = new Set(), pendiente = false;
   const vaciar = () => { pendiente = false; const L = cola; cola = new Set(); L.forEach(n => n.isConnected && traducir(n)); };

@@ -821,3 +821,10 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 ## 39. Versión v52 — cabecera del móvil en Safari
 - En el iPhone (Safari) la cabecera se salía de la pantalla y el menú ☰ quedaba cortado: Safari no encoge el logo como Chrome, y una regla de la v51 (`height:auto` en el logo) lo ponía a su tamaño original. Ahora los tamaños del móvil están fijados para que quepan sin encoger nada: logo de 12 px de alto (10 px en pantallas de 360 px), botones de 40 px y el nombre se oculta solo en pantallas muy estrechas o con la letra grande.
 - Comprobado de 320 a 430 px, con y sin sesión, con letra normal y grande, simulando Safari (nada se encoge). Ninguna página se sale de lado.
+
+## 40. Versión v53 — dominio y correo, contenido del proyecto, botones, app instalada e idioma
+- **Dominio y correo** (cuestionario y paso «Dominio» del proyecto): el dominio se escribe y se lee seguido, tal cual quedará (`www.tunegocio.es`), sin huecos. Para el correo del negocio hay dos opciones: **Gmail, gratis** (escribe lo que va antes de `@gmail.com`; si no tiene, enlace para crearlo) o **con tu dominio**, de pago, con el extra nuevo «Correo con tu dominio (1er año)» (30 €, cámbialo en `config.js` o en Ajustes). Al pasar de paso se añaden o quitan solos los extras de dominio y correo, avisando.
+- **Contenido del proyecto** («Te toca a ti → envíanos el contenido»): por apartados numerados (Tu negocio, Servicios y precios, Dónde y cuándo, Redes y contacto, Fotos y logotipo) con la pregunta encima de cada caja y un ejemplo dentro; «Más detalles» opcional y plegado. En el móvil ya no hay doble marco alrededor del proyecto.
+- **Botón «Ver tu diseño: …»**: texto corto que ya no se corta. El dato «Dominio y correo» enseña cada cosa en su línea.
+- **App instalada**: el cuestionario y los diálogos ya no quedan debajo de la hora y la batería del móvil.
+- **Idioma**: interruptor ES | EN con pastilla que se desliza (en el menú del móvil, «Español | English»). Al cambiar, un círculo crece desde el botón y escribe el idioma nuevo letra a letra; la página se carga traducida y el círculo se cierra. Con «reducir movimiento» el cambio es instantáneo.

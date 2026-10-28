@@ -17,7 +17,7 @@ import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, pedirCa
 import { importeSenal, importeResto } from './pago.js';
 import { confeti } from './efectos.js';
 import { comprobar as comprobarCampo } from './validar.js';
-import { dominioHTML, montarDominio, leerDominio, sugerirNombre } from './dominio.js';
+import { dominioHTML, montarDominio, leerDominio, sugerirNombre, marcarError } from './dominio.js';
 import { prefsPermitidas, consentidoExpreso } from './cookies.js';
 
 /* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor.
@@ -641,7 +641,6 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false, extras = 
       <h3 class="paso-h">Dominio y correo</h3>
       <p class="muted paso-sub">La dirección de tu web y el correo de tu negocio. Si aún no lo tienes claro, pon una idea: lo confirmamos contigo antes de registrar nada.</p>
       ${dominioHTML({ ext: '.es' })}
-      ${(x => x ? `<p class="dom-precio">${icono('tag')}<span>Registrar el dominio y el alojamiento del primer año cuesta <b>${euros(x.precio)}</b>: lo añadimos a tu pedido como extra (puedes quitarlo en «Extras»).</span></p>` : '')(EXTRAS.find(e => e.id === 'dominio' && e.activo !== false))}
     </div>
 
     <div class="paso" data-paso="estilo">
@@ -711,7 +710,7 @@ function datos() {
     respuestas: {
       negocio: txt('negocio'), sector: txt('sector'), objetivo: txt('objetivo'), telefono: txt('telefono'),
       contactoNombre: txt('contactoNombre'), email: txt('email').toLowerCase(),
-      ...(dom => ({ dominioTipo: dom.tipo || '', dominio: dom.dominio || '', correo: dom.correo || '' }))(leerDominio(form)),
+      ...(dom => ({ dominioTipo: dom.tipo || '', dominio: dom.dominio || '', correoTipo: dom.correoTipo || '', correo: dom.correo || '' }))(leerDominio(form)),
       webActual: txt('webActual'), estilo: txt('estilo'), color: W.colorCustom || txt('color'),
       logo: txt('logo'), contenido: txt('contenido'), plazo: urgente ? 'Urgente' : 'Normal', comentarios: txt('comentarios')
     },
@@ -819,7 +818,7 @@ function validar(pasoId) {
   }
   if (pasoId === 'dominio') {
     const r = leerDominio(form);
-    if (!r.ok) { $('[data-dom]', form).classList.add('dom-mal'); $('.dom-in', form).focus(); toast(r.motivo, 'err'); return false; }
+    if (!r.ok) { marcarError(form, r); toast(r.motivo, 'err'); return false; }
   }
   return true;
 }
@@ -831,11 +830,19 @@ $('#wizNext').addEventListener('click', () => {
   if (!validar(paso.id)) return;
   if (paso.id === 'resumen') return confirmarPedido();
   // Dominio nuevo: se añade su extra (una vez; si luego lo quita en «Extras», se respeta)
+  // Dominio nuevo y correo con dominio: se añaden sus extras avisando (y se quitan si cambia de opinión)
   if (paso.id === 'dominio') {
-    const x = form.querySelector('input[name=extra][value=dominio]'), tipo = leerDominio(form).tipo;
+    const r = leerDominio(form);
     W.auto ??= {};
-    if (x && tipo === 'nuevo' && !x.checked && !W.dominioAvisado) { x.checked = true; W.auto.dominio = true; W.dominioAvisado = true; toast(`Añadido «Dominio + alojamiento» (+${euros(EXTRAS.find(e => e.id === 'dominio').precio)})`, 'ok'); actualizarTotal(); }
-    if (x && tipo === 'propio' && W.auto.dominio && x.checked) { x.checked = false; W.auto.dominio = false; toast('Quitado «Dominio + alojamiento»: ya tienes dominio', 'ok'); actualizarTotal(); }
+    const ajustar = (id, quiere, porque) => {
+      const x = form.querySelector(`input[name=extra][value=${id}]`), e = EXTRAS.find(z => z.id === id);
+      if (!x || !e) return;
+      if (quiere && !x.checked && !W.auto[id + 'Visto']) { x.checked = true; W.auto[id] = true; W.auto[id + 'Visto'] = true; toast(`Añadido «${e.nombre}» (+${euros(e.precio)})`, 'ok'); }
+      if (!quiere && W.auto[id] && x.checked) { x.checked = false; W.auto[id] = false; W.auto[id + 'Visto'] = false; toast(`Quitado «${e.nombre}»: ${porque}`, 'ok'); }
+    };
+    ajustar('dominio', r.tipo === 'nuevo', 'ya tienes dominio');
+    ajustar('correo', r.correoTipo === 'dominio', 'usarás Gmail');
+    actualizarTotal();
   }
   irA(W.paso + 1);
 });
@@ -897,7 +904,7 @@ function pintarResumen() {
       <h4 class="rs-h">Contacto</h4>
       ${fila('Nombre', r.contactoNombre)}${fila('Teléfono', r.telefono)}${fila('Correo', r.email)}
       <h4 class="rs-h">Dominio y correo</h4>
-      ${fila(r.dominioTipo === 'propio' ? 'Tu dominio' : 'Dominio nuevo', r.dominio ? 'www.' + r.dominio : '')}${fila('Correo profesional', r.correo)}
+      ${fila(r.dominioTipo === 'propio' ? 'Tu dominio' : 'Dominio nuevo', r.dominio ? 'www.' + r.dominio : '')}${fila(r.correoTipo === 'gmail' ? 'Correo (Gmail, gratis)' : 'Correo con tu dominio', r.correo)}
     </div>
     <div class="rs-card">
       <div class="rs-row"><span>${esc(p.nombre)}</span><b>${euros(p.precio)}</b></div>
@@ -1100,7 +1107,7 @@ function pestanaHTML(p) {
     <div class="mp-accion">${accionCliente(p, botonPago(p))}</div>
     <aside class="mp-lado">
       <div class="mp-dato">${icono('calendar')}<span>Entrega prevista</span><b>${fecha(fechaEntrega(p))}</b></div>
-      ${p.dominio ? `<div class="mp-dato">${icono('link')}<span>Dominio</span><b>${esc(dominioTexto(p.dominio))}</b></div>` : ''}
+      ${p.dominio ? `<div class="mp-dato mp-dato-ancho">${icono('link')}<span>${p.dominio.correo ? 'Dominio y correo' : 'Dominio'}</span><b>www.${esc(p.dominio.nombre)}${p.dominio.tipo === 'propio' ? ' <em>(ya es tuyo)</em>' : ''}</b>${p.dominio.correo ? `<small>${esc(p.dominio.correo)}${p.dominio.correoTipo === 'gmail' ? ' · Gmail' : ''}</small>` : ''}</div>` : ''}
       ${p.asignadoNombre ? `<div class="mp-dato">${icono('laptop')}<span>Responsable</span><b>${esc(p.asignadoNombre)}</b></div>` : ''}
       <div class="mp-dato">${icono('euro')}<span>Pago</span><b>${esc((PAGOS[p.pagoEstado || 'pendiente'] || PAGOS.pendiente).txt)}</b></div>
       <div class="mp-dato">${icono('chart')}<span>Avance</span><b>${Math.round(indiceEtapa(p) / (ETAPAS.length - 1) * 100)} %</b></div>

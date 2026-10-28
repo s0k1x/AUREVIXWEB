@@ -137,6 +137,7 @@ export const COMPARATIVA = [
 /* ---------- Extras del cuestionario ---------- */
 export const EXTRAS = [
   { id: 'dominio', nombre: 'Dominio + alojamiento (1er año)', precio: 60, desc: 'Registro del dominio a tu nombre y alojamiento' },
+  { id: 'correo', nombre: 'Correo con tu dominio (1er año)', precio: 30, desc: 'Un buzón como info@tunegocio.es, configurado en tu móvil y tu ordenador' },
   { id: 'logo', nombre: 'Diseño de logo', precio: 80, desc: '3 propuestas y archivos finales' },
   { id: 'textos', nombre: 'Redacción de textos', precio: 40, desc: 'Redactamos los textos de la web' },
   { id: 'idioma', nombre: 'Idioma extra', precio: 90, desc: 'Inglés u otro idioma' },
