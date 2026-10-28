@@ -707,3 +707,44 @@ aprobación (pasa a «Pago final»); la página `/vista-previa`; y versiones a l
 Copia en modo demo con Chromium (1440 px e iPhone 13): portada, fuentes propias, pedido hasta el resumen, pago por
 transferencia, desistimiento con justificante, aviso en el panel, cookies y página legal. Sin errores de JavaScript.
 **No probado** con Supabase real ni en un iPhone real.
+
+## 32. Versión v45 — más rápida, comparativa en el móvil y pulido
+
+### Velocidad (medido en un móvil lento simulado: CPU ×4, red de 200 KB/s, con compresión como GitHub Pages)
+| | Antes (v44) | Ahora (v45) |
+|---|---|---|
+| Texto principal visible, primera visita | 3,6 s | **1,5 s** |
+| Texto principal visible, segunda visita | 1,1 s | **0,44 s** |
+| Peticiones al abrir | 47 | 32 |
+| Descarga | 372 KB | 316 KB |
+| Webs de ejemplo (iframes) cargadas al abrir | 8 | 0 (se cargan al llegar a ellas) |
+
+- **Bienvenida (logo animado)**: antes esperaba a que cargara todo (fotos incluidas) y duraba como mínimo 2,3 s. Ahora dura
+  0,7 s y termina en cuanto el documento está listo (1,6 s como máximo).
+- **Vitrina del inicio**: cada diseño es una web entera con sus fotos. Ahora no se carga hasta que la página está lista, el
+  navegador está libre y la vitrina se ve en pantalla.
+- **Miniaturas de «Diseños»**: se cargan cuando están a 300 px de verse (antes, `loading="lazy"`, que en conexiones lentas
+  empieza a miles de píxeles).
+- **Visor de webs**: solo se descarga cuando el cliente lo abre (la portada ya no lo carga).
+- **Logotipo de texto**: de 53 KB a 6,5 KB (mismo tamaño en pantalla).
+- **Entrada del inicio** más corta y desde un estado ya visible; apariciones al hacer scroll más rápidas (0,5 s).
+
+### Comparativa en el móvil
+- En pantallas estrechas ya no hay una tabla de seis columnas que había que arrastrar de lado: se comparan **dos planes uno
+  al lado del otro**, que se eligen arriba. Cada columna lleva nombre, precio y plazo; las **diferencias se resaltan** y hay
+  un botón de compra para cada plan. En el ordenador sigue la tabla completa.
+
+### Pulido
+- **Pie de página en columnas** (Servicios, Empresa, Legal y Tu cuenta).
+- **Botones flotantes en el móvil** (chat y subir): más pequeños, sin latido y se apartan mientras se baja leyendo (vuelven al
+  subir o al parar), para que no tapen el texto.
+- **Sombras**: el botón principal y el del chat ya no llevan halo de neón; ahora tienen una sombra suave.
+- Fuera las etiquetas numeradas de «Trabaja con nosotros» (como en la portada).
+- Erratas y detalles: «opiniones verificadas» (salía «opiniónes»), «30 %» ya no se parte en dos líneas y los textos de 10,5 px
+  pasan a 11–11,5 px.
+- Service worker **v45**.
+
+### Scroll World
+No se ha integrado: genera los vídeos del recorrido con Higgsfield o Monid, que son servicios **de pago por vídeo** y
+necesitan cuenta y clave. Además, una portada de vídeo a pantalla completa pesaría varios MB, justo lo contrario de cargar
+rápido. Si algún día lo quieres para una campaña, se puede hacer como página aparte.

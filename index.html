@@ -75,14 +75,11 @@
   <link rel="modulepreload" href="js/proyecto.js">
   <link rel="modulepreload" href="js/asistente.js">
   <link rel="modulepreload" href="js/colabora.js">
-  <link rel="modulepreload" href="js/vistaweb.js">
-  <link rel="modulepreload" href="js/zip.js">
-  <link rel="modulepreload" href="js/sinzoom.js">
   <script>/* Sin zoom (ni doble toque ni pellizco) */document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});document.addEventListener('gesturechange',function(e){e.preventDefault()},{passive:false})</script>
 </head>
 <body>
 <div class="splash listo" id="splash0" aria-hidden="true"><div class="brand-card splash-card"><div class="border"></div><div class="content"><div class="logo"><div class="logo1"><img src="icons/logo-a.png" alt=""></div><div class="logo2"><img src="icons/nombre.png" alt="AurevixWeb"></div></div><span class="logo-bottom-text">Webs profesionales</span></div><span class="bottom-text">Diseño web</span></div></div>
-<script>(function(){var s=document.getElementById('splash0'),h=document.documentElement;if(!s)return;if(!h.classList.contains('intro')){s.remove();return}try{sessionStorage.setItem('tm_intro','1')}catch(e){}s.classList.add('vivo');var c=s.querySelector('.brand-card');setTimeout(function(){c&&c.classList.add('on')},200);var t0=Date.now(),done=false;function fin(){if(done)return;done=true;h.classList.remove('intro');s.classList.add('out');setTimeout(function(){s.remove()},600)}function tick(){var e=Date.now()-t0;if(e>=2300&&(document.readyState==='complete'||e>=4500))fin();else setTimeout(tick,100)}tick();s.addEventListener('click',fin)})();</script>
+<script>(function(){var s=document.getElementById('splash0'),h=document.documentElement;if(!s)return;if(!h.classList.contains('intro')){s.remove();return}try{sessionStorage.setItem('tm_intro','1')}catch(e){}s.classList.add('vivo');var c=s.querySelector('.brand-card');setTimeout(function(){c&&c.classList.add('on')},200);var t0=Date.now(),done=false;function fin(){if(done)return;done=true;h.classList.remove('intro');s.classList.add('out');setTimeout(function(){s.remove()},600)}function tick(){var e=Date.now()-t0;if(e>=700&&(document.readyState!=='loading'||e>=1600))fin();else setTimeout(tick,100)}tick();s.addEventListener('click',fin)})();</script>
   <header id="header"></header>
 
   <main>
@@ -192,7 +189,7 @@
       <div class="wrap">
         <div class="join reveal">
           <div>
-            <h2>Buscamos comerciales con un 30 % de comisión por cada web vendida.</h2>
+            <h2>Buscamos comerciales con un 30&nbsp;% de comisión por cada web vendida.</h2>
             <p>Trabajo en remoto y con horario libre. Tú presentas nuestras webs a negocios y nosotros nos encargamos del diseño y la entrega.</p>
           </div>
           <a href="trabaja-con-nosotros" class="btn btn-dark" data-magnet>Ver condiciones <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
