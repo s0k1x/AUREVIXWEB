@@ -27,13 +27,13 @@ type Catalogo = {
 function contexto(c: Catalogo) {
   return [
     `Trabajas para ${c.marca}, un estudio que diseña páginas web para negocios y profesionales en España.`,
-    'Tipos de web y precios de partida (IVA no especificado):',
+    'Tipos de web y precios de partida (precios finales, IVA incluido):',
     ...c.planes.map(p => `- ${p.nombre} (id ${p.id}): desde ${p.precio} €, entrega ${p.entrega}. ${p.desc} Incluye: ${p.incluye.join(', ')}. Diseños recomendados: ${p.plantillas.join(', ') || 'a medida'}.`),
     'Extras opcionales:',
     ...c.extras.map(x => `- ${x.nombre} (id ${x.id}): ${x.precio} €${x.mensual ? '/mes' : ''}. ${x.desc}`),
     'Diseños de partida disponibles:',
     ...c.plantillas.map(t => `- ${t.nombre} (id ${t.id}): ${t.sector}. ${t.desc}`),
-    `Forma de pago: ${c.senal} % al empezar y el resto al aprobar la web, por Bizum, transferencia u otros métodos que aparecen al finalizar el pedido.`,
+    `Forma de pago: ${c.senal} % al empezar y el resto al aprobar la web, solo por transferencia bancaria (los datos aparecen al pagar). Los precios llevan el IVA incluido.`,
     `Entrega urgente: +${Math.round(c.urgente * 100)} % sobre el precio base.`,
     'Proceso: pedido y cuestionario → el cliente elige dominio y envía su contenido desde «Mis proyectos» → diseño → revisión con vista previa → pago final → publicación.',
     `Contacto humano: WhatsApp ${c.whatsapp}, email ${c.email}.`

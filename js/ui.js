@@ -65,7 +65,7 @@ export const PAGOS = {
   senal: { txt: 'Señal pagada', cls: 'p-work' },
   pagado: { txt: 'Pagado', cls: 'p-done' }
 };
-export const METODOS = { bizum: 'Bizum', transferencia: 'Transferencia' };
+export const METODOS = { transferencia: 'Transferencia', bizum: 'Bizum' }; // «bizum» solo para pedidos antiguos
 export const ROLES = { owner: 'Propietario', worker: 'Trabajador', client: 'Cliente' };
 /* Tareas de cada web: las marca el equipo y el cliente ve el progreso */
 export const TAREAS = [['diseno', 'Diseño'], ['contenido', 'Contenido'], ['desarrollo', 'Desarrollo'], ['revision', 'Revisión'], ['publicacion', 'Publicación']];
@@ -135,6 +135,31 @@ export const opciones = (name, valores, marcado = valores[0], tipo = 'radio') =>
 export const interruptor = ({ id, name = id, titulo, texto = '', checked = false }) =>
   `<label class="switch-row" for="${id}"><span><b>${esc(titulo)}</b>${texto ? `<small>${esc(texto)}</small>` : ''}</span>
     <span class="switch"><input type="checkbox" id="${id}" name="${name}" ${checked ? 'checked' : ''}><span class="slider"></span></span></label>`;
+
+/* ---------- IVA y datos legales ---------- */
+/** Desglose de un precio con IVA incluido: { base, cuota, pct } */
+export function desgloseIVA(total) {
+  const pct = Number(CONFIG.iva) || 0;
+  const base = Math.round((total / (1 + pct / 100)) * 100) / 100;
+  return { base, cuota: Math.round((total - base) * 100) / 100, pct };
+}
+export const ivaTexto = () => (CONFIG.iva ? 'IVA incluido' : 'Sin IVA');
+/** ¿Faltan datos legales o de cobro por rellenar? Devuelve la lista de lo que falta */
+export function datosLegalesPendientes() {
+  const L = CONFIG.legal || {}, P = CONFIG.pagos || {};
+  const falta = [];
+  if (!L.titular || /^tu nombre/i.test(L.titular)) falta.push('nombre y apellidos');
+  if (!L.nif || /^0+[A-Z]?$/i.test(L.nif.replace(/\W/g, ''))) falta.push('NIF');
+  if (!L.domicilio || /^tu (ciudad|direcci)/i.test(L.domicilio)) falta.push('domicilio');
+  if (!P.iban || /^ES0{2}[\s0]*$/i.test(P.iban.replace(/\s/g, ''))) falta.push('IBAN');
+  if (!P.titular || /^tu nombre/i.test(P.titular)) falta.push('titular de la cuenta');
+  return falta;
+}
+/** Información básica de protección de datos (primera capa, art. 13 RGPD y art. 11 LOPDGDD) junto a cada formulario */
+export const infoDatos = finalidad => {
+  const L = CONFIG.legal || {};
+  return `<p class="info-datos"><b>Protección de datos.</b> Responsable: ${esc(L.titular && !/^tu nombre/i.test(L.titular) ? L.titular : CONFIG.marca)}. Finalidad: ${esc(finalidad)}. No cedemos tus datos a terceros salvo obligación legal; usamos proveedores que los tratan por nuestra cuenta. Puedes ejercer tus derechos de acceso, rectificación, supresión y demás escribiendo a ${esc(L.email || CONFIG.email)}. <a href="terminos-y-privacidad#privacidad" target="_blank">Más información</a>.</p>`;
+};
 
 /** Aceptar términos */
 export const aceptarTerminos = (id, texto = 'Acepto los <a href="terminos-y-privacidad" target="_blank">términos y condiciones</a> y la <a href="terminos-y-privacidad#privacidad" target="_blank">política de privacidad</a>') =>
@@ -307,9 +332,12 @@ export function pintarPie() {
         <a href="trabaja-con-nosotros">Trabaja con nosotros</a>
         <a href="./#contacto">Contacto</a>
         <a href="${mailLink('Consulta desde la web')}">${esc(CONFIG.email)}</a>
-        <a href="terminos-y-privacidad">Términos y privacidad</a>
-        <a href="terminos-y-privacidad#propiedad">Licencia y derechos</a>
-        <a href="#" data-cookies>Cookies</a>
+        <a href="terminos-y-privacidad#aviso-legal">Aviso legal</a>
+        <a href="terminos-y-privacidad#condiciones">Condiciones de contratación</a>
+        <a href="terminos-y-privacidad#desistimiento">Desistimiento</a>
+        <a href="terminos-y-privacidad#privacidad">Privacidad</a>
+        <a href="terminos-y-privacidad#cookies">Política de cookies</a>
+        <a href="#" data-cookies>Configurar cookies</a>
         <a href="ajustes">Ajustes</a>
         ${Object.entries(CONFIG.redes || {}).filter(([, v]) => v).map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener" aria-label="${k}">${icono(k === 'linkedin' ? 'briefcase' : k)}</a>`).join('')}
         <button class="link-btn" data-install hidden>${icono('download')} Instalar app</button>
@@ -388,6 +416,7 @@ function crearLogin() {
         <div id="lgTermsWrap" hidden>${aceptarTerminos('lgTerms')}</div>
         <p class="form-err" id="lgErr" role="alert"></p>
         <button class="btn btn-primary w100 sign" id="lgSubmit" type="submit"><span>Entrar</span></button>
+        ${infoDatos('crear y gestionar tu cuenta, tus pedidos y tus consultas')}
       </form>
       <div class="social-message"><div class="line"></div><p class="message">o entra con</p><div class="line"></div></div>
       <div class="social-icons">

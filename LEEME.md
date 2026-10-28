@@ -644,3 +644,66 @@ En una copia en modo demo con Chromium (1440 px, 1280 px e iPhone 13; tema oscur
 con ancla; formularios y enlaces de teléfono; envío al cliente; cambios desde el visor; marcar cambios como hechos;
 aprobación (pasa a «Pago final»); la página `/vista-previa`; y versiones a las que les faltan archivos. Sin errores de JavaScript.
 **No probado:** con Supabase real (subida a Storage y enlaces temporales) ni en un iPhone real.
+
+## 31. Versión v44 — legal, solo transferencia, seguridad y fuentes propias
+
+### Pagos: solo transferencia
+- Bizum se ha quitado de la web, del pago, de Ajustes (cobros del negocio y de los vendedores) y del asistente. Los pedidos
+  antiguos pagados por Bizum se siguen viendo bien.
+- El diálogo de pago enseña el importe grande con «IVA incluido» y los datos de la transferencia para copiar (IBAN, titular,
+  importe y concepto). Se ha quitado la tarjeta de crédito decorativa: confundía, porque no se paga con tarjeta.
+
+### Legal (revísalo con tu gestoría: es una base completa, no un asesoramiento)
+- **Precios con IVA incluido (21 %)** en las tarjetas, la comparativa, el resumen del pedido (con base imponible e IVA) y el
+  recibo. Se cambia en `config.js → iva`.
+- **Datos legales** del autónomo (nombre, NIF, domicilio, correo y actividad) editables en *Ajustes → Negocio → «Datos legales»*.
+  Mientras falten, el **panel del propietario avisa** de qué falta (también el IBAN y el titular de la cuenta).
+- **Página legal nueva** (`/terminos-y-privacidad`): aviso legal (art. 10 LSSI), condiciones de contratación, derecho de
+  desistimiento con su modelo de formulario, garantía y reclamaciones, propiedad intelectual, privacidad completa (RGPD y
+  LOPDGDD: finalidades, bases legales, plazos, proveedores, transferencias y derechos), cookies con cada clave y su duración,
+  y cómo se verifican las opiniones. Tiene un índice que marca el apartado que lees.
+- **Antes de confirmar el pedido**: quién vende, precio con IVA, pago por transferencia y los 14 días para desistir. Casilla
+  **opcional** para empezar antes de esos 14 días (si no se marca, se empieza el día 15). El botón dice **«Pedido con obligación
+  de pago»** (art. 98.2 TRLGDCU). Cada pedido guarda la versión de las condiciones aceptadas.
+- **Botón «Desistir del contrato»** en «Mis proyectos» durante los 14 días (Directiva UE 2023/2673): confirmación y
+  **justificante** con fecha y hora. En el panel sale el aviso con el botón para **enviar la confirmación por correo**.
+- **Información de protección de datos** junto a cada formulario: registro, pedido, contacto, soporte y candidaturas.
+- **Cookies**: «Rechazar» y «Aceptar» con el mismo peso. El enlace del vendedor (`tm_ref`) solo se recuerda si se aceptan;
+  si no, vale mientras la página está abierta. Si se rechazan, no se guardan preferencias.
+- **Pie**: enlaces a aviso legal, condiciones, desistimiento, privacidad, política de cookies y configurar cookies.
+- «Trabaja con nosotros» aclara que es una colaboración mercantil (los colaboradores facturan; acuerdo por escrito).
+
+**Lo que tienes que hacer tú** (la web no puede hacerlo sola):
+1. Rellenar los datos legales y el IBAN en *Ajustes → Negocio*.
+2. **Emitir factura** por cada pago (el recibo de la web no sustituye a la factura).
+3. Contestar por correo a cada desistimiento (botón en la ficha del pedido) y devolver el dinero en 14 días.
+4. Tener **hojas de reclamaciones** a disposición de quien las pida.
+5. Firmar un acuerdo de colaboración con cada vendedor o creador.
+6. Si usas el plan gratuito de la API de Gemini, ten en cuenta que Google puede usar los mensajes del chat para mejorar sus
+   productos: lo avisa la política de privacidad, pero lo más seguro es el plan de pago.
+
+### Seguridad
+- **Supabase (aplicado el 28/10/2026)**: las funciones internas (`avisar`, `avisos_*`, `limitar_cliente`, `nuevo_usuario`,
+  `proteger_rol`, `rls_auto_enable`, `uids_propietarios`) ya no se pueden llamar desde fuera. Antes, cualquiera, sin iniciar
+  sesión, podía usar `avisar` para mandar avisos falsos a la campana de otro usuario. Los disparadores funcionan igual.
+  Índices nuevos en `mensajes(uid)` y `resenas(uid)`. El SQL está en `supabase/seguridad-v44.sql`.
+- **Pendiente en Supabase** (se hace en el panel, no por SQL): *Authentication → Providers → Email → Leaked password
+  protection* (no deja usar contraseñas filtradas).
+- El generador de códigos QR va dentro de la web (`js/vendor/qrcode.js`, MIT) en lugar de cargarse de un CDN.
+
+### Fluidez
+- **Fuentes alojadas en la web** (`fuentes/`, licencia OFL): ya no se usa Google Fonts, así que no se envía la IP de los
+  visitantes a Google y la web no espera a otro servidor. Las dos fuentes principales se precargan. Las plantillas de
+  ejemplo también tienen sus fuentes en `fuentes/plantillas/`, y «Exportar HTML» las mete dentro del archivo.
+- Service worker **v44** (guarda las fuentes para abrir al instante).
+
+### Visual (Impeccable)
+- Fuera las etiquetas numeradas encima de los títulos de la portada («01 · Webs y precios»…): repetían el título.
+- Resumen del pedido: los textos legales ya no se cortan en una línea en el móvil.
+- Ficha del pedido en el móvil: el nombre del negocio ya no se parte a mitad de palabra.
+- Foco visible con teclado, barra de scroll y cursor de escritura con los colores de la web.
+
+### Probado
+Copia en modo demo con Chromium (1440 px e iPhone 13): portada, fuentes propias, pedido hasta el resumen, pago por
+transferencia, desistimiento con justificante, aviso en el panel, cookies y página legal. Sin errores de JavaScript.
+**No probado** con Supabase real ni en un iPhone real.

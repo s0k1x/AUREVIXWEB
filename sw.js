@@ -12,7 +12,7 @@
    - Librería (/library/ y /biblioteca-ui/): NO se guarda (son miles de
      archivos); va siempre por internet con la caché normal del navegador.
    ========================================================== */
-const VERSION = 'v43';
+const VERSION = 'v44';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
@@ -22,6 +22,7 @@ const ARCHIVOS = [
   'js/app.js', 'js/ui.js', 'js/store.js', 'js/plantillas.js', 'js/panel.js', 'js/pago.js', 'js/efectos.js',
   'js/vendor/supabase.js', 'js/sinzoom.js', 'js/iconos.js', 'js/asistente.js', 'js/proyecto.js', 'js/sitio.js', 'js/cookies.js', 'js/apariencia.js', 'js/avisos.js', 'js/colabora.js', 'js/ajustes.js', 'js/vistaweb.js', 'js/vista.js', 'js/desplegable.js', 'js/zip.js',
   'ajustes', 'funciones.css', 'tema-claro.css', 'icons/nombre-oscuro.png',
+  'fuentes/fuentes.css', 'fuentes/instrument-sans-latin-046090.woff2', 'fuentes/instrument-sans-latin-ext-284bb9.woff2', 'fuentes/bricolage-grotesque-latin-a97232.woff2', 'fuentes/bricolage-grotesque-latin-ext-a4fe79.woff2', 'fuentes/jetbrains-mono-latin-f70309.woff2', 'fuentes/jetbrains-mono-latin-ext-a83f17.woff2',
   'manifest.json', 'icons/logo-a.png', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
 ];
 
@@ -93,7 +94,6 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
 
   if (url.hostname === 'images.pexels.com') { e.respondWith(fotoRapida(req)); return; }
-  if (/^fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) { e.respondWith(fotoRapida(req)); return; }
   if (url.origin !== self.location.origin) return; // Supabase, Gemini, CDN: siempre en vivo
   if (/\/(library|biblioteca-ui)\//.test(url.pathname)) return; // la librería no se guarda en el móvil
 

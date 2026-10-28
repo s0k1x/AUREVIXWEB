@@ -4,7 +4,7 @@
 import { CONFIG } from '../config.js';
 import * as store from './store.js';
 import { etapaDe } from './proyecto.js';
-import { $, $$, esc, euros, icono, abrir, cerrar, toast, ocupado, campo, selectorEstrellas, mailLink, refPedido, PAGOS, METODOS } from './ui.js';
+import { $, esc, euros, icono, abrir, toast, ocupado, campo, selectorEstrellas, mailLink, refPedido, PAGOS } from './ui.js';
 
 const P = CONFIG.pagos || {};
 
@@ -41,14 +41,7 @@ export function botonPago(p) {
   </button>`;
 }
 
-/* ---------- Métodos disponibles según config.js ---------- */
-function metodos() {
-  const m = [];
-  if (P.bizum) m.push({ id: 'bizum', nombre: 'Bizum', icono: 'phone', sub: 'Gratis · llega al momento' });
-  if (P.iban) m.push({ id: 'transferencia', nombre: 'Transferencia bancaria', icono: 'bank', sub: 'Gratis · 1 día hábil' });
-  return m;
-}
-
+/* ---------- Forma de pago: solo transferencia bancaria ---------- */
 const fila = (k, v, copiar = v) =>
   `<div class="pay-row"><span>${esc(k)}</span><b>${esc(v)}</b>${copiar ? `<button type="button" class="icon-btn sm" data-copy="${esc(copiar)}" aria-label="Copiar ${esc(k)}">${icono('copy')}</button>` : ''}</div>`;
 
@@ -58,6 +51,7 @@ function crearDialogo() {
   dlg = document.createElement('dialog');
   dlg.className = 'dlg';
   dlg.id = 'pagoDlg';
+  dlg.setAttribute('aria-labelledby', 'pagoTit');
   dlg.innerHTML = `<div class="dlg-box pago"><button class="dlg-x" data-close aria-label="Cerrar">${icono('x')}</button><div id="pagoBody"></div></div>`;
   document.body.appendChild(dlg);
 }
@@ -65,79 +59,44 @@ function crearDialogo() {
 export function abrirPago(p, fase = faseDePago(p), alTerminar = () => {}) {
   if (!fase) return;
   if (!dlg) crearDialogo();
-  const u = store.usuarioActual();
   const imp = fase === 'senal' ? importeSenal(p) : importeResto(p);
   const ref = refPedido(p.id);
   const concepto = `${ref} ${p.respuestas?.negocio || ''}`.trim().slice(0, 35);
-  const lista = metodos();
   // contenedor nuevo en cada apertura (así no se acumulan eventos)
   const body = document.createElement('div');
   $('#pagoBody', dlg).replaceChildren(body);
 
   body.innerHTML = `
-    <h2 class="dlg-h">${fase === 'senal' ? 'Pagar la señal' : 'Pagar el resto'}</h2>
+    <h2 class="dlg-h" id="pagoTit">${fase === 'senal' ? 'Pagar la señal' : 'Pagar el resto'}</h2>
     <p class="muted pago-sub">${esc(p.planNombre)} · ${esc(p.respuestas?.negocio || '')} · ${ref}</p>
-    <div class="flip-card" id="pagoCard" title="Toca para girar">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <span class="fcd-brand">${esc(CONFIG.marca)}</span>
-          <span class="fcd-chip"></span>
-          <svg class="fcd-nfc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8.5 7.5a6 6 0 0 1 0 9M12 5a9.5 9.5 0 0 1 0 14M5 10a2.5 2.5 0 0 1 0 4"/></svg>
-          <span class="fcd-num">•••• •••• •••• ${ref.slice(1, 5)}</span>
-          <span class="fcd-name">${esc(u?.name || p.clienteNombre || '')}</span>
-          <span class="fcd-amount"><small>A PAGAR</small><b>${euros(imp)}</b></span>
-        </div>
-        <div class="flip-card-back">
-          <span class="fcd-strip"></span><span class="fcd-sign"></span><span class="fcd-cvv">${ref.slice(-3)}</span>
-          <span class="fcd-secure">${icono('lock')} Nunca te pediremos los datos de tu tarjeta aquí</span>
-        </div>
-      </div>
+    <div class="pago-total">
+      <small>${fase === 'senal' ? `Señal (${CONFIG.senal} % del total)` : 'Pago final'}</small>
+      <b>${euros(imp)}</b>
+      <span>IVA incluido · total del proyecto ${euros(p.total || 0)}</span>
     </div>
-    ${lista.length ? `
-    <p class="q-label">Elige cómo pagar</p>
-    <div class="pay-methods" role="radiogroup">
-      ${lista.map((m, i) => `
-      <label class="pm">
-        <span class="pm-l"><span class="pm-ic">${icono(m.icono)}</span><span class="pm-tx"><b>${esc(m.nombre)}${m.tag ? `<span class="pm-tag">${m.tag}</span>` : ''}</b><small>${esc(m.sub)}</small></span></span>
-        <input type="radio" name="metodo" value="${m.id}" ${i === 0 ? 'checked' : ''}>
-      </label>`).join('')}
+    ${P.iban ? `
+    <p class="pay-how">${icono('bank')}<span>Haz una <b>transferencia bancaria</b> desde la app o la web de tu banco con estos datos. Toca el botón de cada uno para copiarlo.</span></p>
+    <div class="pay-detail">
+      ${fila('IBAN', P.iban, P.iban.replace(/\s/g, ''))}${fila('Titular', P.titular, '')}${fila('Importe', euros(imp), String(imp).replace('.', ','))}${fila('Concepto', concepto)}
     </div>
-    <div class="pay-detail" id="pagoDetalle"></div>
-    <button class="btn btn-primary w100" id="pagoOk" type="button"><span>Ya he pagado</span></button>
-    <p class="muted pago-nota">Comprobamos el pago y lo verás reflejado en «Mis proyectos».</p>`
-    : `<div class="empty"><b>Aún no hay formas de pago configuradas</b><p>Escríbenos y te indicamos cómo pagar.</p></div>`}`;
-
-  const detalle = () => {
-    const m = $('input[name=metodo]:checked', body)?.value;
-    const d = $('#pagoDetalle', body);
-    if (!d) return;
-    if (m === 'bizum') d.innerHTML = `
-      <p class="pay-how">Abre la app de tu banco → <b>Bizum</b> → <b>Enviar dinero</b> y usa estos datos:</p>
-      ${fila('Teléfono', P.bizum, P.bizum.replace(/\s/g, ''))}${fila('Importe', euros(imp), String(imp).replace('.', ','))}${fila('Concepto', concepto)}`;
-    if (m === 'transferencia') d.innerHTML = `
-      <p class="pay-how">Haz una transferencia con estos datos:</p>
-      ${fila('IBAN', P.iban, P.iban.replace(/\s/g, ''))}${fila('Titular', P.titular, '')}${fila('Importe', euros(imp), String(imp).replace('.', ','))}${fila('Concepto', concepto)}`;
-    $('#pagoOk span', body).textContent = 'Ya he hecho el pago';
-  };
-  body.addEventListener('change', e => { if (e.target.name === 'metodo') detalle(); });
-  $('#pagoCard', body).addEventListener('click', e => e.currentTarget.classList.toggle('flipped'));
-  detalle();
+    <p class="muted pago-nota">Escribe el concepto tal cual: así sabemos de quién es el pago. Entre bancos españoles suele llegar en un día hábil (al momento si haces una transferencia inmediata). Sin comisiones por nuestra parte.</p>
+    <button class="btn btn-primary w100" id="pagoOk" type="button"><span>Ya he hecho la transferencia</span></button>`
+    : `<div class="empty"><b>Aún no tenemos los datos de pago configurados</b><p>Escríbenos y te los enviamos.</p></div>`}`;
 
   $('#pagoOk', body)?.addEventListener('click', async e => {
     const btn = e.currentTarget;
-    const metodo = $('input[name=metodo]:checked', body).value;
     ocupado(btn, true);
     try {
-      const cambios = await store.avisarPago(p.id, { metodo, fase });
+      const cambios = await store.avisarPago(p.id, { metodo: 'transferencia', fase });
       Object.assign(p, cambios);
-      const msg = `Hola, acabo de pagar ${fase === 'senal' ? 'la señal' : 'el resto'} (${euros(imp)}) por ${METODOS[metodo]} del pedido ${ref}. Adjunto el justificante.`;
+      const msg = `Hola, acabo de hacer la transferencia de ${fase === 'senal' ? 'la señal' : 'el resto'} (${euros(imp)}) del pedido ${ref}. Adjunto el justificante.`;
       body.innerHTML = `
         <div class="exito">
           <div class="ok-ic">${icono('check')}</div>
           <h3>Aviso de pago recibido</h3>
-          <p class="muted">Hemos recibido tu aviso de pago de <b>${euros(imp)}</b> por ${METODOS[metodo]}. Lo comprobaremos y verás la confirmación en «Mis proyectos».</p>
+          <p class="muted">Gracias. En cuanto nos llegue la transferencia de <b>${euros(imp)}</b> la confirmamos y lo verás en «Mis proyectos».</p>
           <a class="btn btn-ghost w100" href="${mailLink(`Justificante de pago ${ref}`, msg)}">${icono('mail')} Enviar justificante por correo</a>
-          <p class="muted" style="font-size:13px;margin:-4px 0 12px">También puedes subir la captura del pago en la pestaña «Archivos» de tu proyecto.</p>
+          <p class="muted" style="font-size:13px;margin:-4px 0 12px">También puedes subir el justificante en la pestaña «Archivos» de tu proyecto.</p>
           <button class="btn btn-ghost w100" data-close type="button">Cerrar</button>
         </div>`;
       alTerminar(p);

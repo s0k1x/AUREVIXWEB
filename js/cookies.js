@@ -14,15 +14,17 @@ export function consentimiento() {
     return c && c.v === VERSION ? c : null;
   } catch { return null; }
 }
-/** ¿Se pueden guardar preferencias en este navegador? */
+/** Preferencias que elige el propio usuario (tema, vistas, borrador): se guardan salvo que las rechace */
 export const prefsPermitidas = () => consentimiento()?.preferencias !== false;
+/** Lo que no pide el usuario (recordar el vendedor que le recomendó): solo con su consentimiento expreso */
+export const consentidoExpreso = () => consentimiento()?.preferencias === true;
 
 function guardar(preferencias, estadisticas = false) {
   const c = { v: VERSION, necesarias: true, preferencias, estadisticas, t: Date.now() };
   try { localStorage.setItem(CLAVE, JSON.stringify(c)); } catch { /* sin almacenamiento */ }
   if (!preferencias) {
     // Se borran las preferencias que ya estuvieran guardadas
-    try { ['tm_apariencia', 'tm_borrador', 'tm_vista', 'tm_ajustes_web'].forEach(k => localStorage.removeItem(k)); } catch { /* nada */ }
+    try { ['tm_apariencia', 'tm_borrador', 'tm_vista', 'tm_visor_disp', 'tm_ref'].forEach(k => localStorage.removeItem(k)); } catch { /* nada */ }
   }
   document.dispatchEvent(new CustomEvent('cookies', { detail: c }));
   return c;
@@ -41,16 +43,16 @@ function pintar(configurar = false) {
   nodo.innerHTML = `
     <div class="ck-top"><span class="ck-ic">${ICONO}</span>
       <div><b>Cookies y privacidad</b>
-      <p>Solo usamos el almacenamiento imprescindible para que la web funcione (sesión y seguridad) y, si lo aceptas, para recordar tus preferencias. No usamos cookies de publicidad ni de seguimiento. <a href="terminos-y-privacidad#cookies">Más información</a></p></div></div>
+      <p>Usamos el almacenamiento imprescindible para que la web funcione (sesión y seguridad) y, solo si lo aceptas, para recordar tus preferencias. No usamos cookies de publicidad, de estadísticas ni de terceros. <a href="terminos-y-privacidad#cookies">Más información</a></p></div></div>
     <div class="ck-cfg">
       <label class="ck-row"><span><b>Necesarias</b><small>Inicio de sesión, seguridad y tu elección sobre cookies. Siempre activas.</small></span><input type="checkbox" checked disabled></label>
-      <label class="ck-row"><span><b>Preferencias</b><small>Tema, tamaño de letra, borradores del cuestionario y vista del panel.</small></span><input type="checkbox" id="ckPref" ${c?.preferencias === false ? '' : 'checked'}></label>
+      <label class="ck-row"><span><b>Preferencias</b><small>Tema, tamaño de letra, borrador del pedido, vistas del panel y el vendedor que te recomendó.</small></span><input type="checkbox" id="ckPref" ${c?.preferencias ? 'checked' : ''}></label>
       <label class="ck-row off"><span><b>Estadísticas</b><small>No usamos herramientas de estadísticas ni de terceros.</small></span><input type="checkbox" disabled></label>
     </div>
     <div class="ck-btns">
-      <button type="button" class="btn btn-sm btn-ghost" data-ck="nec">Solo necesarias</button>
-      <button type="button" class="btn btn-sm btn-ghost" data-ck="cfg">${configurar ? 'Guardar selección' : 'Configurar'}</button>
-      <button type="button" class="btn btn-sm btn-primary" data-ck="all">Aceptar</button>
+      <button type="button" class="btn btn-sm btn-ghost ck-par" data-ck="nec">Rechazar</button>
+      <button type="button" class="btn btn-sm btn-ghost ck-par" data-ck="all">Aceptar</button>
+      <button type="button" class="link-btn ck-cfg-btn" data-ck="cfg">${configurar ? 'Guardar selección' : 'Configurar'}</button>
     </div>`;
   document.body.appendChild(nodo);
   requestAnimationFrame(() => nodo.classList.add('on'));

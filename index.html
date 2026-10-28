@@ -47,10 +47,10 @@
   <meta property="og:site_name" content="AurevixWeb">
   <meta name="twitter:image" content="https://aurevixweb.es/icons/og.png?v=2">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://images.pexels.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="preload" href="fuentes/instrument-sans-latin-046090.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fuentes/bricolage-grotesque-latin-a97232.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fuentes/fuentes.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="componentes.css">
   <link rel="stylesheet" href="animaciones.css">
@@ -130,7 +130,6 @@
     <section id="webs" class="alt">
       <div class="wrap">
         <div class="sec-head reveal">
-          <span class="eyebrow"><b>01</b>Webs y precios</span>
           <h2>Tipos de web y precios</h2>
           <p class="lead">Todos los precios incluyen diseño, adaptación a móvil y publicación. En el siguiente paso puedes añadir extras y ves el total antes de confirmar.</p>
         </div>
@@ -151,7 +150,6 @@
     <section id="disenos">
       <div class="wrap">
         <div class="sec-head reveal">
-          <span class="eyebrow"><b>02</b>Diseños</span>
           <h2>Diseños de partida</h2>
           <p class="lead">Cada diseño se adapta a tu marca: colores, tipografía, textos, fotos y secciones. Pulsa en cualquiera para verlo a pantalla completa.</p>
         </div>
@@ -164,7 +162,6 @@
     <section id="como" class="alt">
       <div class="wrap">
         <div class="sec-head reveal">
-          <span class="eyebrow"><b>03</b>Cómo funciona</span>
           <h2>Cómo trabajamos</h2>
         </div>
         <div class="steps timeline" id="pasos">
@@ -181,7 +178,6 @@
       <div class="wrap">
         <div class="sec-head reveal op-head">
           <div>
-            <span class="eyebrow"><b>04</b>Opiniones</span>
             <h2>Opiniones de clientes</h2>
           </div>
           <div class="op-score" id="opScore"></div>
@@ -196,7 +192,6 @@
       <div class="wrap">
         <div class="join reveal">
           <div>
-            <span class="eyebrow"><b>05</b>Equipo</span>
             <h2>Buscamos comerciales con un 30 % de comisión por cada web vendida.</h2>
             <p>Trabajo en remoto y con horario libre. Tú presentas nuestras webs a negocios y nosotros nos encargamos del diseño y la entrega.</p>
           </div>
@@ -209,7 +204,7 @@
     <section id="faq" class="alt">
       <div class="wrap faq-grid">
         <div class="sec-head reveal faq-side">
-          <span class="eyebrow"><b>06</b>Dudas</span><h2>Preguntas frecuentes</h2>
+          <h2>Preguntas frecuentes</h2>
           <p class="lead">Si tienes otra duda, pregunta a nuestro asistente o escríbenos desde el formulario de contacto. Respondemos en menos de 24 horas laborables.</p>
           <a class="btn btn-ghost btn-fill" href="#contacto"><span>Escribirnos</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </div>
@@ -217,7 +212,7 @@
           <label class="faq-buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="faqQ" placeholder="Buscar en las preguntas…" aria-label="Buscar en las preguntas frecuentes"></label>
           <p class="faq-nada" id="faqNada" hidden>No hay ninguna pregunta con esas palabras. <a href="#contacto">Pregúntanos directamente</a>.</p>
           <details><summary>¿El precio es el final?</summary><p>Es el precio de partida del tipo de web. En el cuestionario puedes añadir extras (dominio, logotipo, redacción de textos…) y ves el total exacto antes de confirmar. No hay costes ocultos.</p></details>
-          <details><summary>¿Cómo se paga?</summary><p>Se abona el 50 % al empezar y el resto cuando la web está terminada y la has aprobado. Puedes pagar por Bizum, transferencia o los métodos que aparecen al finalizar el pedido. Desde «Mis proyectos» puedes descargar el recibo de cada pago.</p></details>
+          <details><summary>¿Cómo se paga?</summary><p>Se abona el 50 % al empezar y el resto cuando la web está terminada y la has aprobado. Se paga por transferencia bancaria: los datos (IBAN, importe y concepto) aparecen al pagar. Todos los precios llevan el IVA incluido. Desde «Mis proyectos» puedes descargar el recibo de cada pago.</p></details>
           <details><summary>¿Cuánto tarda en estar lista?</summary><p>Entre una semana y un mes, según el tipo de web: una landing page suele estar en una semana y una tienda online o un proyecto a medida, en tres o cuatro semanas. En «Mis proyectos» ves la fecha prevista de entrega.</p></details>
           <details><summary>¿Cómo os envío las fotos y el logotipo?</summary><p>Desde «Mis proyectos», en la pestaña «Archivos» de tu proyecto, puedes subir fotos, logotipos y documentos directamente. También puedes escribirnos en la pestaña «Mensajes».</p></details>
           <details><summary>¿Cómo os contacto?</summary><p>Por correo a aurevixweb@gmail.com, desde el formulario de contacto de esta página o, si ya eres cliente, desde la pestaña «Mensajes» de tu proyecto. Atendemos por escrito para que todo quede registrado y no se pierda nada.</p></details>
@@ -234,7 +229,6 @@
     <section id="contacto">
       <div class="wrap contacto-grid">
         <div class="sec-head reveal">
-          <span class="eyebrow"><b>07</b>Contacto</span>
           <h2>Cuéntanos tu proyecto</h2>
           <p class="lead">Escríbenos y te respondemos por correo. Si ya eres cliente, también puedes hablar con el equipo desde «Mis proyectos».</p>
           <div class="contacto-datos">

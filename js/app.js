@@ -6,25 +6,32 @@ import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from './store.js';
 import {
   $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, arrancar, mailLink, refPedido,
-  ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados,
+  ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados, desgloseIVA, ivaTexto, infoDatos, descargar,
   estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
 } from './ui.js';
 import { planesActivos, extrasActivos } from './sitio.js';
 import { montarHilo, montarArchivos, abrirRecibo } from './colabora.js';
 import { botonPago, abrirPago, abrirResena, animarYPagar } from './pago.js';
 import { recomendar, iniciarChat } from './asistente.js';
-import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, pedirCambios, webCliente, estadoParaEtapa, indiceEtapa, dominioTexto, fechaEntrega, plazoTexto, plazoClase, conHistorial, lineaTiempoHTML } from './proyecto.js';
+import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, pedirCambios, webCliente, desistimientoHTML, puedeDesistir, finDesistimiento, estadoParaEtapa, indiceEtapa, dominioTexto, fechaEntrega, plazoTexto, plazoClase, conHistorial, lineaTiempoHTML } from './proyecto.js';
 import { importeSenal, importeResto } from './pago.js';
 import { confeti } from './efectos.js';
+import { prefsPermitidas, consentidoExpreso } from './cookies.js';
 import { abrirVisor, cerrarVisor, enlaceVista } from './vistaweb.js';
 
-/* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor (30 días) */
+/* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor.
+   Recordarlo 30 días en el navegador no es imprescindible para el visitante, así que solo se guarda
+   si acepta las cookies de preferencias (LSSI, art. 22.2). Si no, vale mientras siga en la página. */
 const REF = 'tm_ref';
+let refSesion = '';
+const guardarRef = () => { if (refSesion && consentidoExpreso()) { try { localStorage.setItem(REF, JSON.stringify({ uid: refSesion, t: Date.now() })); } catch {} } };
 (() => {
   const r = new URLSearchParams(location.search).get('ref');
-  if (r && /^[\w-]{3,64}$/.test(r)) { try { localStorage.setItem(REF, JSON.stringify({ uid: r, t: Date.now() })); } catch {} }
+  if (r && /^[\w-]{3,64}$/.test(r)) { refSesion = r; guardarRef(); }
 })();
+document.addEventListener('cookies', e => { if (e.detail?.preferencias) guardarRef(); else { try { localStorage.removeItem(REF); } catch {} } });
 const leerRef = () => {
+  if (refSesion) return refSesion;
   try { const r = JSON.parse(localStorage.getItem(REF) || 'null'); return r && Date.now() - r.t < 30 * 864e5 ? r.uid : ''; } catch { return ''; }
 };
 
@@ -139,7 +146,7 @@ $('#planes').innerHTML = planesActivos().map(p => `
     <div class="pc-top"><span class="pc-ic">${icono(p.icono)}</span><span class="pc-time">${icono('clock')} ${esc(p.entrega)}</span></div>
     <h3>${esc(p.nombre)}</h3>
     <p class="pc-desc">${esc(p.desc)}</p>
-    <div class="pc-price"><small>desde</small> ${euros(p.precio)}</div>
+    <div class="pc-price"><small>desde</small> ${euros(p.precio)}<small class="pc-iva">${ivaTexto()}</small></div>
     ${bvActivo() ? `<p class="pc-bv">${icono('gift')} ${euros(Math.round(p.precio * (100 - CONFIG.bienvenida.pct)) / 100)} en tu primera web</p>` : ''}
     <ul>${p.incluye.slice(0, 4).map(i => `<li>${icono('check')}${esc(i)}</li>`).join('')}</ul>
     <button class="btn ${p.popular ? 'btn-dark' : 'btn-ghost btn-fill'} w100" data-comprar="${p.id}"><span>${textoComprar()}</span>${icono('arrow')}</button>
@@ -158,7 +165,7 @@ $('#verComparar').addEventListener('click', e => {
   const b = e.currentTarget, t = $('#comparaTabla');
   if (!t.innerHTML) {
     const P = planesActivos();
-    t.innerHTML = `<div class="compara-scroll"><table class="compara">
+    t.innerHTML = `<div class="compara-scroll"><table class="compara"><caption class="compara-iva">Precios finales con el ${CONFIG.iva || 0} % de IVA incluido.</caption>
       <thead><tr><th></th>${P.map(p => `<th class="${p.popular ? 'pop' : ''}"><span class="pc-ic">${icono(p.icono)}</span><b>${esc(p.nombre)}</b><small>desde ${euros(p.precio)}</small></th>`).join('')}</tr></thead>
       <tbody>
         <tr><td>Plazo de entrega</td>${P.map(p => `<td class="${p.popular ? 'pop' : ''}">${esc(p.entrega)}</td>`).join('')}</tr>
@@ -452,7 +459,7 @@ function guardarBorrador() {
       if (el.type === 'radio' || el.type === 'checkbox') { if (el.checked) (campos[el.name] ||= []).push(el.value); }
       else campos[el.name] = el.value;
     });
-    try { localStorage.setItem(BORRADOR, JSON.stringify({ plan: W.plan.id, paso: W.paso, max: W.max, campos, colorCustom: W.colorCustom, plantilla: W.plantilla, t: Date.now() })); } catch {}
+    if (prefsPermitidas()) try { localStorage.setItem(BORRADOR, JSON.stringify({ plan: W.plan.id, paso: W.paso, max: W.max, campos, colorCustom: W.colorCustom, plantilla: W.plantilla, t: Date.now() })); } catch {}
   }, 300);
 }
 function restaurarBorrador(b) {
@@ -648,7 +655,8 @@ function irA(i) {
   $('#wizFoot').hidden = false;
   const next = $('#wizNext');
   ocupado(next, false);
-  next.innerHTML = `<span>${i === 0 ? 'Empezar' : paso.id === 'resumen' ? 'Confirmar pedido' : 'Continuar'}</span>`;
+  next.innerHTML = `<span>${i === 0 ? 'Empezar' : paso.id === 'resumen' ? 'Pedido con obligación de pago' : 'Continuar'}</span>`;
+  next.classList.toggle('obligacion', paso.id === 'resumen');
   if (paso.id === 'diseno') pintarSelectorDiseno();
   if (paso.id === 'resumen') pintarResumen();
   actualizarTotal();
@@ -734,7 +742,8 @@ function pintarResumen() {
       ${d.extras.map(x => `<div class="rs-row"><span>${esc(x.nombre)}</span><b>+${euros(x.precio)}${x.mensual ? '/mes' : ''}</b></div>`).join('')}
       ${d.urgente ? `<div class="rs-row"><span>Entrega urgente</span><b>+${euros(d.recargo)}</b></div>` : ''}
       ${d.descuento ? `<div class="rs-row dto"><span>Descuento ${esc(W.cupon.codigo)} (${W.cupon.pct} %)</span><b>−${euros(d.descuento)}</b></div>` : ''}
-      <div class="rs-row total"><span>Total</span><b>${euros(d.total)}</b></div>
+      <div class="rs-row total"><span>Total <small>${ivaTexto()}</small></span><b>${euros(d.total)}</b></div>
+      ${CONFIG.iva ? (iv => `<div class="rs-row rs-iva"><span>Base imponible ${euros(iv.base)} + IVA ${iv.pct} %</span><b>${euros(iv.cuota)}</b></div>`)(desgloseIVA(d.total)) : ''}
       <div class="cupon">
         ${W.cupon
           ? `<p class="cupon-ok">${icono('tag')} Cupón <b>${esc(W.cupon.codigo)}</b> aplicado <button type="button" class="link-btn" id="cuponQuitar">Quitar</button></p>`
@@ -742,10 +751,21 @@ function pintarResumen() {
       </div>
       <div class="rs-row"><span>Entrega prevista</span><b>${esc(W.plan.entrega)}${d.urgente ? ' (urgente: antes)' : ''}</b></div>
       ${d.mensual ? `<div class="rs-row"><span>Cuota mensual</span><b>${euros(d.mensual)}/mes</b></div>` : ''}
-      <div class="rs-note">Para empezar pagas la señal de <b>${euros(d.total * CONFIG.senal / 100)}</b> (${CONFIG.senal} %) y el resto cuando la web esté lista y te guste.</div>
+      <div class="rs-note">Para empezar pagas la señal de <b>${euros(d.total * CONFIG.senal / 100)}</b> (${CONFIG.senal} %) por transferencia y el resto cuando la web esté lista y te guste.</div>
     </div>
-    <div class="rs-terms">${aceptarTerminos('wizTerms')}</div>
-    ${store.usuarioActual() ? '' : '<p class="muted rs-login">Al confirmar te pediremos iniciar sesión para que puedas seguir tu pedido.</p>'}`;
+    <div class="rs-legal">
+      <p><b>Antes de confirmar</b></p>
+      <ul>
+        <li>Contratas con ${esc(CONFIG.legal?.titular && !/^tu nombre/i.test(CONFIG.legal.titular) ? `${CONFIG.legal.titular} (NIF ${CONFIG.legal.nif})` : CONFIG.marca)}, ${esc(CONFIG.legal?.actividad || 'diseño web').toLowerCase()}. Datos completos en el <a href="terminos-y-privacidad#aviso-legal" target="_blank">aviso legal</a>.</li>
+        <li>${CONFIG.iva ? `Precio final con el ${CONFIG.iva} % de IVA incluido` : 'Precio final, sin IVA'}. Pago solo por transferencia bancaria.</li>
+        <li>Tienes <b>14 días naturales para desistir</b> sin dar explicaciones, desde «Mis proyectos». <a href="terminos-y-privacidad#desistimiento" target="_blank">Cómo funciona</a>.</li>
+      </ul>
+      <label class="rs-inicio"><input type="checkbox" id="wizInicio" ${W.inicioAnticipado ? 'checked' : ''}>
+        <span>Quiero que empecéis mi web <b>antes de que terminen los 14 días</b>. Sé que, si desisto, pagaré la parte del trabajo ya hecha y que, cuando la web esté terminada y entregada, ya no podré desistir. <small>Si no lo marcas, empezamos el día 15.</small></span></label>
+    </div>
+    <div class="rs-terms">${aceptarTerminos('wizTerms', 'He leído y acepto las <a href="terminos-y-privacidad#condiciones" target="_blank">condiciones de contratación</a> y la <a href="terminos-y-privacidad#privacidad" target="_blank">política de privacidad</a>')}</div>
+    ${store.usuarioActual() ? '' : '<p class="muted rs-login">Al confirmar te pediremos iniciar sesión para que puedas seguir tu pedido.</p>'}
+    ${infoDatos('preparar, hacer y facturar tu web, y atenderte durante el proyecto')}`;
   vigilarMiniaturas($('#resumen'));
   $('#cuponOk')?.addEventListener('click', async e => {
     const codigo = $('#cuponIn').value.trim();
@@ -769,6 +789,7 @@ function pintarResumen() {
       pintarResumen(); actualizarTotal();
     } catch (err) { toast(err.message, 'err'); ocupado(e.currentTarget, false); }
   });
+  $('#wizInicio')?.addEventListener('change', e => { W.inicioAnticipado = e.target.checked; });
   $('#cuponIn')?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('#cuponOk').click(); } });
   $('#cuponQuitar')?.addEventListener('click', () => { W.cupon = null; pintarResumen(); actualizarTotal(); });
 }
@@ -794,7 +815,10 @@ async function confirmarPedido() {
     const pedido = await store.crearPedido({
       plan: W.plan.id, planNombre: W.plan.nombre, precioBase: W.plan.precio,
       extras: d.extras, urgente: d.urgente, total: d.total, mensual: d.mensual,
-      plantilla: W.plantilla, respuestas: d.respuestas, aceptaTerminos: Date.now(), clave: W.clave,
+      plantilla: W.plantilla, respuestas: d.respuestas, aceptaTerminos: Date.now(), condiciones: CONFIG.condiciones, clave: W.clave,
+      // Consentimiento expreso para empezar dentro del plazo de desistimiento (art. 98.8 y 108.3 TRLGDCU)
+      inicioAnticipado: !!$('#wizInicio')?.checked,
+      iva: CONFIG.iva || 0,
       ...(W.cupon ? { cupon: W.cupon.codigo, descuento: d.descuento, precioSinDescuento: d.bruto } : {}),
       ref: leerRef() && leerRef() !== u.uid ? leerRef() : ''
     });
@@ -919,7 +943,8 @@ function pestanaHTML(p) {
       <div class="mp-dato">${icono('euro')}<span>Pago</span><b>${esc((PAGOS[p.pagoEstado || 'pendiente'] || PAGOS.pendiente).txt)}</b></div>
       <div class="mp-dato">${icono('chart')}<span>Avance</span><b>${Math.round(indiceEtapa(p) / (ETAPAS.length - 1) * 100)} %</b></div>
     </aside>
-  </div>`;
+  </div>
+  ${desistimientoHTML(p)}`;
 }
 
 function montarPestana() {
@@ -1012,6 +1037,10 @@ $('#pedidosList').addEventListener('click', e => {
     const p = misPedidos.find(x => x.id === ap.dataset.aprobarWeb);
     return guardarProyecto(p, aprobarWeb(p), 'Web aprobada. Solo falta el pago final para publicarla.', ap);
   }
+  const de = e.target.closest('[data-desistir]');
+  if (de) return abrirDesistimiento(misPedidos.find(x => x.id === de.dataset.desistir));
+  const ju = e.target.closest('[data-justificante]');
+  if (ju) return justificanteDesistimiento(misPedidos.find(x => x.id === ju.dataset.justificante));
   const ca = e.target.closest('[data-cancelar]');
   if (ca) {
     const p = misPedidos.find(x => x.id === ca.dataset.cancelar);
@@ -1061,6 +1090,7 @@ async function pintarSoporte() {
       ${campo({ id: 'sopAsunto', name: 'asunto', label: 'Asunto', required: true, attrs: 'maxlength="120"' })}
       ${campo({ id: 'sopMsg', name: 'mensaje', label: 'Mensaje', type: 'textarea', required: true, attrs: 'maxlength="3000"' })}
       <button class="btn btn-primary" type="submit"><span>Enviar consulta</span>${icono('send')}</button>
+      ${infoDatos('responder a tu consulta y resolverla')}
     </form>
     <h3 class="sop-h">Tus consultas</h3>
     <div class="sop-list">${L.length ? L.map(t => {
@@ -1115,6 +1145,7 @@ function pintarContacto() {
     ${campo({ id: 'ctMsg', name: 'mensaje', label: 'Cuéntanos tu proyecto o tu duda', type: 'textarea', required: true, attrs: 'maxlength="3000"' })}
     <input type="text" name="web" tabindex="-1" autocomplete="off" class="trampa" aria-hidden="true">
     ${aceptarTerminos('ctTerms', 'He leído y acepto la <a href="terminos-y-privacidad#privacidad" target="_blank">política de privacidad</a>')}
+    ${infoDatos('responder a tu mensaje; lo conservamos hasta un año después de resolverlo')}
     <div class="ct-btns"><button class="btn btn-primary" type="submit"><span>Enviar mensaje</span>${icono('send')}</button>
     <a class="btn btn-ghost" id="ctCorreo" href="${mailLink('Consulta desde la web')}">${icono('mail')}<span>Abrir mi correo</span></a></div>
     <p class="form-err" id="ctErr" role="alert"></p>`;
@@ -1205,4 +1236,64 @@ function verPropuesta(p) {
       cerrarVisor();
     }
   });
+}
+
+/* ---------- Desistimiento del contrato (14 días) ----------
+   Un paso para explicar qué pasa, otro para confirmar, y el justificante
+   con la fecha y la hora para que el cliente lo guarde. */
+let desDlg;
+function abrirDesistimiento(p) {
+  if (!p || !puedeDesistir(p)) return toast('El plazo para desistir de este pedido ya ha terminado. Escríbenos y lo vemos.', 'err');
+  if (!desDlg) {
+    desDlg = document.createElement('dialog');
+    desDlg.className = 'dlg dlg-sm';
+    desDlg.setAttribute('aria-labelledby', 'desTit');
+    desDlg.innerHTML = `<div class="dlg-box"><button class="dlg-x" data-close aria-label="Cerrar">${icono('x')}</button><div id="desBody"></div></div>`;
+    document.body.appendChild(desDlg);
+  }
+  const body = $('#desBody', desDlg);
+  const pagado = p.pagoEstado === 'pagado' ? p.total : p.pagoEstado === 'senal' ? importeSenal(p) : 0;
+  body.innerHTML = `
+    <h2 class="dlg-h" id="desTit">Desistir del contrato</h2>
+    <p class="muted" style="margin:-8px 0 14px;font-size:14.5px">${esc(p.respuestas?.negocio || p.planNombre)} · ${refPedido(p.id)} · plazo hasta el ${fecha(finDesistimiento(p))}</p>
+    <ul class="des-lista">
+      <li>No tienes que dar ninguna explicación.</li>
+      <li>${pagado ? `Te devolvemos lo que has pagado (${euros(pagado)}) por transferencia en un máximo de 14 días.` : 'No has pagado nada, así que no hay nada que devolver.'}</li>
+      ${p.inicioAnticipado && pagado ? '<li>Como pediste que empezáramos antes, descontaremos la parte proporcional del trabajo ya hecho.</li>' : ''}
+      <li>Se cancela el pedido y dejamos de trabajar en tu web.</li>
+    </ul>
+    <form id="desForm" novalidate>
+      ${campo({ id: 'desMotivo', label: 'Si quieres, cuéntanos por qué (opcional)', type: 'textarea', attrs: 'maxlength="500"' })}
+      <button class="btn btn-danger w100" type="submit"><span>Confirmar el desistimiento</span></button>
+      <button class="btn btn-ghost w100" type="button" data-close style="margin-top:8px"><span>No, quiero seguir</span></button>
+    </form>`;
+  abrir(desDlg);
+  $('#desForm', body).addEventListener('submit', async e => {
+    e.preventDefault();
+    const b = e.submitter; ocupado(b, true);
+    const cambios = { cancelacion: { desistimiento: true, motivo: $('#desMotivo', body).value.trim().slice(0, 500), t: Date.now(), condiciones: p.condiciones || CONFIG.condiciones } };
+    if (!await guardarProyecto(p, cambios, 'Desistimiento registrado. Guarda el justificante.', b, 'El cliente desiste del contrato')) return;
+    Object.assign(p, cambios);
+    body.innerHTML = `<div class="exito"><div class="ok-ic">${icono('check')}</div><h3>Desistimiento registrado</h3>
+      <p class="muted">Lo hemos recibido el ${new Date(cambios.cancelacion.t).toLocaleString('es-ES')}. Guarda el justificante: es tu prueba de que has desistido dentro del plazo.</p>
+      <button type="button" class="btn btn-primary w100" data-justificante="${esc(p.id)}">${icono('printer')}<span>Descargar justificante</span></button>
+      <button type="button" class="btn btn-ghost w100" data-close style="margin-top:8px">Cerrar</button></div>`;
+    $('[data-justificante]', body).addEventListener('click', () => justificanteDesistimiento(p));
+  });
+}
+
+function justificanteDesistimiento(p) {
+  if (!p?.cancelacion?.desistimiento) return;
+  const L = CONFIG.legal || {}, c = p.cancelacion;
+  const html = `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Justificante de desistimiento ${refPedido(p.id)}</title>
+  <style>body{font:15px/1.6 system-ui,-apple-system,Segoe UI,sans-serif;color:#16161b;background:#f3f2ee;padding:24px;margin:0}.doc{max-width:720px;margin:0 auto;background:#fff;border-radius:14px;padding:40px}h1{font-size:22px;margin:0 0 4px}small{color:#6b6962}dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:22px 0}dt{color:#6b6962}dd{margin:0;font-weight:600}.acc{max-width:720px;margin:0 auto 14px;text-align:right}.acc button{font:600 14px system-ui;padding:10px 18px;border-radius:99px;border:0;background:#16161b;color:#fff;cursor:pointer}@media print{body{background:#fff;padding:0}.acc{display:none}.doc{padding:0}}</style></head><body>
+  <div class="acc"><button onclick="print()">Imprimir o guardar en PDF</button></div>
+  <div class="doc"><h1>Justificante de desistimiento</h1><small>Derecho de desistimiento (arts. 102 a 108 del Real Decreto Legislativo 1/2007)</small>
+  <dl><dt>Empresario</dt><dd>${esc(L.titular)} · NIF ${esc(L.nif)}</dd><dt>Domicilio</dt><dd>${esc(L.domicilio)}</dd><dt>Correo</dt><dd>${esc(L.email || CONFIG.email)}</dd>
+  <dt>Consumidor</dt><dd>${esc(p.clienteNombre)} · ${esc(p.clienteEmail || '')}</dd><dt>Contrato</dt><dd>${esc(p.planNombre)} · pedido ${refPedido(p.id)} del ${fecha(p.createdAt)}</dd>
+  <dt>Desistimiento</dt><dd>${new Date(c.t).toLocaleString('es-ES')}</dd><dt>Plazo</dt><dd>Hasta el ${fecha(finDesistimiento(p))} (dentro de plazo)</dd>${c.motivo ? `<dt>Motivo</dt><dd>${esc(c.motivo)}</dd>` : ''}</dl>
+  <p>Por la presente comunico que desisto del contrato de prestación del servicio indicado. ${esc(CONFIG.marca)} devolverá los pagos recibidos sin demora indebida y, como máximo, en 14 días naturales desde esta fecha, por transferencia bancaria${p.inicioAnticipado ? ', descontando el importe proporcional a la parte del servicio ya prestada, ya que el consumidor solicitó expresamente que la prestación empezara durante el plazo de desistimiento' : ''}.</p></div></body></html>`;
+  const w = window.open('', '_blank');
+  if (!w) return descargar(`desistimiento-${refPedido(p.id).slice(1)}.html`, html, 'text/html');
+  w.document.open(); w.document.write(html); w.document.close();
 }

@@ -144,10 +144,23 @@ export function accionCliente(p, botonPagoHTML) {
   const pl = plantillaPorId(p.plantilla);
   return `${cab}<div class="ac-form">
     ${et === 'recibido' ? `<div class="mp-pay">${botonPagoHTML}</div>` : ''}
-    ${et === 'recibido' && (p.pagoEstado || 'pendiente') === 'pendiente' ? (p.cancelacion ? `<p class="ac-nota">${icono('clock')} Has pedido cancelar este pedido. Te confirmaremos la cancelación por correo.</p>` : `<button type="button" class="link-btn ac-cancel" data-cancelar="${id}">Solicitar la cancelación del pedido</button>`) : ''}
+    ${et === 'recibido' && (p.pagoEstado || 'pendiente') === 'pendiente' && !puedeDesistir(p) ? (p.cancelacion ? `<p class="ac-nota">${icono('clock')} Has pedido cancelar este pedido. Te confirmaremos la cancelación por correo.</p>` : `<button type="button" class="link-btn ac-cancel" data-cancelar="${id}">Solicitar la cancelación del pedido</button>`) : ''}
     ${et === 'diseno' && pl ? `<a class="btn btn-ghost" href="${esc(urlVistaPrevia(p))}" target="_blank" rel="noopener"><span>Ver el diseño de partida (${esc(pl.nombre)})</span>${icono('external')}</a>` : ''}
     ${et === 'diseno' && webCliente(p) ? `<button type="button" class="btn btn-ghost" data-ver-web="${id}"><span>Ver la última versión de tu web</span>${icono('eye')}</button>` : ''}
   </div>`;
+}
+
+/* ---------- Derecho de desistimiento (14 días naturales desde el pedido) ----------
+   Art. 102 y siguientes del TRLGDCU y Directiva (UE) 2023/2673: función de desistimiento visible
+   durante todo el plazo, con confirmación y justificante. */
+export const DIAS_DESISTIMIENTO = 14;
+export const finDesistimiento = p => (p.createdAt || 0) + DIAS_DESISTIMIENTO * 864e5;
+export const puedeDesistir = p => !p.cancelacion && !['cancelado', 'entregado'].includes(p.estado) && etapaDe(p) !== 'publicada' && Date.now() < finDesistimiento(p);
+export function desistimientoHTML(p) {
+  const id = esc(p.id);
+  if (p.cancelacion?.desistimiento) return `<div class="desist hecho">${icono('check')}<div><b>Has desistido del contrato</b><small>El ${fecha(p.cancelacion.t)}. Te devolveremos lo pagado por transferencia en un plazo máximo de 14 días${p.inicioAnticipado ? ', descontando la parte del trabajo ya hecha' : ''}.</small></div><button type="button" class="btn btn-sm btn-ghost" data-justificante="${id}">${icono('printer')}<span>Justificante</span></button></div>`;
+  if (!puedeDesistir(p)) return '';
+  return `<div class="desist">${icono('undo')}<div><b>Derecho de desistimiento</b><small>Puedes desistir de este contrato sin dar explicaciones hasta el ${fecha(finDesistimiento(p))}.</small></div><button type="button" class="btn btn-sm btn-ghost" data-desistir="${id}"><span>Desistir del contrato</span></button></div>`;
 }
 
 /* Preguntas extra del contenido (todas opcionales): lo que más mejora una web y casi nunca se cuenta */
@@ -276,8 +289,9 @@ export function siguientePaso(p) {
   const et = etapaDe(p), pago = p.pagoEstado || 'pendiente';
   const eq = (txt, ic, ayuda = '') => ({ quien: 'equipo', txt, ic, ayuda });
   const cli = (txt, ic) => ({ quien: 'cliente', txt: `Esperando que el cliente ${txt}`, ic });
+  if (p.cancelacion?.desistimiento) return eq('El cliente ha desistido del contrato', 'alert', 'Cancela el pedido y devuélvele lo pagado por transferencia en 14 días como máximo.');
   if (p.cancelacion) return eq('El cliente pide cancelar', 'alert', 'Decide si cancelas el pedido o descartas la solicitud.');
-  if (pago === 'verificando') return eq('Comprobar el pago', 'euro', 'Míralo en el banco o en Bizum y márcalo como pagado.');
+  if (pago === 'verificando') return eq('Comprobar el pago', 'euro', 'Míralo en el banco y márcalo como pagado.');
   if (!p.asignado) return eq('Asignar el encargo', 'inbox');
   if (et === 'recibido') return pago === 'pendiente' ? cli('pague la señal', 'euro') : eq('Pasar a «Dominio»', 'link', 'La señal está pagada: ya puedes empezar.');
   if (et === 'dominio') return cli('elija el dominio', 'link');

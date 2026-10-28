@@ -751,14 +751,6 @@ html.intro body>*:not(.splash){visibility:hidden}
   .vid-seg{flex-wrap:wrap;overflow:visible}
   .vid-seg button{flex:1 1 auto;padding:9px 10px;font-size:13.5px;text-align:center}
 }
-/* v24 · Formas de pago: el subtítulo se ve siempre (antes solo en la elegida y dejaba hueco) */
-.pm-tx small{transform:none;opacity:.75;white-space:normal}
-.pm:has(input:checked) .pm-tx small{opacity:1}
-/* v24 · Tarjeta del pago: el número y el importe ya no se pisan */
-.fcd-num{top:84px;font-size:14px;letter-spacing:.1em;white-space:nowrap}
-.fcd-amount{line-height:1.15}
-.fcd-amount small{font-size:9px;margin-bottom:2px}
-.fcd-amount b{font-size:17px;white-space:nowrap}
 
 /* v24 · iPhone: la zona de la hora siempre limpia.
    La cabecera es opaca y no se esconde en el móvil; Safari toma su color para la barra de estado. */
@@ -1119,3 +1111,67 @@ body.vista-body .demo-banner,body.vista-body .anuncio,body.vista-body::before{di
 .vista-aviso h1{font-size:24px}
 .vista-aviso .em{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--card2);color:var(--accent)}
 .vista-aviso .em svg{width:24px;height:24px}
+
+/* ==========================================================
+   v44 · Legal: cookies, IVA, información previa, desistimiento
+   ========================================================== */
+/* Cookies: «Rechazar» y «Aceptar» con el mismo peso (guía de cookies de la AEPD) */
+.ck-btns .ck-par{flex:1 1 40%}
+.ck-btns .ck-cfg-btn{flex:1 1 100%;justify-content:center;font-size:13px;min-height:36px}
+/* Primera capa de protección de datos junto a cada formulario */
+.info-datos{margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--muted)}
+.info-datos b{color:var(--muted);font-weight:600}
+.info-datos a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+/* Precio con IVA */
+.pc-iva{display:block;font-family:var(--fb);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0;margin-top:2px}
+.compara-iva{caption-side:bottom;text-align:left;font-size:12.5px;color:var(--muted);padding:10px 4px 0}
+.rs-row.total small{font-size:12px;font-weight:500;color:var(--muted);margin-left:6px}
+.rs-row.rs-iva{font-size:13px;color:var(--muted)}
+.rs-row.rs-iva b{font-weight:500;color:var(--muted)}
+/* Información previa al contrato y empezar antes de 14 días */
+.rs-legal{margin:14px 0 4px;padding:14px 16px;border-radius:14px;border:1px solid var(--line);background:var(--card);font-size:13.5px;line-height:1.5}
+.rs-legal p{margin:0 0 6px}
+.rs-legal ul{margin:0 0 12px;padding-left:18px;display:grid;gap:4px;color:var(--muted)}
+.rs-legal a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+.rs-inicio{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:12px;background:var(--field);border:1px solid var(--line);cursor:pointer}
+.rs-inicio input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:var(--accent)}
+.rs-inicio small{display:block;color:var(--muted);margin-top:4px}
+/* Desistimiento en «Mis proyectos» */
+.desist{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px;padding:12px 14px;border-radius:14px;border:1px solid var(--line)}
+.desist > svg{width:18px;height:18px;flex:none;color:var(--muted)}
+.desist > div{flex:1 1 200px;min-width:0;display:grid;gap:2px}
+.desist b{font-size:14px}
+.desist small{font-size:12.5px;color:var(--muted);line-height:1.45}
+.desist.hecho > svg{color:var(--ok)}
+.des-lista{margin:0 0 16px;padding-left:20px;display:grid;gap:6px;font-size:14.5px;line-height:1.5}
+/* Panel: faltan datos legales */
+.aviso-legal{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding:16px 18px;border-color:rgba(251,191,36,.45);color:inherit}
+.aviso-legal:hover{border-color:var(--warn)}
+.aviso-legal > span:nth-child(2){flex:1;min-width:0;display:grid;gap:3px}
+.aviso-legal b{font-size:15.5px}
+.aviso-legal small{font-size:13px;color:var(--muted);line-height:1.45}
+.aviso-legal > svg{width:18px;height:18px;flex:none;color:var(--warn)}
+.aviso-legal-ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;background:rgba(251,191,36,.12);color:var(--warn)}
+.aviso-legal-ic svg{width:20px;height:20px}
+
+/* Resumen del pedido: los textos legales se leen enteros (.paso span los cortaba en una línea) */
+.paso .rs-legal span,.paso .rs-terms span{white-space:normal;overflow:visible;text-overflow:clip}
+.paso .rs-inicio > span{display:block}
+.rs-terms .gl-checkbox{align-items:flex-start}
+.rs-terms .gl-checkbox__label{min-width:0}
+/* Botón final: el texto legal completo («pedido con obligación de pago», art. 98.2 TRLGDCU) cabe en el móvil */
+#wizNext.obligacion span{white-space:normal;line-height:1.2;text-align:center}
+@media (max-width:640px){#wizNext.obligacion{font-size:12.5px;letter-spacing:.04em;padding:0 14px;max-width:none}}
+
+/* v44 · Detalles del navegador con los colores de la web: foco con teclado, barra de scroll y cursor de escritura */
+:where(a,button,summary,[tabindex]):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html{scrollbar-color:var(--line2) var(--bg)}
+input,textarea{caret-color:var(--accent)}
+/* Ficha del pedido en el móvil: el nombre del negocio ocupa toda la fila y los botones van debajo (antes se partía la palabra) */
+@media (max-width:640px){
+  .od-head{flex-wrap:wrap;position:relative}
+  .od-head-t{flex:1 1 100%;padding-right:52px}
+  .od-head-t h2{font-size:24px;overflow-wrap:normal;word-break:normal;hyphens:auto}
+  .od-head-r{flex:1 1 100%}
+  .od-head-r [data-close]{position:absolute;top:calc(16px + env(safe-area-inset-top));right:16px}
+}

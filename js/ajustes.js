@@ -174,7 +174,7 @@ async function trabajo() {
     + bloque('Datos de cobro', `Para pagarte las comisiones (${CONFIG.comision} % de cada web que vendas). Solo los ve el propietario.`, `
       <form id="fCobro" novalidate>
         ${texto('cobroTitular', 'Titular de la cuenta', d.cobroTitular || '', 'maxlength="120" autocomplete="name"')}
-        <div class="row-2">${texto('cobroIban', 'IBAN', d.cobroIban || '', 'maxlength="34" autocapitalize="characters"')}${texto('cobroBizum', 'Bizum (opcional)', d.cobroBizum || '', 'type="tel" maxlength="15"')}</div>
+        ${texto('cobroIban', 'IBAN', d.cobroIban || '', 'maxlength="34" autocapitalize="characters"', 'Te pagamos por transferencia a esta cuenta')}
         ${texto('nif', 'NIF', d.nif || '', 'maxlength="15" autocapitalize="characters"', 'Lo necesitamos para justificar los pagos')}
         ${guardarBtn('gCobro')}
       </form>`);
@@ -338,14 +338,17 @@ async function negocio() {
         <label class="aj-ck c-act"><input type="checkbox" data-k="activo" ${o.activo ? 'checked' : ''}><span class="ck-mark"></span><small class="aj-cel-t">Activo</small></label>
         <label class="aj-cel c-pre"><small class="aj-cel-t">Precio (€)</small><input type="number" min="0" step="1" inputmode="numeric" data-k="precio" value="${o.precio}" aria-label="Precio de ${esc(x.nombre)}"></label>
       </div>`; }).join('')}</div>`)}
-    ${bloque('Cobros y comisiones', 'Formas de pago que ven los clientes. Deja en blanco las que no uses.', `
+    ${bloque('Cobros y comisiones', 'Los clientes pagan solo por transferencia bancaria a esta cuenta.', `
       <div class="aj-nums">
         <label class="aj-num"><span>Señal al empezar (%)</span><input type="number" min="0" max="100" name="senal" value="${a.senal}"></label>
         <label class="aj-num"><span>Recargo urgente (%)</span><input type="number" min="0" max="200" name="urgente" value="${pct(a.urgente)}"></label>
         <label class="aj-num"><span>Comisión vendedores (%)</span><input type="number" min="0" max="100" name="comision" value="${a.comision}"></label>
       </div>
-      <div class="row-2">${texto('bizum', 'Bizum (teléfono)', a.pagos.bizum, 'type="tel"')}${texto('titular', 'Titular de la cuenta', a.pagos.titular)}</div>
-      ${texto('iban', 'IBAN', a.pagos.iban, 'autocapitalize="characters"')}`)}
+      <div class="row-2">${texto('titular', 'Titular de la cuenta', a.pagos.titular)}${texto('iban', 'IBAN', a.pagos.iban, 'autocapitalize="characters"')}</div>`)}
+    ${bloque('Datos legales', 'Salen en el aviso legal, las condiciones, la política de privacidad y los recibos. Son obligatorios para vender (LSSI y Ley de Consumidores).', `
+      <div class="row-2">${texto('lgTitular', 'Nombre y apellidos', a.legal?.titular || '', 'maxlength="120" autocomplete="name"')}${texto('lgNif', 'NIF', a.legal?.nif || '', 'maxlength="15" autocapitalize="characters"')}</div>
+      ${texto('lgDomicilio', 'Domicilio profesional completo', a.legal?.domicilio || '', 'maxlength="200"', 'Calle, número, código postal, ciudad y provincia')}
+      <div class="row-2">${texto('lgEmail', 'Correo para temas legales', a.legal?.email || '', 'type="email" maxlength="120"')}${texto('lgActividad', 'Actividad', a.legal?.actividad || '', 'maxlength="120"')}</div>`)}
     ${bloque('Descuento de bienvenida', 'Se anuncia en la web y solo vale en la primera web de cada cliente (se comprueba al confirmar el pedido).', `
       ${interruptor({ id: 'bvActivo', titulo: 'Ofrecer descuento en la primera compra', checked: a.bienvenida.activo })}
       <div class="row-2">${texto('bvCodigo', 'Código', a.bienvenida.codigo, 'maxlength="30" autocapitalize="characters"')}<label class="aj-num"><span>Descuento (%)</span><input type="number" min="1" max="100" name="bvPct" value="${a.bienvenida.pct}"></label></div>`)}
@@ -405,7 +408,8 @@ async function negocio() {
       bienvenida: { activo: $('#bvActivo').checked, codigo: v('bvCodigo').toUpperCase().replace(/[^A-Z0-9_-]/g, '') || ORIGINAL.config.bienvenida.codigo, pct: Math.min(100, Math.max(1, +v('bvPct') || 10)) },
       videos: { precio: Math.max(0, +v('vPrecio') || 0), bonus: Math.max(0, +v('vBonus') || 0), visitas: Math.max(0, +v('vVisitas') || 0), maxMes: Math.max(1, +v('vMax') || 1) },
       senal: +v('senal'), urgente: (+v('urgente')) / 100, comision: +v('comision'),
-      pagos: { bizum: v('bizum'), titular: v('titular'), iban: v('iban') },
+      pagos: { titular: v('titular'), iban: v('iban') },
+      legal: { titular: v('lgTitular'), nif: v('lgNif').toUpperCase().replace(/\s/g, ''), domicilio: v('lgDomicilio'), email: v('lgEmail'), actividad: v('lgActividad') },
       asistente: { activo: $('#asistActivo').checked, saludo: v('saludo') },
       planes, extras
     }, { lista }, $('#gNeg'), { cco: v('tpCco') });
