@@ -84,7 +84,7 @@ function respuestaLocal(texto) {
   const t = sinTildes(texto);
   const tiene = (...p) => p.some(x => t.includes(x));
   const desde = PLANES.map(p => `${p.nombre}: desde ${euros(p.precio)}`).join('; ');
-  if (tiene('whatsapp', 'telefono', 'llamar', 'contacto', 'contactar', 'correo', 'email', 'hablar con')) return `Atendemos por correo en ${CONFIG.email} y desde el formulario de contacto de la web. Si ya eres cliente, escríbenos en la pestaña «Mensajes» de tu proyecto. ${CONFIG.respuesta}.`;
+  if (tiene('whatsapp', 'telefono', 'llamar', 'contacto', 'contactar', 'correo', 'email', 'hablar con')) return `No tenemos WhatsApp ni teléfono: atendemos por correo en ${CONFIG.email} y desde el formulario de contacto de la web. Si ya eres cliente, escríbenos en la pestaña «Mensajes» de tu proyecto. ${CONFIG.respuesta}.`;
   if (tiene('archivo', 'foto', 'logo', 'subir', 'enviar contenido')) return 'Desde «Mis proyectos» puedes subir fotos, logotipos y documentos en la pestaña «Archivos» de tu proyecto.';
   if (tiene('factura', 'recibo', 'justificante')) return 'En «Mis proyectos», pestaña «Pagos», puedes descargar el recibo de cada pago. Si necesitas factura a nombre de tu empresa, añade tus datos fiscales en «Ajustes → Facturación».';
   if (tiene('video', 'tiktok', 'creador', 'contenido', 'influencer')) return `Pagamos ${CONFIG.videos?.precio ?? 15} € por cada vídeo aprobado sobre nuestras webs (+${CONFIG.videos?.bonus ?? 25} € si supera las ${(CONFIG.videos?.visitas ?? 10000).toLocaleString('es-ES')} visualizaciones), y además el ${CONFIG.comision} % si alguien compra desde tu enlace. Tienes las condiciones en «Trabaja con nosotros».`;
@@ -106,11 +106,145 @@ function respuestaLocal(texto) {
   return 'Puedo ayudarte con precios, plazos, pagos y tipos de web. Para algo más concreto, escríbenos a ' + CONFIG.email + ' o desde el formulario de contacto y te atiende una persona del equipo.';
 }
 
+/* ==========================================================
+   LO QUE EL ASISTENTE SABE DE TU CUENTA
+   Si has iniciado sesión, responde con tus pedidos reales (etapa,
+   lo siguiente que toca, entrega, pagos, vista previa) y te deja
+   botones para hacerlo desde el propio chat.
+   ========================================================== */
+const DIA = 864e5;
+const fechaTxt = t => new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long' }).format(new Date(t));
+// «Esperando que el cliente pague la señal» → «pagar la señal»
+const aInfinitivo = t => String(t || '').replace(/^Esperando que el cliente /, '').replace(/^revise y apruebe/, 'revisar y aprobar').replace(/^pague/, 'pagar').replace(/^elija/, 'elegir').replace(/^envíe/, 'enviar').replace(/^haga/, 'hacer').replace(/^confirme/, 'confirmar').replace(/^suba/, 'subir');
+const nombreDe = p => p.respuestas?.negocio || p.planNombre || 'tu web';
+let cachePedidos = null;
+async function pedidosDelCliente() {
+  const u = store.usuarioActual();
+  if (!u) return null;
+  if (cachePedidos && cachePedidos.uid === u.uid && Date.now() - cachePedidos.t < 60e3) return cachePedidos.lista;
+  const lista = (await store.misPedidos()).filter(p => p.uid === u.uid || u.role === 'client');
+  cachePedidos = { uid: u.uid, t: Date.now(), lista };
+  return lista;
+}
+const activos = L => L.filter(p => p.estado !== 'cancelado');
+
+/** Una ficha corta de cada pedido (también se manda a la IA para que conteste con datos reales) */
+async function fichaPedido(p) {
+  const { ETAPAS, etapaDe, siguientePaso, fechaEntrega, diasRestantes, webCliente } = await import('./proyecto.js');
+  const { faseDePago, importeSenal, importeResto } = await import('./pago.js');
+  const et = etapaDe(p), i = ETAPAS.findIndex(e => e.id === et), info = ETAPAS[i];
+  const sig = siguientePaso(p), d = diasRestantes(p), fase = faseDePago(p);
+  const pago = { pendiente: 'sin pagar', verificando: 'pago avisado, pendiente de comprobar en el banco', senal: 'señal pagada', pagado: 'pagado del todo' }[p.pagoEstado || 'pendiente'];
+  const debe = fase === 'senal' ? importeSenal(p) : fase === 'resto' ? importeResto(p) : 0;
+  return {
+    p, et, info, n: i + 1, total: ETAPAS.length, sig, d, fase, debe, pago,
+    entrega: et === 'publicada' || p.estado === 'entregado' ? '' : fechaTxt(fechaEntrega(p)),
+    vista: webCliente(p), publica: p.publica?.slug || '', cancelado: p.estado === 'cancelado'
+  };
+}
+function textoFicha(f) {
+  const p = f.p;
+  if (f.cancelado) return `«${nombreDe(p)}» (${p.planNombre}): pedido cancelado.`;
+  const lineas = [`«${nombreDe(p)}» (${p.planNombre}): etapa ${f.n} de ${f.total}, ${f.info.txt}.`];
+  if (f.sig?.quien === 'cliente') lineas.push(`Te toca a ti: ${aInfinitivo(f.sig.txt)}.`);
+  else if (f.et !== 'publicada') lineas.push(f.info.cliente);
+  if (f.entrega) lineas.push(f.d < 0 ? `La entrega estaba prevista para el ${f.entrega}; vamos con ${-f.d} día${f.d === -1 ? '' : 's'} de retraso.` : `Entrega prevista: ${f.entrega}${f.d === 0 ? ' (hoy)' : ` (faltan ${f.d} día${f.d === 1 ? '' : 's'})`}.`);
+  lineas.push(`Pagos: ${f.pago}${f.debe ? `; ahora toca pagar ${euros(f.debe)} (${f.fase === 'senal' ? 'señal' : 'pago final'})` : ''}.`);
+  if (f.vista && f.et === 'revision') lineas.push('La vista previa está lista para revisarla.');
+  if (f.publica) lineas.push(`Se puede ver en aurevixweb.es/${f.publica}.`);
+  if (p.dominio?.nombre) lineas.push(`Dominio: ${p.dominio.nombre}.`);
+  return lineas.join(' ');
+}
+/** Datos para pintar la tarjeta de un pedido en el chat */
+function tarjetaFicha(f) {
+  const p = f.p;
+  return {
+    nombre: nombreDe(p), plan: p.planNombre || '', n: f.n, total: f.total, etapa: f.cancelado ? 'Cancelado' : f.info.txt,
+    toca: f.cancelado ? '' : f.sig?.quien === 'cliente' ? aInfinitivo(f.sig.txt) : '',
+    estado: f.cancelado || f.et === 'publicada' ? '' : f.info.cliente,
+    entrega: f.entrega ? (f.d < 0 ? `Prevista el ${f.entrega} (${-f.d} día${f.d === -1 ? '' : 's'} de retraso)` : `${f.entrega}${f.d === 0 ? ' (hoy)' : ` · faltan ${f.d} día${f.d === 1 ? '' : 's'}`}`) : '',
+    pago: f.debe ? `Toca pagar ${euros(f.debe)}` : f.pago.charAt(0).toUpperCase() + f.pago.slice(1)
+  };
+}
+function accionesFicha(f) {
+  const p = f.p, a = [];
+  if (f.cancelado) return a;
+  if (f.debe) a.push({ t: `Pagar ${euros(f.debe)}`, ic: 'euro', ir: { tipo: 'pagar', id: p.id } });
+  if (f.vista) a.push({ t: f.et === 'revision' ? 'Revisar la vista previa' : 'Ver la vista previa', ic: 'eye', href: `vista-previa?p=${encodeURIComponent(p.id)}&v=${encodeURIComponent(f.vista.id)}` });
+  if (f.publica) a.push({ t: `aurevixweb.es/${f.publica}`, ic: 'globe', href: `/${f.publica}`, nueva: true });
+  if (f.sig?.quien === 'cliente' && ['dominio', 'contenido'].includes(f.et)) a.push({ t: f.et === 'dominio' ? 'Elegir el dominio' : 'Enviar el contenido', ic: f.info.icono, ir: { tipo: 'proyecto', id: p.id, pest: 'estado' } });
+  a.push({ t: 'Abrir el proyecto', ic: 'folder', ir: { tipo: 'proyecto', id: p.id, pest: 'estado' } });
+  return a;
+}
+
+/* ---------- Preguntas que se contestan al momento, sin IA ---------- */
+const INTENCIONES = [
+  ['vista', ['vista previa', 'ver mi web', 'ver la web', 'enlace de mi web', 'link de mi web', 'aprobar la web', 'aprobar mi web']],
+  ['pedido', ['mi pedido', 'mi web', 'mi proyecto', 'como va', 'como lleva', 'estado', 'cuando esta', 'cuando estara', 'cuando me la', 'cuanto falta', 'en que punto', 'novedades', 'avance', 'progreso']],
+  ['pagar', ['que tengo que pagar', 'que debo', 'cuanto debo', 'cuanto me queda', 'pagar ya', 'pagar la senal', 'pagar el resto', 'quiero pagar', 'datos de pago', 'iban', 'numero de cuenta']],
+  ['persona', ['hablar con', 'una persona', 'humano', 'agente', 'alguien del equipo', 'reclamacion', 'queja', 'incidencia', 'problema con']],
+  ['cancelar', ['cancelar', 'desistir', 'desistimiento', 'devolucion', 'reembolso', 'anular']],
+  ['factura', ['factura', 'recibo', 'justificante']],
+  ['presupuesto', ['presupuesto', 'calcula', 'cuanto me costaria', 'cuanto saldria', 'precio total']],
+  ['empezar', ['quiero una web', 'quiero empezar', 'hacer un pedido', 'contratar', 'comprar una web', 'como pido']]
+];
+const intencion = texto => { const t = sinTildes(texto); return INTENCIONES.find(([, ps]) => ps.some(x => t.includes(x)))?.[0] || ''; };
+
+async function respuestaCuenta(tipo) {
+  const u = store.usuarioActual();
+  if (!u) return { texto: 'Para ver cómo va tu pedido necesito que inicies sesión con la cuenta con la que lo hiciste. En cuanto entres, pregúntamelo de nuevo y te lo digo al momento.', acciones: [{ t: 'Iniciar sesión', ic: 'user', ir: { tipo: 'login' } }] };
+  if (u.role !== 'client') return { texto: 'Estás con una cuenta del equipo. Los pedidos, entregas y pagos pendientes los tienes en el panel.', acciones: [{ t: 'Abrir el panel', ic: 'panel', href: 'panel' }] };
+  let L;
+  try { L = await pedidosDelCliente(); } catch { return { texto: 'No he podido cargar tus pedidos ahora mismo. Prueba en un momento o ábrelos desde «Mis proyectos».', acciones: [{ t: 'Mis proyectos', ic: 'folder', ir: { tipo: 'proyectos' } }] }; }
+  const vivos = activos(L);
+  if (!L.length) return { texto: 'Todavía no tienes ningún pedido con esta cuenta. Si quieres, te ayudo a calcular el precio o a elegir el tipo de web.', acciones: [{ t: 'Calcular presupuesto', ic: 'euro', href: '#calcula' }, { t: 'Ver webs y precios', ic: 'laptop', href: '#webs' }] };
+  const fichas = await Promise.all((vivos.length ? vivos : L).slice(0, 3).map(fichaPedido));
+  if (tipo === 'pagar') {
+    const deben = fichas.filter(f => f.debe);
+    if (!deben.length) return { texto: `Ahora mismo no tienes ningún pago pendiente. ${fichas.map(f => `«${nombreDe(f.p)}»: ${f.pago}.`).join(' ')}`, acciones: fichas.slice(0, 1).flatMap(f => [{ t: 'Abrir el proyecto', ic: 'folder', ir: { tipo: 'proyecto', id: f.p.id, pest: 'pagos' } }]) };
+    return { texto: deben.map(f => `«${nombreDe(f.p)}»: toca pagar ${euros(f.debe)} (${f.fase === 'senal' ? `señal del ${CONFIG.senal} %` : 'pago final'}). Se paga solo por transferencia; al pulsar el botón te salen el IBAN, el importe y el concepto para copiarlos.`).join('\n\n'), acciones: deben.map(f => ({ t: `Pagar ${euros(f.debe)}${deben.length > 1 ? ` · ${nombreDe(f.p)}` : ''}`, ic: 'euro', ir: { tipo: 'pagar', id: f.p.id } })) };
+  }
+  if (tipo === 'vista') {
+    const con = fichas.filter(f => f.vista || f.publica);
+    if (!con.length) return { texto: `Aún no hay vista previa de tu web. ${fichas.map(textoFicha).join('\n\n')}\n\nTe avisaremos en la campana y por mensaje en cuanto esté lista.`, acciones: fichas.slice(0, 1).map(f => ({ t: 'Abrir el proyecto', ic: 'folder', ir: { tipo: 'proyecto', id: f.p.id, pest: 'estado' } })) };
+    return { texto: con.map(f => `«${nombreDe(f.p)}»: ${f.vista ? `la versión ${f.vista.n} está lista para verla en el móvil, la tableta y el ordenador.${f.et === 'revision' ? ' Desde la misma vista previa puedes aprobarla o pedir cambios.' : ''}` : ''}${f.publica ? ` También se puede ver en aurevixweb.es/${f.publica}.` : ''}`).join('\n\n'), acciones: con.flatMap(accionesFicha).filter(a => a.ic === 'eye' || a.ic === 'globe') };
+  }
+  if (tipo === 'factura') return { texto: 'Los recibos de cada pago los descargas en «Mis proyectos», pestaña «Pagos». Si necesitas factura a nombre de una empresa, añade tus datos fiscales en Ajustes y pídenosla por mensaje.', acciones: [{ t: 'Ver mis pagos', ic: 'receipt', ir: { tipo: 'proyecto', id: fichas[0].p.id, pest: 'pagos' } }, { t: 'Datos de facturación', ic: 'gear', href: 'ajustes' }] };
+  if (tipo === 'cancelar') return { texto: `Tienes 14 días naturales desde la compra para desistir sin dar explicaciones (si pediste empezar antes, se descuenta la parte ya hecha). Se hace desde tu proyecto, en «Estado», con el botón de desistimiento; la devolución es por transferencia en 14 días como máximo.`, acciones: [{ t: 'Abrir el proyecto', ic: 'folder', ir: { tipo: 'proyecto', id: fichas[0].p.id, pest: 'estado' } }, { t: 'Condiciones', ic: 'file', href: 'terminos-y-privacidad#desistimiento' }] };
+  return {
+    texto: fichas.length === 1 ? 'Así va tu proyecto:' : `Tienes ${fichas.length} proyectos:`,
+    tarjetas: fichas.map(tarjetaFicha),
+    acciones: fichas.length === 1 ? accionesFicha(fichas[0]) : [...fichas.flatMap(f => f.debe ? [{ t: `Pagar ${euros(f.debe)} · ${nombreDe(f.p)}`, ic: 'euro', ir: { tipo: 'pagar', id: f.p.id } }] : []), ...fichas.map(f => ({ t: nombreDe(f.p), ic: 'folder', ir: { tipo: 'proyecto', id: f.p.id, pest: 'estado' } }))]
+  };
+}
+
+async function respuestaRapida(texto) {
+  const tipo = intencion(texto);
+  if (['pedido', 'pagar', 'vista', 'factura', 'cancelar'].includes(tipo)) {
+    // «¿Cómo se paga?» sin sesión es una duda general, no de un pedido
+    if (tipo === 'pagar' && !store.usuarioActual() && !/(debo|queda|mi )/.test(sinTildes(texto))) return null;
+    if (tipo === 'cancelar' && !store.usuarioActual()) return { texto: 'Como cliente tienes 14 días naturales desde la compra para desistir sin dar explicaciones. Si pides que empecemos antes, se descuenta la parte ya hecha. Lo tienes todo en las condiciones.', acciones: [{ t: 'Leer las condiciones', ic: 'file', href: 'terminos-y-privacidad#desistimiento' }] };
+    return respuestaCuenta(tipo);
+  }
+  if (tipo === 'persona') return { texto: `Claro. Escríbenos y te contesta una persona del equipo (${CONFIG.respuesta.toLowerCase()}). Si ya eres cliente, también puedes escribir en «Mensajes» de tu proyecto.`, acciones: [{ t: 'Escribir al equipo', ic: 'message', ir: { tipo: 'soporte' } }, { t: 'Enviar un correo', ic: 'mail', href: mailLink('Consulta desde la web') }] };
+  if (tipo === 'presupuesto') return { texto: 'En la calculadora eliges el tipo de web y los extras y ves al momento el precio final con IVA, lo que se paga al empezar y el plazo.', acciones: [{ t: 'Abrir la calculadora', ic: 'euro', href: '#calcula' }] };
+  if (tipo === 'empezar') return { texto: CONFIG.aceptarPedidos ? 'Perfecto. Elige el tipo de web y en un par de minutos rellenas el cuestionario; ves el total antes de confirmar. Si no sabes cuál, cuéntame a qué te dedicas y te lo recomiendo.' : 'Ahora mismo tenemos la agenda completa, pero puedes apuntarte a la lista de espera y te avisamos en cuanto haya hueco.', acciones: [{ t: 'Ver webs y precios', ic: 'laptop', href: '#webs' }, { t: 'Ayúdame a elegir', ic: 'sparkle', ir: { tipo: 'elegir' } }] };
+  return null;
+}
+
+/** Acciones que acompañan a una respuesta general (planes que se mencionan) */
+function accionesDeTexto(texto) {
+  const t = sinTildes(texto);
+  const planes = planesActivos().filter(p => t.includes(sinTildes(p.nombre))).slice(0, 2);
+  return planes.map(p => ({ t: `${CONFIG.aceptarPedidos ? 'Pedir' : 'Lista de espera:'} ${p.nombre}`, ic: p.icono || 'laptop', ir: { tipo: 'comprar', plan: p.id } }));
+}
+
 /* ---------- Chat ---------- */
 const CLAVE = 'tm_chat';
 const leer = () => { try { return JSON.parse(sessionStorage.getItem(CLAVE) || '[]'); } catch { return []; } };
 const guardar = h => { try { sessionStorage.setItem(CLAVE, JSON.stringify(h.slice(-30))); } catch { /* sin almacenamiento */ } };
-const RAPIDAS = ['¿Cuánto cuesta una web?', '¿Cuánto tardáis?', '¿Cómo se paga?', '¿Qué web me conviene?'];
+const RAPIDAS_VISITA = ['¿Qué web me conviene?', '¿Cuánto cuesta una web?', '¿Cuánto tardáis?', '¿Cómo se paga?'];
+const RAPIDAS_CLIENTE = ['¿Cómo va mi pedido?', '¿Qué tengo que pagar?', 'Ver mi web', 'Hablar con una persona'];
 
 export function iniciarChat() {
   if (!(CONFIG.asistente || ajuste).activo || document.getElementById('chat')) return;
@@ -126,25 +260,50 @@ export function iniciarChat() {
     <section class="chat-panel" id="chatPanel" role="dialog" aria-label="${esc(ajuste.nombre)}" aria-hidden="true">
       <header class="chat-h">
         <span class="chat-av">${icono('sparkle')}</span>
-        <div><b>${esc(ajuste.nombre)}</b><small><i></i>${ia ? 'Respuestas con IA al momento' : 'Respuestas automáticas'}</small></div>
+        <div><b>${esc(ajuste.nombre)}</b><small><i></i><span id="chatEstado">${ia ? 'Responde al momento' : 'Respuestas automáticas'}</span></small></div>
+        <button class="icon-btn" id="chatBorrar" aria-label="Empezar de nuevo" title="Empezar de nuevo" hidden>${icono('refresh')}</button>
         <button class="icon-btn" id="chatCerrar" aria-label="Cerrar">${icono('x')}</button>
       </header>
       <div class="chat-msgs" id="chatMsgs" aria-live="polite"></div>
-      <div class="chat-rapidas" id="chatRapidas">${RAPIDAS.map(q => `<button type="button">${esc(q)}</button>`).join('')}</div>
+      <div class="chat-rapidas" id="chatRapidas"></div>
       <form class="chat-form" id="chatForm" autocomplete="off">
-        <input id="chatIn" maxlength="600" placeholder="Escribe tu pregunta" aria-label="Tu pregunta">
+        <input id="chatIn" maxlength="600" placeholder="Escribe tu pregunta" aria-label="Tu pregunta" enterkeyhint="send">
         <button class="chat-send" aria-label="Enviar">${icono('arrow')}</button>
       </form>
-      <a class="chat-wa" href="${mailLink('Duda sobre una web')}">${icono('mail')} Escribir a una persona del equipo</a>
+      <button type="button" class="chat-wa" id="chatPersona">${icono('message')} Hablar con una persona del equipo</button>
     </section>`;
   document.body.appendChild(nodo);
 
   const fab = nodo.querySelector('#chatFab'), panel = nodo.querySelector('#chatPanel');
   const msgs = nodo.querySelector('#chatMsgs'), input = nodo.querySelector('#chatIn'), rapidas = nodo.querySelector('#chatRapidas');
-  const burbuja = (m, nuevo = false) => `<div class="msg ${m.rol === 'user' ? 'yo' : 'el'} ${nuevo ? 'nuevo' : ''}">${esc(m.texto).replace(/\n/g, '<br>')}</div>`;
+  const borrar = nodo.querySelector('#chatBorrar');
+  const boton = a => {
+    const dentro = `${icono(a.ic || 'arrow')}<span>${esc(a.t)}</span>`;
+    if (a.href) return `<a class="chat-acc" href="${esc(a.href)}"${a.nueva ? ' target="_blank" rel="noopener"' : ''}>${dentro}</a>`;
+    return `<button type="button" class="chat-acc" data-chat-ir="${esc(JSON.stringify(a.ir))}">${dentro}</button>`;
+  };
+  const tarjeta = t => `<div class="chat-ped">
+      <div class="chat-ped-h"><b>${esc(t.nombre)}</b><small>${esc(t.plan)}</small></div>
+      <div class="chat-ped-barra" role="img" aria-label="Etapa ${t.n} de ${t.total}">${Array.from({ length: t.total }, (_, i) => `<i class="${i < t.n ? 'on' : ''}"></i>`).join('')}</div>
+      <p class="chat-ped-et"><span>${esc(t.etapa)}</span><small>${t.n} de ${t.total}</small></p>
+      ${t.toca ? `<p class="chat-ped-toca">Te toca: ${esc(t.toca)}</p>` : t.estado ? `<p class="chat-ped-tx">${esc(t.estado)}</p>` : ''}
+      <dl>${t.entrega ? `<div><dt>Entrega</dt><dd>${esc(t.entrega)}</dd></div>` : ''}<div><dt>Pagos</dt><dd>${esc(t.pago)}</dd></div></dl>
+    </div>`;
+  const burbuja = (m, nuevo = false) => `<div class="msg ${m.rol === 'user' ? 'yo' : 'el'} ${nuevo ? 'nuevo' : ''}">${esc(m.texto).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>')}</div>${m.tarjetas?.length ? `<div class="chat-peds">${m.tarjetas.map(tarjeta).join('')}</div>` : ''}${m.acciones?.length ? `<div class="chat-accs">${m.acciones.slice(0, 4).map(boton).join('')}</div>` : ''}`;
+  const pintarRapidas = () => {
+    const u = store.usuarioActual();
+    const lista = u?.role === 'client' ? RAPIDAS_CLIENTE : RAPIDAS_VISITA;
+    rapidas.innerHTML = lista.map(q => `<button type="button">${esc(q)}</button>`).join('');
+  };
   const pintar = () => {
-    msgs.innerHTML = burbuja({ rol: 'model', texto: CONFIG.asistente?.saludo || ajuste.saludo || 'Hola, ¿en qué puedo ayudarte?' }) + hilo.map(m => burbuja(m)).join('');
+    const u = store.usuarioActual();
+    const saludo = u?.role === 'client'
+      ? `Hola${u.name ? ', ' + u.name.split(' ')[0] : ''}. Puedo decirte cómo va tu pedido, qué te toca pagar o enseñarte tu web, y resolver cualquier duda.`
+      : CONFIG.asistente?.saludo || ajuste.saludo || 'Hola, ¿en qué puedo ayudarte?';
+    msgs.innerHTML = burbuja({ rol: 'model', texto: saludo }) + hilo.map(m => burbuja(m)).join('');
+    pintarRapidas();
     rapidas.hidden = hilo.length > 0;
+    borrar.hidden = !hilo.length;
     msgs.scrollTop = msgs.scrollHeight;
   };
   const abrirChat = si => {
@@ -153,12 +312,30 @@ export function iniciarChat() {
     document.documentElement.classList.toggle('chat-abierto', si);
     fab.setAttribute('aria-expanded', si);
     panel.setAttribute('aria-hidden', !si);
-    if (si) { pintar(); setTimeout(() => input.focus({ preventScroll: true }), 250); }
+    if (si) { pintar(); if (matchMedia('(hover:hover)').matches) setTimeout(() => input.focus({ preventScroll: true }), 250); }
   };
   fab.addEventListener('click', () => abrirChat(!nodo.classList.contains('abierto')));
   nodo.querySelector('#chatCerrar').addEventListener('click', () => abrirChat(false));
+  borrar.addEventListener('click', () => { hilo = []; guardar(hilo); pintar(); });
+  nodo.querySelector('#chatPersona').addEventListener('click', () => enviar('Quiero hablar con una persona'));
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && nodo.classList.contains('abierto')) abrirChat(false); });
   document.addEventListener('click', e => { if (e.target.closest('[data-abrir-chat]')) { e.preventDefault(); abrirChat(true); } });
+  // Al iniciar o cerrar sesión cambian las preguntas rápidas y el saludo
+  store.alCambiarUsuario(() => { cachePedidos = null; if (nodo.classList.contains('abierto')) pintar(); });
+
+  // Botones dentro de las respuestas
+  msgs.addEventListener('click', e => {
+    const a = e.target.closest('.chat-acc');
+    if (!a) return;
+    const enMovil = matchMedia('(max-width: 640px)').matches;
+    if (a.tagName === 'A') {
+      if (a.getAttribute('href').startsWith('#') || enMovil) abrirChat(false);
+      return;
+    }
+    let ir; try { ir = JSON.parse(a.dataset.chatIr); } catch { return; }
+    abrirChat(false);
+    document.dispatchEvent(new CustomEvent('aurevix:abrir', { detail: ir }));
+  });
 
   let ocupado = false;
   async function enviar(texto) {
@@ -168,20 +345,30 @@ export function iniciarChat() {
     hilo.push({ rol: 'user', texto });
     guardar(hilo);
     pintar();
-    msgs.insertAdjacentHTML('beforeend', '<div class="msg el escribiendo"><i></i><i></i><i></i></div>');
+    msgs.insertAdjacentHTML('beforeend', '<div class="msg el escribiendo" aria-label="Escribiendo"><i></i><i></i><i></i></div>');
     msgs.scrollTop = msgs.scrollHeight;
-    let respuesta = '';
-    if (ia) {
-      try { respuesta = (await store.preguntarIA({ modo: 'chat', mensajes: hilo, catalogo: catalogo() }))?.respuesta || ''; }
-      catch (e) { console.warn(e); }
-    } else {
-      await new Promise(r => setTimeout(r, 500 + Math.random() * 400));
+    let r = null;
+    try { r = await respuestaRapida(texto); } catch (e) { console.warn(e); }
+    if (r) await new Promise(ok => setTimeout(ok, 350));
+    else {
+      let respuesta = '';
+      if (ia) {
+        try {
+          // Con sesión de cliente, la IA recibe también un resumen de sus pedidos para contestar con datos reales
+          let cliente = '';
+          if (store.usuarioActual()?.role === 'client') {
+            try { const L = await pedidosDelCliente(); cliente = (await Promise.all(L.slice(0, 3).map(fichaPedido))).map(textoFicha).join('\n'); } catch { /* sin pedidos */ }
+          }
+          respuesta = (await store.preguntarIA({ modo: 'chat', mensajes: hilo.map(({ rol, texto, tarjetas }) => ({ rol, texto: tarjetas?.length ? `${texto} ${tarjetas.map(t => `${t.nombre}: ${t.etapa}${t.toca ? ', le toca ' + t.toca : ''}; entrega ${t.entrega || '—'}; ${t.pago}.`).join(' ')}` : texto })), catalogo: catalogo(), cliente }))?.respuesta || '';
+        } catch (e) { console.warn(e); }
+      } else await new Promise(ok => setTimeout(ok, 450 + Math.random() * 300));
+      if (!respuesta) respuesta = respuestaLocal(texto);
+      r = { texto: respuesta, acciones: accionesDeTexto(respuesta) };
     }
-    if (!respuesta) respuesta = respuestaLocal(texto);
-    hilo.push({ rol: 'model', texto: respuesta });
+    hilo.push({ rol: 'model', texto: r.texto, acciones: r.acciones || [], tarjetas: r.tarjetas || [] });
     guardar(hilo);
     pintar();
-    msgs.lastElementChild?.classList.add('nuevo');
+    msgs.querySelectorAll('.msg.el').forEach((m, i, todos) => i === todos.length - 1 && m.classList.add('nuevo'));
     ocupado = false;
   }
   nodo.querySelector('#chatForm').addEventListener('submit', e => { e.preventDefault(); const t = input.value; input.value = ''; enviar(t); });

@@ -791,3 +791,17 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 - **Webs de clientes en `aurevixweb.es/<nombre>`**: en el panel, dentro del pedido → «Web del cliente» → «Enlace público», se elige el nombre (sale del negocio) y la versión, y se pulsa «Publicar». Al publicar por primera vez le llega un mensaje al cliente con el enlace. Cualquiera puede ver esa versión sin cuenta; el resto de versiones y archivos siguen siendo privados. «Despublicar» lo quita (y borrar la versión publicada también).
   - Cómo funciona: GitHub Pages sirve `404.html` para las direcciones que no existen; esa página (`js/publica.js`) busca el nombre en la tabla `webs_publicas` y monta la web aislada en un iframe. Las páginas internas tienen dirección limpia (`/nombre/contacto`).
   - **Hace falta** ejecutar una vez `supabase/webs-publicas-v48.sql` en el SQL Editor de Supabase (crea la tabla y el permiso de lectura de solo esas versiones). Sin él, «Publicar» da error y los enlaces enseñan «Esta página no existe».
+
+## 36. Versión v49 — asistente útil de verdad y pulido de toda la web
+
+**Asistente**
+- Si el cliente ha iniciado sesión, contesta con sus **pedidos reales**: tarjeta por proyecto con barra de etapas, qué le toca hacer, fecha de entrega y pagos. Botones dentro de la respuesta: «Pagar X €» (abre el pago con IBAN, importe y concepto), «Revisar la vista previa», «aurevixweb.es/…», «Elegir el dominio», «Abrir el proyecto».
+- Preguntas que se resuelven al momento sin IA: estado del pedido, qué tengo que pagar, ver mi web, hablar con una persona (abre Soporte), desistir/cancelar, facturas, presupuesto (abre la calculadora) y empezar un pedido.
+- Preguntas rápidas distintas para visitantes y clientes, botón para empezar de nuevo y «Hablar con una persona del equipo» dentro del chat (ya no abre el correo).
+- Función de IA (`supabase/functions/asistente`, versión 6 publicada): quitadas las menciones a WhatsApp y Bizum que seguían en la versión publicada, recibe el resumen de los pedidos del cliente para contestar con datos reales y se han quitado los modos antiguos de «crear la web con IA» que ya no usaba nadie.
+
+**Pulido general (`pulido.css`, se carga el último en todas las páginas)**
+- Sin brillos verdes en botones y barras (sombras neutras), sin animaciones de adorno en bucle, curvas sin rebote, texto de 12 px como mínimo, superficies planas en vez de degradados, párrafos a una medida cómoda.
+- Móvil: los campos no hacen zoom en iPhone, botones de icono de 44 px, sin estados «hover» pegados, sin resaltado al tocar.
+- Accesibilidad: foco visible con teclado en todo, gráficos del panel con etiquetas para lector de pantalla, «reducir movimiento» enseña todo desde el principio.
+- «Trabaja con nosotros»: fuera la etiqueta encima del título y las rayas animadas del fondo.

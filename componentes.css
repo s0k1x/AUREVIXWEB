@@ -68,7 +68,7 @@
    4. CHECK ANIMADO  (Uiverse · SelfMadeSystem)
    <input type="checkbox"> seguido de <span class="ck-mark"></span>
    ---------------------------------------------------------- */
-.ck-mark{position:relative;flex:none;font-size:20px;width:1.3em;height:1.3em;border-radius:.25em;background:transparent;transition:all .25s}
+.ck-mark{position:relative;flex:none;font-size:20px;width:1.3em;height:1.3em;border-radius:.25em;background:transparent;transition:background-color .2s ease,transform .2s cubic-bezier(.23,1,.32,1)}
 .ck-mark::after{content:"";position:absolute;left:0;top:0;width:1.05em;height:1.05em;border:.1em solid var(--muted);border-radius:.25em;transform:rotate(0);transition:all .25s,border-width .1s}
 input:checked ~ .ck-mark{background:var(--accent)}
 input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;border-color:transparent var(--ink) var(--ink) transparent;border-width:0 .15em .15em 0;border-radius:0;transform:rotate(45deg)}
@@ -368,12 +368,13 @@ input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;bo
 .chat-rapidas button{padding:8px 12px;border-radius:99px;border:1px solid var(--line2);font-size:13px;color:var(--text);background:rgba(255,255,255,.03);transition:border-color .25s,background .25s}
 .chat-rapidas button:hover{border-color:var(--accent);background:var(--accent-soft)}
 .chat-form{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
-.chat-form input{flex:1;min-width:0;height:46px;padding:0 16px;border-radius:99px;border:1px solid var(--line2);background:var(--field);color:var(--text);font:inherit;font-size:14.5px;outline:none;transition:border-color .25s}
+.chat-form input{flex:1;min-width:0;height:46px;padding:0 16px;border-radius:99px;border:1px solid var(--line2);background:var(--field);color:var(--text);font:inherit;font-size:16px;outline:none;transition:border-color .25s}
 .chat-form input:focus{border-color:var(--accent)}
-.chat-send{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--ink);font-size:18px;flex:none;transition:transform .3s var(--e-spring)}
-.chat-send:hover{transform:scale(1.06)}
-.chat-wa{display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px 14px;font-size:13px;color:var(--muted)}
-.chat-wa svg{width:16px;height:16px;color:#25d366}
+.chat-send{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--ink);font-size:18px;flex:none;transition:transform .16s cubic-bezier(.23,1,.32,1)}
+@media (hover:hover){.chat-send:hover{transform:scale(1.05)}}
+.chat-send:active{transform:scale(.94)}
+.chat-wa{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:0 12px 14px;border:0;background:none;font:inherit;font-size:13px;color:var(--muted);cursor:pointer;transition:color .2s ease}
+.chat-wa svg{width:16px;height:16px;color:var(--accent)}
 .chat-wa:hover{color:var(--text)}
 @media (max-width:560px){
   #chat{right:14px;bottom:calc(14px + env(safe-area-inset-bottom))}
@@ -400,3 +401,50 @@ input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;bo
 .reco-extra{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 14px}
 .reco-extra span{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:99px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:13px}
 .reco-extra svg{width:14px;height:14px;color:var(--accent)}
+
+/* ---------- v49 · Asistente: botones de acción dentro de las respuestas ---------- */
+.chat-accs{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 4px;max-width:92%;align-self:flex-start}
+.chat-acc{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:7px 13px;border-radius:99px;border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);background:var(--accent-soft);color:var(--text);font:inherit;font-size:13.5px;font-weight:600;text-decoration:none;cursor:pointer;transition:background-color .18s ease,border-color .18s ease,transform .16s cubic-bezier(.23,1,.32,1);animation:msgIn .45s var(--e-out) both;animation-delay:.08s}
+.chat-acc svg{width:15px;height:15px;color:var(--accent);flex:none}
+@media (hover:hover){.chat-acc:hover{background:color-mix(in srgb,var(--accent) 22%,transparent);border-color:var(--accent)}}
+.chat-acc:active{transform:scale(.97)}
+.chat-acc:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chat-h .icon-btn[hidden]{display:none}
+.chat-rapidas button{transition:border-color .18s ease,background-color .18s ease,transform .16s cubic-bezier(.23,1,.32,1)}
+.chat-rapidas button:active{transform:scale(.97)}
+html[data-tema=claro] .chat-acc svg{color:#4f850c}
+@media (prefers-reduced-motion:reduce){.chat-acc{animation:none}}
+.chat-peds{display:grid;gap:8px;max-width:92%;align-self:flex-start;width:100%}
+.chat-ped{padding:13px 14px;border:1px solid var(--line);border-radius:16px;background:var(--field);animation:msgIn .45s var(--e-out) both;font-size:13.5px}
+.chat-ped-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+.chat-ped-h b{font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-ped-h small{color:var(--muted);font-size:12.5px;white-space:nowrap}
+.chat-ped-barra{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:3px}
+.chat-ped-barra i{height:5px;border-radius:99px;background:var(--line2)}
+.chat-ped-barra i.on{background:var(--accent)}
+.chat-ped-et{display:flex;justify-content:space-between;gap:8px;margin:8px 0 0;font-weight:600}
+.chat-ped-et small{color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+.chat-ped-toca{margin:6px 0 0;color:var(--accent);font-weight:600;line-height:1.4}
+.chat-ped-tx{margin:6px 0 0;color:var(--muted);line-height:1.45}
+.chat-ped dl{margin:10px 0 0;padding-top:8px;border-top:1px solid var(--line);display:grid;gap:4px}
+.chat-ped dl div{display:flex;justify-content:space-between;gap:10px}
+.chat-ped dt{color:var(--muted)}
+.chat-ped dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+html[data-tema=claro] .chat-ped-toca{color:#4f850c}
+@media (prefers-reduced-motion:reduce){.chat-ped{animation:none}}
+/* La barra de etapas de la tarjeta se rellena por tramos al aparecer */
+.chat-ped-barra i.on{transform-origin:left;animation:chatTramo .35s cubic-bezier(.23,1,.32,1) both}
+.chat-ped-barra i.on:nth-child(2){animation-delay:.05s}.chat-ped-barra i.on:nth-child(3){animation-delay:.1s}.chat-ped-barra i.on:nth-child(4){animation-delay:.15s}
+.chat-ped-barra i.on:nth-child(5){animation-delay:.2s}.chat-ped-barra i.on:nth-child(6){animation-delay:.25s}.chat-ped-barra i.on:nth-child(7){animation-delay:.3s}
+@keyframes chatTramo{from{transform:scaleX(0)}}
+@media (prefers-reduced-motion:reduce){.chat-ped-barra i.on{animation:none}}
+/* Nombres larguísimos o en otros alfabetos: nada se sale del chat */
+.chat-peds{grid-template-columns:minmax(0,1fr);min-width:0}
+.chat-ped{min-width:0}
+.chat-ped-h b{flex:1 1 auto}
+.chat-ped-h small{flex:none;max-width:45%;overflow:hidden;text-overflow:ellipsis}
+.chat-acc{max-width:100%;min-width:0}
+.chat-acc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.chat-accs{min-width:0}
+.chat-h small span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.msg{unicode-bidi:plaintext}

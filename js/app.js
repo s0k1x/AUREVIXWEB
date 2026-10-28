@@ -5,7 +5,7 @@ import { CONFIG, PLANES, EXTRAS, COMPARATIVA } from '../config.js';
 import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from './store.js';
 import {
-  $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, arrancar, mailLink, refPedido,
+  $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, pedirLogin, arrancar, mailLink, refPedido,
   ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados, desgloseIVA, ivaTexto, infoDatos, descargar,
   estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
 } from './ui.js';
@@ -185,6 +185,24 @@ alAcercarse($('#calc'), () => import('./calculadora.js').then(m => m.montarCalcu
   }, { threshold: [0, .1, .25, .5, .75, 1] });
   SEC.forEach(([el]) => io.observe(el));
 })();
+/* Botones del asistente: abren lo que corresponde en la propia web */
+document.addEventListener('aurevix:abrir', async e => {
+  const d = e.detail || {};
+  if (d.tipo === 'login') return pedirLogin('Entra con la cuenta con la que hiciste el pedido.');
+  if (d.tipo === 'proyectos') return abrirPedidos();
+  if (d.tipo === 'proyecto') return abrirPedidos(d.id, d.pest || 'estado');
+  if (d.tipo === 'soporte') return abrirSoporte();
+  if (d.tipo === 'comprar') return abrirCompra(d.plan, '', { urgente: !!d.urgente, extras: d.extras || [] });
+  if (d.tipo === 'elegir') return $('#abrirReco')?.click();
+  if (d.tipo === 'pagar') {
+    try {
+      const p = (await store.misPedidos()).find(x => x.id === d.id);
+      const { faseDePago } = await import('./pago.js');
+      if (p && faseDePago(p)) abrirPago(p, faseDePago(p), () => {});
+      else abrirPedidos(d.id, 'pagos');
+    } catch (err) { toast(err.message, 'err'); }
+  }
+});
 document.addEventListener('aurevix:pedir', e => {
   const { plan, urgente, extras } = e.detail || {};
   abrirCompra(plan, '', { urgente, extras });
