@@ -10,6 +10,7 @@ import { PLANTILLAS } from './plantillas.js';
 import * as store from './store.js';
 import { esc, icono, euros, mailLink } from './ui.js';
 import { planesActivos, extrasActivos } from './sitio.js';
+import { enIngles } from './idioma.js';
 
 const ajuste = CONFIG.asistente || { activo: true, nombre: 'Asistente', saludo: '' };
 
@@ -20,6 +21,7 @@ export const catalogo = () => ({
   extras: extrasActivos().map(({ id, nombre, precio, mensual, desc }) => ({ id, nombre, precio, mensual: !!mensual, desc })),
   plantillas: PLANTILLAS.map(({ id, nombre, sector, desc }) => ({ id, nombre, sector, desc })),
   notas: [
+    ...(enIngles ? ['IMPORTANTE: el cliente está viendo la web en inglés. Responde en inglés (inglés británico, sencillo), con los nombres de los planes en inglés: Landing page, Portfolio, Business website, Booking website, Online store, Custom.'] : []),
     CONFIG.bienvenida?.activo ? `Descuento de bienvenida: ${CONFIG.bienvenida.pct} % en la primera web de cada cliente con el código ${CONFIG.bienvenida.codigo}; se aplica al revisar el pedido.` : 'Ahora mismo no hay descuento de bienvenida.',
     `Trabaja con nosotros: comerciales con un ${CONFIG.comision} % de comisión por web vendida, y creadores de vídeo con ${CONFIG.videos?.precio ?? 15} € por vídeo aprobado (+${CONFIG.videos?.bonus ?? 25} € si supera ${CONFIG.videos?.visitas ?? 10000} visualizaciones en 14 días, máximo ${CONFIG.videos?.maxMes ?? 12} vídeos pagados al mes).`
   ]

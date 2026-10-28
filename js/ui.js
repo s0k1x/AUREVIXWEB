@@ -6,6 +6,8 @@ import * as store from './store.js';
 import { iniciarEfectos } from './efectos.js';
 import { icono, pintarIconos } from './iconos.js';
 import { aplicarCache, cargarAjustesWeb } from './sitio.js';
+import { vigilarCampos } from './validar.js';
+import { iniciarIdioma, botonIdioma } from './idioma.js';
 import { iniciarCookies } from './cookies.js';
 import { aplicarApariencia, guardarApariencia } from './apariencia.js';
 import { campanaHTML, iniciarAvisos } from './avisos.js';
@@ -293,6 +295,7 @@ export function pintarCabecera(activa = '') {
         <button class="menu-btn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span><span></span></button>
       </div>
     </div>`;
+  $('.head-right', h).prepend(botonIdioma());
   const menuBtn = $('#menuBtn');
   const cerrarMenu = () => { h.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); };
   menuBtn.addEventListener('click', () => {
@@ -616,6 +619,8 @@ function iniciarVelo() {
 let ultimoFallo = 0;
 export async function arrancar(pagina) {
   document.documentElement.classList.add('js');
+  iniciarIdioma().catch(e => console.warn(e)).finally(() => document.documentElement.classList.remove('i18n-pendiente'));
+  vigilarCampos();
   // Red de seguridad: si algo falla sin control, se avisa (sin repetir el aviso en bucle)
   addEventListener('unhandledrejection', e => {
     const m = e.reason?.message || '';

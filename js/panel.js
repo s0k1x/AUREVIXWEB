@@ -525,7 +525,7 @@ function videosOwner() {
     </div>
     ${porCreador.length ? `<div class="card vid-pagos"><div class="card-h"><h3>Por pagar a cada creador</h3></div>${porCreador.map(c => `
       <div class="vid-pago"><span>${avatar({ name: c.autor || '?' })}<b>${esc(c.autor || 'Creador')}</b><small>${c.n} vídeo${c.n === 1 ? '' : 's'}</small></span>
-      <b>${euros(c.total)}</b><button class="btn btn-sm btn-ghost" data-cobro="${c.uid}">${icono('bank')}<span>Datos de cobro</span></button><button class="btn btn-sm btn-primary" data-vid="pagartodo" data-id="${c.uid}">${icono('euro')}<span>Pagar todo</span></button></div>`).join('')}</div>` : ''}
+      <b>${euros(c.total)}</b><button class="btn btn-sm btn-ghost" data-cobro="${c.uid}">${icono('bank')}<span>Cobro</span></button><button class="btn btn-sm btn-primary" data-vid="pagartodo" data-id="${c.uid}">${icono('euro')}<span>Pagar todo</span></button></div>`).join('')}</div>` : ''}
     <div class="seg vid-seg" role="tablist">${[['pendiente', 'Por revisar'], ['aprobado', 'Por pagar'], ['pagado', 'Pagados'], ['rechazado', 'Rechazados'], ['todos', 'Todos']].map(([k, t]) => `<button type="button" data-fvid="${k}" class="${fVid === k ? 'on' : ''}">${t}</button>`).join('')}</div>
     <div class="vid-lista">${lista.map(v => filaVideo(v, true)).join('') || vacio('video', fVid === 'pendiente' ? 'No hay vídeos por revisar' : 'Nada por aquí', 'Los creadores envían sus vídeos desde su panel, en «Mis vídeos».')}</div>`;
 }
@@ -587,11 +587,23 @@ function equipo() {
         ${owners.map(u => `<div class="tm">${avatar(u)}<div><b>${esc(u.name)}</b><small>${esc(u.email)}</small></div><span class="role-tag r-owner">Propietario</span></div>`).join('')}
         ${ws.map(u => {
           const v = ventasDe(u.uid), pp = porPagar(u.uid), deuda = pp.reduce((a, p) => a + comision(p), 0);
-          return `<div class="tm">${avatar(u)}<div><b>${esc(u.name)} ${u.datos?.disponible === false ? '<em class="no-disp">no disponible</em>' : '<em class="si-disp">disponible</em>'}</b><small>${esc(u.email)} · ${v.length} venta${v.length === 1 ? '' : 's'} · ${activos(u.uid)} encargos activos · ${hechos(u.uid)} entregados</small></div>
-          ${deuda ? `<button class="btn btn-sm btn-primary" data-pagar-com="${u.uid}" title="Marca como pagadas sus comisiones listas"><span>Pagar ${euros(deuda)}</span></button>` : `<span class="role-tag">${euros(v.reduce((a, p) => a + comision(p), 0))} generados</span>`}
-          <button class="btn btn-sm btn-ghost" data-cobro="${u.uid}" title="Ver sus datos de cobro">${icono('bank')}<span>Cobro</span></button>
-          <a class="icon-btn" href="${mailLink(`${CONFIG.marca}`, '', u.email)}" aria-label="Escribir">${icono('mail')}</a>
-          <button class="btn btn-sm btn-danger" data-quitar="${u.uid}"><span>Quitar</span></button></div>`;
+          const generado = v.reduce((a, p) => a + comision(p), 0);
+          return `<div class="tm tm-w">
+            ${avatar(u)}
+            <div class="tm-info">
+              <b><span>${esc(u.name)}</span>${u.datos?.disponible === false ? '<em class="no-disp">No disponible</em>' : '<em class="si-disp">Disponible</em>'}</b>
+              <small>${esc(u.email)}</small>
+              <ul class="tm-stats">
+                <li><b>${activos(u.uid)}</b> activos</li><li><b>${hechos(u.uid)}</b> entregados</li><li><b>${v.length}</b> venta${v.length === 1 ? '' : 's'}</li><li><b>${euros(generado)}</b> generados</li>
+              </ul>
+            </div>
+            <div class="tm-acc">
+              ${deuda ? `<button class="btn btn-sm btn-primary" data-pagar-com="${u.uid}" title="Marca como pagadas sus comisiones listas">${icono('euro')}<span>Pagar ${euros(deuda)}</span></button>` : ''}
+              <button class="btn btn-sm btn-ghost" data-cobro="${u.uid}" title="Ver sus datos de cobro">${icono('bank')}<span>Cobro</span></button>
+              <a class="btn btn-sm btn-ghost" href="${mailLink(`${CONFIG.marca}`, '', u.email)}">${icono('mail')}<span>Escribir</span></a>
+              <button class="btn btn-sm btn-danger" data-quitar="${u.uid}" aria-label="Quitar a ${esc(u.name)} del equipo">${icono('trash')}<span>Quitar</span></button>
+            </div>
+          </div>`;
         }).join('')}
         ${ws.length ? '' : '<p class="muted" style="padding:14px 0;font-size:14.5px">Aún no hay trabajadores.</p>'}
       </div>

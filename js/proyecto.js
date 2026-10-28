@@ -8,6 +8,7 @@
 import { CONFIG, PLANES } from '../config.js';
 import { esc, icono, campo, euros, fecha, haceCuanto, mailLink, refPedido } from './ui.js';
 import { plantillaPorId } from './plantillas.js';
+import { dominioHTML, leerDominio, sugerirNombre, EXTENSIONES } from './dominio.js';
 
 export const ETAPAS = [
   { id: 'recibido', txt: 'Pedido recibido', icono: 'inbox', cliente: 'Hemos recibido tu pedido. En breve te contactamos para confirmar los detalles.' },
@@ -18,7 +19,7 @@ export const ETAPAS = [
   { id: 'pago', txt: 'Pago final', icono: 'euro', cliente: 'Abona el importe pendiente para publicar la web.', accion: true },
   { id: 'publicada', txt: 'Publicada', icono: 'check', cliente: 'Tu web está publicada.' }
 ];
-export const EXTENSIONES = ['.com', '.es', '.net', '.org', '.eu', '.shop'];
+export { EXTENSIONES };
 
 /** Etapa actual (los pedidos antiguos sin etapa se deducen del estado) */
 export function etapaDe(p) {
@@ -53,7 +54,7 @@ const urlVistaPrevia = p => {
   const r = p.respuestas || {};
   return p.plantilla ? `diseno?t=${encodeURIComponent(p.plantilla)}&n=${encodeURIComponent(r.negocio || '')}&c=${encodeURIComponent(r.color || '')}` : '';
 };
-const dominioTexto = d => d ? (d.tipo === 'propio' ? `${d.nombre} (ya es suyo)` : d.nombre) : '';
+const dominioTexto = d => d ? (d.tipo === 'propio' ? `${d.nombre} (ya es suyo)` : d.nombre) + (d.correo ? ` · ${d.correo}` : '') : '';
 
 /* ---------- Vista del cliente ---------- */
 export function accionCliente(p, botonPagoHTML) {
@@ -64,22 +65,15 @@ export function accionCliente(p, botonPagoHTML) {
   const cab = `<div class="ac-h"><span class="ac-ic">${icono(info.icono)}</span><div><b>${info.accion ? 'Te toca a ti' : 'En qué punto está'}</b><p>${esc(info.cliente)}</p></div></div>`;
 
   if (et === 'dominio') {
+    // Si lo dijo en el pedido, sale ya relleno
     const d = p.dominio || {};
-    const base = (r.negocio || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '');
-    const nombre = d.nombre ? d.nombre.replace(/\.[a-z.]+$/, '') : base;
-    const ext = d.nombre?.match(/\.[a-z.]+$/)?.[0] || '.es';
+    const elegido = d.nombre || r.dominio || '';
+    const tipo = d.tipo || r.dominioTipo || 'nuevo';
+    const ext = tipo === 'propio' ? '.es' : (elegido.match(/\.[a-z.]+$/)?.[0] || '.es');
+    const nombre = tipo === 'propio' ? elegido : (elegido ? elegido.replace(/\.[a-z.]+$/, '') : sugerirNombre(r.negocio));
     return `${cab}
     <form class="ac-form" data-form="dominio" data-id="${id}" novalidate>
-      <div class="opts ac-tipo">
-        <label class="opt"><input type="radio" name="tipo" value="nuevo" ${d.tipo !== 'propio' ? 'checked' : ''}><span><i>Quiero un dominio nuevo</i></span></label>
-        <label class="opt"><input type="radio" name="tipo" value="propio" ${d.tipo === 'propio' ? 'checked' : ''}><span><i>Ya tengo dominio</i></span></label>
-      </div>
-      <div class="dom-fila">
-        <span class="dom-www">www.</span>
-        <input class="dom-in" name="nombre" value="${esc(nombre)}" placeholder="tunegocio" autocomplete="off" aria-label="Nombre del dominio" required>
-        <select class="dom-ext" name="ext" aria-label="Extensión">${EXTENSIONES.map(x => `<option ${x === ext ? 'selected' : ''}>${x}</option>`).join('')}</select>
-      </div>
-      <p class="ac-nota" data-dom-nota>Usa solo letras, números y guiones. Comprobamos que esté libre y lo registramos a tu nombre.</p>
+      ${dominioHTML({ tipo, nombre, ext: EXTENSIONES.includes(ext) ? ext : '.es', correo: (d.correo || r.correo || 'info@').split('@')[0] || 'info' })}
       <div class="ac-btns"><button class="btn btn-primary" type="submit"><span>Guardar dominio</span>${icono('arrow')}</button></div>
     </form>`;
   }
@@ -183,9 +177,9 @@ export const MAS_CONTENIDO = [
 export function leerFormulario(form, p) {
   const f = new FormData(form);
   if (form.dataset.form === 'dominio') {
-    const nombre = String(f.get('nombre') || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\.[a-z.]+$/, '');
-    if (!/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/.test(nombre)) throw new Error('Escribe un nombre válido: letras, números y guiones, sin espacios.');
-    return { dominio: { nombre: nombre + f.get('ext'), tipo: f.get('tipo'), t: Date.now() }, etapa: 'contenido' };
+    const r = leerDominio(form);
+    if (!r.ok) throw new Error(r.motivo);
+    return { dominio: { nombre: r.dominio, tipo: r.tipo, correo: r.correo, t: Date.now() }, etapa: 'contenido' };
   }
   if (form.dataset.form === 'contenido') {
     const c = Object.fromEntries(['sobre', 'servicios', 'horario', 'redes', 'fotos', 'logo', ...MAS_CONTENIDO.map(([k]) => k)].map(k => [k, String(f.get(k) || '').trim().slice(0, 4000)]));
