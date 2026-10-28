@@ -195,6 +195,22 @@ function ultimosMeses(n = 6) {
     return { y: d.getFullYear(), m: d.getMonth(), txt: d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '') };
   });
 }
+/* Widgets del resumen: embudo por etapa y próximas entregas */
+function embudoHTML(lista) {
+  const act = lista.filter(activo);
+  const filas = ETAPAS.filter(e => e.id !== 'publicada').map(e => ({ e, n: act.filter(p => etapaDe(p) === e.id).length }));
+  const max = Math.max(1, ...filas.map(f => f.n));
+  if (!act.length) return vacio('chart', 'No hay proyectos en marcha');
+  return `<div class="embudo">${filas.map(({ e, n }) => `<div class="emb ${n ? '' : 'cero'}"><span>${icono(e.icono)}${esc(e.txt)}</span><div><i style="width:${n ? Math.max(6, (n / max) * 100) : 0}%"></i></div><b>${n}</b></div>`).join('')}</div>`;
+}
+function entregasHTML(lista, n = 5) {
+  const L = lista.filter(p => activo(p) && diasRestantes(p) !== null).sort((a, b) => fechaEntrega(a) - fechaEntrega(b)).slice(0, n);
+  if (!L.length) return '<p class="muted" style="font-size:14px">Sin entregas pendientes.</p>';
+  return `<div class="entregas">${L.map(p => { const d = diasRestantes(p); return `<button type="button" class="ent ${plazoClase(p)}" data-open="${p.id}">
+    <span class="ent-d"><b>${d < 0 ? '−' + -d : d}</b><small>${Math.abs(d) === 1 ? 'día' : 'días'}</small></span>
+    <span class="ent-t"><b>${esc(neg(p))}</b><small>${esc(p.planNombre || '')} · ${fechaCorta(fechaEntrega(p))}</small></span>${icono('arrow')}</button>`; }).join('')}</div>`;
+}
+
 function resumen() {
   const P = datos.pedidos;
   const vivos = P.filter(p => p.estado !== 'cancelado');
@@ -249,12 +265,16 @@ function resumen() {
         <div class="meses">${meses.map(m => `<div class="mes" title="${m.n} pedido${m.n === 1 ? '' : 's'} · ${euros(m.total)} vendido · ${euros(m.cobrado)} cobrado">
           <div class="mes-barras"><i class="a" style="--h:${(m.total / maxMes) * 100}%"></i><i class="b" style="--h:${(m.cobrado / maxMes) * 100}%"></i></div>
           <b>${m.total ? eurosCorto(m.total) : '—'}</b><small>${m.txt}</small></div>`).join('')}</div>
+        <div class="card-h" style="margin-top:26px"><h3>Proyectos por etapa</h3><span class="muted" style="font-size:13px">${P.filter(activo).length} en marcha</span></div>
+        ${embudoHTML(P)}
         <div class="card-h" style="margin-top:26px"><h3>Últimos pedidos</h3><button class="link-btn" data-go="pedidos">Ver todos</button></div>
         <div class="rows">${P.slice(0, 5).map(p => filaPedido(p)).join('') || vacio('inbox', 'Aún no hay pedidos')}</div>
       </div>
       <div class="card">
         <div class="card-h"><h3>Para hoy</h3><span class="muted" style="font-size:13px">${pendientes.length} pendiente${pendientes.length === 1 ? '' : 's'}</span></div>
         ${pendientes.length ? `<div class="hoy">${pendientes.slice(0, 10).map(x => `<button type="button" class="hoy-it" ${x.id ? `data-open="${x.id}"` : `data-go="${x.go}"`}>${icono(x.ic)}<span>${esc(x.t)}</span>${icono('arrow')}</button>`).join('')}</div>` : `<p class="muted" style="font-size:14px">${icono('check')} Todo al día.</p>`}
+        <div class="card-h" style="margin-top:26px"><h3>Próximas entregas</h3><button class="link-btn" data-go="agenda">Agenda</button></div>
+        ${entregasHTML(P)}
         <div class="card-h" style="margin-top:26px"><h3>Pedidos por tipo de web</h3></div>
         ${porPlan.length ? `<div class="bars">${porPlan.map(x => `<div class="bar"><span>${esc(x.n)}</span><div><i style="width:${(x.v / max) * 100}%"></i></div><b>${x.v}</b></div>`).join('')}</div>` : vacio('chart', 'Sin datos todavía')}
         <div class="card-h" style="margin-top:26px"><h3>Carga del equipo</h3></div>
@@ -698,6 +718,7 @@ function mios() {
       <div class="kpi"><small>Esperando al cliente</small><b>${espera.length}</b></div>
       <div class="kpi"><small>Entregados</small><b>${datos.pedidos.filter(p => p.asignado === U.uid && p.estado === 'entregado').length}</b></div>
     </div>
+    ${todos.length ? `<div class="card mios-ent"><div class="card-h"><h3>Tus próximas entregas</h3></div>${entregasHTML(todos, 3)}</div>` : ''}
     ${todos.length ? `<div class="opts filters">${[['todos', 'Todos', todos.length], ['tuyos', 'Te toca', tuyos.length], ['cliente', 'Esperando al cliente', espera.length]].map(([k, t, n]) => `<label class="opt ${!n && k !== 'todos' ? 'cero' : ''}"><input type="radio" name="fmios" value="${k}" ${fMios === k ? 'checked' : ''}><span><i>${t} · ${n}</i></span></label>`).join('')}</div>` : ''}
     <div class="rows card flush">${L.map(p => filaPedido(p)).join('') || (todos.length ? vacio('check', 'Nada por aquí', 'Prueba con otro filtro.') : vacio('coffee', 'No tienes encargos activos', 'Mira en «Disponibles» para coger uno.'))}</div>`;
   $$('input[name=fmios]').forEach(r => r.addEventListener('change', () => { fMios = r.value; mios(); }));

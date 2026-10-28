@@ -659,6 +659,15 @@ export async function arrancar(pagina) {
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     const registrar = () => navigator.serviceWorker.register('sw.js').catch(() => {});
     document.readyState === 'complete' ? registrar() : addEventListener('load', registrar);
+    // Versión nueva instalada: se recarga una vez para no mezclar piezas de dos versiones
+    // (no si hay un diálogo abierto o se está escribiendo, para no perder nada)
+    const habia = !!navigator.serviceWorker.controller && !window.__swVigila; // si la página ya lo vigila (script en el HTML), no se duplica
+    let recargado = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!habia || recargado || document.querySelector('dialog[open]') || document.activeElement?.matches('input,textarea,select')) return;
+      recargado = true;
+      location.reload();
+    });
   }
   instalarPWA();
 }

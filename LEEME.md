@@ -780,3 +780,10 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 - **Recorrido «Cómo trabajamos»** (`js/mundo.js`): un mundo isométrico dibujado en SVG con una estación por paso. Al hacer scroll la cámara se para en cada estación y viaja a la siguiente sin cortes, con la ruta dibujándose y un punto que avanza. Los textos se leen de la lista `.steps` del HTML, así que se editan ahí. Solo usa `transform`/`opacity` y el bucle solo corre mientras se ve. Con «reducir movimiento» o sin JavaScript se queda la lista de siempre.
 - Es la técnica de Scroll World, pero en vector: la versión original genera vídeos con IA de pago (Higgsfield/Monid) y no había ninguna herramienta gratuita utilizable desde aquí. A cambio no hay vídeos que descargar y pesa unos pocos KB.
 - Estilos nuevos en `widgets.css`. Service worker en **v47**.
+
+## 35. Versión v48 — caché segura, widgets del panel y navegación lateral
+
+- **Arreglo de caché**: el service worker ahora pide primero a internet el JS, el CSS y los JSON (con la copia guardada si no hay conexión o tarda más de 2,5 s). Antes los servía desde la copia guardada y, justo después de publicar, el móvil podía mezclar el HTML nuevo con el JS viejo (por eso la calculadora salía vacía). Además, cada página se recarga sola una vez cuando se instala una versión nueva (salvo con un diálogo abierto o escribiendo).
+- **Panel del propietario**: widgets «Proyectos por etapa» y «Próximas entregas» en el resumen. **Trabajador**: «Tus próximas entregas» en Mis encargos.
+- **Portada**: navegación lateral por secciones en pantallas anchas y suelo isométrico suave en lugar de las rayas animadas y el brillo.
+- **«Cómo trabajamos»** vuelve a ser la lista de pasos de antes: se quita el recorrido con scroll de la v47 (`js/mundo.js`).
