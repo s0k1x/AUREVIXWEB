@@ -93,7 +93,7 @@ export function botonIdioma() {
   b.dataset.noTraducir = '';
   b.setAttribute('aria-label', enIngles ? 'Cambiar a español' : 'Switch to English');
   b.title = enIngles ? 'Español' : 'English';
-  b.innerHTML = `<span class="${enIngles ? '' : 'on'}">ES</span><span class="${enIngles ? 'on' : ''}">EN</span>`;
+  b.innerHTML = `<span class="${enIngles ? '' : 'on'}">ES</span><span class="${enIngles ? 'on' : ''}">EN</span><em>${enIngles ? 'Ver en español' : 'View in English'}</em>`;
   b.addEventListener('click', () => cambiarIdioma(enIngles ? 'es' : 'en'));
   return b;
 }
