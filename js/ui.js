@@ -10,6 +10,7 @@ import { iniciarCookies } from './cookies.js';
 import { aplicarApariencia, guardarApariencia } from './apariencia.js';
 import { campanaHTML, iniciarAvisos } from './avisos.js';
 import { iniciarDesplegables } from './desplegable.js';
+import { montarMedidor, evaluar, MINIMO } from './contrasena.js';
 
 // Direcciones limpias: si alguien entra con «.html» (enlaces antiguos), la barra muestra la dirección bonita
 try {
@@ -421,7 +422,7 @@ function crearLogin() {
       <form class="form" id="lgForm" novalidate>
         <div id="lgNameWrap" hidden>${campo({ id: 'lgName', label: 'Nombre', attrs: 'autocomplete="name"' })}</div>
         ${campo({ id: 'lgEmail', label: 'Email', type: 'email', required: true, attrs: 'autocomplete="email" inputmode="email"' })}
-        ${campo({ id: 'lgPass', label: 'Contraseña', type: 'password', required: true, attrs: 'autocomplete="current-password" minlength="6"' })}
+        ${campo({ id: 'lgPass', label: 'Contraseña', type: 'password', required: true, attrs: 'autocomplete="current-password"' })}
         <div class="forgot"><button type="button" class="link-btn" id="lgForgot">¿Has olvidado la contraseña?</button></div>
         <div id="lgTermsWrap" hidden>${aceptarTerminos('lgTerms')}</div>
         <p class="form-err" id="lgErr" role="alert"></p>
@@ -450,8 +451,12 @@ function crearLogin() {
 
   let registro = false;
   const error = m => ($('#lgErr').textContent = m);
+  // Barra de seguridad: solo al crear la cuenta (al entrar no se juzga la contraseña que ya tienes)
+  const medidor = montarMedidor($('#lgPass'), { email: () => $('#lgEmail').value, nombre: () => $('#lgName').value });
   const setModo = r => {
     registro = r;
+    $('#lgPass').closest('.fc').nextElementSibling.classList.toggle('pw-off', !r);
+    medidor.actualizar();
     $('#lgNameWrap').hidden = !r;
     $('#lgTermsWrap').hidden = !r;
     $('.forgot', d).hidden = r;
@@ -479,7 +484,8 @@ function crearLogin() {
     const marcar = (id, mal) => $('#' + id).closest('.fc').classList.toggle('error', mal);
     if (registro && !nombre) { marcar('lgName', true); return error('Escribe tu nombre'); }
     if (!/^\S+@\S+\.\S+$/.test(email)) { marcar('lgEmail', true); return error('Escribe un email válido'); }
-    if (!store.modoDemo && pass.length < 6) { marcar('lgPass', true); return error('La contraseña debe tener al menos 6 caracteres'); }
+    if (!pass) { marcar('lgPass', true); return error('Escribe tu contraseña'); }
+    if (registro && !store.modoDemo && !evaluar(pass, { email, nombre }).ok) { marcar('lgPass', true); return error(`La contraseña necesita al menos ${MINIMO} caracteres, con letras y números.`); }
     if (registro && !terminosAceptados('lgTerms')) return;
     ocupado($('#lgSubmit'), true); error('');
     try {

@@ -4,6 +4,7 @@
    - Sin configurar      → MODO DEMO (todo se guarda en este navegador)
    ========================================================== */
 import { CONFIG } from '../config.js';
+import { exigir as exigirPass } from './contrasena.js';
 
 export const modoDemo = !(CONFIG.supabase && CONFIG.supabase.url && CONFIG.supabase.anonKey);
 
@@ -217,7 +218,7 @@ const traducirError = e => {
   const m = (e?.message || '').toLowerCase();
   if (m.includes('invalid login')) return 'Email o contraseña incorrectos';
   if (m.includes('already registered') || m.includes('already been registered')) return 'Ese email ya tiene cuenta. Inicia sesión.';
-  if (m.includes('password') && m.includes('6')) return 'La contraseña debe tener al menos 6 caracteres';
+  if (m.includes('password') && (m.includes('6') || m.includes('8') || m.includes('weak'))) return 'La contraseña es demasiado débil: usa al menos 8 caracteres, con letras y números.';
   if (m.includes('email not confirmed')) return 'Confirma tu email: te hemos enviado un enlace.';
   if (m.includes('invalid') && m.includes('email')) return 'El email no es válido';
   if (m.includes('provider is not enabled')) return 'Este método de acceso no está activado en Supabase (mira el LEEME)';
@@ -246,6 +247,7 @@ export async function entrarConEmail(email, pass) {
 
 export async function registrarConEmail(nombre, email, pass) {
   if (modoDemo) return entrarLocal({ name: nombre, email });
+  await exigirPass(pass, { email, nombre }); // 8+ caracteres con letras y números, y que no esté filtrada
   nombrePendiente = nombre;
   const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { name: nombre, full_name: nombre }, emailRedirectTo: volverA() } });
   if (error) throw new Error(traducirError(error));
@@ -544,8 +546,9 @@ export async function cambiarEmail(email) {
   if (error) throw new Error(traducirError(error));
 }
 export async function cambiarPass(pass) {
-  necesitaUsuario();
+  const u = necesitaUsuario();
   if (modoDemo) return;
+  await exigirPass(pass, { email: u.email, nombre: u.name });
   const { error } = await sb.auth.updateUser({ password: pass });
   if (error) throw new Error(traducirError(error));
 }

@@ -748,3 +748,27 @@ transferencia, desistimiento con justificante, aviso en el panel, cookies y pág
 No se ha integrado: genera los vídeos del recorrido con Higgsfield o Monid, que son servicios **de pago por vídeo** y
 necesitan cuenta y clave. Además, una portada de vídeo a pantalla completa pesaría varios MB, justo lo contrario de cargar
 rápido. Si algún día lo quieres para una campaña, se puede hacer como página aparte.
+
+## 33. Versión v46 — contraseñas: barra de seguridad y comprobación de filtraciones
+
+El ajuste «Prevent use of leaked passwords» de Supabase solo existe en el plan Pro. En su lugar, la propia web hace la misma
+comprobación (`js/contrasena.js`), sin coste:
+
+- **Barra de seguridad** al crear la cuenta y al cambiar la contraseña (Ajustes → Cuenta): cuatro tramos de color (muy débil,
+  débil, aceptable, segura, muy segura), una frase de lo que falta y la lista de requisitos (8 caracteres, letras, números y
+  «no aparece en filtraciones»). Resta puntos si contiene tu nombre o tu correo, es una palabra muy común, tiene una secuencia
+  (1234, abcd) o repite caracteres. Un botón con un ojo muestra u oculta lo escrito.
+- **Contraseñas filtradas**: se consulta Have I Been Pwned (Pwned Passwords) con k-anonimato: solo se envían los 5 primeros
+  caracteres del SHA-1 de la contraseña (con `Add-Padding`), nunca la contraseña, la huella completa ni el correo. Si la
+  contraseña aparece, no deja crearla ni cambiarla. Si el servicio no responde, no se bloquea a nadie.
+- **Mínimo**: 8 caracteres con letras y números para crear o cambiar contraseña. Al **entrar** no se juzga la contraseña, para
+  que quien ya tenía una de 6 caracteres pueda seguir entrando.
+- La política de privacidad nombra a Have I Been Pwned entre los proveedores.
+- Service worker **v46**.
+
+**En Supabase** (Authentication → Providers → Email), con el plan gratuito: poner *Minimum password length* en **8** y activar
+*Require current password when updating*. *Prevent use of leaked passwords* se deja apagado (solo Pro).
+
+Probado en modo demo (Chromium, iPhone 13) simulando el servicio de filtraciones: la puntuación, los bloqueos, que solo se
+pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva lo escrito. Sin errores de JavaScript.
+**No probado** con el servicio real de Have I Been Pwned (desde este entorno no hay acceso) ni con Supabase real.
