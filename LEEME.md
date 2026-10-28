@@ -772,3 +772,11 @@ comprobación (`js/contrasena.js`), sin coste:
 Probado en modo demo (Chromium, iPhone 13) simulando el servicio de filtraciones: la puntuación, los bloqueos, que solo se
 pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva lo escrito. Sin errores de JavaScript.
 **No probado** con el servicio real de Have I Been Pwned (desde este entorno no hay acceso) ni con Supabase real.
+
+## 34. Versión v47 — widgets de la portada y recorrido con scroll
+
+- **Franja de garantías** bajo la portada: precio final con IVA, solo transferencia, pago en dos partes, 14 días para desistir y plazo de respuesta. Los porcentajes y el texto de respuesta salen de `config.js`.
+- **Calculadora de presupuesto** (`#calcula`, `js/calculadora.js`): tipo de web, extras, entrega urgente y descuento de bienvenida. Usa la misma fórmula que el pedido y enseña total, desglose de IVA, señal, resto y plazo. «Pedir esta web» abre el pedido con el plan, los extras y la urgencia ya marcados (`abrirCompra(plan, '', { urgente, extras })`). Se carga solo al acercarse a la sección.
+- **Recorrido «Cómo trabajamos»** (`js/mundo.js`): un mundo isométrico dibujado en SVG con una estación por paso. Al hacer scroll la cámara se para en cada estación y viaja a la siguiente sin cortes, con la ruta dibujándose y un punto que avanza. Los textos se leen de la lista `.steps` del HTML, así que se editan ahí. Solo usa `transform`/`opacity` y el bucle solo corre mientras se ve. Con «reducir movimiento» o sin JavaScript se queda la lista de siempre.
+- Es la técnica de Scroll World, pero en vector: la versión original genera vídeos con IA de pago (Higgsfield/Monid) y no había ninguna herramienta gratuita utilizable desde aquí. A cambio no hay vídeos que descargar y pesa unos pocos KB.
+- Estilos nuevos en `widgets.css`. Service worker en **v47**.
