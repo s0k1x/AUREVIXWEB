@@ -10,6 +10,7 @@ import { CONFIG, PLANES, EXTRAS } from '../config.js';
 import * as store from './store.js';
 import { $, $$, esc, euros, icono, toast, arrancar, pedirLogin, ocupado, campo, interruptor, etiquetas, avatar, descargar, ROLES } from './ui.js';
 import { leerApariencia, guardarApariencia } from './apariencia.js';
+import { montarMedidor } from './contrasena.js';
 import { abrirCookies, consentimiento } from './cookies.js';
 import { ORIGINAL, ajustesActuales, guardarAjustesWeb } from './sitio.js';
 
@@ -123,13 +124,16 @@ async function cuenta() {
     catch (err) { toast(err.message, 'err'); }
     ocupado(b, false);
   });
+  const medidor = montarMedidor($('#f_pass'), { email: () => U.email, nombre: () => U.name });
   $('#fPass').addEventListener('submit', async e => {
     e.preventDefault();
     const a = $('#f_pass').value, b2 = $('#f_pass2').value;
-    if (a.length < 8 || !/\d/.test(a) || !/[a-z]/i.test(a)) return toast('La contraseña necesita 8 caracteres con letras y números', 'err');
-    if (a !== b2) return toast('Las contraseñas no coinciden', 'err');
+    const { ev, filtrada } = medidor.estado();
+    if (!ev.ok) return toast('La contraseña necesita 8 caracteres con letras y números', 'err');
+    if (filtrada > 0) return toast('Esa contraseña ha aparecido en filtraciones de datos. Elige otra.', 'err');
+    if (a !== b2) { $('#f_pass2').closest('.fc').classList.add('error'); return toast('Las contraseñas no coinciden', 'err'); }
     const b = $('#gPass'); ocupado(b, true);
-    try { await store.cambiarPass(a); toast('Contraseña cambiada', 'ok'); e.target.reset(); }
+    try { await store.cambiarPass(a); toast('Contraseña cambiada', 'ok'); e.target.reset(); medidor.reiniciar(); }
     catch (err) { toast(err.message, 'err'); }
     ocupado(b, false);
   });

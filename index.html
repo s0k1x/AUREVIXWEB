@@ -56,6 +56,7 @@
   <link rel="stylesheet" href="animaciones.css">
   <link rel="stylesheet" href="inicio.css">
   <link rel="stylesheet" href="funciones.css">
+  <link rel="stylesheet" href="widgets.css">
   <link rel="stylesheet" href="tema-claro.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"AurevixWeb","description":"Diseño de páginas web para negocios: landing pages, webs de negocio, reservas y tiendas online.","areaServed":"ES","priceRange":"149€ - 990€"}</script>
   <!-- Precarga de los módulos: el navegador los pide todos a la vez en vez de uno tras otro -->
@@ -117,6 +118,17 @@
       </div>
     </section>
 
+    <!-- ===== GARANTÍAS ===== -->
+    <div class="garantias" aria-label="Lo que te garantizamos">
+      <ul class="wrap gr-lista">
+        <li><i data-i="check"></i><span><b>Precio final</b><small id="grIva">IVA incluido</small></span></li>
+        <li><i data-i="bank"></i><span><b>Solo transferencia</b><small>sin pagos con tarjeta ni Bizum</small></span></li>
+        <li><i data-i="clock"></i><span><b>Pago en dos partes</b><small id="grSenal">50 % al inicio, el resto a la entrega</small></span></li>
+        <li><i data-i="shield"></i><span><b>14 días para desistir</b><small>según la ley de consumidores</small></span></li>
+        <li><i data-i="mail"></i><span><b>Respuesta rápida</b><small id="grResp">en menos de 24 h laborables</small></span></li>
+      </ul>
+    </div>
+
     <!-- ===== CINTAS CRUZADAS ===== -->
     <div class="cintas" aria-hidden="true">
       <div class="cinta cinta-b"><div class="cinta-track"><span>Diseño personalizado</span><span>Adaptada a móvil</span><span>Entrega en 1–4 semanas</span><span>Sin permanencia</span><span>Soporte por correo</span><span>El dominio es tuyo</span><span>Diseño personalizado</span><span>Adaptada a móvil</span><span>Entrega en 1–4 semanas</span><span>Sin permanencia</span><span>Soporte por correo</span><span>El dominio es tuyo</span></div></div>
@@ -140,6 +152,17 @@
           <button class="btn btn-ghost btn-fill" id="verComparar" aria-expanded="false" aria-controls="comparaTabla"><span>Comparar todos los planes</span></button>
           <div class="compara-wrap" id="comparaTabla" hidden></div>
         </div>
+      </div>
+    </section>
+
+    <!-- ===== CALCULADORA ===== -->
+    <section id="calcula">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <h2>Calcula tu presupuesto</h2>
+          <p class="lead">Elige el tipo de web y los extras: ves el precio final, lo que pagas al empezar y el plazo, antes de pedir nada.</p>
+        </div>
+        <div class="calc reveal" id="calc"></div>
       </div>
     </section>
 

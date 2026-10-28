@@ -748,3 +748,35 @@ transferencia, desistimiento con justificante, aviso en el panel, cookies y pág
 No se ha integrado: genera los vídeos del recorrido con Higgsfield o Monid, que son servicios **de pago por vídeo** y
 necesitan cuenta y clave. Además, una portada de vídeo a pantalla completa pesaría varios MB, justo lo contrario de cargar
 rápido. Si algún día lo quieres para una campaña, se puede hacer como página aparte.
+
+## 33. Versión v46 — contraseñas: barra de seguridad y comprobación de filtraciones
+
+El ajuste «Prevent use of leaked passwords» de Supabase solo existe en el plan Pro. En su lugar, la propia web hace la misma
+comprobación (`js/contrasena.js`), sin coste:
+
+- **Barra de seguridad** al crear la cuenta y al cambiar la contraseña (Ajustes → Cuenta): cuatro tramos de color (muy débil,
+  débil, aceptable, segura, muy segura), una frase de lo que falta y la lista de requisitos (8 caracteres, letras, números y
+  «no aparece en filtraciones»). Resta puntos si contiene tu nombre o tu correo, es una palabra muy común, tiene una secuencia
+  (1234, abcd) o repite caracteres. Un botón con un ojo muestra u oculta lo escrito.
+- **Contraseñas filtradas**: se consulta Have I Been Pwned (Pwned Passwords) con k-anonimato: solo se envían los 5 primeros
+  caracteres del SHA-1 de la contraseña (con `Add-Padding`), nunca la contraseña, la huella completa ni el correo. Si la
+  contraseña aparece, no deja crearla ni cambiarla. Si el servicio no responde, no se bloquea a nadie.
+- **Mínimo**: 8 caracteres con letras y números para crear o cambiar contraseña. Al **entrar** no se juzga la contraseña, para
+  que quien ya tenía una de 6 caracteres pueda seguir entrando.
+- La política de privacidad nombra a Have I Been Pwned entre los proveedores.
+- Service worker **v46**.
+
+**En Supabase** (Authentication → Providers → Email), con el plan gratuito: poner *Minimum password length* en **8** y activar
+*Require current password when updating*. *Prevent use of leaked passwords* se deja apagado (solo Pro).
+
+Probado en modo demo (Chromium, iPhone 13) simulando el servicio de filtraciones: la puntuación, los bloqueos, que solo se
+pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva lo escrito. Sin errores de JavaScript.
+**No probado** con el servicio real de Have I Been Pwned (desde este entorno no hay acceso) ni con Supabase real.
+
+## 34. Versión v47 — widgets de la portada y recorrido con scroll
+
+- **Franja de garantías** bajo la portada: precio final con IVA, solo transferencia, pago en dos partes, 14 días para desistir y plazo de respuesta. Los porcentajes y el texto de respuesta salen de `config.js`.
+- **Calculadora de presupuesto** (`#calcula`, `js/calculadora.js`): tipo de web, extras, entrega urgente y descuento de bienvenida. Usa la misma fórmula que el pedido y enseña total, desglose de IVA, señal, resto y plazo. «Pedir esta web» abre el pedido con el plan, los extras y la urgencia ya marcados (`abrirCompra(plan, '', { urgente, extras })`). Se carga solo al acercarse a la sección.
+- **Recorrido «Cómo trabajamos»** (`js/mundo.js`): un mundo isométrico dibujado en SVG con una estación por paso. Al hacer scroll la cámara se para en cada estación y viaja a la siguiente sin cortes, con la ruta dibujándose y un punto que avanza. Los textos se leen de la lista `.steps` del HTML, así que se editan ahí. Solo usa `transform`/`opacity` y el bucle solo corre mientras se ve. Con «reducir movimiento» o sin JavaScript se queda la lista de siempre.
+- Es la técnica de Scroll World, pero en vector: la versión original genera vídeos con IA de pago (Higgsfield/Monid) y no había ninguna herramienta gratuita utilizable desde aquí. A cambio no hay vídeos que descargar y pesa unos pocos KB.
+- Estilos nuevos en `widgets.css`. Service worker en **v47**.

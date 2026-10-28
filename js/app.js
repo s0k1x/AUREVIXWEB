@@ -151,6 +151,24 @@ const textoComprar = () => (CONFIG.aceptarPedidos ? 'Comprar' : 'Lista de espera
 /* Descuento de bienvenida (primera web) */
 const bvActivo = () => !!(CONFIG.bienvenida?.activo && CONFIG.bienvenida.codigo && CONFIG.aceptarPedidos);
 const bienvenidaOK = () => bvActivo() && !W?.sinBienvenida;
+/* ---------- Widgets de la portada: garantías, calculadora y recorrido ---------- */
+$('#grIva') && ($('#grIva').textContent = CONFIG.iva ? `${CONFIG.iva} % de IVA incluido` : 'sin IVA');
+$('#grSenal') && ($('#grSenal').textContent = `${CONFIG.senal} % al inicio, el resto a la entrega`);
+$('#grResp') && ($('#grResp').textContent = CONFIG.respuesta.replace(/^Respondemos\s+/i, ''));
+function alAcercarse(el, fn, margen = '600px') {
+  if (!el) return;
+  if (!('IntersectionObserver' in window)) return fn();
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); fn(); } }, { rootMargin: margen });
+  io.observe(el);
+}
+alAcercarse($('#calc'), () => import('./calculadora.js').then(m => m.montarCalculadora($('#calc'), { bienvenida: bvActivo() })));
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
+  alAcercarse($('#como'), () => import('./mundo.js').then(m => m.montarMundo($('#como'))), '900px');
+document.addEventListener('aurevix:pedir', e => {
+  const { plan, urgente, extras } = e.detail || {};
+  abrirCompra(plan, '', { urgente, extras });
+});
+
 if (bvActivo()) {
   $('#planes').insertAdjacentHTML('beforebegin', `<div class="bv-banda reveal">
     <span class="bv-ic">${icono('gift')}</span>
@@ -524,7 +542,7 @@ function restaurarBorrador(b) {
   W.max = b.max || 0;
 }
 
-function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
+function abrirCompra(planId, plantillaInicial = '', { urgente = false, extras = [] } = {}) {
   const plan = PLANES.find(p => p.id === planId);
   if (!plan) return;
   // Agenda completa: en vez del cuestionario, lista de espera
@@ -596,6 +614,7 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false } = {}) {
 
   etiquetas(form);
   if (urgente) $('#fUrg', form).checked = true;
+  for (const id of extras) { const x = form.querySelector(`input[name=extra][value="${CSS.escape(id)}"]`); if (x) x.checked = true; }
   const b = leerBorrador();
   let inicio = 0;
   if (b && b.plan === plan.id && Date.now() - b.t < 7 * 864e5 && b.campos?.negocio) {
