@@ -166,3 +166,17 @@ html[data-tema=claro] .dom-suf{color:#4f850c}
   .idioma-btn span{background:none;min-width:0}
 }
 .aviso-idioma{margin:0 0 20px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:14px;color:var(--muted)}
+/* La cuenta y la campana nunca se aplastan */
+.user-btn,.head-right > *,.auth-slot > *{flex:none}
+.user-btn .avatar,.avatar{flex:none;aspect-ratio:1}
+.header .logo{min-width:0;flex:0 1 auto}
+.header .logo .wordmark{max-width:100%;height:auto}
+.idioma-btn em{display:none}
+.nav .idioma-menu{display:none}
+@media (max-width:760px){
+  .head-right > .idioma-btn{display:none}
+  .nav .idioma-menu{display:flex;width:auto;height:auto;margin-top:6px;padding:12px 16px;gap:10px;border-radius:14px;justify-content:flex-start;align-self:flex-start}
+  .nav .idioma-menu span{display:grid;background:none;color:var(--muted);min-width:0;height:auto}
+  .nav .idioma-menu span.on{display:none}
+  .nav .idioma-menu em{display:inline;font-style:normal;font-size:15px;color:var(--text)}
+}
