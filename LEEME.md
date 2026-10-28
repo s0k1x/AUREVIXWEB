@@ -817,3 +817,7 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 
 ## 38. Versión v51 — cabecera del móvil
 - En el móvil el botón de idioma pasa al menú ☰ («View in English» / «Ver en español»): en la cabecera no cabía junto a la campana y la cuenta y aplastaba la foto de perfil (salía ovalada). La foto y la campana ya no se encogen nunca.
+
+## 39. Versión v52 — cabecera del móvil en Safari
+- En el iPhone (Safari) la cabecera se salía de la pantalla y el menú ☰ quedaba cortado: Safari no encoge el logo como Chrome, y una regla de la v51 (`height:auto` en el logo) lo ponía a su tamaño original. Ahora los tamaños del móvil están fijados para que quepan sin encoger nada: logo de 12 px de alto (10 px en pantallas de 360 px), botones de 40 px y el nombre se oculta solo en pantallas muy estrechas o con la letra grande.
+- Comprobado de 320 a 430 px, con y sin sesión, con letra normal y grande, simulando Safari (nada se encoge). Ninguna página se sale de lado.

@@ -170,7 +170,7 @@ html[data-tema=claro] .dom-suf{color:#4f850c}
 .user-btn,.head-right > *,.auth-slot > *{flex:none}
 .user-btn .avatar,.avatar{flex:none;aspect-ratio:1}
 .header .logo{min-width:0;flex:0 1 auto}
-.header .logo .wordmark{max-width:100%;height:auto}
+.header .logo [data-marca]{min-width:0;overflow:hidden}
 .idioma-btn em{display:none}
 .nav .idioma-menu{display:none}
 @media (max-width:760px){
@@ -179,4 +179,29 @@ html[data-tema=claro] .dom-suf{color:#4f850c}
   .nav .idioma-menu span{display:grid;background:none;color:var(--muted);min-width:0;height:auto}
   .nav .idioma-menu span.on{display:none}
   .nav .idioma-menu em{display:inline;font-style:normal;font-size:15px;color:var(--text)}
+}
+
+/* ---------- v52 · Cabecera del móvil que cabe siempre (también en Safari, que no encoge el logo) ---------- */
+@media (max-width:430px){
+  .header .wrap{gap:10px}
+  .logo{gap:8px}
+  .logo-img{width:30px;height:30px}
+  .header .wordmark{height:12px !important;width:auto !important}
+  .head-right{gap:6px}
+  .auth-slot{gap:6px}
+  .head-right .icon-btn,.head-right .menu-btn,.auth-slot .icon-btn{width:40px;height:40px;min-width:40px;min-height:40px}
+  .auth-slot [data-login]{min-height:40px;height:40px;padding:0 12px;letter-spacing:.04em}
+  .user-btn{height:40px;padding:2px}
+  .user-btn .avatar{width:34px;height:34px}
+}
+@media (max-width:360px){
+  .header .wordmark{height:10px !important}
+  .logo-img{width:28px;height:28px}
+}
+@media (max-width:340px){
+  .header [data-marca]{display:none}
+}
+/* Con la letra grande todo ocupa más: el nombre se queda en el logo hasta 390 px */
+@media (max-width:390px){
+  html[data-texto]:not([data-texto=normal]) .header [data-marca]{display:none}
 }
