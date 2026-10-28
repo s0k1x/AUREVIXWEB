@@ -11,7 +11,7 @@ const raiz = document.getElementById('publica');
 const partes = location.pathname.split('/').filter(Boolean).map(x => { try { return decodeURIComponent(x); } catch { return x; } });
 const slug = (partes[0] || '').toLowerCase();
 
-const noEncontrada = () => { document.documentElement.classList.add('es-404'); };
+const noEncontrada = () => { document.documentElement.classList.add('es-404'); import('./idioma.js').then(m => m.iniciarIdioma()).catch(() => {}); };
 
 async function arrancarWeb() {
   if (!slug || store.motivoSlug(slug)) return noEncontrada();

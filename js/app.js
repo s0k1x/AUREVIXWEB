@@ -16,6 +16,8 @@ import { recomendar, iniciarChat } from './asistente.js';
 import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, pedirCambios, webCliente, desistimientoHTML, puedeDesistir, finDesistimiento, estadoParaEtapa, indiceEtapa, dominioTexto, fechaEntrega, plazoTexto, plazoClase, conHistorial, lineaTiempoHTML } from './proyecto.js';
 import { importeSenal, importeResto } from './pago.js';
 import { confeti } from './efectos.js';
+import { comprobar as comprobarCampo } from './validar.js';
+import { dominioHTML, montarDominio, leerDominio, sugerirNombre } from './dominio.js';
 import { prefsPermitidas, consentidoExpreso } from './cookies.js';
 
 /* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor.
@@ -519,6 +521,8 @@ document.addEventListener('keydown', e => {
 const PASOS = [
   { id: 'info', titulo: 'Qué incluye' },
   { id: 'negocio', titulo: 'Tu negocio' },
+  { id: 'contacto', titulo: 'Contacto' },
+  { id: 'dominio', titulo: 'Dominio y correo' },
   { id: 'estilo', titulo: 'Estilo' },
   { id: 'extras', titulo: 'Extras' },
   { id: 'diseno', titulo: 'Elige diseño' },
@@ -607,13 +611,37 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false, extras = 
     </div>
 
     <div class="paso" data-paso="negocio">
-      <h3 class="paso-h">Datos del negocio</h3>
-      ${campo({ id: 'fNegocio', name: 'negocio', label: 'Nombre del negocio', required: true, attrs: 'autocomplete="organization"' })}
-      ${desplegable({ id: 'fSector', name: 'sector', label: 'Sector', opciones: SECTORES })}
-      <span class="q-label">Objetivo principal de la web</span>
-      ${opciones('objetivo', OBJETIVOS, objetivo)}
-      ${campo({ id: 'fTel', name: 'telefono', label: 'Teléfono de contacto', type: 'tel', required: true, hint: 'Solo lo usamos si hay algún problema con tu pedido', attrs: 'inputmode="tel" autocomplete="tel"' })}
-      ${campo({ id: 'fWeb', name: 'webActual', label: 'Tu web actual (opcional)', attrs: 'inputmode="url"' })}
+      <h3 class="paso-h">Tu negocio</h3>
+      <p class="muted paso-sub">Lo básico para empezar. Todo se puede cambiar después.</p>
+      <fieldset class="q-sec"><legend>Cómo se llama y a qué se dedica</legend>
+        ${campo({ id: 'fNegocio', name: 'negocio', label: 'Nombre del negocio', required: true, attrs: 'autocomplete="organization" maxlength="80"' })}
+        ${desplegable({ id: 'fSector', name: 'sector', label: 'Sector', opciones: SECTORES })}
+      </fieldset>
+      <fieldset class="q-sec"><legend>Qué quieres conseguir con la web</legend>
+        ${opciones('objetivo', OBJETIVOS, objetivo)}
+      </fieldset>
+      <fieldset class="q-sec"><legend>¿Ya tienes web? <span class="muted">(opcional)</span></legend>
+        ${campo({ id: 'fWeb', name: 'webActual', label: 'Dirección de tu web actual', attrs: 'inputmode="url" autocapitalize="off" spellcheck="false" maxlength="120"' })}
+      </fieldset>
+    </div>
+
+    <div class="paso" data-paso="contacto">
+      <h3 class="paso-h">Contacto</h3>
+      <p class="muted paso-sub">Para avisarte de cada paso de tu pedido. No lo publicamos ni lo compartimos.</p>
+      <fieldset class="q-sec"><legend>Quién lleva el pedido</legend>
+        ${campo({ id: 'fNombre', name: 'contactoNombre', label: 'Nombre y apellidos', required: true, value: store.usuarioActual()?.name || '', attrs: 'autocomplete="name" maxlength="80"' })}
+      </fieldset>
+      <fieldset class="q-sec"><legend>Cómo te localizamos</legend>
+        ${campo({ id: 'fTel', name: 'telefono', label: 'Teléfono', type: 'tel', required: true, hint: 'Un solo número. Si no es español, empieza por + y su prefijo', attrs: 'autocomplete="tel"' })}
+        ${campo({ id: 'fEmail', name: 'email', label: 'Correo electrónico', type: 'email', required: true, value: store.usuarioActual()?.email || '', hint: 'Aquí te llegarán los avisos y los recibos', attrs: 'autocomplete="email"' })}
+      </fieldset>
+    </div>
+
+    <div class="paso" data-paso="dominio">
+      <h3 class="paso-h">Dominio y correo</h3>
+      <p class="muted paso-sub">La dirección de tu web y el correo de tu negocio. Si aún no lo tienes claro, pon una idea: lo confirmamos contigo antes de registrar nada.</p>
+      ${dominioHTML({ ext: '.es' })}
+      ${(x => x ? `<p class="dom-precio">${icono('tag')}<span>Registrar el dominio y el alojamiento del primer año cuesta <b>${euros(x.precio)}</b>: lo añadimos a tu pedido como extra (puedes quitarlo en «Extras»).</span></p>` : '')(EXTRAS.find(e => e.id === 'dominio' && e.activo !== false))}
     </div>
 
     <div class="paso" data-paso="estilo">
@@ -682,6 +710,8 @@ function datos() {
   return {
     respuestas: {
       negocio: txt('negocio'), sector: txt('sector'), objetivo: txt('objetivo'), telefono: txt('telefono'),
+      contactoNombre: txt('contactoNombre'), email: txt('email').toLowerCase(),
+      ...(dom => ({ dominioTipo: dom.tipo || '', dominio: dom.dominio || '', correo: dom.correo || '' }))(leerDominio(form)),
       webActual: txt('webActual'), estilo: txt('estilo'), color: W.colorCustom || txt('color'),
       logo: txt('logo'), contenido: txt('contenido'), plazo: urgente ? 'Urgente' : 'Normal', comentarios: txt('comentarios')
     },
@@ -761,6 +791,12 @@ function irA(i) {
   ocupado(next, false);
   next.innerHTML = `<span>${i === 0 ? 'Empezar' : paso.id === 'resumen' ? 'Pedido con obligación de pago' : 'Continuar'}</span>`;
   next.classList.toggle('obligacion', paso.id === 'resumen');
+  if (paso.id === 'dominio') {
+    const inp = $('.dom-in', form);
+    if (!inp.value) inp.value = sugerirNombre($('#fNegocio', form).value);
+    montarDominio(form);
+    inp.dispatchEvent(new Event('input'));
+  }
   if (paso.id === 'diseno') pintarSelectorDiseno();
   if (paso.id === 'resumen') pintarResumen();
   actualizarTotal();
@@ -768,15 +804,24 @@ function irA(i) {
 }
 
 function validar(pasoId) {
-  if (pasoId !== 'negocio') return true;
-  let ok = true;
-  [['#fNegocio', v => v.trim().length > 1], ['#fTel', v => v.replace(/\D/g, '').length >= 9]].forEach(([sel, f]) => {
-    const el = $(sel, form), mal = !f(el.value);
-    el.closest('.fc').classList.toggle('error', mal);
-    if (mal && ok) { el.focus(); ok = false; }
-  });
-  if (!ok) toast('Rellena el nombre y un teléfono válido', 'err');
-  return ok;
+  const marcar = (el, msg) => { el.closest('.fc')?.classList.add('error'); el.focus(); toast(msg, 'err'); return false; };
+  if (pasoId === 'negocio') {
+    const n = $('#fNegocio', form);
+    if (n.value.trim().length < 2) return marcar(n, 'Escribe el nombre de tu negocio');
+  }
+  if (pasoId === 'contacto') {
+    const n = $('#fNombre', form);
+    if (n.value.trim().length < 3) return marcar(n, 'Escribe tu nombre y apellidos');
+    for (const el of [$('#fTel', form), $('#fEmail', form)]) {
+      if (!el.value.trim()) return marcar(el, el.type === 'tel' ? 'Escribe tu teléfono' : 'Escribe tu correo');
+      if (!comprobarCampo(el)) return marcar(el, el.validationMessage || 'Revisa este dato');
+    }
+  }
+  if (pasoId === 'dominio') {
+    const r = leerDominio(form);
+    if (!r.ok) { $('[data-dom]', form).classList.add('dom-mal'); $('.dom-in', form).focus(); toast(r.motivo, 'err'); return false; }
+  }
+  return true;
 }
 
 $('#wizBack').addEventListener('click', () => W && W.paso > 0 && irA(W.paso - 1));
@@ -785,6 +830,13 @@ $('#wizNext').addEventListener('click', () => {
   const paso = PASOS[W.paso];
   if (!validar(paso.id)) return;
   if (paso.id === 'resumen') return confirmarPedido();
+  // Dominio nuevo: se añade su extra (una vez; si luego lo quita en «Extras», se respeta)
+  if (paso.id === 'dominio') {
+    const x = form.querySelector('input[name=extra][value=dominio]'), tipo = leerDominio(form).tipo;
+    W.auto ??= {};
+    if (x && tipo === 'nuevo' && !x.checked && !W.dominioAvisado) { x.checked = true; W.auto.dominio = true; W.dominioAvisado = true; toast(`Añadido «Dominio + alojamiento» (+${euros(EXTRAS.find(e => e.id === 'dominio').precio)})`, 'ok'); actualizarTotal(); }
+    if (x && tipo === 'propio' && W.auto.dominio && x.checked) { x.checked = false; W.auto.dominio = false; toast('Quitado «Dominio + alojamiento»: ya tienes dominio', 'ok'); actualizarTotal(); }
+  }
   irA(W.paso + 1);
 });
 
@@ -839,7 +891,13 @@ function pintarResumen() {
       </div>
       ${fila('Sector', r.sector)}${fila('Objetivo', r.objetivo)}${fila('Estilo', r.estilo)}
       <div class="rs-row"><span>Color</span><b>${r.color ? `<i class="rs-color" style="background:${esc(r.color)}"></i>${esc(r.color)}` : 'Los del diseño'}</b></div>
-      ${fila('Logo', r.logo)}${fila('Contenido', r.contenido)}${fila('Contacto', r.telefono)}
+      ${fila('Logo', r.logo)}${fila('Contenido', r.contenido)}
+    </div>
+    <div class="rs-card">
+      <h4 class="rs-h">Contacto</h4>
+      ${fila('Nombre', r.contactoNombre)}${fila('Teléfono', r.telefono)}${fila('Correo', r.email)}
+      <h4 class="rs-h">Dominio y correo</h4>
+      ${fila(r.dominioTipo === 'propio' ? 'Tu dominio' : 'Dominio nuevo', r.dominio ? 'www.' + r.dominio : '')}${fila('Correo profesional', r.correo)}
     </div>
     <div class="rs-card">
       <div class="rs-row"><span>${esc(p.nombre)}</span><b>${euros(p.precio)}</b></div>
@@ -1053,6 +1111,7 @@ function pestanaHTML(p) {
 
 function montarPestana() {
   desmontar(); desmontar = () => {};
+  $$('[data-form="dominio"]', $('#pedidosList')).forEach(f => montarDominio(f));
   const p = misPedidos.find(x => x.id === abierto);
   const caja = p && $(`#pest-${p.id} .mp-montaje`);
   if (!caja) return;
@@ -1154,10 +1213,6 @@ $('#pedidosList').addEventListener('click', e => {
   }
   const v = e.target.closest('[data-valorar]');
   if (v) abrirResena(misPedidos.find(x => x.id === v.dataset.valorar), () => pintarPedidos());
-});
-$('#pedidosList').addEventListener('input', e => {
-  if (!e.target.matches('.dom-in')) return;
-  e.target.value = e.target.value.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9-]/g, '');
 });
 
 document.addEventListener('click', e => {

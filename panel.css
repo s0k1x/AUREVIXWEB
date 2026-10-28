@@ -328,3 +328,28 @@ html[data-tema=claro] .ent.tarde .ent-d b{color:#c23b3b}
 .od-pub-ok svg{width:16px;height:16px;color:var(--accent)}
 .od-pub-ok a{color:var(--accent)}
 @media (max-width:560px){.od-pub-f{grid-template-columns:1fr}.od-pub-f select{max-width:none}}
+
+/* ---------- v50 · Fila de cada trabajador en «Equipo» (clara también en el móvil) ---------- */
+.tm-w{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px 14px;padding:16px 0}
+.tm-info{min-width:0}
+.tm-info > b{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:15.5px}
+.tm-info > b span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-info > b em{margin:0;vertical-align:0}
+.tm-info > small{display:block;color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.tm-stats{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted)}
+.tm-stats b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+.tm-acc{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.tm-acc .btn{min-height:38px;padding:0 14px;letter-spacing:.04em}
+.tm-acc .btn svg{width:15px;height:15px}
+@media (max-width:900px){
+  .tm-w{grid-template-columns:auto minmax(0,1fr)}
+  .tm-acc{grid-column:1/-1;justify-content:flex-start}
+}
+@media (max-width:520px){
+  .tm-acc{display:grid;grid-template-columns:1fr 1fr}
+  .tm-acc .btn{width:100%}
+  .tm-acc .btn-primary{grid-column:1/-1}
+}
+.tm-w .tm-stats b,.tm-w .tm-stats li{display:inline}
+.tm-w > .avatar,.tm-w > img,.tm-w > span:first-child{align-self:start}
+.tm-acc .btn{overflow:hidden;white-space:nowrap}

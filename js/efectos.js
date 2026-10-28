@@ -111,8 +111,11 @@ function magnetos() {
 /* Títulos que aparecen palabra a palabra */
 export function partirTitulos(raiz = document) {
   raiz.querySelectorAll('.sec-head h2:not(.split)').forEach(h => {
-    const palabras = h.textContent.trim().split(/\s+/);
-    h.setAttribute('aria-label', h.textContent.trim());
+    // Si la web está en inglés, se parte ya el título traducido (no palabra a palabra)
+    const texto = (globalThis.__traducir || (x => x))(h.textContent.trim());
+    const palabras = texto.split(/\s+/);
+    h.setAttribute('aria-label', texto);
+    if (globalThis.__traducir) h.dataset.noTraducir = '';
     h.innerHTML = palabras.map((w, i) => `<span class="w" aria-hidden="true"><span style="--i:${i}">${w}</span></span>`).join(' ');
     h.classList.add('split');
   });

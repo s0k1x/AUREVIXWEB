@@ -805,3 +805,12 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 - Móvil: los campos no hacen zoom en iPhone, botones de icono de 44 px, sin estados «hover» pegados, sin resaltado al tocar.
 - Accesibilidad: foco visible con teclado en todo, gráficos del panel con etiquetas para lector de pantalla, «reducir movimiento» enseña todo desde el principio.
 - «Trabaja con nosotros»: fuera la etiqueta encima del título y las rayas animadas del fondo.
+
+## 37. Versión v50 — inglés, cuestionario por secciones, dominio y datos de contacto reales
+
+- **Equipo (panel)**: cada trabajador en una fila clara también en el móvil (nombre, disponible, correo, activos/entregados/ventas/generado) y botones grandes: Pagar, Cobro, Escribir y Quitar.
+- **Teléfonos y correos de verdad** (`js/validar.js`, se aplica solo a todos los campos `tel` y `email` de la web): un solo teléfono, español de 9 cifras (6/7/8/9, con o sin +34) o internacional con «+» y prefijo; solo deja escribir cifras y lo deja como +34 612 345 678. Un solo correo, sin espacios ni comas, con dominio válido, y propone el bueno si hay una errata (gmial.com → gmail.com). Un formulario con un dato mal no se envía.
+- **Cuestionario del pedido por secciones** (8 pasos): Qué incluye → Tu negocio → Contacto (nombre, teléfono y correo) → **Dominio y correo** → Estilo → Extras → Diseño → Resumen (agrupado por secciones).
+- **Dominio y correo profesional** (`js/dominio.js`): dominio nuevo o propio, nombre con la extensión en botones grandes (.es, .com…), nombre del correo (info@, hola@…) y vista previa «www.tunegocio.es · info@tunegocio.es». Si es nuevo, se añade el extra «Dominio + alojamiento» avisando. El mismo bloque sale en el paso «Dominio» del proyecto, ya relleno con lo que el cliente dijo al pedir, y ya no se ve raro en el móvil.
+- **Web en inglés y español** (`js/idioma.js` + `js/idioma-en.js`): botón ES/EN en la cabecera; la primera vez se elige según el idioma del navegador (también `?lang=en`). Se traduce todo lo que ve el cliente (portada, calculadora, cuestionario, chat, Mis proyectos, soporte, cookies, Trabaja con nosotros). El panel y los ajustes del equipo siguen en español salvo que se elija inglés. Los textos legales se quedan en español (es la versión que vale) con un aviso en inglés. El asistente con IA responde en inglés si la web está en inglés.
+- **Para traducir un texto nuevo**: añade la pareja `'texto en español': 'English text'` en `js/idioma-en.js`. Las frases con números o fechas van en `PATRONES`.
