@@ -324,24 +324,34 @@ export function pintarPie() {
   f.innerHTML = `
     <div class="footer-brand bg-bands"><div class="wrap">${tarjetaMarca('in-view')}</div></div>
     <div class="wrap footer-inner">
-      <div class="footer-links">
-        <a href="./#webs">Precios</a>
-        <a href="./#disenos">Diseños</a>
-        <a href="library/">Librería</a>
-        <a href="./#opiniones">Opiniones</a>
-        <a href="trabaja-con-nosotros">Trabaja con nosotros</a>
-        <a href="./#contacto">Contacto</a>
-        <a href="${mailLink('Consulta desde la web')}">${esc(CONFIG.email)}</a>
-        <a href="terminos-y-privacidad#aviso-legal">Aviso legal</a>
-        <a href="terminos-y-privacidad#condiciones">Condiciones de contratación</a>
-        <a href="terminos-y-privacidad#desistimiento">Desistimiento</a>
-        <a href="terminos-y-privacidad#privacidad">Privacidad</a>
-        <a href="terminos-y-privacidad#cookies">Política de cookies</a>
-        <a href="#" data-cookies>Configurar cookies</a>
-        <a href="ajustes">Ajustes</a>
-        ${Object.entries(CONFIG.redes || {}).filter(([, v]) => v).map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener" aria-label="${k}">${icono(k === 'linkedin' ? 'briefcase' : k)}</a>`).join('')}
-        <button class="link-btn" data-install hidden>${icono('download')} Instalar app</button>
-      </div>
+      <nav class="footer-cols" aria-label="Pie de página">
+        <div class="footer-col"><b>Servicios</b>
+          <a href="./#webs">Tipos de web y precios</a>
+          <a href="./#disenos">Diseños de partida</a>
+          <a href="./#como">Cómo trabajamos</a>
+          <a href="library/">Librería</a>
+        </div>
+        <div class="footer-col"><b>Empresa</b>
+          <a href="./#opiniones">Opiniones</a>
+          <a href="trabaja-con-nosotros">Trabaja con nosotros</a>
+          <a href="./#contacto">Contacto</a>
+          <a href="${mailLink('Consulta desde la web')}">${esc(CONFIG.email)}</a>
+        </div>
+        <div class="footer-col"><b>Legal</b>
+          <a href="terminos-y-privacidad#aviso-legal">Aviso legal</a>
+          <a href="terminos-y-privacidad#condiciones">Condiciones de contratación</a>
+          <a href="terminos-y-privacidad#desistimiento">Desistimiento</a>
+          <a href="terminos-y-privacidad#privacidad">Privacidad</a>
+          <a href="terminos-y-privacidad#cookies">Política de cookies</a>
+          <a href="#" data-cookies>Configurar cookies</a>
+        </div>
+        <div class="footer-col"><b>Tu cuenta</b>
+          <a href="./#mis-pedidos">Mis proyectos</a>
+          <a href="ajustes">Ajustes</a>
+          <button class="link-btn" data-install hidden>${icono('download')} Instalar app</button>
+          ${Object.entries(CONFIG.redes || {}).some(([, v]) => v) ? `<span class="footer-redes">${Object.entries(CONFIG.redes || {}).filter(([, v]) => v).map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener" aria-label="${k}">${icono(k === 'linkedin' ? 'briefcase' : k)}</a>`).join('')}</span>` : ''}
+        </div>
+      </nav>
       <p class="copy">© ${new Date().getFullYear()} ${esc(CONFIG.marca)}. Todos los derechos reservados.<small>El diseño, los textos, el código, los logotipos y las imágenes de esta web están protegidos por la Ley de Propiedad Intelectual. Queda prohibida su reproducción, distribución o transformación, total o parcial, sin autorización escrita.</small></p>
     </div>`;
 }
@@ -530,15 +540,15 @@ function intro() {
   Promise.race([Promise.all(imgs.map(i => (i.decode ? i.decode() : Promise.resolve()).catch(() => {}))), new Promise(r => setTimeout(r, 700))])
     .then(() => {
       s.classList.add('listo');
-      setTimeout(() => s.querySelector('.brand-card')?.classList.add('on'), 250);
-      setTimeout(fuera, 2300);
+      setTimeout(() => s.querySelector('.brand-card')?.classList.add('on'), 120);
+      setTimeout(fuera, 800); // la bienvenida es un saludo, no una espera
     });
   const fuera = () => {
     if (s.classList.contains('out')) return;
     document.documentElement.classList.remove('intro');
     s.classList.add('out'); setTimeout(() => s.remove(), 600);
   };
-  setTimeout(fuera, 4000); // por si algo falla
+  setTimeout(fuera, 1800); // por si algo falla
   s.addEventListener('click', fuera);
 }
 
@@ -560,6 +570,24 @@ function pintarAnuncio() {
   b.innerHTML = `${icono('megaphone')}<span>${esc(CONFIG.anuncio.texto)}</span><button class="anuncio-x" aria-label="Cerrar aviso">${icono('x')}</button>`;
   b.querySelector('button').addEventListener('click', () => { b.remove(); try { sessionStorage.setItem('tm_anuncio', CONFIG.anuncio.texto); } catch { /* nada */ } });
   colocarFranja(b);
+}
+
+/* En el móvil, los botones flotantes (chat y subir) se apartan mientras se baja leyendo
+   y vuelven al subir o al parar: así no tapan el texto que se está leyendo */
+function iniciarFlotantes() {
+  const raiz = document.documentElement;
+  let y0 = scrollY, quieto, pedido = false;
+  addEventListener('scroll', () => {
+    if (pedido) return;
+    pedido = true;
+    requestAnimationFrame(() => {
+      pedido = false;
+      const y = scrollY, dy = y - y0;
+      if (Math.abs(dy) > 6) { raiz.classList.toggle('bajando', dy > 0 && y > 240); y0 = y; }
+      clearTimeout(quieto);
+      quieto = setTimeout(() => raiz.classList.remove('bajando'), 900);
+    });
+  }, { passive: true });
 }
 
 /* Fondo oscurecido detrás de los menús de la cabecera (avisos, cuenta, navegación) en el móvil */
@@ -599,6 +627,7 @@ export async function arrancar(pagina) {
   iniciarCookies();
   iniciarDesplegables();
   iniciarVelo();
+  iniciarFlotantes();
   console.info('%c© AurevixWeb', 'font:700 14px sans-serif;color:#9fd23a', '— Todos los derechos reservados. Prohibida la copia o reutilización del diseño y del código sin autorización.');
   if (store.modoDemo) {
     const b = document.createElement('div');

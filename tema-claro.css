@@ -28,8 +28,8 @@ html[data-tema=claro] .demo-box p{color:#6b5a20}
 html[data-tema=claro] .empty .em,html[data-tema=claro] .gate .em,html[data-tema=claro] .estado-cand .big{border:1px solid rgba(79,133,12,.25);box-shadow:0 10px 30px -12px rgba(79,133,12,.4)}
 html[data-tema=claro] .vj > span{border:1px solid rgba(79,133,12,.2)}
 /* --- componentes.css --- */
-html[data-tema=claro] .btn-primary{box-shadow:0 0 22px rgba(79,133,12,.32)}
-html[data-tema=claro] .btn-primary:hover{box-shadow:0 0 5px var(--accent),0 0 25px var(--accent),0 0 50px rgba(79,133,12,.55),0 0 100px rgba(79,133,12,.3)}
+html[data-tema=claro] .btn-primary{box-shadow:0 8px 18px -10px rgba(79,133,12,.6)}
+html[data-tema=claro] .btn-primary:hover{box-shadow:0 12px 26px -10px rgba(79,133,12,.7)}
 html[data-tema=claro] .opt > span{background:rgba(20,20,26,0.036);color:rgba(20,20,26,0.648);box-shadow:rgba(0,0,0,.25) 0 2px 1px 0 inset,rgba(20,20,26,0.072) 0 1px 1px 0}
 html[data-tema=claro] .opt > span:hover{background:#e6e4dc;color:#16161b;box-shadow:rgba(0,0,0,.3) 0 -4px 1px 0 inset,rgba(20,20,26,0.09) 0 -1px 1px 0,rgba(0,0,0,.2) 0 2px 4px 1px}
 html[data-tema=claro] .opt input:checked + span{background:#d8eeac;color:#24400a;box-shadow:rgba(0,0,0,.3) 0 -4px 1px 0 inset,rgba(20,20,26,0.153) 0 -1px 1px 0,rgba(0,0,0,.2) 0 2px 4px 1px}
@@ -56,7 +56,7 @@ html[data-tema=claro] .bg-bands{background:repeating-linear-gradient(135deg,#f1f
 html[data-tema=claro] .splash{background:repeating-linear-gradient(135deg,#f1f0ea 0px,#f1f0ea 60px,#ffffff 70px,#f4f3ee 130px)}
 html[data-tema=claro] .splash .brand-card{background:#ffffff;box-shadow:0 30px 80px rgba(0,0,0,.14)}
 html[data-tema=claro] .mp-dato{background:rgba(20,20,26,0.027)}
-html[data-tema=claro] .chat-fab{box-shadow:0 16px 40px -10px rgba(79,133,12,.55),0 6px 18px rgba(0,0,0,.35)}
+html[data-tema=claro] .chat-fab{box-shadow:0 12px 26px -10px rgba(20,20,26,.35),0 3px 8px rgba(20,20,26,.15)}
 html[data-tema=claro] .chat-fab-ic,html[data-tema=claro] .chat-fab-x{background:rgba(246,245,240,.12)}
 html[data-tema=claro] .chat-panel{box-shadow:0 40px 90px -20px rgba(0,0,0,.14)}
 html[data-tema=claro] .chat-h{background:linear-gradient(180deg,rgba(79,133,12,.08),transparent)}

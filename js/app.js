@@ -17,7 +17,6 @@ import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, pedirCa
 import { importeSenal, importeResto } from './pago.js';
 import { confeti } from './efectos.js';
 import { prefsPermitidas, consentidoExpreso } from './cookies.js';
-import { abrirVisor, cerrarVisor, enlaceVista } from './vistaweb.js';
 
 /* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor.
    Recordarlo 30 días en el navegador no es imprescindible para el visitante, así que solo se guarda
@@ -50,8 +49,17 @@ const urlPlantilla = (id, nombre = '', color = '', mini = false) => {
 };
 const ro = new ResizeObserver(es => es.forEach(en => en.target.style.setProperty('--s', en.contentRect.width / 1280)));
 const miniatura = (id, nombre, color, lazy = true) =>
-  `<div class="thumb"><div class="thumb-load">${spinner()}</div><iframe src="${urlPlantilla(id, nombre, color, true)}" tabindex="-1" aria-hidden="true" ${lazy ? 'loading="lazy"' : ''} title=""></iframe></div>`;
-const vigilarMiniaturas = raiz => $$('.thumb', raiz).forEach(t => ro.observe(t));
+  `<div class="thumb"><div class="thumb-load">${spinner()}</div><iframe ${lazy ? 'data-src' : 'src'}="${urlPlantilla(id, nombre, color, true)}" tabindex="-1" aria-hidden="true" title=""></iframe></div>`;
+/* Las miniaturas son webs enteras: se cargan solo cuando están a punto de verse
+   (loading="lazy" en conexiones lentas empieza a miles de píxeles de distancia) */
+const ioMini = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  ioMini.unobserve(e.target);
+  e.target.src = e.target.dataset.src;
+  e.target.removeAttribute('data-src');
+}), { rootMargin: '300px 0px' });
+const vigilarCarga = raiz => $$('iframe[data-src]', raiz).forEach(f => ioMini.observe(f));
+const vigilarMiniaturas = raiz => { $$('.thumb', raiz).forEach(t => ro.observe(t)); vigilarCarga(raiz); };
 // Quitar el "cargando" cuando la miniatura termina de cargar
 document.addEventListener('load', e => {
   if (e.target.tagName === 'IFRAME' && e.target.getAttribute('src')) e.target.parentElement?.querySelector('.thumb-load')?.remove();
@@ -111,17 +119,26 @@ $('#vitrina').addEventListener('pointerleave', () => { vtPausa = false; $('.hero
 const abrirVitrina = () => abrirPreview(VITRINA[vtIdx]);
 $('#vitrina').addEventListener('click', abrirVitrina);
 $('#vitrina').addEventListener('keydown', e => { if (e.key === 'Enter') abrirVitrina(); });
-const arrancarVitrina = () => setTimeout(() => { escalaVitrina(); mostrarVitrina(0); }, 200);
-// Fluidez: la vitrina solo cambia de diseño cuando está a la vista (no recarga nada fuera de pantalla)
-let vtVisible = true;
-const reanudarVitrina = () => { if (vtVisible && !vtPausa && !document.hidden) { clearTimeout(vtTimer); vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA); } };
+/* Fluidez: cada diseño de la vitrina es una web entera (HTML, estilos y fotos), así que no se carga
+   hasta que la página ya está lista, el navegador está libre y la vitrina se ve en pantalla.
+   Fuera de pantalla no cambia de diseño ni recarga nada. */
+let vtVisible = false, vtLista = false, vtArrancada = false;
+const arrancarVitrina = () => {
+  if (vtArrancada || !vtLista || !vtVisible) return;
+  vtArrancada = true;
+  escalaVitrina(); mostrarVitrina(0);
+};
+const reanudarVitrina = () => { if (vtArrancada && vtVisible && !vtPausa && !document.hidden) { clearTimeout(vtTimer); vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA); } };
 new IntersectionObserver(([e]) => {
   vtVisible = e.isIntersecting;
   $('.hero-art').classList.toggle('dormida', !vtVisible);
+  if (!vtArrancada) return arrancarVitrina();
   vtVisible ? reanudarVitrina() : clearTimeout(vtTimer);
 }, { threshold: .05 }).observe($('#vitrina'));
 document.addEventListener('visibilitychange', () => document.hidden ? clearTimeout(vtTimer) : reanudarVitrina());
-document.readyState === 'complete' ? arrancarVitrina() : addEventListener('load', arrancarVitrina);
+const cuandoLibre = fn => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 600));
+const vitrinaLista = () => cuandoLibre(() => { vtLista = true; arrancarVitrina(); });
+document.readyState === 'complete' ? vitrinaLista() : addEventListener('load', vitrinaLista);
 
 /* ==========================================================
    PLANES
@@ -160,7 +177,33 @@ $('#planes').innerHTML = planesActivos().map(p => `
   if (t[1]) { t[1].dataset.count = CONFIG.senal; t[1].textContent = CONFIG.senal; }
 }
 
-/* ---------- Comparativa de planes ---------- */
+/* ---------- Comparativa de planes ----------
+   Ordenador: tabla con todos los planes. Móvil: dos planes uno al lado del otro, que se eligen
+   arriba (una tabla de seis columnas no cabe y obligaba a arrastrarla de lado). */
+let cmpSel = null;
+function pintarComparaMovil(P) {
+  const caja = $('#cmpMovil');
+  if (!caja) return;
+  if (!cmpSel) { const pop = P.findIndex(p => p.popular); cmpSel = [Math.max(0, pop - 1), pop >= 0 ? pop : Math.min(1, P.length - 1)]; if (cmpSel[0] === cmpSel[1]) cmpSel[1] = Math.min(P.length - 1, cmpSel[0] + 1); }
+  const [a, b] = cmpSel.map(i => P[i]);
+  const sel = (k, actual) => `<label class="cmp-sel"><span class="sr">Plan ${k + 1}</span><select data-cmp="${k}" aria-label="Plan ${k + 1}">${P.map((p, i) => `<option value="${i}" ${i === actual ? 'selected' : ''}>${esc(p.nombre)}</option>`).join('')}</select></label>`;
+  const marca = (p, ids) => ids.includes(p.id) ? `<span class="si" aria-label="Incluido">${icono('check')}</span>` : '<span class="no" aria-label="No incluido">—</span>';
+  const col = p => `<div class="cmp-col ${p.popular ? 'pop' : ''}"><span class="pc-ic">${icono(p.icono)}</span><strong>${esc(p.nombre)}</strong><small>desde</small><b>${euros(p.precio)}</b><em>${esc(p.entrega)}</em></div>`;
+  caja.innerHTML = `
+    <div class="cmp-cab">${sel(0, cmpSel[0])}<span class="cmp-vs" aria-hidden="true">vs</span>${sel(1, cmpSel[1])}</div>
+    <div class="cmp-precios">${col(a)}${col(b)}</div>
+    <ul class="cmp-filas">${COMPARATIVA.map(([txt, ids]) => `<li class="${ids.includes(a.id) !== ids.includes(b.id) ? 'dif' : ''}"><span>${esc(txt)}</span>${marca(a, ids)}${marca(b, ids)}</li>`).join('')}</ul>
+    <p class="cmp-nota">${icono('check')} Las filas resaltadas son las diferencias. Precios finales con el ${CONFIG.iva || 0} % de IVA incluido.</p>
+    <div class="cmp-btns"><button class="btn btn-sm ${a.popular ? 'btn-primary' : 'btn-ghost'}" data-comprar="${a.id}">${esc(textoComprar())} ${esc(a.nombre.toLowerCase())}</button><button class="btn btn-sm ${b.popular ? 'btn-primary' : 'btn-ghost'}" data-comprar="${b.id}">${esc(textoComprar())} ${esc(b.nombre.toLowerCase())}</button></div>`;
+  caja.onchange = e => {
+    const k = e.target.dataset.cmp;
+    if (k === undefined) return;
+    cmpSel[+k] = +e.target.value;
+    if (cmpSel[0] === cmpSel[1]) cmpSel[1 - k] = (cmpSel[+k] + 1) % P.length; // nunca el mismo plan dos veces
+    pintarComparaMovil(P);
+  };
+}
+
 $('#verComparar').addEventListener('click', e => {
   const b = e.currentTarget, t = $('#comparaTabla');
   if (!t.innerHTML) {
@@ -171,7 +214,9 @@ $('#verComparar').addEventListener('click', e => {
         <tr><td>Plazo de entrega</td>${P.map(p => `<td class="${p.popular ? 'pop' : ''}">${esc(p.entrega)}</td>`).join('')}</tr>
         ${COMPARATIVA.map(([txt, ids]) => `<tr><td>${esc(txt)}</td>${P.map(p => `<td class="${p.popular ? 'pop' : ''}">${ids.includes(p.id) ? `<span class="si">${icono('check')}</span>` : '<span class="no">—</span>'}</td>`).join('')}</tr>`).join('')}
         <tr class="cta"><td></td>${P.map(p => `<td class="${p.popular ? 'pop' : ''}"><button class="btn btn-sm ${p.popular ? 'btn-primary' : 'btn-ghost'}" data-comprar="${p.id}">${textoComprar()}</button></td>`).join('')}</tr>
-      </tbody></table></div>`;
+      </tbody></table></div>
+      <div class="cmp-m" id="cmpMovil"></div>`;
+    pintarComparaMovil(P);
   }
   t.hidden = !t.hidden;
   b.setAttribute('aria-expanded', String(!t.hidden));
@@ -198,7 +243,7 @@ $('#disenosGrid').innerHTML = PLANTILLAS.map(p => `
   <article class="dz reveal" data-ver="${p.id}" data-grupo="${GRUPO[p.id] || 'local'}" tabindex="0" role="button" aria-label="Ver diseño ${esc(p.nombre)}" style="--c:${p.c.accent}">
     <div class="dz-win">
       <div class="dz-bar"><i></i><i></i><i></i><span>${esc(p.dominio)}</span></div>
-      <div class="dz-view" style="background:${p.c.bg}"><div class="thumb-load">${spinner()}</div><iframe src="${urlPlantilla(p.id, '', '', true)}" width="1280" height="2600" loading="lazy" tabindex="-1" aria-hidden="true" title=""></iframe></div>
+      <div class="dz-view" style="background:${p.c.bg}"><div class="thumb-load">${spinner()}</div><iframe data-src="${urlPlantilla(p.id, '', '', true)}" width="1280" height="2600" tabindex="-1" aria-hidden="true" title=""></iframe></div>
       <span class="dz-scroll" aria-hidden="true">${icono('move')} recorre la web</span>
     </div>
     <div class="dz-info">
@@ -208,6 +253,7 @@ $('#disenosGrid').innerHTML = PLANTILLAS.map(p => `
     <p>${esc(p.desc)}</p>
     <div class="dz-cta"><span>Ver en vivo</span>${icono('arrow')}</div>
   </article>`).join('');
+vigilarCarga($('#disenosGrid'));
 /* Escala de cada ventana y «scroll» automático. El transform se escribe directamente en el iframe:
    Safari (iPhone) no siempre vuelve a aplicar un transform que depende de variables CSS que cambian,
    y la web se quedaba pequeña con un hueco blanco. */
@@ -249,7 +295,7 @@ async function pintarOpiniones() {
   const media = lista.length ? lista.reduce((s, r) => s + r.estrellas, 0) / lista.length : 0;
 
   $('#opScore').innerHTML = lista.length
-    ? `<b>${media.toFixed(1).replace('.', ',')}</b><div>${estrellas(media)}<small>${lista.length} opinión${lista.length === 1 ? '' : 'es'} verificada${lista.length === 1 ? '' : 's'}</small></div>`
+    ? `<b>${media.toFixed(1).replace('.', ',')}</b><div>${estrellas(media)}<small>${lista.length} ${lista.length === 1 ? 'opinión verificada' : 'opiniones verificadas'}</small></div>`
     : '';
   grid.innerHTML = lista.length
     ? lista.slice(0, 6).map(r => `
@@ -1220,9 +1266,11 @@ if (qComprar) abrirCompra(qComprar);
 
 
 /* ---------- La web que ha subido el equipo (vista del cliente) ---------- */
-function verPropuesta(p) {
+async function verPropuesta(p) {
   const v = p && webCliente(p);
   if (!v) return toast('Tu web todavía no está lista para verla. Te avisaremos.');
+  // El visor solo se descarga cuando se abre (la portada no lo necesita)
+  const { abrirVisor, cerrarVisor, enlaceVista } = await import('./vistaweb.js');
   abrirVisor({
     p, version: v, modo: 'cliente',
     enlace: (w, pag) => enlaceVista(p, w, pag),
