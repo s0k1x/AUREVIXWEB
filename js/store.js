@@ -869,6 +869,61 @@ export async function enlacesWeb(lista) {
   return m;
 }
 
+/* ==========================================================
+   WEBS PUBLICADAS EN aurevixweb.es/<nombre>
+   El equipo publica una versión con un nombre corto y se puede ver
+   sin cuenta en ese enlace (solo esa versión: el resto sigue privado).
+   ========================================================== */
+const RESERVADOS = new Set(['index', 'panel', 'ajustes', 'diseno', 'vista-previa', 'trabaja', 'trabaja-con-nosotros', 'terminos', 'terminos-y-privacidad',
+  'offline', 'sin-conexion', 'plantilla', 'js', 'icons', 'fuentes', 'library', 'biblioteca-ui', 'supabase', 'sw', 'manifest', '404', 'admin', 'api',
+  'www', 'app', 'login', 'cuenta', 'aurevix', 'aurevixweb', 'web', 'webs', 'blog', 'ayuda', 'contacto', 'precios', 'legal', 'privacidad', 'cookies']);
+/** Convierte un texto en un nombre de enlace válido (minúsculas, sin tildes, con guiones) */
+export const aSlug = t => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ñ/g, 'n')
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48).replace(/-+$/, '');
+/** null si vale; si no, el motivo */
+export function motivoSlug(slug) {
+  if (!slug || slug.length < 3) return 'Pon al menos 3 letras o números';
+  if (!/^[a-z0-9](?:[a-z0-9-]{1,46}[a-z0-9])$/.test(slug)) return 'Solo letras minúsculas, números y guiones (sin tildes ni espacios)';
+  if (RESERVADOS.has(slug)) return 'Ese nombre lo usa la propia web de AurevixWeb. Elige otro.';
+  return null;
+}
+const fichaPublica = (p, v) => ({
+  negocio: p.respuestas?.negocio || '', entrada: v.entrada, paginas: (v.paginas || []).slice(0, 60),
+  archivos: (v.archivos || []).map(({ ruta, clave, tipo }) => ({ ruta, clave, tipo })), n: v.n
+});
+/** Publica (o cambia) la versión v del pedido p en aurevixweb.es/<slug>. Devuelve { slug, version, t } */
+export async function publicarWeb(p, v, slug) {
+  necesitaUsuario();
+  const motivo = motivoSlug(slug);
+  if (motivo) throw new Error(motivo);
+  const fila = { slug, pedido_id: p.id, version_id: v.id, datos: fichaPublica(p, v), actualizado: new Date().toISOString() };
+  if (modoDemo) {
+    const t = local.get('publicas', {});
+    if (t[slug] && t[slug].pedido_id !== p.id) throw new Error('Ese nombre ya lo usa otra web. Elige otro.');
+    for (const k of Object.keys(t)) if (t[k].pedido_id === p.id) delete t[k];
+    t[slug] = fila; local.set('publicas', t);
+  } else {
+    const ocupado = comprobar(await limite(sb.from('webs_publicas').select('pedido_id').eq('slug', slug).maybeSingle()));
+    if (ocupado && ocupado.pedido_id !== p.id) throw new Error('Ese nombre ya lo usa otra web. Elige otro.');
+    comprobar(await limite(sb.from('webs_publicas').delete().eq('pedido_id', p.id).neq('slug', slug)));
+    comprobar(await limite(sb.from('webs_publicas').upsert(fila, { onConflict: 'slug' })));
+  }
+  return { slug, version: v.id, t: Date.now() };
+}
+/** Quita la web del enlace público */
+export async function despublicarWeb(p) {
+  necesitaUsuario();
+  if (modoDemo) { const t = local.get('publicas', {}); for (const k of Object.keys(t)) if (t[k].pedido_id === p.id) delete t[k]; local.set('publicas', t); return; }
+  comprobar(await limite(sb.from('webs_publicas').delete().eq('pedido_id', p.id)));
+}
+/** La web publicada con ese nombre (o null). Funciona sin cuenta. */
+export async function webPublica(slug) {
+  if (motivoSlug(slug)) return null;
+  if (modoDemo) { const f = local.get('publicas', {})[slug]; return f ? { slug, version: f.version_id, ...f.datos } : null; }
+  const f = comprobar(await limite(sb.from('webs_publicas').select('slug, version_id, datos').eq('slug', slug).maybeSingle(), 15000));
+  return f ? { slug: f.slug, version: f.version_id, ...f.datos } : null;
+}
+
 /** Borra todos los archivos de una versión */
 export async function borrarWeb(version) {
   necesitaUsuario();

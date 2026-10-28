@@ -276,3 +276,55 @@ dialog.dlg-ficha:not([open]) .dlg-box{transform:translateY(18px) scale(.98)}
   .od-etapas-h small{display:none}
   .od-head-r .btn span{display:none}
 }
+
+/* ---------- v48 · Widgets del resumen ---------- */
+.embudo{display:grid;gap:9px}
+.emb{display:grid;grid-template-columns:150px 1fr 28px;gap:10px;align-items:center;font-size:13.5px}
+.emb span{display:flex;align-items:center;gap:8px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.emb span svg{width:15px;height:15px;flex:none;color:var(--accent)}
+.emb div{height:8px;border-radius:99px;background:var(--field);overflow:hidden}
+.emb i{display:block;height:100%;border-radius:99px;background:var(--accent);transform-origin:left;animation:embCrece .6s cubic-bezier(.23,1,.32,1) both}
+.emb b{text-align:right;font-variant-numeric:tabular-nums}
+.emb.cero span,.emb.cero b{color:var(--dim)}
+.emb.cero span svg{color:var(--dim)}
+@keyframes embCrece{from{transform:scaleX(0)}}
+.entregas{display:grid;gap:8px}
+.ent{appearance:none;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:none;color:var(--text);font:inherit;text-align:left;cursor:pointer;transition:border-color .18s ease}
+.ent:hover{border-color:var(--line2)}
+.ent-d{width:46px;flex:none;display:flex;flex-direction:column;align-items:center;padding:5px 0;border-radius:10px;background:var(--field);line-height:1.1}
+.ent-d b{font-size:17px;font-variant-numeric:tabular-nums}
+.ent-d small{font-size:11px;color:var(--muted)}
+.ent.pronto .ent-d{background:rgba(240,190,70,.14)}
+.ent.pronto .ent-d b{color:#e8b64a}
+.ent.tarde .ent-d{background:rgba(240,90,90,.14)}
+.ent.tarde .ent-d b{color:#f07070}
+.ent-t{flex:1;min-width:0;display:flex;flex-direction:column}
+.ent-t b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ent-t small{font-size:12.5px;color:var(--muted)}
+.ent > svg{width:15px;height:15px;color:var(--dim);flex:none}
+.mios-ent{margin-bottom:18px}
+html[data-tema=claro] .ent.pronto .ent-d b{color:#a87400}
+html[data-tema=claro] .ent.tarde .ent-d b{color:#c23b3b}
+@media (max-width:560px){.emb{grid-template-columns:118px 1fr 24px}}
+@media (prefers-reduced-motion:reduce){.emb i{animation:none}}
+
+/* ---------- v48 · Enlace público aurevixweb.es/<nombre> ---------- */
+.od-pub{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;display:grid;gap:10px}
+.od-pub-h{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.od-pub-h svg{width:17px;height:17px;color:var(--accent)}
+.od-pub-h .pill{margin-left:auto}
+.od-pub-link{display:flex;align-items:center;gap:8px;margin:0;font-size:15px;font-weight:600;min-width:0}
+.od-pub-link a{color:var(--accent);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.od-pub-link a:hover{text-decoration:underline}
+.od-pub-nota{color:var(--muted);font-size:12.5px;line-height:1.4}
+.od-pub-f{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.od-pub-slug{display:flex;align-items:center;min-width:0;height:42px;border:1px solid var(--line);border-radius:10px;background:var(--field);padding-left:12px;font-size:14px}
+.od-pub-slug:focus-within{border-color:var(--accent)}
+.od-pub-slug span{color:var(--muted);white-space:nowrap}
+.od-pub-slug input{flex:1;min-width:0;height:100%;border:0;background:none;color:var(--text);font:inherit;font-size:16px;padding:0 10px 0 1px;outline:none}
+.od-pub-f select{height:42px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:var(--text);font:inherit;font-size:14px;padding:0 10px;max-width:200px}
+.od-pub-btns{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.od-pub-ok{display:flex;align-items:center;gap:8px;font-size:14px;margin:10px 0 0}
+.od-pub-ok svg{width:16px;height:16px;color:var(--accent)}
+.od-pub-ok a{color:var(--accent)}
+@media (max-width:560px){.od-pub-f{grid-template-columns:1fr}.od-pub-f select{max-width:none}}

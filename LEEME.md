@@ -780,3 +780,14 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 - **Recorrido «Cómo trabajamos»** (`js/mundo.js`): un mundo isométrico dibujado en SVG con una estación por paso. Al hacer scroll la cámara se para en cada estación y viaja a la siguiente sin cortes, con la ruta dibujándose y un punto que avanza. Los textos se leen de la lista `.steps` del HTML, así que se editan ahí. Solo usa `transform`/`opacity` y el bucle solo corre mientras se ve. Con «reducir movimiento» o sin JavaScript se queda la lista de siempre.
 - Es la técnica de Scroll World, pero en vector: la versión original genera vídeos con IA de pago (Higgsfield/Monid) y no había ninguna herramienta gratuita utilizable desde aquí. A cambio no hay vídeos que descargar y pesa unos pocos KB.
 - Estilos nuevos en `widgets.css`. Service worker en **v47**.
+
+## 35. Versión v48 — caché segura, widgets del panel y navegación lateral
+
+- **Arreglo de caché**: el service worker ahora pide primero a internet el JS, el CSS y los JSON (con la copia guardada si no hay conexión o tarda más de 2,5 s). Antes los servía desde la copia guardada y, justo después de publicar, el móvil podía mezclar el HTML nuevo con el JS viejo (por eso la calculadora salía vacía). Además, cada página se recarga sola una vez cuando se instala una versión nueva (salvo con un diálogo abierto o escribiendo).
+- **Panel del propietario**: widgets «Proyectos por etapa» y «Próximas entregas» en el resumen. **Trabajador**: «Tus próximas entregas» en Mis encargos.
+- **Portada**: navegación lateral por secciones en pantallas anchas y suelo isométrico suave en lugar de las rayas animadas y el brillo.
+- **«Cómo trabajamos»** vuelve a ser la lista de pasos de antes: se quita el recorrido con scroll de la v47 (`js/mundo.js`).
+- **Pedido en el móvil arreglado**: la clase `.paso` del «siguiente paso» del panel pisaba la de los pasos del pedido y los enseñaba todos a la vez. Ahora el del panel se llama `.sig-paso`.
+- **Webs de clientes en `aurevixweb.es/<nombre>`**: en el panel, dentro del pedido → «Web del cliente» → «Enlace público», se elige el nombre (sale del negocio) y la versión, y se pulsa «Publicar». Al publicar por primera vez le llega un mensaje al cliente con el enlace. Cualquiera puede ver esa versión sin cuenta; el resto de versiones y archivos siguen siendo privados. «Despublicar» lo quita (y borrar la versión publicada también).
+  - Cómo funciona: GitHub Pages sirve `404.html` para las direcciones que no existen; esa página (`js/publica.js`) busca el nombre en la tabla `webs_publicas` y monta la web aislada en un iframe. Las páginas internas tienen dirección limpia (`/nombre/contacto`).
+  - **Hace falta** ejecutar una vez `supabase/webs-publicas-v48.sql` en el SQL Editor de Supabase (crea la tabla y el permiso de lectura de solo esas versiones). Sin él, «Publicar» da error y los enlaces enseñan «Esta página no existe».

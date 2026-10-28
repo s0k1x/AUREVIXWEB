@@ -172,7 +172,7 @@ function filaPedido(p, { coger = false } = {}) {
         ${p.cancelacion && p.estado !== 'cancelado' ? '<span class="pill p-off">Pide cancelar</span>' : ''}
         ${plazoTexto(p) ? `<span class="pill plazo ${plazoClase(p)}">${icono('clock')} ${plazoTexto(p)}</span>` : ''}</div>
       <small>${esc(p.planNombre)} · ${pl ? esc(pl.nombre) : 'A medida'} · ${esc(p.clienteNombre)} · ${haceCuanto(p.createdAt)}</small>
-      ${paso ? `<span class="paso ${paso.quien}">${icono(paso.ic)}<span>${esc(paso.txt)}</span></span>` : ''}
+      ${paso ? `<span class="sig-paso ${paso.quien}">${icono(paso.ic)}<span>${esc(paso.txt)}</span></span>` : ''}
       ${p.estado !== 'cancelado' ? `<div class="row-prog" title="Progreso ${progreso(p)} %"><i style="--w:${progreso(p)}%"></i></div>` : ''}
     </div>
     <div class="row-side">
@@ -195,6 +195,22 @@ function ultimosMeses(n = 6) {
     return { y: d.getFullYear(), m: d.getMonth(), txt: d.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '') };
   });
 }
+/* Widgets del resumen: embudo por etapa y próximas entregas */
+function embudoHTML(lista) {
+  const act = lista.filter(activo);
+  const filas = ETAPAS.filter(e => e.id !== 'publicada').map(e => ({ e, n: act.filter(p => etapaDe(p) === e.id).length }));
+  const max = Math.max(1, ...filas.map(f => f.n));
+  if (!act.length) return vacio('chart', 'No hay proyectos en marcha');
+  return `<div class="embudo">${filas.map(({ e, n }) => `<div class="emb ${n ? '' : 'cero'}"><span>${icono(e.icono)}${esc(e.txt)}</span><div><i style="width:${n ? Math.max(6, (n / max) * 100) : 0}%"></i></div><b>${n}</b></div>`).join('')}</div>`;
+}
+function entregasHTML(lista, n = 5) {
+  const L = lista.filter(p => activo(p) && diasRestantes(p) !== null).sort((a, b) => fechaEntrega(a) - fechaEntrega(b)).slice(0, n);
+  if (!L.length) return '<p class="muted" style="font-size:14px">Sin entregas pendientes.</p>';
+  return `<div class="entregas">${L.map(p => { const d = diasRestantes(p); return `<button type="button" class="ent ${plazoClase(p)}" data-open="${p.id}">
+    <span class="ent-d"><b>${d < 0 ? '−' + -d : d}</b><small>${Math.abs(d) === 1 ? 'día' : 'días'}</small></span>
+    <span class="ent-t"><b>${esc(neg(p))}</b><small>${esc(p.planNombre || '')} · ${fechaCorta(fechaEntrega(p))}</small></span>${icono('arrow')}</button>`; }).join('')}</div>`;
+}
+
 function resumen() {
   const P = datos.pedidos;
   const vivos = P.filter(p => p.estado !== 'cancelado');
@@ -249,12 +265,16 @@ function resumen() {
         <div class="meses">${meses.map(m => `<div class="mes" title="${m.n} pedido${m.n === 1 ? '' : 's'} · ${euros(m.total)} vendido · ${euros(m.cobrado)} cobrado">
           <div class="mes-barras"><i class="a" style="--h:${(m.total / maxMes) * 100}%"></i><i class="b" style="--h:${(m.cobrado / maxMes) * 100}%"></i></div>
           <b>${m.total ? eurosCorto(m.total) : '—'}</b><small>${m.txt}</small></div>`).join('')}</div>
+        <div class="card-h" style="margin-top:26px"><h3>Proyectos por etapa</h3><span class="muted" style="font-size:13px">${P.filter(activo).length} en marcha</span></div>
+        ${embudoHTML(P)}
         <div class="card-h" style="margin-top:26px"><h3>Últimos pedidos</h3><button class="link-btn" data-go="pedidos">Ver todos</button></div>
         <div class="rows">${P.slice(0, 5).map(p => filaPedido(p)).join('') || vacio('inbox', 'Aún no hay pedidos')}</div>
       </div>
       <div class="card">
         <div class="card-h"><h3>Para hoy</h3><span class="muted" style="font-size:13px">${pendientes.length} pendiente${pendientes.length === 1 ? '' : 's'}</span></div>
         ${pendientes.length ? `<div class="hoy">${pendientes.slice(0, 10).map(x => `<button type="button" class="hoy-it" ${x.id ? `data-open="${x.id}"` : `data-go="${x.go}"`}>${icono(x.ic)}<span>${esc(x.t)}</span>${icono('arrow')}</button>`).join('')}</div>` : `<p class="muted" style="font-size:14px">${icono('check')} Todo al día.</p>`}
+        <div class="card-h" style="margin-top:26px"><h3>Próximas entregas</h3><button class="link-btn" data-go="agenda">Agenda</button></div>
+        ${entregasHTML(P)}
         <div class="card-h" style="margin-top:26px"><h3>Pedidos por tipo de web</h3></div>
         ${porPlan.length ? `<div class="bars">${porPlan.map(x => `<div class="bar"><span>${esc(x.n)}</span><div><i style="width:${(x.v / max) * 100}%"></i></div><b>${x.v}</b></div>`).join('')}</div>` : vacio('chart', 'Sin datos todavía')}
         <div class="card-h" style="margin-top:26px"><h3>Carga del equipo</h3></div>
@@ -326,7 +346,7 @@ function tablero(lista) {
         <article class="kcard" draggable="true" data-open="${p.id}" data-id="${p.id}" tabindex="0">
           <div class="kc-t"><b>${esc(neg(p))}</b><span>${euros(p.total)}</span></div>
           <small>${esc(p.planNombre)} · ${esc(p.clienteNombre)}</small>
-          ${(paso => paso ? `<span class="paso ${paso.quien}">${icono(paso.ic)}<span>${esc(paso.txt)}</span></span>` : '')(siguientePaso(p))}
+          ${(paso => paso ? `<span class="sig-paso ${paso.quien}">${icono(paso.ic)}<span>${esc(paso.txt)}</span></span>` : '')(siguientePaso(p))}
           <div class="kc-tags">${p.pagoEstado === 'verificando' ? '<span class="pill p-pend">Verificar pago</span>' : ''}${p.urgente ? '<span class="pill p-off">Urgente</span>' : ''}</div>
           <div class="kc-f"><div class="row-prog"><i style="--w:${progreso(p)}%"></i></div>${p.asignadoNombre ? avatar({ name: p.asignadoNombre }, 'sm') : '<span class="who none">—</span>'}</div>
         </article>`).join('') || '<p class="col-empty">Suelta aquí</p>'}</div>
@@ -698,6 +718,7 @@ function mios() {
       <div class="kpi"><small>Esperando al cliente</small><b>${espera.length}</b></div>
       <div class="kpi"><small>Entregados</small><b>${datos.pedidos.filter(p => p.asignado === U.uid && p.estado === 'entregado').length}</b></div>
     </div>
+    ${todos.length ? `<div class="card mios-ent"><div class="card-h"><h3>Tus próximas entregas</h3></div>${entregasHTML(todos, 3)}</div>` : ''}
     ${todos.length ? `<div class="opts filters">${[['todos', 'Todos', todos.length], ['tuyos', 'Te toca', tuyos.length], ['cliente', 'Esperando al cliente', espera.length]].map(([k, t, n]) => `<label class="opt ${!n && k !== 'todos' ? 'cero' : ''}"><input type="radio" name="fmios" value="${k}" ${fMios === k ? 'checked' : ''}><span><i>${t} · ${n}</i></span></label>`).join('')}</div>` : ''}
     <div class="rows card flush">${L.map(p => filaPedido(p)).join('') || (todos.length ? vacio('check', 'Nada por aquí', 'Prueba con otro filtro.') : vacio('coffee', 'No tienes encargos activos', 'Mira en «Disponibles» para coger uno.'))}</div>`;
   $$('input[name=fmios]').forEach(r => r.addEventListener('change', () => { fMios = r.value; mios(); }));
@@ -1186,8 +1207,60 @@ function bloqueWeb(p, puedeEditar) {
           <button type="button" class="icon-btn sm" data-borrar-v="${esc(v.id)}" aria-label="Borrar la versión ${v.n}" title="Borrar">${icono('trash')}</button>
         </span>` : ''}
       </li>`;
-    }).join('')}</ul>` : `<p class="od-web-vacio">${puedeEditar ? 'Todavía no hay ninguna versión. Cuando subas la primera, podrás verla en móvil, tableta y ordenador y enviársela al cliente para que la apruebe.' : 'Todavía no hay ninguna versión subida.'}</p>`}
+    }).join('')}</ul>${puedeEditar ? bloquePublica(p, vs) : p.publica?.slug ? `<p class="od-pub-ok">${icono('globe')} <a href="${esc(urlPublica(p.publica.slug))}" target="_blank" rel="noopener">${esc(urlPublica(p.publica.slug).replace(/^https?:\/\//, ''))}</a></p>` : ''}` : `<p class="od-web-vacio">${puedeEditar ? 'Todavía no hay ninguna versión. Cuando subas la primera, podrás verla en móvil, tableta y ordenador y enviársela al cliente para que la apruebe.' : 'Todavía no hay ninguna versión subida.'}</p>`}
   </section>`;
+}
+
+/* Enlace público aurevixweb.es/<nombre> */
+const urlPublica = slug => `${CONFIG.dominio ? 'https://' + CONFIG.dominio.replace(/^https?:\/\//, '').replace(/\/$/, '') : location.origin}/${slug}`;
+function bloquePublica(p, vs) {
+  const pub = p.publica?.slug ? p.publica : null;
+  const vPub = pub && vs.find(v => v.id === pub.version);
+  const elegida = (pub && vPub) ? vPub.id : (p.webCliente || vs[0].id);
+  const opciones = vs.map(v => `<option value="${esc(v.id)}"${v.id === elegida ? ' selected' : ''}>Versión ${v.n}${p.webCliente === v.id ? ' (la ve el cliente)' : ''}</option>`).join('');
+  const sugerido = pub?.slug || store.aSlug(p.respuestas?.negocio || neg(p));
+  return `<div class="od-pub" id="odPub">
+    <div class="od-pub-h">${icono('globe')}<b>Enlace público</b>${pub ? `<span class="pill p-done">Publicada</span>` : ''}</div>
+    ${pub ? `<p class="od-pub-link"><a href="${esc(urlPublica(pub.slug))}" target="_blank" rel="noopener">${esc(urlPublica(pub.slug).replace(/^https?:\/\//, ''))}</a>
+      <button type="button" class="icon-btn sm" data-copy="${esc(urlPublica(pub.slug))}" aria-label="Copiar enlace">${icono('copy')}</button></p>
+      <small class="od-pub-nota">Cualquiera con el enlace ve ${vPub ? `la versión ${vPub.n}` : 'la web'}. El resto de versiones y archivos siguen siendo privados.</small>`
+    : `<small class="od-pub-nota">Publica una versión en vuestro dominio para que el cliente la enseñe o la pruebe en cualquier móvil, sin iniciar sesión.</small>`}
+    <div class="od-pub-f">
+      <label class="od-pub-slug"><span>${esc(urlPublica('').replace(/^https?:\/\//, ''))}</span><input id="odSlug" value="${esc(sugerido)}" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Nombre del enlace"></label>
+      <select id="odPubV" aria-label="Versión que se publica">${opciones}</select>
+    </div>
+    <div class="od-pub-btns">
+      ${pub ? `<button type="button" class="btn btn-sm btn-ghost" id="odDespub">${icono('ban')}<span>Despublicar</span></button>` : ''}
+      <button type="button" class="btn btn-sm btn-primary" id="odPublicar">${icono('globe')}<span>${pub ? 'Guardar cambios' : 'Publicar'}</span></button>
+    </div>
+  </div>`;
+}
+function montarPublica(p, guardar) {
+  const caja = $('#odPub', box);
+  if (!caja) return;
+  const slug = $('#odSlug', caja);
+  slug.addEventListener('input', () => { const l = store.aSlug(slug.value) + (/[-\s]$/.test(slug.value) ? '-' : ''); if (l !== slug.value) slug.value = l; });
+  $('#odPublicar', caja).addEventListener('click', async e => {
+    const btn = e.currentTarget;
+    const nombre = store.aSlug(slug.value), v = (p.webs || []).find(w => w.id === $('#odPubV', caja).value);
+    const motivo = store.motivoSlug(nombre);
+    if (motivo) return toast(motivo, 'err');
+    if (!v) return;
+    ocupado(btn, true);
+    try {
+      const nuevo = !p.publica?.slug || p.publica.slug !== nombre;
+      const pub = await store.publicarWeb(p, v, nombre);
+      const ok = await guardar({ publica: pub }, `Publicada en ${urlPublica(nombre).replace(/^https?:\/\//, '')}`, `Web publicada en ${urlPublica(nombre)} (versión ${v.n})`);
+      if (ok && nuevo) store.enviarMensaje(p.id, `Tu web ya se puede ver en ${urlPublica(nombre)}\n\nPuedes abrir el enlace en cualquier móvil u ordenador y compartirlo.`).catch(() => {});
+    } catch (err) { toast(err.message, 'err'); ocupado(btn, false); }
+  });
+  $('#odDespub', caja)?.addEventListener('click', async e => {
+    if (!confirm('¿Quitar la web del enlace público? Dejará de verse en ese enlace.')) return;
+    const btn = e.currentTarget;
+    ocupado(btn, true);
+    try { await store.despublicarWeb(p); await guardar({ publica: null }, 'Enlace público desactivado', 'Web despublicada'); }
+    catch (err) { toast(err.message, 'err'); ocupado(btn, false); }
+  });
 }
 
 /** Enviar una versión al cliente: pasa a «Revisión» y le llega un mensaje con aviso */
@@ -1203,6 +1276,7 @@ function montarWeb(p, puedeEditar, guardar) {
   const zona = $('.od-web', box);
   if (!zona) return;
   const enlace = (v, pag) => enlaceVista(p, v, pag);
+  if (puedeEditar) montarPublica(p, guardar);
   zona.addEventListener('click', async e => {
     const ver = e.target.closest('[data-ver-v]');
     if (ver) {
@@ -1223,6 +1297,7 @@ function montarWeb(p, puedeEditar, guardar) {
       if (!v || !confirm(`¿Borrar la versión ${v.n}?${p.webCliente === v.id ? ' El cliente dejará de verla.' : ''} No se puede deshacer.`)) return;
       ocupado(bo, true);
       try {
+        if (p.publica?.version === v.id) { await store.despublicarWeb(p); await guardar({ publica: null }, '', ''); }
         await store.borrarWeb(v);
         await guardar({ webs: (p.webs || []).filter(w => w.id !== v.id), ...(p.webCliente === v.id ? { webCliente: '' } : {}) }, `Versión ${v.n} borrada`, `Versión ${v.n} borrada`);
       } catch (err) { toast(err.message, 'err'); ocupado(bo, false); }

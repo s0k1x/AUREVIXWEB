@@ -46,6 +46,7 @@
   <link rel="stylesheet" href="funciones.css">
   <link rel="stylesheet" href="tema-claro.css">
   <script>/* Sin zoom (ni doble toque ni pellizco) */document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});document.addEventListener('gesturechange',function(e){e.preventDefault()},{passive:false})</script>
+  <script>/* Versión nueva de la web: se recarga una vez para no mezclar piezas de dos versiones */try{var sw=navigator.serviceWorker;if(sw&&sw.controller){window.__swVigila=1;sw.addEventListener('controllerchange',function(){var a=document.activeElement;if(window.__swRecargado||document.querySelector('dialog[open]')||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)))return;window.__swRecargado=1;location.reload()})}}catch(e){}</script>
 </head>
 <body>
 <div class="splash listo" id="splash0" aria-hidden="true"><div class="brand-card splash-card"><div class="border"></div><div class="content"><div class="logo"><div class="logo1"><img src="icons/logo-a.png" alt=""></div><div class="logo2"><img src="icons/nombre.png" alt="AurevixWeb"></div></div><span class="logo-bottom-text">Webs profesionales</span></div><span class="bottom-text">Diseño web</span></div></div>

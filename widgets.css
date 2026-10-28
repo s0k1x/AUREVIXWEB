@@ -77,67 +77,20 @@
   .calc-res{padding:20px}
 }
 
-/* ---------- Recorrido con scroll (mundo en vector) ---------- */
-#como.con-mundo{padding-bottom:0}
-#como.con-mundo .steps{display:none}
-.mundo{position:relative;height:calc(var(--n,4) * 95svh + 40svh);margin-top:-12px}
-.mundo-stage{position:sticky;top:0;height:100svh;display:grid;grid-template-columns:minmax(0,420px) 1fr;align-items:center;max-width:var(--max);margin:0 auto;padding:70px var(--gutter) 30px;overflow:hidden}
-.mundo-svg{grid-column:1/-1;grid-row:1;width:100%;height:100%;display:block}
-.mundo-txt{grid-column:1;grid-row:1;position:relative;z-index:1;max-width:400px}
-.mundo-num{font-family:var(--fm);font-size:13px;color:var(--dim);margin:0 0 14px;font-variant-numeric:tabular-nums}
-.mundo-num b{color:var(--accent);font-weight:500}
-.mundo-txt h3{font-family:var(--fd);font-size:clamp(28px,3.2vw,44px);font-weight:700;letter-spacing:-.025em;line-height:1.08;margin:0 0 14px;text-wrap:balance}
-.mundo-p{color:var(--muted);font-size:17px;line-height:1.55;margin:0 0 26px;max-width:38ch;text-wrap:pretty}
-.mundo-txt.cambia h3,.mundo-txt.cambia .mundo-p{animation:mundoTxt .42s cubic-bezier(.23,1,.32,1) both}
-.mundo-txt.cambia .mundo-p{animation-delay:.04s}
-@keyframes mundoTxt{from{opacity:0;transform:translateY(8px)}}
-.mundo-dots{display:flex;gap:8px}
-.mundo-dots button{width:28px;height:28px;padding:0;border:0;background:none;display:grid;place-items:center;cursor:pointer}
-.mundo-dots button::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--line2);transition:background-color .2s ease,transform .2s cubic-bezier(.23,1,.32,1)}
-.mundo-dots button.on::before{background:var(--accent);transform:scale(1.35)}
-.mundo-dots button:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-radius:50%}
+/* ---------- Portada: suelo isométrico (el mismo mundo del recorrido) en vez de rayas animadas y brillo ---------- */
+.hero:has(.hero-iso)::before{display:none}
+.hero-iso{opacity:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='69.28' height='40' viewBox='0 0 69.28 40'%3E%3Cpath d='M0 20 34.64 0 69.28 20 34.64 40Z' fill='none' stroke='%23ffffff' stroke-opacity='.07' stroke-width='1'/%3E%3C/svg%3E");background-size:69.28px 40px;background-position:center top}
+html[data-tema=claro] .hero-iso{opacity:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='69.28' height='40' viewBox='0 0 69.28 40'%3E%3Cpath d='M0 20 34.64 0 69.28 20 34.64 40Z' fill='none' stroke='%2314141a' stroke-opacity='.08' stroke-width='1'/%3E%3C/svg%3E")}
 
-/* Tonos del mundo (oscuro) */
-.mundo-svg{--t:#2c2c35;--l:#1b1b21;--r:#23232b;--ct:#3a3a45;--cl:#26262e;--cr:#30303a;--hoja:#0f0f13;--ln:#3d3d48}
-.m-b .f-t{fill:var(--t)}.m-b .f-l{fill:var(--l)}.m-b .f-r{fill:var(--r)}
-.m-c .f-t{fill:var(--ct)}.m-c .f-l{fill:var(--cl)}.m-c .f-r{fill:var(--cr)}
-.m-a .f-t{fill:var(--accent)}.m-a .f-l{fill:#7fa62f}.m-a .f-r{fill:#a2cc45}
-.mundo-svg polygon{stroke:rgba(255,255,255,.05);stroke-width:.6;stroke-linejoin:round}
-.m-hoja{fill:var(--hoja)}
-.m-ln{fill:var(--ln)}
-.m-img{fill:var(--ct)}
-.m-ac{fill:var(--accent)}
-.m-ok{fill:var(--accent)}
-.m-okv{fill:none;stroke:var(--ink);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
-.m-flag{fill:var(--accent)}
-.m-ruta{fill:none;stroke:var(--line2);stroke-width:2;stroke-dasharray:4 8;stroke-linecap:round}
-.m-ruta.on{stroke:var(--accent);stroke-dasharray:1;stroke-dashoffset:1;stroke-width:2.5}
-.m-viajero{fill:var(--accent);stroke:var(--bg2);stroke-width:3}
-.m-deco{opacity:.45}
-.m-est{transition:none}
-
-html[data-tema=claro] .mundo-svg{--t:#ffffff;--l:#dcdad2;--r:#ebe9e2;--ct:#f4f3ee;--cl:#cfccc2;--cr:#e1ded6;--hoja:#ffffff;--ln:#d6d3ca}
-html[data-tema=claro] .mundo-svg polygon{stroke:rgba(20,20,26,.08)}
-html[data-tema=claro] .m-a .f-l{fill:#4f850c}
-html[data-tema=claro] .m-a .f-r{fill:#6aa61c}
-html[data-tema=claro] .m-okv{stroke:#fff}
-
-@media (max-width:820px){
-  .mundo{height:calc(var(--n,4) * 85svh + 30svh)}
-  .mundo-stage{grid-template-columns:1fr;grid-template-rows:1fr auto;padding:64px var(--gutter) 92px;align-items:end}
-  .mundo-svg{grid-row:1}
-  .mundo-txt{grid-row:2;max-width:none}
-  .mundo-txt h3{font-size:28px;margin-bottom:8px}
-  .mundo-p{font-size:15.5px;margin-bottom:14px}
-}
-@media (prefers-reduced-motion:reduce){
-  .mundo-txt.cambia h3,.mundo-txt.cambia .mundo-p{animation:none}
-}
-/* Velo bajo el texto para que el mundo nunca lo tape (escritorio) */
-@media (min-width:821px){
-  .mundo-stage::before{content:"";grid-column:1/-1;grid-row:1;align-self:stretch;z-index:1;pointer-events:none;background:linear-gradient(90deg,var(--bg2) 0,var(--bg2) 22%,transparent 44%);margin-inline:calc(var(--gutter) * -1)}
-  .mundo-txt{z-index:2}
-}
-@media (max-width:820px){
-  .mundo-stage::after{content:"";grid-column:1;grid-row:1;align-self:end;height:70px;pointer-events:none;background:linear-gradient(transparent,var(--bg2))}
-}
+/* ---------- Navegación lateral por secciones (pantallas anchas) ---------- */
+.secnav{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:2px;opacity:0;pointer-events:none;transition:opacity .25s ease}
+.secnav.ver{opacity:1;pointer-events:auto}
+.secnav a{display:flex;align-items:center;justify-content:flex-end;gap:10px;height:26px;color:var(--muted);text-decoration:none;font-size:12.5px}
+.secnav a span{opacity:0;transform:translateX(6px);transition:opacity .18s ease,transform .22s cubic-bezier(.23,1,.32,1);white-space:nowrap;padding:3px 8px;border-radius:6px;background:var(--card);border:1px solid var(--line)}
+.secnav a i{width:7px;height:7px;border-radius:50%;background:var(--line2);flex:none;transition:background-color .2s ease,transform .2s cubic-bezier(.23,1,.32,1)}
+.secnav a.on i{background:var(--accent);transform:scale(1.4)}
+.secnav a.on{color:var(--text)}
+@media (hover:hover){.secnav a:hover span,.secnav a:focus-visible span{opacity:1;transform:none}}
+.secnav a:focus-visible{outline:none}
+.secnav a:focus-visible i{outline:2px solid var(--accent);outline-offset:3px}
+@media (max-width:1099px){.secnav{display:none}}

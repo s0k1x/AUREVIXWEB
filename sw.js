@@ -12,7 +12,7 @@
    - Librería (/library/ y /biblioteca-ui/): NO se guarda (son miles de
      archivos); va siempre por internet con la caché normal del navegador.
    ========================================================== */
-const VERSION = 'v47';
+const VERSION = 'v48';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
@@ -20,7 +20,7 @@ const ARCHIVOS = [
   './', 'trabaja-con-nosotros', 'panel', 'diseno', 'terminos-y-privacidad', 'sin-conexion', 'vista-previa',
   'style.css', 'componentes.css', 'animaciones.css', 'inicio.css', 'panel.css', 'trabaja.css', 'config.js',
   'js/app.js', 'js/ui.js', 'js/store.js', 'js/plantillas.js', 'js/panel.js', 'js/pago.js', 'js/efectos.js',
-  'js/vendor/supabase.js', 'js/sinzoom.js', 'js/iconos.js', 'js/asistente.js', 'js/proyecto.js', 'js/sitio.js', 'js/cookies.js', 'js/apariencia.js', 'js/avisos.js', 'js/colabora.js', 'js/ajustes.js', 'js/contrasena.js', 'js/calculadora.js', 'js/mundo.js', 'js/vistaweb.js', 'js/vista.js', 'js/desplegable.js', 'js/zip.js',
+  'js/vendor/supabase.js', 'js/sinzoom.js', 'js/iconos.js', 'js/asistente.js', 'js/proyecto.js', 'js/sitio.js', 'js/cookies.js', 'js/apariencia.js', 'js/avisos.js', 'js/colabora.js', 'js/ajustes.js', 'js/contrasena.js', 'js/calculadora.js', 'js/publica.js', 'js/vistaweb.js', 'js/vista.js', 'js/desplegable.js', 'js/zip.js',
   'ajustes', 'funciones.css', 'widgets.css', 'tema-claro.css', 'icons/nombre-oscuro.png',
   'fuentes/fuentes.css', 'fuentes/instrument-sans-latin-046090.woff2', 'fuentes/instrument-sans-latin-ext-284bb9.woff2', 'fuentes/bricolage-grotesque-latin-a97232.woff2', 'fuentes/bricolage-grotesque-latin-ext-a4fe79.woff2', 'fuentes/jetbrains-mono-latin-f70309.woff2', 'fuentes/jetbrains-mono-latin-ext-a83f17.woff2',
   'manifest.json', 'icons/logo-a.png', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
@@ -60,7 +60,9 @@ async function redPrimero(req) {
   }
 }
 
-// CSS, JS e imágenes: la copia guardada al instante y, por detrás, la versión de internet para la próxima vez
+// CSS y JS: internet primero (si tarda más de 2,5 s o no hay conexión, la copia guardada).
+// Así el HTML nuevo nunca se mezcla con el JS o el CSS de la versión anterior.
+// Fuentes e imágenes propias: la copia guardada al instante y, por detrás, la de internet.
 async function guardadoYActualiza(req, e) {
   const cache = await caches.open(CACHE);
   const guardado = await cache.match(req);
@@ -97,5 +99,6 @@ self.addEventListener('fetch', e => {
   if (url.origin !== self.location.origin) return; // Supabase, Gemini, CDN: siempre en vivo
   if (/\/(library|biblioteca-ui)\//.test(url.pathname)) return; // la librería no se guarda en el móvil
 
-  e.respondWith(req.mode === 'navigate' || req.destination === 'document' ? redPrimero(req) : guardadoYActualiza(req, e));
+  const codigo = req.mode === 'navigate' || ['document', 'script', 'style', 'manifest'].includes(req.destination) || /\.(m?js|css|json)$/.test(url.pathname);
+  e.respondWith(codigo ? redPrimero(req) : guardadoYActualiza(req, e));
 });

@@ -151,7 +151,7 @@ const textoComprar = () => (CONFIG.aceptarPedidos ? 'Comprar' : 'Lista de espera
 /* Descuento de bienvenida (primera web) */
 const bvActivo = () => !!(CONFIG.bienvenida?.activo && CONFIG.bienvenida.codigo && CONFIG.aceptarPedidos);
 const bienvenidaOK = () => bvActivo() && !W?.sinBienvenida;
-/* ---------- Widgets de la portada: garantías, calculadora y recorrido ---------- */
+/* ---------- Widgets de la portada: garantías y calculadora ---------- */
 $('#grIva') && ($('#grIva').textContent = CONFIG.iva ? `${CONFIG.iva} % de IVA incluido` : 'sin IVA');
 $('#grSenal') && ($('#grSenal').textContent = `${CONFIG.senal} % al inicio, el resto a la entrega`);
 $('#grResp') && ($('#grResp').textContent = CONFIG.respuesta.replace(/^Respondemos\s+/i, ''));
@@ -162,8 +162,29 @@ function alAcercarse(el, fn, margen = '600px') {
   io.observe(el);
 }
 alAcercarse($('#calc'), () => import('./calculadora.js').then(m => m.montarCalculadora($('#calc'), { bienvenida: bvActivo() })));
-if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
-  alAcercarse($('#como'), () => import('./mundo.js').then(m => m.montarMundo($('#como'))), '900px');
+/* Navegación lateral por secciones (solo en pantallas anchas; el CSS la oculta en el resto) */
+(() => {
+  const SEC = [['webs', 'Precios'], ['calcula', 'Presupuesto'], ['disenos', 'Diseños'], ['como', 'Cómo trabajamos'], ['opiniones', 'Opiniones'], ['faq', 'Preguntas'], ['contacto', 'Contacto']]
+    .map(([id, t]) => [document.getElementById(id), t]).filter(([el]) => el);
+  if (!SEC.length || !('IntersectionObserver' in window)) return;
+  const nav = document.createElement('nav');
+  nav.className = 'secnav';
+  nav.setAttribute('aria-label', 'Secciones de la página');
+  nav.innerHTML = SEC.map(([el, t]) => `<a href="#${el.id}"><span>${t}</span><i></i></a>`).join('');
+  document.body.appendChild(nav);
+  const links = [...nav.children], vis = new Map();
+  const marcar = () => {
+    let mejor = null, max = 0;
+    for (const [el] of SEC) { const v = vis.get(el) || 0; if (v > max) { max = v; mejor = el; } }
+    nav.classList.toggle('ver', !!mejor);
+    links.forEach((a, i) => { const on = SEC[i][0] === mejor; a.classList.toggle('on', on); on ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'); });
+  };
+  const io = new IntersectionObserver(es => {
+    for (const e of es) vis.set(e.target, e.isIntersecting ? e.intersectionRect.height : 0);
+    marcar();
+  }, { threshold: [0, .1, .25, .5, .75, 1] });
+  SEC.forEach(([el]) => io.observe(el));
+})();
 document.addEventListener('aurevix:pedir', e => {
   const { plan, urgente, extras } = e.detail || {};
   abrirCompra(plan, '', { urgente, extras });
