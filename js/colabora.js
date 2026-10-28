@@ -14,7 +14,8 @@ import { $, $$, esc, euros, fecha, haceCuanto, icono, toast, ocupado, tamano, re
 const RAPIDAS_EQUIPO = [
   'Hola, ¿cómo estás? Te escribo para ponerte al día de tu web.',
   'Ya hemos recibido el contenido. Empezamos con el diseño.',
-  'La vista previa está lista. Revísala cuando puedas y dinos qué te parece.',
+  'La vista previa está lista. Ábrela en «Mis proyectos» y dinos qué te parece.',
+  '¿Me confirmas el horario y la dirección exactos para ponerlos en la web?',
   'Hemos aplicado los cambios que nos pediste.',
   'Nos falta el logotipo en buena calidad. ¿Puedes subirlo en «Archivos»?',
   'Tu web ya está publicada. ¡Gracias por confiar en nosotros!'
@@ -174,6 +175,31 @@ export function montarArchivos(caja, p, { equipo = false } = {}) {
   ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
   drop.addEventListener('drop', e => subir(e.dataTransfer.files));
   pintar();
+}
+
+/** Todos los archivos del proyecto en un .zip (fotos, logotipo, documentos) */
+export async function descargarArchivosCliente(p, btn) {
+  ocupado(btn, true);
+  try {
+    const L = await store.listarArchivos(p.id);
+    if (!L.length) { toast('El cliente todavía no ha subido archivos'); return; }
+    const { crearZip } = await import('./zip.js');
+    const usados = new Set(), archivos = [];
+    for (const a of L) {
+      let nombre = a.nombre, k = 1;
+      while (usados.has(nombre)) nombre = a.nombre.replace(/(\.[^.]+)?$/, m => `-${++k}${m}`);
+      usados.add(nombre);
+      const r = await fetch(await store.urlArchivo(a));
+      if (!r.ok) throw new Error(`No se ha podido descargar «${a.nombre}»`);
+      archivos.push({ nombre, datos: await r.arrayBuffer() });
+    }
+    const url = URL.createObjectURL(new Blob([crearZip(archivos)], { type: 'application/zip' }));
+    const el = Object.assign(document.createElement('a'), { href: url, download: `archivos-${refPedido(p.id).slice(1)}.zip` });
+    document.body.appendChild(el); el.click(); el.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    toast(`${archivos.length} archivo${archivos.length === 1 ? '' : 's'} descargado${archivos.length === 1 ? '' : 's'}`, 'ok');
+  } catch (e) { toast(e.message, 'err'); }
+  finally { ocupado(btn, false); }
 }
 
 /* ==========================================================

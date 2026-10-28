@@ -465,8 +465,6 @@ async function abrirPanel(i) {
   fondoPanel = N.fondoPreferido(c) || 'puntos';
   E.id = c.i; escribirHash();
   const clase = N.claseDe(c);
-  const sel = N.enSeleccion(c.i);
-  const puedeIA = N.paraIA(c);
   dlg.innerHTML = `<div class="lb-caja" role="document">
     <header class="lb-cab-p">
       <div>
@@ -495,7 +493,6 @@ async function abrirPanel(i) {
       <div class="lb-acciones">
         <button type="button" class="btn btn-sm btn-primary" id="lbCopiar">${icono('copy')}<span>Copiar</span></button>
         <button type="button" class="btn btn-sm btn-ghost" id="lbBajar">${icono('download')}<span>Descargar</span></button>
-        ${E.equipo ? `<button type="button" class="btn btn-sm btn-ghost ${sel ? 'en-pedido' : ''}" id="lbPedido" ${puedeIA ? '' : 'disabled'} title="${puedeIA ? 'Se añade a la selección de «Crear la web con IA»' : 'Su licencia o su formato no permiten usarlo en webs de clientes'}">${icono(sel ? 'check' : 'plus')}<span>${sel ? 'En mi pedido' : 'Usar en mi pedido'}</span></button>` : ''}
       </div>
       <div class="lb-aviso ${clase}">${icono('shield')}<div>
         <b>${N.CLASES[clase].txt} · ${esc(c.lib.spdx)}</b> — ${esc(N.CLASES[clase].desc)}${c.lib.nota ? ` ${esc(c.lib.nota)}` : ''}<br>
@@ -515,7 +512,6 @@ async function abrirPanel(i) {
   $('#lbGrande', dlg)?.addEventListener('click', () => pantallaCompleta(c));
   $('#lbCopiar', dlg).addEventListener('click', () => copiarCodigo(c));
   $('#lbBajar', dlg).addEventListener('click', e => descargarComponente(c, e.currentTarget));
-  $('#lbPedido', dlg)?.addEventListener('click', e => alternarPedido(c, e.currentTarget));
   vistaPanel(c);
   try {
     tabsActuales = await N.leerCodigo(c);
@@ -614,45 +610,6 @@ async function descargarComponente(c, btn) {
   btn.disabled = false;
 }
 
-/* ---------- Selección para el pedido (solo equipo) ---------- */
-function alternarPedido(c, btn) {
-  let l;
-  try { l = N.alternarSeleccion(c.i, { seccion: N.esIcono(c) ? 'iconos' : 'extras', origen: 'manual' }); }
-  catch (e) { toast(e.message, 'err'); return; }
-  const si = l.some(x => x.id === c.i);
-  btn.classList.toggle('en-pedido', si);
-  btn.innerHTML = `${icono(si ? 'check' : 'plus')}<span>${si ? 'En mi pedido' : 'Usar en mi pedido'}</span>`;
-  toast(si ? `Añadido a «Crear la web con IA» (${l.length})` : 'Quitado de la selección');
-  pintarSel();
-}
-function pintarSel() {
-  const b = $('#lbSel');
-  if (!E.equipo) { b.hidden = true; return; }
-  const n = N.leerSeleccion().length;
-  b.hidden = false;
-  b.innerHTML = `${icono('bag')}<b>${n}</b>`;
-  b.setAttribute('aria-label', `${n} componentes e iconos elegidos para el pedido`);
-}
-async function abrirSeleccion() {
-  if (!dlg) crearPanel();
-  const l = N.leerSeleccion();
-  // Los iconos no están en el índice de componentes: se buscan en su propio índice
-  const datos = new Map(await Promise.all(l.map(async x => [x.id, await N.buscarElemento(x.id).catch(() => null)])));
-  const nombreDe = c => (N.esIcono(c) ? `Icono «${c.a[0].split('/').pop().replace(/\.svg$/, '')}» · ${c.variante}` : c.n);
-  dlg.innerHTML = `<div class="lb-caja lb-caja-sm" role="document">
-    <button type="button" class="lb-ic-btn" data-cerrar aria-label="Cerrar" style="position:absolute;top:12px;right:12px">${icono('x')}</button>
-    <h2 id="lbPTit" style="font-size:22px;padding-right:50px">Para «Crear la web con IA»</h2>
-    <p class="muted" style="margin-top:6px;font-size:14px">Estos componentes e iconos aparecen en «Componentes sugeridos» del generador (ficha del pedido → Crear la web con IA). Los elegidos a mano se envían siempre a la IA: no se recortan por el límite de candidatos.</p>
-    ${l.length ? `<ul class="lb-sel-l">${l.map(x => { const c = datos.get(x.id); return `<li><span>${esc(c ? nombreDe(c) : x.id)}<small>${esc(c ? `${c.lib.nombre} · ${c.lib.spdx}` : 'Ya no está en el índice')}</small></span><button type="button" class="lb-ic-btn" data-quitar="${esc(x.id)}" aria-label="Quitar">${icono('trash')}</button></li>`; }).join('')}</ul>`
-      : '<p class="lb-estado" style="margin:16px 0">Todavía no has elegido ninguno. Abre un componente o un icono y pulsa «Usar en mi pedido».</p>'}
-    <div style="display:flex;gap:8px;flex-wrap:wrap">${l.length ? `<button type="button" class="btn btn-sm btn-ghost" id="lbVaciar">${icono('trash')}<span>Vaciar</span></button>` : ''}<a class="btn btn-sm btn-primary" href="../panel">${icono('panel')}<span>Ir al panel</span></a></div>
-  </div>`;
-  if (!dlg.open) { dlg.showModal(); document.documentElement.classList.add('no-scroll'); }
-  $('[data-cerrar]', dlg).addEventListener('click', () => dlg.close());
-  $$('[data-quitar]', dlg).forEach(b => b.addEventListener('click', () => { N.alternarSeleccion(b.dataset.quitar); pintarSel(); abrirSeleccion(); }));
-  $('#lbVaciar', dlg)?.addEventListener('click', () => { N.guardarSeleccion([]); pintarSel(); abrirSeleccion(); });
-}
-
 function sincronizarFav(id) {
   $$('.lb-card').forEach(card => {
     const c = E.lista[+card.dataset.n];
@@ -748,8 +705,6 @@ function eventos() {
     guardarApariencia({ tema: claro ? 'oscuro' : 'claro' });
     pintarTema();
   });
-  $('#lbSel').addEventListener('click', abrirSeleccion);
-  addEventListener('storage', e => { if (e.key === 'tm_lib_sel') pintarSel(); });
   // La barra superior es fija en el móvil: se reserva su alto
   const top = $('#lbTop');
   const medir = () => document.body.style.setProperty('--lb-top', `${top.offsetHeight}px`);
@@ -824,7 +779,7 @@ async function cargar() {
   abrirDesdeHash();
 }
 
-/* Saber si quien mira es del equipo (para «Usar en mi pedido» y el filtro por defecto) */
+/* Saber si quien mira es del equipo (para el filtro «Usable en webs de clientes» por defecto) */
 async function sesion() {
   try {
     const store = await import('../js/store.js');
@@ -833,9 +788,8 @@ async function sesion() {
     E.usuario = u;
     const eq = !!u && (u.role === 'owner' || u.role === 'worker');
     if (eq !== E.equipo) { E.equipo = eq; if (E.indice) actualizar({ hash: false }); }
-    store.alCambiarUsuario?.(nu => { const x = !!nu && (nu.role === 'owner' || nu.role === 'worker'); if (x !== E.equipo) { E.equipo = x; pintarSel(); if (E.indice) actualizar({ hash: false }); } });
+    store.alCambiarUsuario?.(nu => { const x = !!nu && (nu.role === 'owner' || nu.role === 'worker'); if (x !== E.equipo) { E.equipo = x; if (E.indice) actualizar({ hash: false }); } });
   } catch (e) { console.warn('Sin sesión en la librería:', e?.message || e); }
-  pintarSel();
 }
 
 leerHash();
