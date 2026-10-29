@@ -27,3 +27,14 @@ create policy push_mias on public.push_subs for all to authenticated
 revoke all on public.push_subs from anon, authenticated;
 grant select, insert, update, delete on public.push_subs to authenticated;
 grant all on public.push_subs to service_role;
+
+-- Claves VAPID: las crea la función «notificar» la primera vez. Solo las lee el servidor.
+create table if not exists public.claves_push (
+  id int primary key default 1 check (id = 1),
+  publica text not null,
+  privada text not null,
+  creado timestamptz not null default now()
+);
+alter table public.claves_push enable row level security;
+revoke all on public.claves_push from anon, authenticated;
+grant all on public.claves_push to service_role;
