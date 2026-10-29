@@ -4,7 +4,6 @@
    - Sin configurar      → MODO DEMO (todo se guarda en este navegador)
    ========================================================== */
 import { CONFIG } from '../config.js';
-import { exigir as exigirPass } from './contrasena.js';
 
 export const modoDemo = !(CONFIG.supabase && CONFIG.supabase.url && CONFIG.supabase.anonKey);
 
@@ -222,7 +221,9 @@ const traducirError = e => {
   if (m.includes('email not confirmed')) return 'Confirma tu email: te hemos enviado un enlace.';
   if (m.includes('invalid') && m.includes('email')) return 'El email no es válido';
   if (m.includes('provider is not enabled')) return 'Este método de acceso no está activado en Supabase (mira el LEEME)';
-  if (m.includes('rate limit')) return 'Demasiados intentos. Espera un minuto y vuelve a probar.';
+  if (m.includes('signups not allowed')) return 'No hay ninguna cuenta con ese email. Regístrate primero.';
+  if (m.includes('token has expired') || (m.includes('otp') && m.includes('invalid'))) return 'El código no es correcto o ha caducado. Pide otro.';
+  if (m.includes('rate limit') || m.includes('security purposes')) return 'Demasiados intentos. Espera un minuto y vuelve a probar.';
   return e?.message || 'Algo ha fallado, inténtalo de nuevo';
 };
 const volverA = () => location.origin + location.pathname;
@@ -239,24 +240,28 @@ export async function entrarConGithub() {
   if (error) throw new Error(traducirError(error));
 }
 
-export async function entrarConEmail(email, pass) {
-  if (modoDemo) return entrarLocal({ name: email.split('@')[0], email });
-  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+/* ---------- Entrar o crear la cuenta con un código por correo ----------
+   No hay contraseñas: Supabase envía un código de un solo uso (por SMTP con
+   Brevo, ver LEEME) y lo comprueba él; la web nunca lo ve antes de que lo
+   escribas. Al crear la cuenta, el mismo código verifica el correo.
+   Para crearla hace falta el nombre (y aceptar las condiciones en el formulario). */
+export async function enviarCodigo(email, { nombre = '' } = {}) {
+  if (modoDemo) { nombreDemo = nombre; return; }
+  if (nombre) nombrePendiente = nombre;
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: nombre ? { shouldCreateUser: true, data: { name: nombre, full_name: nombre }, emailRedirectTo: volverA() } : { shouldCreateUser: false }
+  });
   if (error) throw new Error(traducirError(error));
 }
-
-export async function registrarConEmail(nombre, email, pass) {
-  if (modoDemo) return entrarLocal({ name: nombre, email });
-  await exigirPass(pass, { email, nombre }); // 8+ caracteres con letras y números, y que no esté filtrada
-  nombrePendiente = nombre;
-  const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { name: nombre, full_name: nombre }, emailRedirectTo: volverA() } });
-  if (error) throw new Error(traducirError(error));
-  if (!data.session) throw new Error('Te hemos enviado un email para confirmar la cuenta. Ábrelo y vuelve a entrar.');
-}
-
-export async function recuperarPass(email) {
-  if (modoDemo) return;
-  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: volverA() });
+let nombreDemo = '';
+export async function verificarCodigo(email, codigo) {
+  if (modoDemo) {
+    await new Promise(r => setTimeout(r, 500));
+    if (codigo === '000000') throw new Error('El código no es correcto o ha caducado. Pide otro.');
+    return entrarLocal({ name: nombreDemo || email.split('@')[0], email });
+  }
+  const { error } = await sb.auth.verifyOtp({ email, token: codigo, type: 'email' });
   if (error) throw new Error(traducirError(error));
 }
 
@@ -495,6 +500,21 @@ export async function borrarResena(id) {
    La clave de Gemini NUNCA va en la web: está guardada en Supabase
    y la usa la función "asistente" (supabase/functions/asistente). */
 export const iaDisponible = () => !modoDemo;
+/* ---------- Correos al cliente (Brevo, función "correo") ----------
+   Al confirmar un pago, el cliente recibe el resumen del pedido y del pago.
+   fase: 'senal' | 'resto' | 'total'. Devuelve { enviado, para } o { yaEnviado }. */
+export async function enviarCorreoPago(pedidoId, fase, { reenviar = false } = {}) {
+  necesitaUsuario();
+  if (modoDemo) return { demo: true };
+  const { legal, marca, email, senal, iva } = CONFIG;
+  const { data, error } = await limite(sb.functions.invoke('correo', { body: { pedidoId, fase, reenviar, empresa: { marca, email, senal, iva, legal } } }), 30000);
+  if (error) {
+    const motivo = await error.context?.json?.().then(d => d?.error).catch(() => null);
+    throw new Error(motivo || 'No se ha podido enviar el correo');
+  }
+  return data;
+}
+
 export async function preguntarIA(cuerpo) {
   if (modoDemo) throw new Error('demo');
   const { data, error } = await limite(sb.functions.invoke('asistente', { body: cuerpo }), 40000);
@@ -543,13 +563,6 @@ export async function cambiarEmail(email) {
   necesitaUsuario();
   if (modoDemo) throw new Error('En el modo demo no se puede cambiar el email');
   const { error } = await sb.auth.updateUser({ email }, { emailRedirectTo: volverA() });
-  if (error) throw new Error(traducirError(error));
-}
-export async function cambiarPass(pass) {
-  const u = necesitaUsuario();
-  if (modoDemo) return;
-  await exigirPass(pass, { email: u.email, nombre: u.name });
-  const { error } = await sb.auth.updateUser({ password: pass });
   if (error) throw new Error(traducirError(error));
 }
 export async function cerrarSesionTodas() {

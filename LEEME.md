@@ -836,3 +836,24 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
   2. El prompt se puede retocar y copiar, y **«Descargar PDF»** crea un PDF ordenado: portada con el nombre y el color del cliente, resumen, logotipo (el archivo que lleve «logo» en el nombre), todas las secciones, lista de archivos con hasta 8 fotos en miniatura y el prompt al final.
 - El PDF se crea en el navegador con jsPDF (`js/vendor/jspdf.umd.min.js`, licencia MIT); solo se descarga al pulsar el botón.
 - La función `asistente` comprueba con la sesión de quien llama que es del equipo antes de generar un brief: un cliente no puede usarla para eso.
+
+## 43. Versión v57 — correos con Brevo: recibo al pagar y código para entrar
+**Recibo por correo al confirmar un pago**
+- Cuando en el panel marcas un pedido como **«Señal pagada»** o **«Pagado»**, el cliente recibe un correo con el resumen del pedido y del pago: importe recibido, desglose con IVA, lo pagado y lo pendiente, el siguiente paso y un botón a «Mis proyectos → Pagos».
+- Lo envía la función **`correo`** de Supabase con Brevo. Solo la puede usar el equipo; los importes y el destinatario los saca del pedido en la base de datos (y el correo de facturación del cliente, si lo tiene).
+- En el bloque «Pago» del pedido verás si ya se envió y un botón **«Enviar recibo» / «Reenviar recibo»**. El mismo pago no se envía dos veces salvo que pulses «Reenviar».
+- Es un justificante de pago, **no una factura**: la factura se sigue haciendo aparte.
+
+**Entrar y crear la cuenta con un código (sin contraseñas)**
+- Ya no hay contraseñas. Para **entrar**: email → llega un código de 6 cifras → se escribe y entras. Para **crear la cuenta**: nombre, email y aceptar las condiciones → el mismo código **verifica el correo** y crea la cuenta. Google sigue funcionando igual.
+- El campo del código (`js/otp.js`, basado en «OTP Input» de 21st.dev) acepta pegar el código entero, el autorrelleno del iPhone («Desde Mail») y lectores de pantalla. Si el código está mal, se sacude en rojo; si está bien, se enciende en verde de casilla en casilla. Se envía solo al escribir la sexta cifra y se puede pedir otro cada 60 segundos.
+- El código lo genera, caduca y comprueba Supabase, no la web. En Ajustes ya no aparece «Contraseña».
+- Las cuentas antiguas que tenían contraseña entran con el código igual (mismo email).
+
+**Configurar Brevo (una vez)**
+1. Crea una cuenta gratis en brevo.com (hasta 300 correos al día).
+2. **Autentica el dominio**: Brevo → *Senders, Domains & Dedicated IPs* → *Domains* → añade `aurevixweb.es` y copia los registros DNS que te da (TXT/CNAME) en el panel de tu dominio. Así los correos no van a spam. Luego añade el remitente `hola@aurevixweb.es` (nombre «AurevixWeb»).
+3. **Recibos**: Brevo → *SMTP & API* → *API keys* → crea una clave. En Supabase → Edge Functions → *Secrets*: `BREVO_API_KEY` = esa clave y `BREVO_REMITENTE` = `hola@aurevixweb.es`.
+4. **Códigos de acceso** (los envía Supabase usando Brevo): Brevo → *SMTP & API* → *SMTP*: copia el usuario (login) y crea una clave SMTP. En Supabase → Authentication → *Emails* → *SMTP Settings* → activa «Enable custom SMTP»: remitente `hola@aurevixweb.es`, nombre «AurevixWeb», host `smtp-relay.brevo.com`, puerto `587`, usuario y clave SMTP de Brevo.
+5. **Plantillas**: Supabase → Authentication → *Emails* → *Templates*. En **Magic link** y en **Confirm signup** pon como asunto `Tu código de AurevixWeb: {{ .Token }}` y como contenido el de `supabase/plantillas/codigo-acceso.html` (usa `{{ .Token }}`, el código; sin eso llegaría un enlace en vez del código).
+6. Recomendado: Authentication → *Sign In / Providers* → *Email*: «Email OTP Expiration» = 600 (10 minutos) y «Email OTP Length» = 6. Y en *Rate Limits*, «emails per hour» al menos 30.

@@ -1365,18 +1365,20 @@ $('#faqQ').addEventListener('input', e => {
 });
 
 /* ---------- Enlaces directos ---------- */
+// #proyecto-<id> abre sus mensajes; #proyecto-<id>/pagos (enlace del correo de pago), esa pestaña
+const pestanaValida = k => (PESTANAS.some(([x]) => x === k) ? k : 'mensajes');
 const hash = location.hash;
 if (hash === '#mis-pedidos' || hash.startsWith('#proyecto-')) {
   history.replaceState(null, '', location.pathname);
-  const id = hash.startsWith('#proyecto-') ? hash.slice(10) : '';
-  abrirPedidos(id, id ? 'mensajes' : '');
+  const [id, pest] = hash.startsWith('#proyecto-') ? hash.slice(10).split('/') : [''];
+  abrirPedidos(id, id ? pestanaValida(pest) : '');
 } else if (hash === '#soporte') {
   history.replaceState(null, '', location.pathname);
   abrirSoporte();
 }
 addEventListener('hashchange', () => {
   if (location.hash === '#mis-pedidos') { history.replaceState(null, '', location.pathname); abrirPedidos(); }
-  if (location.hash.startsWith('#proyecto-')) { const id = location.hash.slice(10); history.replaceState(null, '', location.pathname); abrirPedidos(id, 'mensajes'); }
+  if (location.hash.startsWith('#proyecto-')) { const [id, pest] = location.hash.slice(10).split('/'); history.replaceState(null, '', location.pathname); abrirPedidos(id, pestanaValida(pest)); }
   if (location.hash === '#soporte') { history.replaceState(null, '', location.pathname); abrirSoporte(); }
 });
 

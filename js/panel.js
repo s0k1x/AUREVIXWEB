@@ -997,6 +997,7 @@ function abrirPedido(id) {
           <p class="od-pay-info">${pago === 'verificando'
             ? `${icono('euro')}<span>El cliente indica que ha pagado ${p.pagoFase === 'resto' ? 'el resto' : 'la señal'} (<b class="nw">${euros(p.pagoFase === 'resto' ? p.total - senal : senal)}</b>) por <b>${METODOS[p.pagoMetodo] || p.pagoMetodo}</b> ${p.pagoAviso ? haceCuanto(p.pagoAviso) : ''}. Compruébalo en tu banco y márcalo como <b>Pagado</b> (o «Señal pagada»).</span>`
             : p.pagoMetodo ? `Último pago por ${METODOS[p.pagoMetodo] || p.pagoMetodo}.` : `Señal: ${euros(senal)} · Resto: ${euros((p.total || 0) - senal)}`}</p>
+          ${['senal', 'pagado'].includes(pago) && puedeEditar ? `<div class="od-correo">${(c => c ? `<small>${icono('check')} Recibo enviado por correo ${haceCuanto(c)}</small>` : '<small>El cliente aún no ha recibido el recibo por correo</small>')(Math.max(p.correos?.senal || 0, p.correos?.resto || 0, p.correos?.total || 0))}<button type="button" class="btn btn-sm btn-ghost" id="odCorreo">${icono('mail')}<span>${p.correos ? 'Reenviar recibo' : 'Enviar recibo'}</span></button></div>` : ''}
         </div>
         ${bloqueWeb(p, puedeEditar)}
         <form class="od-urls" id="odUrls" novalidate>
@@ -1114,7 +1115,17 @@ function abrirPedido(id) {
     guardar({ tareas }, todas ? 'Todas las tareas hechas. Ya puedes pasarla a «Publicada».' : 'Tarea actualizada');
   }));
   $('#odEstado', box)?.addEventListener('change', e => guardar({ estado: e.target.value, ...(e.target.value === 'entregado' ? { etapa: 'publicada' } : {}) }, `Estado: ${ESTADOS[e.target.value].txt}`, `Estado: ${ESTADOS[e.target.value].txt}`));
-  $('#odPago', box)?.addEventListener('change', e => guardar({ pagoEstado: e.target.value }, `Pago: ${PAGOS[e.target.value].txt}`, `Pago: ${PAGOS[e.target.value].txt}`));
+  $('#odPago', box)?.addEventListener('change', async e => {
+    const nuevo = e.target.value, antes = pago;
+    if (!(await guardar({ pagoEstado: nuevo }, `Pago: ${PAGOS[nuevo].txt}`, `Pago: ${PAGOS[nuevo].txt}`))) return;
+    // Pago confirmado: el cliente recibe por correo el resumen del pedido y del pago
+    if (nuevo === 'senal') correoPago(p, 'senal');
+    else if (nuevo === 'pagado') correoPago(p, antes === 'senal' || p.pagoFase === 'resto' || p.correos?.senal ? 'resto' : 'total');
+  });
+  $('#odCorreo', box)?.addEventListener('click', e => {
+    const ultimo = p.pagoEstado === 'senal' ? 'senal' : p.correos?.senal || p.pagoFase === 'resto' ? 'resto' : 'total';
+    correoPago(p, ultimo, { reenviar: true, btn: e.currentTarget });
+  });
   $('#odFecha', box)?.addEventListener('change', e => {
     if (!e.target.value) return;
     const [y, m, d] = e.target.value.split('-').map(Number);
@@ -1400,6 +1411,24 @@ async function archivosSoltados(dt) {
    marco oculto, se copia tal cual y se le añade el código que
    hace funcionar menú, carrito, reservas y animaciones.
    ========================================================== */
+/* ---------- Recibo por correo al confirmar un pago ---------- */
+async function correoPago(p, fase, { reenviar = false, btn = null } = {}) {
+  ocupado(btn, true);
+  try {
+    const r = await store.enviarCorreoPago(p.id, fase, { reenviar });
+    if (r?.demo) toast('Modo demo: con Brevo conectado, el cliente recibiría ahora el recibo por correo', 'ok');
+    else if (r?.enviado) {
+      const correos = { ...(p.correos || {}), [fase]: Date.now() };
+      await store.actualizarPedido(p.id, { correos });
+      p.correos = correos;
+      toast(`Recibo enviado por correo a ${r.para}`, 'ok');
+      if ($('#orderDlg')?.open) abrirPedido(p.id);
+    }
+  } catch (err) {
+    toast(`El pago está guardado, pero el correo no se ha enviado: ${err.message}`, 'err');
+  } finally { ocupado(btn, false); }
+}
+
 /* ---------- Brief con IA: prompt + PDF con todo lo del cliente ---------- */
 async function abrirBrief(p) {
   let dlg = $('#briefDlg');

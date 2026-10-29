@@ -12,6 +12,15 @@ export const EN = {
   'Brief con IA': 'AI brief', 'Prompt y PDF con todo lo del cliente': 'Prompt and PDF with everything from the client', 'Prompt para crear la web': 'Prompt to build the website', 'Copiar prompt': 'Copy prompt', 'Descargar PDF': 'Download PDF',
   'Escrito por la IA': 'Written by AI', 'Automático, sin IA': 'Automatic, no AI', 'Puedes retocarlo aquí: el PDF lleva el texto tal y como lo dejes.': 'You can edit it here: the PDF uses the text exactly as you leave it.',
   'Reuniendo lo que ha enviado el cliente…': 'Gathering everything the client sent…', 'La IA está escribiendo el prompt…': 'The AI is writing the prompt…', 'Preparando el prompt…': 'Preparing the prompt…',
+  'Enviarme un código': 'Send me a code', 'Sin contraseñas: te enviamos un código de un solo uso a tu correo.': 'No passwords: we email you a one-time code.',
+  'Cambiar email': 'Change email', 'Revisa tu correo': 'Check your email', 'Verifica tu correo': 'Verify your email', 'Te hemos enviado un código de 6 cifras a': 'We have sent a 6-digit code to',
+  'Para verificar tu correo y crear la cuenta, escribe el código de 6 cifras que hemos enviado a': 'To verify your email and create your account, enter the 6-digit code we sent to',
+  'Verificar y crear cuenta': 'Verify and create account', '¿No te ha llegado? Mira en spam o': "Didn't get it? Check your spam folder or", 'pide otro': 'ask for another',
+  'Código de 6 cifras': '6-digit code', 'Faltan cifras: el código tiene 6.': 'Some digits are missing: the code has 6.', 'Comprobando el código…': 'Checking the code…',
+  'Correo verificado. ¡Bienvenido!': 'Email verified. Welcome!', 'Código correcto. Entrando…': 'Code accepted. Signing you in…', 'Te hemos enviado un código nuevo.': 'We have sent you a new code.',
+  'Modo demo: escribe 6 cifras cualquiera (000000 da error).': 'Demo mode: type any 6 digits (000000 gives an error).', 'Crear cuenta': 'Create account',
+  'No hay ninguna cuenta con ese email. Regístrate primero.': 'There is no account with that email. Sign up first.', 'El código no es correcto o ha caducado. Pide otro.': 'The code is wrong or has expired. Ask for another one.',
+  'Enviar recibo': 'Send receipt', 'Reenviar recibo': 'Resend receipt', 'El cliente aún no ha recibido el recibo por correo': 'The client has not received the receipt by email yet',
   'Con tu dominio': 'With your domain', 'Más profesional: info@ con el nombre de tu web': 'More professional: info@ with your website name',
   'Escribe tu Gmail. Si aún no tienes, créalo gratis en': "Enter your Gmail. If you don't have one yet, create it for free at", 'y vuelve aquí.': 'and come back here.',
   'Tu Gmail': 'Your Gmail', 'Cómo empieza tu correo': 'How your email starts',
@@ -375,6 +384,7 @@ const fecha = t => t
 const dias = n => `${n} day${n === '1' ? '' : 's'}`;
 
 export const PATRONES = [
+  [/^pide otro en (0:\d\d)$/, m => `ask for another in ${m[1]}`],
   [/^Paso (\d+) de (\d+) · (.+)$/, (m, T) => `Step ${m[1]} of ${m[2]} · ${T(m[3])}`],
   [/^Paso (\d+) de (\d+)$/, m => `Step ${m[1]} of ${m[2]}`],
   [/^Paso (\d+): (.+)$/, (m, T) => `Step ${m[1]}: ${T(m[2])}`],

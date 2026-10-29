@@ -10,7 +10,6 @@ import { CONFIG, PLANES, EXTRAS } from '../config.js';
 import * as store from './store.js';
 import { $, $$, esc, euros, icono, toast, arrancar, pedirLogin, ocupado, campo, interruptor, etiquetas, avatar, descargar, ROLES } from './ui.js';
 import { leerApariencia, guardarApariencia } from './apariencia.js';
-import { montarMedidor } from './contrasena.js';
 import { abrirCookies, consentimiento } from './cookies.js';
 import { ORIGINAL, ajustesActuales, guardarAjustesWeb } from './sitio.js';
 
@@ -110,8 +109,6 @@ async function cuenta() {
   const google = U.proveedor && U.proveedor !== 'email';
   body.innerHTML = bloque('Correo electrónico', google ? `Entras con ${U.proveedor === 'google' ? 'Google' : U.proveedor}. Tu correo es el de esa cuenta.` : 'Te enviaremos un enlace al correo nuevo para confirmarlo.', `
       <form id="fEmail" novalidate>${texto('email', 'Correo electrónico', U.email, `type="email" autocomplete="email" ${google || store.modoDemo ? 'disabled' : ''}`)}${google || store.modoDemo ? '' : guardarBtn('gEmail', 'Cambiar correo')}</form>`)
-    + bloque('Contraseña', google ? 'Como entras con Google, no necesitas contraseña. Puedes crear una para entrar también con tu correo.' : 'Usa al menos 8 caracteres, con letras y números.', `
-      <form id="fPass" novalidate><div class="row-2">${texto('pass', 'Contraseña nueva', '', 'type="password" autocomplete="new-password" minlength="8"')}${texto('pass2', 'Repite la contraseña', '', 'type="password" autocomplete="new-password"')}</div>${guardarBtn('gPass', 'Cambiar contraseña')}</form>`)
     + bloque('Sesiones', 'Si has entrado desde un móvil o un ordenador que ya no usas, cierra la sesión en todos los dispositivos.', `
       <div class="aj-acc"><button class="btn btn-ghost" id="salirTodo">${icono('power')}<span>Cerrar sesión en todos los dispositivos</span></button></div>`);
   $('#fEmail').addEventListener('submit', async e => {
@@ -121,19 +118,6 @@ async function cuenta() {
     if (email === U.email) return toast('Es el mismo correo');
     const b = $('#gEmail'); ocupado(b, true);
     try { await store.cambiarEmail(email); toast('Te hemos enviado un enlace para confirmar el correo nuevo', 'ok'); }
-    catch (err) { toast(err.message, 'err'); }
-    ocupado(b, false);
-  });
-  const medidor = montarMedidor($('#f_pass'), { email: () => U.email, nombre: () => U.name });
-  $('#fPass').addEventListener('submit', async e => {
-    e.preventDefault();
-    const a = $('#f_pass').value, b2 = $('#f_pass2').value;
-    const { ev, filtrada } = medidor.estado();
-    if (!ev.ok) return toast('La contraseña necesita 8 caracteres con letras y números', 'err');
-    if (filtrada > 0) return toast('Esa contraseña ha aparecido en filtraciones de datos. Elige otra.', 'err');
-    if (a !== b2) { $('#f_pass2').closest('.fc').classList.add('error'); return toast('Las contraseñas no coinciden', 'err'); }
-    const b = $('#gPass'); ocupado(b, true);
-    try { await store.cambiarPass(a); toast('Contraseña cambiada', 'ok'); e.target.reset(); medidor.reiniciar(); }
     catch (err) { toast(err.message, 'err'); }
     ocupado(b, false);
   });
