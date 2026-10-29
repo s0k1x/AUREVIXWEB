@@ -58,8 +58,11 @@ export function cambiarIdioma(v, origen) {
 function abrirCortina() {
   let d = null;
   try { d = JSON.parse(sessionStorage.getItem('tm_idioma_anim') || 'null'); sessionStorage.removeItem('tm_idioma_anim'); } catch { /* nada */ }
-  if (!d || quieto()) return;
+  // La cubierta que pintó el <head> mientras cargaba (misma palabra, mismo sitio) deja paso a la cortina real
+  const cubierta = () => document.documentElement.classList.remove('i18n-anim');
+  if (!d || quieto()) return cubierta();
   const c = cortina(d.v, d.x, d.y, true);
+  cubierta();
   requestAnimationFrame(() => requestAnimationFrame(() => c.classList.add('abre')));
   setTimeout(() => c.remove(), 1100);
 }
@@ -134,6 +137,7 @@ export function botonIdioma({ largo = false } = {}) {
     const b = e.target.closest('button[data-v]');
     if (!b || b.dataset.v === IDIOMA) return;
     g.dataset.v = b.dataset.v;
+    g.classList.remove('mueve'); void g.offsetWidth; g.classList.add('mueve');
     g.querySelectorAll('button').forEach(x => x.setAttribute('aria-checked', String(x === b)));
     // Primero se desliza la pastilla y luego entra la cortina
     setTimeout(() => cambiarIdioma(b.dataset.v, b), quieto() ? 0 : 180);

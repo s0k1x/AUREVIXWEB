@@ -283,6 +283,10 @@ html[data-tema=claro] .cs-n{color:#4f850c}
 .idioma-sw button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .isw-pastilla{position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:99px;background:var(--accent);transition:transform .35s cubic-bezier(.23,1,.32,1)}
 .idioma-sw[data-v=en] .isw-pastilla{transform:translateX(100%)}
+/* Al cambiar, la pastilla se estira un poco hacia donde va y se asienta */
+.idioma-sw.mueve .isw-pastilla{animation:iswEstira .35s cubic-bezier(.23,1,.32,1)}
+@keyframes iswEstira{40%{scale:1.18 .92}}
+@media (prefers-reduced-motion:reduce){.idioma-sw.mueve .isw-pastilla{animation:none}}
 html[data-tema=claro] .idioma-sw button[aria-checked=true]{color:#fff}
 html[data-tema=claro] .isw-pastilla{background:#4f850c}
 /* En el menú del móvil: grande, con el nombre del idioma */

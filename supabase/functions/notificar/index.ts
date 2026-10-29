@@ -8,6 +8,10 @@
 //  - Como mucho un correo cada 30 minutos por proyecto y tipo:
 //    el resto se ven en la campana igualmente.
 //  - El cliente no recibe correo de «pago»: ya le llega el recibo.
+//  - Se manda al correo con el que entra (el verificado con el
+//    código), nunca al que se pueda escribir en el perfil.
+//  - Como mucho MAX_DIA correos al día por persona (el cupo de
+//    Brevo es el mismo que el de los códigos de acceso).
 //  Solo recibe el id del aviso: todo lo demás lo lee de la base de
 //  datos, así que no se puede usar para mandar correos inventados.
 //  Secretos: BREVO_API_KEY y BREVO_REMITENTE (los mismos que «correo»).
@@ -19,6 +23,7 @@ const SB_URL = Deno.env.get('SUPABASE_URL') || '';
 const SERVICIO = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 const WEB = 'https://aurevixweb.es';
 const AGRUPAR = 30 * 60e3;
+const MAX_DIA = 15;
 
 const ok = (motivo: string) => new Response(JSON.stringify({ ok: true, motivo }), { headers: { 'Content-Type': 'application/json' } });
 const q = encodeURIComponent;
@@ -32,6 +37,14 @@ async function db(ruta: string, init: RequestInit = {}) {
   return r;
 }
 const leer = async (ruta: string) => (await db(ruta)).json();
+
+/** Correo verificado de la cuenta (el de entrar con el código) */
+async function correoCuenta(uid: string) {
+  const r = await fetch(`${SB_URL}/auth/v1/admin/users/${uid}`, { headers: { apikey: SERVICIO, Authorization: `Bearer ${SERVICIO}` } });
+  if (!r.ok) return '';
+  const u = await r.json();
+  return u?.email && (u.email_confirmed_at || u.confirmed_at) ? String(u.email) : '';
+}
 
 const esc = (t: unknown) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -98,8 +111,9 @@ Deno.serve(async req => {
     if (d.correo) return ok('ya enviado');
     const marcar = (valor: number | string) => db(`avisos?id=eq.${a.id}`, { method: 'PATCH', body: JSON.stringify({ datos: { ...d, correo: valor } }) });
 
-    const [p] = await leer(`perfiles?id=eq.${a.uid}&select=name,email,role,datos`) as { name: string; email: string; role: string; datos: Record<string, any> }[];
-    if (!p?.email) return ok('sin correo');
+    const [p] = await leer(`perfiles?id=eq.${a.uid}&select=name,role,datos`) as { name: string; role: string; datos: Record<string, any> }[];
+    const email = await correoCuenta(a.uid);
+    if (!p || !email) { await marcar('sin correo'); return ok('sin correo'); }
     const notif = p.datos?.notif || {};
     const equipo = p.role === 'owner' || p.role === 'worker';
     const tipo = String(d.tipo || 'info');
@@ -111,6 +125,10 @@ Deno.serve(async req => {
     const pedido = d.pedido ? String(d.pedido) : null;
     const recientes = await leer(`avisos?uid=eq.${a.uid}&id=neq.${a.id}&created_at=gt.${q(desde)}&datos->>tipo=eq.${q(tipo)}&datos->>pedido=${pedido ? `eq.${pedido}` : 'is.null'}&datos->>correo=not.is.null&select=datos`) as { datos: Record<string, any> }[];
     if (recientes.some(x => typeof x.datos?.correo === 'number')) { await marcar('agrupado'); return ok('agrupado'); }
+    // Tope diario por persona (los enviados guardan la hora: empiezan por cifra)
+    const ayer = new Date(Date.now() - 864e5).toISOString();
+    const hoy = await leer(`avisos?uid=eq.${a.uid}&created_at=gt.${q(ayer)}&datos->>correo=like.1*&select=id&limit=${MAX_DIA}`) as unknown[];
+    if (hoy.length >= MAX_DIA) { await marcar('tope'); return ok('tope diario'); }
 
     const { titulo, boton, enlace } = contenido(tipo, pedido, equipo);
     const texto = String(d.texto || titulo).slice(0, 200);
@@ -120,9 +138,9 @@ Deno.serve(async req => {
       headers: { 'api-key': BREVO, 'Content-Type': 'application/json', accept: 'application/json' },
       body: JSON.stringify({
         sender: { name: 'AurevixWeb', email: REMITENTE },
-        to: [{ email: p.email, name: String(p.name || '').slice(0, 80) || undefined }],
+        to: [{ email, name: String(p.name || '').slice(0, 80) || undefined }],
         subject: texto.length > 90 ? texto.slice(0, 87) + '…' : texto,
-        htmlContent: correoHTML(nombre, titulo, texto, boton, enlace, p.email),
+        htmlContent: correoHTML(nombre, titulo, texto, boton, enlace, email),
         textContent: `${titulo}\n\n${nombre ? `Hola ${nombre}, ` : ''}${texto}.\n\n${boton}: ${enlace}\n\nPuedes cambiar tus avisos en ${WEB}/ajustes#notificaciones`,
         tags: ['aviso', tipo]
       })

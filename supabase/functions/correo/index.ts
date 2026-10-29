@@ -7,6 +7,8 @@
 //    con su sesión).
 //  - Los importes y el destinatario se leen del pedido en la
 //    base de datos, no de lo que mande el navegador.
+//  - Va al correo verificado de la cuenta del cliente (y en copia
+//    al de facturación si puso otro).
 //  Secretos: BREVO_API_KEY y BREVO_REMITENTE (correo
 //  verificado en Brevo). Nunca van en la web.
 // ==========================================================
@@ -39,6 +41,14 @@ async function leer(ruta: string) {
   const r = await fetch(`${SB_URL}/rest/v1/${ruta}`, { headers: { apikey: SERVICIO, Authorization: `Bearer ${SERVICIO}` } });
   if (!r.ok) throw new Error(`DB ${r.status}`);
   return r.json();
+}
+
+/** Correo verificado de la cuenta (el de entrar con el código) */
+async function correoCuenta(uid: string) {
+  const r = await fetch(`${SB_URL}/auth/v1/admin/users/${uid}`, { headers: { apikey: SERVICIO, Authorization: `Bearer ${SERVICIO}` } });
+  if (!r.ok) return '';
+  const u = await r.json();
+  return u?.email && (u.email_confirmed_at || u.confirmed_at) ? String(u.email) : '';
 }
 
 const esc = (t: unknown) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
@@ -149,8 +159,11 @@ Deno.serve(async req => {
     if (p.correos?.[fase] && !reenviar) return json({ yaEnviado: true });
     const [priv] = await leer(`privado?id=eq.${fila.uid}&select=datos`).catch(() => []);
     const fact = (priv?.datos || {}) as Record<string, string>;
-    const para = String(fact.emailFact || p.clienteEmail || p.respuestas?.email || '').trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(para)) return json({ error: 'El cliente no tiene un correo válido' }, 422);
+    const valido = (c: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c);
+    const para = await correoCuenta(fila.uid);
+    if (!valido(para)) return json({ error: 'El cliente no tiene un correo verificado' }, 422);
+    const copia = String(fact.emailFact || '').trim().toLowerCase();
+    const cc = valido(copia) && copia !== para.toLowerCase() ? [{ email: copia }] : [];
     const e: Empresa = { marca: String(empresa?.marca || 'AurevixWeb').slice(0, 60), email: String(empresa?.email || '').slice(0, 120), senal: Number(empresa?.senal) || 50, iva: Number(empresa?.iva) || 0, legal: empresa?.legal || {} };
     const { html, texto, asunto } = correoHTML(p, fila.id, fase, e, fact);
     const r = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -159,6 +172,7 @@ Deno.serve(async req => {
       body: JSON.stringify({
         sender: { name: e.marca, email: REMITENTE },
         to: [{ email: para, name: String(fact.razon || p.clienteNombre || '').slice(0, 80) || undefined }],
+        ...(cc.length ? { cc } : {}),
         ...(e.email ? { replyTo: { email: e.email, name: e.marca } } : {}),
         subject: asunto, htmlContent: html, textContent: texto, tags: ['pago', fase]
       })

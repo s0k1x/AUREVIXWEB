@@ -735,12 +735,6 @@ export function escucharAvisos(cb) {
     .subscribe();
   return () => sb.removeChannel(canal);
 }
-/** El equipo puede avisar a un cliente (por ejemplo, al responder) */
-export async function crearAviso(uid, texto, pedido = '', tipo = 'info') {
-  if (!uid) return;
-  if (modoDemo) return avisoDemo(uid, texto, pedido, tipo);
-  await limite(sb.from('avisos').insert({ uid, datos: { texto, pedido, tipo, t: Date.now() } }));
-}
 
 /* Avisos del modo demo (en Supabase los crea la base de datos) */
 function uidsPropietariosDemo() {

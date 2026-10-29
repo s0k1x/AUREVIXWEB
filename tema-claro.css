@@ -101,7 +101,7 @@ html[data-tema=claro] .t-stats div{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .t-stats div:first-child span{color:rgba(20,20,26,.65)}
 html[data-tema=claro] .perfil li{color:#36342f}
 html[data-tema=claro] .rango input::-webkit-slider-thumb{box-shadow:0 0 0 1px var(--accent),0 6px 20px rgba(79,133,12,.4)}
-html[data-tema=claro] .calc-res div:first-child{border-color:rgba(79,133,12,.35)}
+html[data-tema=claro] .calc-barra{background:rgba(255,255,255,.94)}
 html[data-tema=claro] .faq details[open]{border-color:rgba(79,133,12,.3)}
 /* --- funciones.css --- */
 html[data-tema=claro] .av-menu{box-shadow:0 24px 60px rgba(0,0,0,.14)}

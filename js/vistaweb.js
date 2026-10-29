@@ -209,7 +209,7 @@ const ATRIBUTOS = [
   ['embed', 'src'], ['object', 'data'], ['iframe', 'src'], ['image', 'href'], ['use', 'href'], ['image', 'xlink:href'], ['use', 'xlink:href']
 ];
 const ESCRIPT_NAVEGAR = hash => `<script>(function(){
-var H=${JSON.stringify(hash || '')};
+var H=${JSON.stringify(String(hash || '')).replace(/</g, '\\u003c')};
 function ir(id){var t=id&&document.getElementById(id);if(t){t.scrollIntoView({behavior:'smooth',block:'start'});return true}return false}
 if(H)addEventListener('load',function(){ir(H)});
 document.addEventListener('click',function(e){
