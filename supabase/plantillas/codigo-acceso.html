@@ -3,7 +3,8 @@
      Se pega igual en «Magic link» y en «Confirm signup».
      Asunto: Tu código de AurevixWeb: {{ .Token }}
      Se usa para entrar y para verificar el correo al crear la cuenta (no hay contraseñas).
-     {{ .Token }} es el código de 6 cifras: no se debe cambiar. -->
+     {{ .Token }} es el código de 6 cifras y {{ .Email }} el correo del cliente: no se deben cambiar.
+     La cabecera es la imagen https://aurevixweb.es/icons/email-cabecera.png (logo y nombre reales). -->
 <html lang="es" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8">
@@ -13,46 +14,48 @@
 <title>Tu código de acceso</title>
 </head>
 <body style="margin:0;padding:0;background:#0c0c0e;-webkit-text-size-adjust:100%">
-<!-- Texto que se ve en la lista de correos, antes de abrirlo -->
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#0c0c0e;font-size:1px;line-height:1px">Tu código es {{ .Token }}. Caduca en 10 minutos.&#8199;&zwnj;&#8199;&zwnj;&#8199;&zwnj;&#8199;&zwnj;&#8199;&zwnj;&#8199;&zwnj;&#8199;&zwnj;</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0c0c0e" style="background:#0c0c0e">
-  <tr><td align="center" style="padding:32px 16px">
+  <tr><td align="center" style="padding:28px 14px 36px">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px">
 
-      <!-- Marca -->
-      <tr><td style="padding:0 4px 22px">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-          <td style="padding-right:10px;vertical-align:middle"><img src="https://aurevixweb.es/icons/logo-a.png" width="34" height="34" alt="" style="display:block;border:0"></td>
-          <td style="vertical-align:middle"><img src="https://aurevixweb.es/icons/nombre.png" width="152" height="15" alt="AurevixWeb" style="display:block;border:0"></td>
-        </tr></table>
-      </td></tr>
+      <tr><td bgcolor="#16161b" style="background:#16161b;border:1px solid #2a2a31;border-radius:22px;overflow:hidden">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 
-      <!-- Tarjeta -->
-      <tr><td bgcolor="#16161b" style="background:#16161b;border:1px solid #2a2a31;border-radius:20px;padding:34px 30px 30px">
+          <!-- Cabecera con el logo -->
+          <tr><td align="center" bgcolor="#0c0c0e" style="background:#0c0c0e;border-radius:21px 21px 0 0;font-size:0;line-height:0">
+            <a href="https://aurevixweb.es" target="_blank" style="text-decoration:none"><img src="https://aurevixweb.es/icons/email-cabecera.png" width="480" height="210" alt="AurevixWeb" style="display:block;width:100%;max-width:480px;height:auto;border:0;border-radius:21px 21px 0 0;font-family:'Bricolage Grotesque',-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:26px;line-height:210px;font-weight:700;color:#c8f560;text-align:center"></a>
+          </td></tr>
 
-        <h1 style="margin:0 0 12px;font-family:'Bricolage Grotesque',-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:28px;line-height:1.15;font-weight:700;letter-spacing:-.02em;color:#f3f1ea">Tu código de acceso</h1>
-        <p style="margin:0 0 24px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;color:#b7b5ac">Escríbelo en la web para entrar o para verificar tu correo.</p>
+          <tr><td align="center" style="padding:36px 28px 0">
+            <h1 style="margin:0 0 12px;font-family:'Bricolage Grotesque',-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:30px;line-height:1.15;font-weight:700;letter-spacing:-.02em;color:#f3f1ea;text-align:center">Tu código de acceso</h1>
+            <p style="margin:0 auto 28px;max-width:340px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;color:#b7b5ac;text-align:center">Vuelve a AurevixWeb y escríbelo en las casillas para entrar o verificar tu correo.</p>
 
-        <!-- El código -->
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-          <td align="center" bgcolor="#0f0f12" style="background:#0f0f12;border:1px solid #3b4a1d;border-radius:14px;padding:22px 8px">
-            <span style="display:block;font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:38px;line-height:1;font-weight:700;letter-spacing:.28em;text-indent:.28em;color:#c8f560">{{ .Token }}</span>
-          </td>
-        </tr></table>
+            <!-- El código -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td align="center" bgcolor="#11140a" style="background:#11140a;background-image:linear-gradient(180deg,#171c0b,#0f0f12);border:1.5px solid #4f6a1c;border-radius:18px;padding:26px 8px;box-shadow:0 0 0 5px rgba(200,245,96,.07),0 12px 34px rgba(200,245,96,.10)">
+                <span style="display:block;font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:44px;line-height:1;font-weight:700;letter-spacing:.26em;text-indent:.26em;color:#c8f560">{{ .Token }}</span>
+              </td>
+            </tr></table>
 
-        <p style="margin:14px 0 0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;color:#b7b5ac;text-align:center">Caduca en 10 minutos y solo sirve una vez.</p>
+            <p style="margin:16px 0 0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;color:#b7b5ac;text-align:center">Caduca en <b style="color:#f3f1ea">10 minutos</b> y solo sirve una vez.</p>
+          </td></tr>
 
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-top:26px">
-          <div style="height:1px;line-height:1px;font-size:1px;background:#2a2a31">&nbsp;</div>
-        </td></tr></table>
+          <tr><td style="padding:30px 28px 0"><div style="height:1px;line-height:1px;font-size:1px;background:#2a2a31">&nbsp;</div></td></tr>
 
-        <p style="margin:20px 0 0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13.5px;line-height:1.6;color:#9a978e">Si no lo has pedido tú, ignora este correo: sin el código nadie puede entrar en tu cuenta. No se lo des a nadie, ni siquiera a nosotros; nunca te lo pediremos.</p>
+          <tr><td style="padding:22px 28px 32px">
+            <p style="margin:0 0 10px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.6;color:#d6d4cb;text-align:center"><b>¿No has sido tú?</b></p>
+            <p style="margin:0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13.5px;line-height:1.65;color:#9a978e;text-align:center">Ignora este correo: sin el código nadie puede entrar en tu cuenta. No se lo des a nadie, ni siquiera a nosotros; nunca te lo pediremos.</p>
+          </td></tr>
+
+        </table>
       </td></tr>
 
       <!-- Pie -->
-      <tr><td style="padding:22px 6px 0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12.5px;line-height:1.6;color:#86837c;text-align:center">
-        AurevixWeb · Páginas web para negocios<br>
-        <a href="https://aurevixweb.es" style="color:#b7b5ac;text-decoration:underline">aurevixweb.es</a>
+      <tr><td align="center" style="padding:24px 10px 0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12.5px;line-height:1.7;color:#86837c;text-align:center">
+        Enviado a {{ .Email }}<br>
+        <a href="https://aurevixweb.es" style="color:#b7b5ac;text-decoration:underline">aurevixweb.es</a> &nbsp;·&nbsp; <a href="https://aurevixweb.es/terminos-y-privacidad" style="color:#b7b5ac;text-decoration:underline">Términos y privacidad</a><br>
+        AurevixWeb · Páginas web para negocios
       </td></tr>
 
     </table>
