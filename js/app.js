@@ -10,6 +10,7 @@ import {
   estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
 } from './ui.js';
 import { planesActivos, extrasActivos } from './sitio.js';
+import './mundo.js';
 import { montarHilo, montarArchivos, abrirRecibo } from './colabora.js';
 import { botonPago, abrirPago, abrirResena, animarYPagar } from './pago.js';
 import { recomendar, iniciarChat } from './asistente.js';
@@ -234,44 +235,23 @@ document.addEventListener('aurevix:pedir', e => {
   abrirCompra(plan, '', { urgente, extras });
 });
 
-/* ==========================================================
-   PRECIOS: índice de tipos de web + el ticket del elegido
-   Al señalar (ratón) o pulsar un nombre, el ticket cambia con un fundido corto.
-   ========================================================== */
-const quietoUI = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.movimiento === 'reducido';
-const PL = planesActivos();
-let prSel = (PL.find(p => p.popular) || PL[0])?.id;
-const ticketHTML = p => `
-  <article class="ticket" aria-label="${esc(p.nombre)}">
-    <div class="tk-main">
-      <h3>${esc(p.nombre)}</h3>
-      <p class="tk-desc">${esc(p.desc)}</p>
-      <ul class="tk-incluye">${p.incluye.map(i => `<li>${icono('check')}<span>${esc(i)}</span></li>`).join('')}</ul>
-      <p class="tk-entrega">${icono('clock')}<span>Entrega en ${esc(p.entrega)}</span></p>
-    </div>
-    <div class="tk-stub">
-      <b class="tk-precio">${euros(p.precio)}</b>
-      <p class="tk-nota">Precio de partida, ${ivaTexto()}</p>
-      ${bvActivo() ? `<p class="tk-bv">${euros(Math.round(p.precio * (100 - CONFIG.bienvenida.pct)) / 100)} en tu primera web con <button type="button" class="bv-cod" data-copy="${esc(CONFIG.bienvenida.codigo)}" aria-label="Copiar código ${esc(CONFIG.bienvenida.codigo)}">${esc(CONFIG.bienvenida.codigo)} ${icono('copy')}</button></p>` : ''}
-      <button class="btn tk-btn" data-comprar="${p.id}"><span>${textoComprar()}</span>${icono('arrow')}</button>
-    </div>
-  </article>`;
-$('#prNombres').innerHTML = PL.map(p => `<button type="button" role="tab" class="pr-nombre" data-plan="${p.id}" aria-controls="planes" aria-selected="${p.id === prSel}"><b>${esc(p.nombre)}</b><span>${euros(p.precio)}</span></button>`).join('');
-$('#planes').innerHTML = PL.length ? ticketHTML(PL.find(p => p.id === prSel) || PL[0]) : '';
-let prTimer = 0;
-function elegirPlan(id) {
-  if (!id || id === prSel) return;
-  prSel = id;
-  $$('#prNombres [data-plan]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.plan === id)));
-  const caja = $('#planes'), plan = PL.find(p => p.id === id);
-  clearTimeout(prTimer);
-  if (quietoUI()) { caja.innerHTML = ticketHTML(plan); return; }
-  caja.classList.add('cambia');
-  prTimer = setTimeout(() => { caja.innerHTML = ticketHTML(plan); caja.classList.remove('cambia'); }, 140);
+if (bvActivo()) {
+  $('#planes').insertAdjacentHTML('beforebegin', `<div class="bv-banda reveal">
+    <span class="bv-ic">${icono('gift')}</span>
+    <div><b>−${CONFIG.bienvenida.pct} % en tu primera web</b><span>Usa el código <button type="button" class="bv-cod" data-copy="${esc(CONFIG.bienvenida.codigo)}" aria-label="Copiar código ${esc(CONFIG.bienvenida.codigo)}">${esc(CONFIG.bienvenida.codigo)} ${icono('copy')}</button> al revisar tu pedido.</span></div>
+  </div>`);
 }
-$('#prNombres').addEventListener('click', e => elegirPlan(e.target.closest('[data-plan]')?.dataset.plan));
-$('#prNombres').addEventListener('focusin', e => elegirPlan(e.target.closest('[data-plan]')?.dataset.plan));
-if (matchMedia('(hover: hover) and (pointer: fine)').matches) $('#prNombres').addEventListener('pointerover', e => elegirPlan(e.target.closest('[data-plan]')?.dataset.plan));
+$('#planes').innerHTML = planesActivos().map(p => `
+  <article class="plan-card reveal ${p.popular ? 'popular' : ''}">
+    ${p.popular ? '<span class="tag">El más pedido</span>' : ''}
+    <div class="pc-top"><span class="pc-ic">${icono(p.icono)}</span><span class="pc-time">${icono('clock')} ${esc(p.entrega)}</span></div>
+    <h3>${esc(p.nombre)}</h3>
+    <p class="pc-desc">${esc(p.desc)}</p>
+    <div class="pc-price"><small>desde</small> ${euros(p.precio)}<small class="pc-iva">${ivaTexto()}</small></div>
+    ${bvActivo() ? `<p class="pc-bv">${icono('gift')} ${euros(Math.round(p.precio * (100 - CONFIG.bienvenida.pct)) / 100)} en tu primera web</p>` : ''}
+    <ul>${p.incluye.slice(0, 4).map(i => `<li>${icono('check')}${esc(i)}</li>`).join('')}</ul>
+    <button class="btn ${p.popular ? 'btn-dark' : 'btn-ghost btn-fill'} w100" data-comprar="${p.id}"><span>${textoComprar()}</span>${icono('arrow')}</button>
+  </article>`).join('');
 
 /* Datos de la portada al día con los precios y la señal de Ajustes */
 {
@@ -329,52 +309,64 @@ $('#verComparar').addEventListener('click', e => {
 });
 
 /* ==========================================================
-   DISEÑOS: índice con vista previa
-   Al elegir un nombre, el capítulo entero toma el color del diseño y la
-   ventana enseña ese diseño en vivo (y lo recorre de arriba abajo).
+   GALERÍA DE DISEÑOS
    ========================================================== */
-const tintaPara = hex => { const n = parseInt(hex.slice(1), 16), l = (0.299 * (n >> 16) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255; return l > .6 ? '#0c0c0e' : '#ffffff'; };
-let dzSel = '', dzTurno = 0, dzActiva = 0;
-const dzVista = $('#dzVista');
-dzVista.innerHTML = '<div class="dz-capa"><iframe tabindex="-1" aria-hidden="true" title=""></iframe></div>'.repeat(2);
-const dzCapas = $$('.dz-capa', dzVista);
-function escalaDz() {
-  const s = dzVista.clientWidth / 1280;
-  dzVista.style.setProperty('--s', s);
-  dzVista.style.setProperty('--d', `${Math.min(0, -(2400 * s - dzVista.clientHeight))}px`);
+const GRUPO = { filo: 'local', brasa: 'local', calma: 'local', pulso: 'local', kiosko: 'tienda', lienzo: 'pro' };
+const FILTROS_DZ = [['todos', 'Todos'], ['local', 'Negocio local'], ['tienda', 'Tienda online'], ['pro', 'Profesional']];
+$('#dzFiltro').innerHTML = FILTROS_DZ.map(([k, t], i) =>
+  `<label class="opt"><input type="radio" name="dzf" value="${k}" ${i === 0 ? 'checked' : ''}><span><i>${t}</i></span></label>`).join('');
+$('#dzFiltro').addEventListener('change', e => {
+  const g = e.target.value;
+  $$('#disenosGrid .dz').forEach((c, i) => {
+    const ver = g === 'todos' || c.dataset.grupo === g;
+    if (ver) { c.hidden = false; requestAnimationFrame(() => c.classList.remove('fuera')); c.style.transitionDelay = `${i * 40}ms`; }
+    else { c.classList.add('fuera'); setTimeout(() => { if (c.classList.contains('fuera')) c.hidden = true; }, 350); }
+  });
+});
+$('#disenosGrid').innerHTML = PLANTILLAS.map(p => `
+  <article class="dz reveal" data-ver="${p.id}" data-grupo="${GRUPO[p.id] || 'local'}" tabindex="0" role="button" aria-label="Ver diseño ${esc(p.nombre)}" style="--c:${p.c.accent}">
+    <div class="dz-win">
+      <div class="dz-bar"><i></i><i></i><i></i><span>${esc(p.dominio)}</span></div>
+      <div class="dz-view" style="background:${p.c.bg}"><div class="thumb-load">${spinner()}</div><iframe data-src="${urlPlantilla(p.id, '', '', true)}" width="1280" height="2600" tabindex="-1" aria-hidden="true" title=""></iframe></div>
+      <span class="dz-scroll" aria-hidden="true">${icono('move')} recorre la web</span>
+    </div>
+    <div class="dz-info">
+      <div><b>${esc(p.nombre)}</b><small>${esc(p.sector)}</small></div>
+      <div class="dz-pal" title="Colores del diseño">${[p.c.bg, p.c.accent, p.c.text].map(c => `<i style="background:${c}"></i>`).join('')}</div>
+    </div>
+    <p>${esc(p.desc)}</p>
+    <div class="dz-cta"><span>Ver en vivo</span>${icono('arrow')}</div>
+  </article>`).join('');
+vigilarCarga($('#disenosGrid'));
+/* Escala de cada ventana y «scroll» automático. El transform se escribe directamente en el iframe:
+   Safari (iPhone) no siempre vuelve a aplicar un transform que depende de variables CSS que cambian,
+   y la web se quedaba pequeña con un hueco blanco. */
+function colocarDz(card, animar = true, ancho, alto) {
+  const v = card.querySelector('.dz-view'), ifr = v?.querySelector('iframe');
+  ancho ??= v?.clientWidth; alto ??= v?.clientHeight;
+  if (!ifr || !ancho) return;
+  const s = ancho / 1280;
+  const d = card.classList.contains('recorre') ? Math.min(0, -(2600 * s - alto)) : 0;
+  // Al cambiar de tamaño la escala se aplica al momento; solo se anima el recorrido
+  if (!animar) ifr.style.transition = 'none';
+  ifr.style.transform = `translateY(${d.toFixed(1)}px) scale(${s.toFixed(5)})`;
+  if (!animar) { void ifr.offsetWidth; ifr.style.transition = ''; }
 }
-new ResizeObserver(escalaDz).observe(dzVista);
-$('#dzNombres').innerHTML = PLANTILLAS.map(p => `<button type="button" role="tab" class="dz-nombre" data-dz="${p.id}" aria-controls="dzEscena" aria-selected="false"><b>${esc(p.nombre)}</b><span>${esc(p.sector)}</span></button>`).join('');
-function elegirDiseno(id, { cargar = true } = {}) {
-  const p = plantillaPorId(id);
-  if (!p || id === dzSel) return;
-  dzSel = id;
-  const sec = $('#disenos');
-  sec.style.setProperty('--campo', p.c.accent);
-  sec.style.setProperty('--campo-tinta', tintaPara(p.c.accent));
-  sec.style.setProperty('--escena', p.c.bg);
-  $$('#dzNombres [data-dz]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.dz === id)));
-  $('#dzUrl').textContent = p.dominio;
-  $('#dzFicha').innerHTML = `<p>${esc(p.desc)}</p>
-    <div class="dz-acc"><button type="button" class="btn btn-dark" data-ver="${p.id}">Ver en vivo ${icono('arrow')}</button></div>`;
-  if (!cargar) return;
-  const turno = ++dzTurno, sig = 1 - dzActiva, c = dzCapas[sig], f = c.firstElementChild;
-  c.classList.remove('on', 'recorre');
-  f.onload = () => fotosListas(f).then(() => requestAnimationFrame(() => {
-    if (turno !== dzTurno) return;
-    escalaDz();
-    c.classList.add('on'); dzCapas[dzActiva].classList.remove('on', 'recorre'); dzActiva = sig;
-    if (!quietoUI()) setTimeout(() => turno === dzTurno && c.classList.add('recorre'), 900);
-  }));
-  f.src = urlPlantilla(id, '', '', true);
+const roDz = new ResizeObserver(es => {
+  const medidas = es.map(({ target: v }) => [v.closest('.dz'), v.clientWidth, v.clientHeight]); // leer todo antes de escribir
+  medidas.forEach(([c, w, h]) => colocarDz(c, false, w, h));
+});
+$$('#disenosGrid .dz-view').forEach(v => roDz.observe(v));
+const recorrer = (card, si) => { card.classList.toggle('recorre', si); colocarDz(card); };
+if (matchMedia('(hover: hover)').matches) {
+  $$('#disenosGrid .dz').forEach(c => { c.addEventListener('mouseenter', () => recorrer(c, true)); c.addEventListener('mouseleave', () => recorrer(c, false)); });
+} else {
+  // En el móvil (sin ratón) la web se recorre sola cuando la tarjeta está en el centro de la pantalla
+  const ioDz = new IntersectionObserver(es => es.forEach(e => recorrer(e.target, e.isIntersecting)), { rootMargin: '-35% 0px -35% 0px' });
+  $$('#disenosGrid .dz').forEach(c => ioDz.observe(c));
 }
-$('#dzNombres').addEventListener('click', e => elegirDiseno(e.target.closest('[data-dz]')?.dataset.dz));
-$('#dzNombres').addEventListener('focusin', e => elegirDiseno(e.target.closest('[data-dz]')?.dataset.dz));
-if (matchMedia('(hover: hover) and (pointer: fine)').matches) $('#dzNombres').addEventListener('pointerover', e => elegirDiseno(e.target.closest('[data-dz]')?.dataset.dz));
-$('#dzEscena').addEventListener('click', () => dzSel && abrirPreview(dzSel));
-// El color y el texto, al momento; la web en vivo, solo cuando el capítulo está cerca
-elegirDiseno(PLANTILLAS[0].id, { cargar: false });
-alAcercarse($('#disenos'), () => { const id = dzSel; dzSel = ''; elegirDiseno(id); }, '400px');
+// Al volver a la pestaña o girar el móvil, se recoloca todo
+addEventListener('pageshow', () => $$('#disenosGrid .dz').forEach(c => colocarDz(c, false)));
 
 /* ==========================================================
    OPINIONES
@@ -411,18 +403,17 @@ const io = new IntersectionObserver(es => es.forEach(e => {
 $$('.reveal').forEach((el, i) => { el.style.transitionDelay = `${(i % 3) * 70}ms`; io.observe(el); });
 pintarOpiniones();
 
-/* ---------- Capítulos: título, texto y lo demás entran escalonados al verlos ---------- */
-{
-  const ioCap = new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visto'); o.unobserve(e.target); } }), { threshold: 0, rootMargin: '0px 0px -12% 0px' });
-  $$('.cap').forEach(c => {
-    $$(':scope > .cap-in > *:not(.cap-h):not(.cap-p), :scope > .cap-in > div > *:not(.cap-h):not(.cap-p)', c)
-      .filter(el => !el.closest('.cap-h,.cap-p') && !el.matches('dl,.hero-ctas,.dz-nombres,.dz-ficha,.op-head,.faq-side'))
-      .forEach((el, i) => { el.classList.add('cap-entra'); el.style.setProperty('--i', Math.min(i, 6)); });
-    ioCap.observe(c);
-  });
+/* ---------- Línea de tiempo de "Cómo funciona": se rellena al hacer scroll ---------- */
+const pasosEl = $('#pasos');
+const pasosHijos = $$('.step', pasosEl);
+function avanzarPasos() {
+  const r = pasosEl.getBoundingClientRect();
+  const k = Math.min(1, Math.max(0, (innerHeight * .75 - r.top) / (r.height + innerHeight * .25)));
+  pasosEl.style.setProperty('--prog', k.toFixed(3));
+  pasosHijos.forEach((s, i) => s.classList.toggle('hecho', k >= (i + .35) / pasosHijos.length));
 }
-/* ---------- Cómo trabajamos: la barra se llena tramo a tramo al verla ---------- */
-new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('en'); o.unobserve(e.target); } }), { threshold: .2 }).observe($('#pasos'));
+addEventListener('scroll', () => requestAnimationFrame(avanzarPasos), { passive: true });
+avanzarPasos();
 
 /* ==========================================================
    TE AYUDO A ELEGIR (asistente: texto libre o 3 preguntas)
