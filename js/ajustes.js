@@ -348,6 +348,9 @@ async function negocio() {
     ${bloque('Descuento de bienvenida', 'Se anuncia en la web y solo vale en la primera web de cada cliente (se comprueba al confirmar el pedido).', `
       ${interruptor({ id: 'bvActivo', titulo: 'Ofrecer descuento en la primera compra', checked: a.bienvenida.activo })}
       <div class="row-2">${texto('bvCodigo', 'Código', a.bienvenida.codigo, 'maxlength="30" autocapitalize="characters"')}<label class="aj-num"><span>Descuento (%)</span><input type="number" min="1" max="100" name="bvPct" value="${a.bienvenida.pct}"></label></div>`)}
+    ${bloque('Recomienda a un amigo', 'Cada cliente tiene su código (AMIGO-…) en «Mis proyectos». Su amigo tiene un descuento en su primera web y, cuando paga, en el panel te aparece para que des el premio a quien le recomendó. Antes de activarlo, ejecuta supabase/referidos-v66.sql en Supabase.', `
+      ${interruptor({ id: 'refActivo', titulo: 'Activar «Recomienda a un amigo»', checked: !!a.referidos?.activo })}
+      <div class="row-2"><label class="aj-num"><span>Descuento para el amigo (%)</span><input type="number" min="1" max="50" name="refPct" value="${a.referidos?.pct ?? 10}"></label>${texto('refPremio', 'Premio para quien recomienda', a.referidos?.premio || '', 'maxlength="120"', 'Ej.: un mes de mantenimiento gratis')}</div>`)}
     ${bloque('Creadores de vídeo', 'Pago fijo por cada vídeo aprobado y publicado. Se muestra en «Trabaja con nosotros» y en el panel de cada creador.', `
       <div class="aj-nums">
         <label class="aj-num"><span>Pago por vídeo (€)</span><input type="number" min="0" step="1" name="vPrecio" value="${a.videos.precio}"></label>
@@ -358,6 +361,9 @@ async function negocio() {
     ${bloque('Cupones de descuento', 'El cliente los escribe en el resumen del pedido. La lista no es visible para nadie más.', `
       <div class="cupones" id="cupones">${cupones.map(filaCupon).join('')}</div>
       <button type="button" class="btn btn-sm btn-ghost" id="addCupon">${icono('plus')}<span>Añadir cupón</span></button>`)}
+    ${bloque('Casos reales', 'Webs de clientes que ya has publicado y que tienen permiso para enseñarse. Salen en la portada (sección «Webs publicadas») solo si añades alguna. Nunca pongas casos inventados.', `
+      <div class="casos-aj" id="casosAj">${(a.casos || []).map(filaCaso).join('')}</div>
+      <button type="button" class="btn btn-sm btn-ghost" id="addCaso">${icono('plus')}<span>Añadir caso</span></button>`)}
     ${bloque('Trustpilot', 'El enlace público (arriba, en Contacto) enseña tu perfil en la web. La dirección de invitaciones es privada: solo la ves tú y se usa en el botón «Pedir reseña» de cada pedido.', `
       ${texto('tpCco', 'Dirección de invitaciones de Trustpilot (CCO)', tpCco, 'type="email" autocomplete="off" autocapitalize="off"', 'aurevixweb.es+…@invite.trustpilot.com')}`)}
     ${bloque('Asistente', 'El chat de dudas de la web (con IA si está conectado Gemini).', `
@@ -367,6 +373,8 @@ async function negocio() {
   </form>`;
   // Vista previa de la temporada al momento (se guarda con «Guardar cambios»)
   $('#fNeg').addEventListener('change', e => { if (e.target.name === 'temporada') aplicarTemporada(e.target.value); });
+  $('#addCaso').addEventListener('click', () => { $('#casosAj').insertAdjacentHTML('beforeend', filaCaso({})); $('#casosAj .cs-aj:last-child input').focus(); });
+  $('#casosAj').addEventListener('click', e => { if (e.target.closest('[data-quitar-caso]')) e.target.closest('.cs-aj').remove(); });
   $('#addCupon').addEventListener('click', () => { $('#cupones').insertAdjacentHTML('beforeend', filaCupon({ codigo: '', pct: 10, hasta: '', activo: true })); $('#cupones .cp:last-child input').focus(); });
   $('#cupones').addEventListener('click', e => { if (e.target.closest('[data-quitar-cp]')) e.target.closest('.cp').remove(); });
   $('#cupones').addEventListener('input', e => { if (e.target.dataset.k === 'codigo') e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9_-]/g, ''); });
@@ -375,7 +383,7 @@ async function negocio() {
     const o = ORIGINAL.config;
     await guardar({
       aviso: o.aviso, anuncio: o.anuncio, aceptarPedidos: o.aceptarPedidos, mensajeCerrado: o.mensajeCerrado, horario: o.horario, respuesta: o.respuesta, email: o.email,
-      senal: o.senal, comision: o.comision, urgente: o.urgente, temporada: o.temporada, pagos: o.pagos, trustpilot: o.trustpilot, bienvenida: o.bienvenida, videos: o.videos, redes: o.redes, asistente: { activo: o.asistente.activo, saludo: o.asistente.saludo },
+      senal: o.senal, comision: o.comision, urgente: o.urgente, temporada: o.temporada, pagos: o.pagos, trustpilot: o.trustpilot, referidos: o.referidos, casos: CONFIG.casos || [], bienvenida: o.bienvenida, videos: o.videos, redes: o.redes, asistente: { activo: o.asistente.activo, saludo: o.asistente.saludo },
       planes: Object.fromEntries(ORIGINAL.planes.map(p => [p.id, { precio: p.precio, entrega: p.entrega, dias: p.dias, activo: true, popular: !!p.popular }])),
       extras: Object.fromEntries(ORIGINAL.extras.map(x => [x.id, { precio: x.precio, activo: true }]))
     }, null, $('#resetNeg'));
@@ -397,12 +405,16 @@ async function negocio() {
       hasta: $('[data-k=hasta]', c).value, activo: $('[data-k=activo]', c).checked
     })).filter(c => c.codigo);
     if (new Set(lista.map(c => c.codigo)).size !== lista.length) return toast('Hay dos cupones con el mismo código', 'err');
+    const casos = $$('#casosAj .cs-aj').map(c => Object.fromEntries(['nombre', 'sector', 'url', 'texto'].map(k => [k, $(`[data-k=${k}]`, c).value.trim()]))).filter(c => c.nombre || c.url);
+    const casoMal = casos.find(c => !c.nombre || !/^https:\/\/\S+\.\S+$/i.test(c.url));
+    if (casoMal) return toast('Cada caso necesita nombre y una dirección que empiece por https://', 'err');
     if (v('tpCco') && !/^\S+@\S+\.\S+$/.test(v('tpCco'))) return toast('Revisa la dirección de invitaciones de Trustpilot', 'err');
     await guardar({
       aviso: v('aviso') || ORIGINAL.config.aviso, anuncio: { activo: $('#anuncioActivo').checked, texto: v('anuncioTexto') },
       aceptarPedidos: $('#aceptarPedidos').checked, mensajeCerrado: v('mensajeCerrado'),
       email: v('email') || CONFIG.email, horario: v('horario'), respuesta: v('respuesta'),
       redes: { instagram: v('instagram'), tiktok: v('tiktok'), linkedin: v('linkedin'), whatsapp: v('whatsapp').replace(/\D/g, '') }, trustpilot: v('trustpilot'),
+      referidos: { activo: $('#refActivo').checked, pct: Math.min(50, Math.max(1, +v('refPct') || 10)), premio: v('refPremio') }, casos,
       bienvenida: { activo: $('#bvActivo').checked, codigo: v('bvCodigo').toUpperCase().replace(/[^A-Z0-9_-]/g, '') || ORIGINAL.config.bienvenida.codigo, pct: Math.min(100, Math.max(1, +v('bvPct') || 10)) },
       videos: { precio: Math.max(0, +v('vPrecio') || 0), bonus: Math.max(0, +v('vBonus') || 0), visitas: Math.max(0, +v('vVisitas') || 0), maxMes: Math.max(1, +v('vMax') || 1) },
       senal: +v('senal'), urgente: (+v('urgente')) / 100, comision: +v('comision'),
@@ -454,6 +466,12 @@ async function libreria() {
     } catch (err) { toast(err.message || 'No se ha podido guardar', 'err'); ocupado(b, false); }
   });
 }
+const filaCaso = c => `<div class="cs-aj">
+  <div class="row-2"><input data-k="nombre" value="${esc(c.nombre || '')}" placeholder="Nombre del negocio" maxlength="60" aria-label="Nombre del negocio"><input data-k="sector" value="${esc(c.sector || '')}" placeholder="Sector (ej.: Barbería)" maxlength="60" aria-label="Sector"></div>
+  <input data-k="url" type="url" value="${esc(c.url || '')}" placeholder="https://sunegocio.es" maxlength="200" aria-label="Dirección de su web">
+  <input data-k="texto" value="${esc(c.texto || '')}" placeholder="Qué hicimos, en una frase" maxlength="200" aria-label="Qué hicimos">
+  <button type="button" class="icon-btn sm" data-quitar-caso aria-label="Quitar caso">${icono('trash')}</button>
+</div>`;
 const filaCupon = c => `<div class="cp">
   <input data-k="codigo" value="${esc(c.codigo)}" placeholder="CÓDIGO" maxlength="30" aria-label="Código">
   <label><input type="number" data-k="pct" min="1" max="100" value="${c.pct}" aria-label="Descuento"><span>%</span></label>

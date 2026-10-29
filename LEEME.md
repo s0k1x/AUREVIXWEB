@@ -917,3 +917,43 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
   2. `export STRIX_LLM="anthropic/<modelo>"` y `export LLM_API_KEY="<tu clave>"`
   3. `strix --target https://aurevixweb.es`
 - En esta sesión se ha hecho, en su lugar, una revisión de seguridad de los cambios. El contador de visitas valida todo lo que recibe y limita a 300 combinaciones al día.
+
+## 46. Versión v66 — Páginas por sector, guías, revisión gratis, mantenimiento, casos y recomendaciones
+**Lo que tienes que hacer tú (una vez)**
+1. En Supabase → SQL Editor, pega y ejecuta:
+   - `supabase/visitas-v65.sql`, para las estadísticas de visitas;
+   - `supabase/referidos-v66.sql`, para que valgan los códigos de amigo.
+2. Después, activa **Ajustes → Negocio → «Recomienda a un amigo»** y elige el descuento y el premio.
+3. Cuando tengas clientes que te den permiso, añade sus webs en **Ajustes → Negocio → «Casos reales»**. Salen en la portada, en la sección «Webs publicadas». Si no hay ninguno, la sección no aparece.
+4. En Google Search Console, vuelve a enviar `sitemap.xml`: ahora tiene 16 páginas.
+
+**Páginas nuevas** (las genera `scripts/paginas.py`)
+- Para cambiar un texto, edítalo en ese archivo y ejecuta `python3 scripts/paginas.py`.
+- Los precios y los plazos no van escritos: se leen de Ajustes al cargar.
+- **Webs por sector:**
+  - las páginas: barberías, centros de estética, restaurantes, tiendas online, gimnasios y profesionales;
+  - cada una tiene la vista previa en vivo de su diseño, qué incluye, los tipos de web recomendados con su precio, los pasos y preguntas frecuentes;
+  - cada una lleva datos para Google (servicio, migas y preguntas frecuentes);
+  - «Empezar» abre el cuestionario con ese diseño ya elegido (`./?comprar=negocio&diseno=filo`).
+- **Guías:**
+  - cuánto cuesta una web;
+  - qué necesita la web de tu negocio;
+  - dominio, alojamiento y correo;
+  - 20 comprobaciones antes de lanzar, con casillas para marcar (no se guarda nada).
+- **Revisa tu web gratis** (`revisa-tu-web`):
+  - Google (PageSpeed Insights) analiza la web que escriba el visitante como si fuera un móvil y la página muestra la velocidad, el SEO, la accesibilidad, las buenas prácticas, los tiempos de carga y lo que conviene mejorar, en español.
+  - No necesita clave. Si un día Google limita las revisiones, crea una clave restringida a aurevixweb.es y ponla en `config.js → pagespeedKey`.
+- **Mantenimiento mensual:** qué incluye, el precio, que no tiene permanencia y preguntas frecuentes.
+- Todo está enlazado:
+  - en el pie hay dos columnas nuevas, «Webs para…» y «Recursos»;
+  - en la portada, bajo los diseños, hay enlaces a cada sector.
+- Las visitas de todas estas páginas salen en Panel → Resumen → «Visitas a la web».
+
+**Recomienda a un amigo**
+- Cada cliente con un pedido ve en «Mis proyectos» su código `AMIGO-XXXXXXXX`, con un botón para copiar el enlace y otro para compartirlo.
+- Quien entra por ese enlace ve el aviso del descuento. En el resumen del pedido le sale el botón «Te recomienda un amigo».
+  - Solo vale en su primera web.
+  - No vale con el código propio.
+  - Se comprueba en el servidor.
+- Cuando el amigo paga, en **Panel → Resumen → «Para hoy»** aparece «Premio para X». En la ficha del pedido verás «Recomendado por» y un botón para marcar el premio como dado.
+- Las condiciones están en los términos. El enlace se recuerda 30 días solo si se aceptan las preferencias de cookies (`tm_amigo`).

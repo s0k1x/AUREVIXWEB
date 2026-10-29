@@ -10,7 +10,7 @@
 -- ==========================================================
 create table if not exists public.visitas (
   dia date not null,
-  pagina text not null check (pagina in ('inicio', 'trabaja', 'terminos')),
+  pagina text not null check (pagina ~ '^[a-z0-9-]{2,40}$'),
   origen text not null default '' check (char_length(origen) <= 60),
   dispositivo text not null check (dispositivo in ('movil', 'tablet', 'ordenador')),
   idioma text not null check (idioma in ('es', 'en')),
@@ -18,6 +18,9 @@ create table if not exists public.visitas (
   primary key (dia, pagina, origen, dispositivo, idioma)
 );
 alter table public.visitas enable row level security;
+-- v66: páginas nuevas (sectores, guías…): se acepta cualquier nombre corto de página
+alter table public.visitas drop constraint if exists visitas_pagina_check;
+alter table public.visitas add constraint visitas_pagina_check check (pagina ~ '^[a-z0-9-]{2,40}$');
 
 drop policy if exists vis_ver on public.visitas;
 create policy vis_ver on public.visitas for select to authenticated using (es_propietario());
@@ -31,7 +34,7 @@ returns void language plpgsql security definer set search_path = public as $$
 declare
   o text := lower(coalesce(p_origen, ''));
 begin
-  if p_pagina not in ('inicio', 'trabaja', 'terminos') or p_dispositivo not in ('movil', 'tablet', 'ordenador') or p_idioma not in ('es', 'en') then
+  if coalesce(p_pagina, '') !~ '^[a-z0-9-]{2,40}$' or p_dispositivo not in ('movil', 'tablet', 'ordenador') or p_idioma not in ('es', 'en') then
     return;
   end if;
   if o !~ '^[a-z0-9.-]{0,60}$' then o := 'otro'; end if;

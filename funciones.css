@@ -1229,7 +1229,7 @@ input,textarea{caret-color:var(--accent)}
 .pc-price small.pc-iva{font-family:var(--fb);letter-spacing:0;text-transform:none}
 
 /* v45 · Pie en columnas: servicios, empresa, legal y cuenta */
-.footer-cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 32px;padding:8px 0 28px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.footer-cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:28px 32px;padding:8px 0 28px;border-bottom:1px solid var(--line);margin-bottom:22px}
 .footer-col{display:grid;align-content:start;gap:4px;min-width:0}
 .footer-col b{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
 .footer-col a,.footer-col .link-btn{justify-self:start;padding:4px 0;font-size:14px;color:var(--muted);transition:color .18s ease;overflow-wrap:anywhere}
@@ -1238,6 +1238,7 @@ input,textarea{caret-color:var(--accent)}
 .footer-col .link-btn svg{width:15px;height:15px}
 .footer-redes{display:flex;gap:12px;margin-top:6px}
 .footer-redes svg{width:18px;height:18px}
+@media (max-width:1180px){.footer-cols{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:900px){.footer-cols{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){
   .footer-cols{gap:24px 18px;text-align:left}
@@ -1320,3 +1321,11 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 .tp-op:active .tp-in{transform:scale(.98)}
 .tp-op input:checked + .tp-in{border-color:var(--accent);background:var(--accent-soft)}
 .tp-op input:focus-visible + .tp-in{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Ajustes → Casos reales */
+.casos-aj{display:grid;gap:10px;margin:10px 0 12px}
+.cs-aj{position:relative;display:grid;gap:8px;padding:12px 52px 12px 12px;border-radius:14px;border:1px solid var(--line)}
+.cs-aj .row-2{gap:8px}
+.cs-aj input{width:100%;min-width:0;height:42px;padding:0 12px;border-radius:10px;border:1px solid var(--line2);background:var(--field);color:var(--text);font-size:14.5px;outline:none}
+.cs-aj input:focus{border-color:var(--accent)}
+.cs-aj [data-quitar-caso]{position:absolute;top:12px;right:10px}

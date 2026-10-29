@@ -28,7 +28,7 @@ export const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 /* Visitas de las páginas públicas, sin cookies. No cuenta robots, recargas,
    ni a quien pide no ser seguido (Do Not Track / Global Privacy Control). */
 function contarVisita(pagina) {
-  if (!['inicio', 'trabaja', 'terminos'].includes(pagina) || /bot|crawl|spider|slurp|lighthouse|headless/i.test(navigator.userAgent)) return;
+  if (['panel', 'ajustes', 'vista'].includes(pagina) || !/^[a-z0-9-]{2,40}$/.test(pagina) || /bot|crawl|spider|slurp|lighthouse|headless/i.test(navigator.userAgent)) return;
   if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl) return;
   try { if (['reload', 'back_forward'].includes(performance.getEntriesByType('navigation')[0]?.type)) return; } catch { /* nada */ }
   let origen = '';
@@ -357,6 +357,20 @@ export function pintarPie() {
           <a href="./#disenos">Diseños de partida</a>
           <a href="./#como">Cómo trabajamos</a>
           <a href="library/">Librería</a>
+        </div>
+        <div class="footer-col"><b>Webs para…</b>
+          <a href="webs-para-barberias">Barberías y peluquerías</a>
+          <a href="webs-para-centros-de-estetica">Centros de estética</a>
+          <a href="webs-para-restaurantes">Restaurantes y bares</a>
+          <a href="tiendas-online">Tiendas online</a>
+          <a href="webs-para-gimnasios">Gimnasios</a>
+          <a href="webs-para-profesionales">Profesionales</a>
+        </div>
+        <div class="footer-col"><b>Recursos</b>
+          <a href="revisa-tu-web">Revisa tu web gratis</a>
+          <a href="guias">Guías</a>
+          <a href="cuanto-cuesta-una-pagina-web">Cuánto cuesta una web</a>
+          <a href="mantenimiento">Mantenimiento mensual</a>
         </div>
         <div class="footer-col"><b>Empresa</b>
           <a href="./#opiniones">Opiniones</a>

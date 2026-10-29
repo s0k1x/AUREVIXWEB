@@ -34,6 +34,9 @@ const comision = p => Math.round((p.total || 0) * PCT) / 100;
 const ventasDe = uid => datos.pedidos.filter(p => p.ref === uid && p.estado !== 'cancelado');
 const estadoComision = p => p.comisionPagada ? ['Cobrada', 'p-done'] : p.pagoEstado === 'pagado' ? ['Lista para cobrar', 'p-new'] : ['Cliente aún no ha pagado', 'p-pend'];
 const porPagar = uid => ventasDe(uid).filter(p => p.pagoEstado === 'pagado' && !p.comisionPagada);
+/* Recomienda a un amigo: quién recomendó este pedido (por su código AMIGO-…) */
+const recomendadoPor = p => /^AMIGO-[0-9A-F]{8}$/.test(p.cupon || '') ? datos.usuarios.find(u => store.codigoAmigo(u.uid) === p.cupon) || { name: 'Un cliente', email: '' } : null;
+const premioPendiente = p => !!recomendadoPor(p) && ['senal', 'pagado'].includes(p.pagoEstado) && !p.premioAmigo && p.estado !== 'cancelado';
 const nombreDe = uid => datos.usuarios.find(u => u.uid === uid)?.name || 'Vendedor';
 const vacio = (ic, t, d = '') => `<div class="empty"><div class="em">${icono(ic)}</div><b>${t}</b><p>${d}</p></div>`;
 
@@ -239,7 +242,8 @@ function resumen() {
     ...P.filter(p => activo(p) && p.revision?.estado === 'cambios' && (p.revision.comentarios || []).some(c => !c.hecho)).slice(0, 5).map(p => ({ ic: 'pen', t: `${neg(p)}: el cliente pide cambios`, id: p.id })),
     ...tarde.slice(0, 5).map(p => ({ ic: 'clock', t: `${neg(p)}: ${plazoTexto(p).toLowerCase()}`, id: p.id })),
     ...P.filter(p => p.estado === 'nuevo' && !p.asignado).slice(0, 5).map(p => ({ ic: 'inbox', t: `Asignar ${neg(p)}`, id: p.id })),
-    ...abiertas.slice(0, 5).map(t => ({ ic: 'help', t: `Responder: ${t.asunto}`, go: 'soporte' }))
+    ...abiertas.slice(0, 5).map(t => ({ ic: 'help', t: `Responder: ${t.asunto}`, go: 'soporte' })),
+    ...P.filter(premioPendiente).slice(0, 5).map(p => ({ ic: 'gift', t: `Premio para ${recomendadoPor(p).name}: recomendó a ${neg(p)}`, id: p.id }))
   ];
 
   const faltan = datosLegalesPendientes();
@@ -289,7 +293,12 @@ function resumen() {
 }
 
 /* ---------- PROPIETARIO: Visitas (contadores propios, sin cookies) ---------- */
-const PAGINAS_WEB = { inicio: 'Inicio', trabaja: 'Trabaja con nosotros', terminos: 'Términos y privacidad' };
+const PAGINAS_WEB = {
+  inicio: 'Inicio', trabaja: 'Trabaja con nosotros', terminos: 'Términos y privacidad', 'revisa-tu-web': 'Revisa tu web', mantenimiento: 'Mantenimiento', guias: 'Guías',
+  'webs-para-barberias': 'Sector: barberías', 'webs-para-centros-de-estetica': 'Sector: estética', 'webs-para-restaurantes': 'Sector: restaurantes', 'tiendas-online': 'Sector: tiendas online',
+  'webs-para-gimnasios': 'Sector: gimnasios', 'webs-para-profesionales': 'Sector: profesionales', 'cuanto-cuesta-una-pagina-web': 'Guía: cuánto cuesta',
+  'que-necesita-la-web-de-mi-negocio': 'Guía: qué necesita', 'dominio-alojamiento-y-correo': 'Guía: dominio y correo', 'antes-de-lanzar-tu-web': 'Guía: antes de lanzar'
+};
 async function pintarVisitas() {
   const caja = $('#pnVisitas');
   if (!caja) return;
@@ -1077,6 +1086,7 @@ function abrirPedido(id) {
           ${(p.extras || []).map(x => fila(x.nombre, '+' + euros(x.precio) + (x.mensual ? '/mes' : ''))).join('')}
           ${p.urgente ? fila('Urgente', 'Sí') : ''}
           ${p.descuento ? fila(`Cupón ${p.cupon || ''}`, '−' + euros(p.descuento)) : ''}
+          ${recomendadoPor(p) ? `<div class="kv"><span>Recomendado por</span><b>${esc(recomendadoPor(p).name)}${recomendadoPor(p).email ? ` · ${esc(recomendadoPor(p).email)}` : ''} · ${p.premioAmigo ? 'premio dado' : premioPendiente(p) ? `<button type="button" class="link-btn" id="odPremio">Marcar premio dado (${esc(CONFIG.referidos?.premio || 'premio')})</button>` : 'premio cuando pague'}</b></div>` : ''}
           <div class="kv total"><span>Total</span><b>${euros(p.total || 0)}${p.mensual ? ` + ${euros(p.mensual)}/mes` : ''}</b></div>
           ${fila(`Señal (${CONFIG.senal} %)`, euros(senal))}
         </div>
@@ -1174,6 +1184,7 @@ function abrirPedido(id) {
     guardar({ fechaEntrega: new Date(y, m - 1, d, 18).getTime() }, 'Fecha de entrega actualizada', `Nueva fecha de entrega: ${d}/${m}/${y}`);
   });
   $('#odRecibo', box)?.addEventListener('click', () => abrirRecibo(p, ''));
+  $('#odPremio', box)?.addEventListener('click', () => guardar({ premioAmigo: Date.now() }, 'Premio marcado como dado', `Premio por recomendación dado a ${recomendadoPor(p)?.name || 'quien recomendó'}`));
   $('#odCancelSi', box)?.addEventListener('click', () => {
     if (!confirm('¿Cancelar este pedido? El cliente lo verá como cancelado.')) return;
     guardar({ estado: 'cancelado', cancelacion: { ...p.cancelacion, aceptada: Date.now() } }, 'Pedido cancelado', 'Pedido cancelado a petición del cliente');

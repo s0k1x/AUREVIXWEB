@@ -632,6 +632,17 @@ export async function tienePedidos() {
   if (!usuario) return false;
   return (await misPedidos()).some(p => p.estado !== 'cancelado');
 }
+/** Código «Recomienda a un amigo» de un cliente: AMIGO- + las 8 primeras cifras de su id
+    (mismo cálculo que la función cupon() de supabase/referidos-v66.sql) */
+export function codigoAmigo(uid) {
+  let h = String(uid || '').replace(/-/g, '').toUpperCase();
+  if (!/^[0-9A-F]{8}/.test(h)) { // ids del modo demo: se convierten en 8 cifras hexadecimales
+    let n = 0;
+    for (const c of String(uid)) n = (n * 31 + c.charCodeAt(0)) >>> 0;
+    h = n.toString(16).toUpperCase().padStart(8, '0');
+  }
+  return 'AMIGO-' + h.slice(0, 8);
+}
 /** Devuelve el cupón si existe y está activo (sin enseñar la lista de cupones) */
 export async function comprobarCupon(codigo) {
   codigo = String(codigo || '').trim().toUpperCase();
@@ -642,6 +653,9 @@ export async function comprobarCupon(codigo) {
     if (c) return c;
     const b = CONFIG.bienvenida;
     if (b?.activo && b.codigo && b.codigo.toUpperCase() === codigo && !(await tienePedidos())) return { codigo: b.codigo, pct: b.pct, primera: true };
+    const r = CONFIG.referidos;
+    if (r?.activo && /^AMIGO-[0-9A-F]{8}$/.test(codigo) && usuario && codigoAmigo(usuario.uid) !== codigo && !(await tienePedidos())
+        && local.get('orders', []).some(o => o.estado !== 'cancelado' && codigoAmigo(o.uid) === codigo)) return { codigo, pct: r.pct, primera: true, amigo: true };
     return null;
   }
   const { data, error } = await limite(sb.rpc('cupon', { codigo }));

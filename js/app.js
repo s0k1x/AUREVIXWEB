@@ -37,7 +37,23 @@ const leerRef = () => {
   try { const r = JSON.parse(localStorage.getItem(REF) || 'null'); return r && Date.now() - r.t < 30 * 864e5 ? r.uid : ''; } catch { return ''; }
 };
 
+/* ---------- Recomienda a un amigo: ?amigo=AMIGO-XXXXXXXX ---------- */
+const AMIGO = 'tm_amigo';
+let amigoSesion = '';
+const guardarAmigo = () => { if (amigoSesion && consentidoExpreso()) { try { localStorage.setItem(AMIGO, JSON.stringify({ c: amigoSesion, t: Date.now() })); } catch {} } };
+(() => {
+  const c = (new URLSearchParams(location.search).get('amigo') || '').toUpperCase();
+  if (/^AMIGO-[0-9A-F]{8}$/.test(c)) { amigoSesion = c; guardarAmigo(); }
+})();
+document.addEventListener('cookies', e => { if (e.detail?.preferencias) guardarAmigo(); else { try { localStorage.removeItem(AMIGO); } catch {} } });
+const leerAmigo = () => {
+  if (!CONFIG.referidos?.activo) return '';
+  if (amigoSesion) return amigoSesion;
+  try { const r = JSON.parse(localStorage.getItem(AMIGO) || 'null'); return r && Date.now() - r.t < 30 * 864e5 ? r.c : ''; } catch { return ''; }
+};
+
 await arrancar('inicio');
+if (amigoSesion && CONFIG.referidos?.activo) setTimeout(() => toast(`Un amigo te recomienda: tienes un ${CONFIG.referidos.pct} % de descuento en tu primera web`, 'ok'), 1200);
 iniciarChat();
 
 /* ==========================================================
@@ -941,7 +957,7 @@ function pintarResumen() {
       <div class="cupon">
         ${W.cupon
           ? `<p class="cupon-ok">${icono('tag')} Cupón <b>${esc(W.cupon.codigo)}</b> aplicado <button type="button" class="link-btn" id="cuponQuitar">Quitar</button></p>`
-          : `${bienvenidaOK() ? `<button type="button" class="cupon-bv" id="cuponBv">${icono('gift')}<span><b>¿Es tu primera web? <span class="nw">−${CONFIG.bienvenida.pct}&nbsp;%</span></b><small>Aplica el código ${esc(CONFIG.bienvenida.codigo)}</small></span><i>Aplicar</i></button>` : ''}<details><summary>${icono('tag')} ¿Tienes un código de descuento?</summary><div class="cupon-fila"><input id="cuponIn" maxlength="30" placeholder="CÓDIGO" autocomplete="off" aria-label="Código de descuento"><button type="button" class="btn btn-sm btn-ghost" id="cuponOk">Aplicar</button></div></details>`}
+          : `${leerAmigo() && !W.sinAmigo ? `<button type="button" class="cupon-bv" id="cuponAmigo">${icono('gift')}<span><b>Te recomienda un amigo <span class="nw">−${CONFIG.referidos.pct}&nbsp;%</span></b><small>Aplica el código ${esc(leerAmigo())}</small></span><i>Aplicar</i></button>` : bienvenidaOK() ? `<button type="button" class="cupon-bv" id="cuponBv">${icono('gift')}<span><b>¿Es tu primera web? <span class="nw">−${CONFIG.bienvenida.pct}&nbsp;%</span></b><small>Aplica el código ${esc(CONFIG.bienvenida.codigo)}</small></span><i>Aplicar</i></button>` : ''}<details><summary>${icono('tag')} ¿Tienes un código de descuento?</summary><div class="cupon-fila"><input id="cuponIn" maxlength="30" placeholder="CÓDIGO" autocomplete="off" aria-label="Código de descuento"><button type="button" class="btn btn-sm btn-ghost" id="cuponOk">Aplicar</button></div></details>`}
       </div>
       <div class="rs-row"><span>Entrega prevista</span><b>${esc(W.plan.entrega)}${d.urgente ? ' (urgente: antes)' : ''}</b></div>
       ${d.mensual ? `<div class="rs-row"><span>Cuota mensual</span><b>${euros(d.mensual)}/mes</b></div>` : ''}
@@ -980,6 +996,16 @@ function pintarResumen() {
       if (!c) { toast('El descuento de bienvenida es solo para tu primera web', 'err'); W.sinBienvenida = true; pintarResumen(); return; }
       W.cupon = { codigo: c.codigo.toUpperCase(), pct: Math.min(100, Math.max(0, +c.pct || 0)), primera: true };
       toast(`¡Bienvenida! −${W.cupon.pct} % aplicado`, 'ok');
+      pintarResumen(); actualizarTotal();
+    } catch (err) { toast(err.message, 'err'); ocupado(e.currentTarget, false); }
+  });
+  $('#cuponAmigo')?.addEventListener('click', async e => {
+    ocupado(e.currentTarget, true);
+    try {
+      const c = await store.comprobarCupon(leerAmigo());
+      if (!c) { toast('El código de tu amigo solo vale en tu primera web (y no puede ser el tuyo)', 'err'); W.sinAmigo = true; pintarResumen(); return; }
+      W.cupon = { codigo: c.codigo.toUpperCase(), pct: Math.min(100, Math.max(0, +c.pct || 0)), primera: true };
+      toast(`Descuento de tu amigo: −${W.cupon.pct} % aplicado`, 'ok');
       pintarResumen(); actualizarTotal();
     } catch (err) { toast(err.message, 'err'); ocupado(e.currentTarget, false); }
   });
@@ -1089,6 +1115,22 @@ function resumenProyectos() {
   </div>`;
 }
 
+/* Recomienda a un amigo: el código del cliente, para copiarlo o compartir el enlace */
+function tarjetaAmigo() {
+  const r = CONFIG.referidos, u = store.usuarioActual();
+  if (!r?.activo || !u || !misPedidos.some(p => p.estado !== 'cancelado')) return '';
+  const cod = store.codigoAmigo(u.uid), enlace = `${location.origin}${location.pathname}?amigo=${cod}`;
+  return `<section class="amigo" aria-label="Recomienda a un amigo">${icono('gift')}<div>
+    <b>Recomienda ${esc(CONFIG.marca)} a un amigo</b>
+    <p>Tu amigo tiene un ${r.pct} % de descuento en su primera web con tu código y tú, ${esc(r.premio)}, cuando la pague.</p>
+    <div class="amigo-cod"><code>${cod}</code><button type="button" class="btn btn-sm btn-ghost" data-copy="${esc(enlace)}">${icono('link')}<span>Copiar enlace</span></button>${navigator.share ? `<button type="button" class="btn btn-sm btn-primary" data-compartir-amigo="${esc(enlace)}">${icono('share')}<span>Compartir</span></button>` : ''}</div>
+  </div></section>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-compartir-amigo]');
+  if (b) navigator.share({ title: CONFIG.marca, text: `Te recomiendo ${CONFIG.marca} para tu web: con este enlace tienes un ${CONFIG.referidos.pct} % de descuento en la primera.`, url: b.dataset.compartirAmigo }).catch(() => {});
+});
+
 function tarjetaProyecto(p) {
   const est = ESTADOS[p.estado] || ESTADOS.nuevo;
   const pl = plantillaPorId(p.plantilla);
@@ -1160,7 +1202,7 @@ async function pintarPedidos() {
       return;
     }
     if (!abierto || !misPedidos.some(p => p.id === abierto)) abierto = misPedidos.length === 1 ? misPedidos[0].id : '';
-    list.innerHTML = resumenProyectos() + misPedidos.map(tarjetaProyecto).join('');
+    list.innerHTML = resumenProyectos() + tarjetaAmigo() + misPedidos.map(tarjetaProyecto).join('');
     etiquetas(list);
     montarPestana();
   } catch (e) {
@@ -1379,6 +1421,15 @@ $('#contactoForm').addEventListener('submit', async e => {
   }
 });
 
+/* ---------- Casos reales (Ajustes → Negocio → Casos reales) ---------- */
+if (CONFIG.casos?.length) {
+  $('#casosGrid').innerHTML = CONFIG.casos.map(c => `<a class="caso reveal" href="${esc(c.url)}" target="_blank" rel="noopener">
+    ${c.sector ? `<small>${esc(c.sector)}</small>` : ''}<h3>${esc(c.nombre)}</h3>${c.texto ? `<p>${esc(c.texto)}</p>` : '<p></p>'}
+    <span class="caso-url">${esc(c.url.replace(/^https:\/\/(www\.)?/i, '').replace(/\/$/, ''))}${icono('external')}</span></a>`).join('');
+  $('#casos').hidden = false;
+  $$('#casos .reveal').forEach(el => io?.observe?.(el));
+}
+
 /* ---------- Preguntas frecuentes: lista numerada (adaptada de «Interactive Accordion» de 21st.dev) ----------
    Sigue siendo <details> nativo (teclado, lector de pantalla y buscador funcionan igual);
    solo se añade el número y se envuelve el texto de la pregunta para animarlo. */
@@ -1445,7 +1496,7 @@ addEventListener('hashchange', () => {
 
 // Acceso directo de la app instalada (?comprar=negocio)
 const qComprar = new URLSearchParams(location.search).get('comprar');
-if (qComprar) abrirCompra(qComprar);
+if (qComprar) abrirCompra(qComprar, new URLSearchParams(location.search).get('diseno') || '');
 
 
 /* ---------- La web que ha subido el equipo (vista del cliente) ---------- */
