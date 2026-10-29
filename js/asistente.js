@@ -15,27 +15,17 @@ import { enIngles } from './idioma.js';
 const ajuste = CONFIG.asistente || { activo: true, nombre: 'Asistente', saludo: '' };
 
 /** Datos que se envían a la IA para que responda con información real */
-export const catalogo = ({ ingles = enIngles } = {}) => ({
-  marca: CONFIG.marca, senal: CONFIG.senal, urgente: CONFIG.urgente, email: CONFIG.email, contacto: CONFIG.whatsapp?.activo ? `Por correo electrónico, desde el formulario de contacto de la web o por WhatsApp al ${CONFIG.whatsapp.numero} (contesta un asistente con IA; escribiendo «persona» atiende alguien del equipo). No hay atención por llamada.` : 'Solo por correo electrónico o desde el formulario de contacto de la web. No hay WhatsApp ni teléfono.', whatsapp: CONFIG.whatsapp?.activo ? CONFIG.whatsapp.numero : '', horario: CONFIG.horario, respuesta: CONFIG.respuesta, aceptaPedidos: CONFIG.aceptarPedidos,
+export const catalogo = () => ({
+  marca: CONFIG.marca, senal: CONFIG.senal, urgente: CONFIG.urgente, email: CONFIG.email, contacto: 'Solo por correo electrónico o desde el formulario de contacto de la web. No hay WhatsApp ni teléfono.', horario: CONFIG.horario, respuesta: CONFIG.respuesta, aceptaPedidos: CONFIG.aceptarPedidos,
   planes: planesActivos().map(({ id, nombre, precio, entrega, desc, incluye, plantillas }) => ({ id, nombre, precio, entrega, desc, incluye, plantillas })),
   extras: extrasActivos().map(({ id, nombre, precio, mensual, desc }) => ({ id, nombre, precio, mensual: !!mensual, desc })),
   plantillas: PLANTILLAS.map(({ id, nombre, sector, desc }) => ({ id, nombre, sector, desc })),
   notas: [
-    ...(ingles ? ['IMPORTANTE: el cliente está viendo la web en inglés. Responde en inglés (inglés británico, sencillo), con los nombres de los planes en inglés: Landing page, Portfolio, Business website, Booking website, Online store, Custom.'] : []),
+    ...(enIngles ? ['IMPORTANTE: el cliente está viendo la web en inglés. Responde en inglés (inglés británico, sencillo), con los nombres de los planes en inglés: Landing page, Portfolio, Business website, Booking website, Online store, Custom.'] : []),
     CONFIG.bienvenida?.activo ? `Descuento de bienvenida: ${CONFIG.bienvenida.pct} % en la primera web de cada cliente con el código ${CONFIG.bienvenida.codigo}; se aplica al revisar el pedido.` : 'Ahora mismo no hay descuento de bienvenida.',
     `Trabaja con nosotros: comerciales con un ${CONFIG.comision} % de comisión por web vendida, y creadores de vídeo con ${CONFIG.videos?.precio ?? 15} € por vídeo aprobado (+${CONFIG.videos?.bonus ?? 25} € si supera ${CONFIG.videos?.visitas ?? 10000} visualizaciones en 14 días, máximo ${CONFIG.videos?.maxMes ?? 12} vídeos pagados al mes).`
   ]
 });
-
-/** Guarda el catálogo para la IA de WhatsApp (función «whatsapp»), que no puede leer config.js.
-    Solo lo puede guardar el propietario; se llama al abrir el panel y al cambiar los ajustes. */
-const ordenado = v => (Array.isArray(v) ? v.map(ordenado) : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map(k => [k, ordenado(v[k])])) : v);
-export async function guardarCatalogoIA() {
-  if (store.modoDemo) return;
-  const c = catalogo({ ingles: false });
-  const antes = await store.leerAjustes('ia').catch(() => null);
-  if (JSON.stringify(ordenado(antes)) !== JSON.stringify(ordenado(c))) await store.guardarAjustes('ia', c);
-}
 
 const sinTildes = t => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 const plan = id => PLANES.find(p => p.id === id);
@@ -96,7 +86,7 @@ function respuestaLocal(texto) {
   const t = sinTildes(texto);
   const tiene = (...p) => p.some(x => t.includes(x));
   const desde = PLANES.map(p => `${p.nombre}: desde ${euros(p.precio)}`).join('; ');
-  if (tiene('whatsapp', 'telefono', 'llamar', 'contacto', 'contactar', 'correo', 'email', 'hablar con')) return CONFIG.whatsapp?.activo ? `Puedes escribirnos por WhatsApp al ${CONFIG.whatsapp.numero} (te contesta un asistente con IA; escribe «persona» para hablar con el equipo) o por correo en ${CONFIG.email}. No atendemos llamadas. ${CONFIG.respuesta}.` : `No tenemos WhatsApp ni teléfono: atendemos por correo en ${CONFIG.email} y desde el formulario de contacto de la web. Si ya eres cliente, escríbenos en la pestaña «Mensajes» de tu proyecto. ${CONFIG.respuesta}.`;
+  if (tiene('whatsapp', 'telefono', 'llamar', 'contacto', 'contactar', 'correo', 'email', 'hablar con')) return `No tenemos WhatsApp ni teléfono: atendemos por correo en ${CONFIG.email} y desde el formulario de contacto de la web. Si ya eres cliente, escríbenos en la pestaña «Mensajes» de tu proyecto. ${CONFIG.respuesta}.`;
   if (tiene('archivo', 'foto', 'logo', 'subir', 'enviar contenido')) return 'Desde «Mis proyectos» puedes subir fotos, logotipos y documentos en la pestaña «Archivos» de tu proyecto.';
   if (tiene('factura', 'recibo', 'justificante')) return 'En «Mis proyectos», pestaña «Pagos», puedes descargar el recibo de cada pago. Si necesitas factura a nombre de tu empresa, añade tus datos fiscales en «Ajustes → Facturación».';
   if (tiene('video', 'tiktok', 'creador', 'contenido', 'influencer')) return `Pagamos ${CONFIG.videos?.precio ?? 15} € por cada vídeo aprobado sobre nuestras webs (+${CONFIG.videos?.bonus ?? 25} € si supera las ${(CONFIG.videos?.visitas ?? 10000).toLocaleString('es-ES')} visualizaciones), y además el ${CONFIG.comision} % si alguien compra desde tu enlace. Tienes las condiciones en «Trabaja con nosotros».`;

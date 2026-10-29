@@ -7,10 +7,7 @@
 export const CONFIG = {
   marca: 'AurevixWeb',
   eslogan: 'Webs profesionales para tu negocio',
-  email: 'aurevixweb@gmail.com',           // contacto principal
-  // WhatsApp con IA (ver LEEME, sección 42). Pon activo: true cuando el instalador haya terminado
-  // y el número conteste: entonces la web y el asistente lo enseñan como forma de contacto.
-  whatsapp: { activo: false, numero: '+34 666 96 21 50' },
+  email: 'aurevixweb@gmail.com',           // único canal de contacto (no hay WhatsApp)
   dominio: 'aurevixweb.es',                 // reservado; aún no apunta a la web (ver LEEME.md, punto 12)
   aviso: 'Plazas abiertas para nuevos proyectos este mes', // texto de la píldora de la portada
   anuncio: { activo: false, texto: '' },    // franja de aviso arriba del todo

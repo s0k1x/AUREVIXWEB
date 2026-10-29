@@ -20,7 +20,7 @@ const json = (datos: unknown, status = 200) =>
 
 type Mensaje = { rol: 'user' | 'model'; texto: string };
 type Catalogo = {
-  marca: string; senal: number; urgente: number; email: string; contacto?: string; whatsapp?: string; horario?: string; respuesta?: string; aceptaPedidos?: boolean; notas?: string[];
+  marca: string; senal: number; urgente: number; email: string; contacto?: string; horario?: string; respuesta?: string; aceptaPedidos?: boolean; notas?: string[];
   planes: { id: string; nombre: string; precio: number; entrega: string; desc: string; incluye: string[]; plantillas: string[] }[];
   extras: { id: string; nombre: string; precio: number; mensual?: boolean; desc: string }[];
   plantillas: { id: string; nombre: string; sector: string; desc: string }[];
@@ -39,7 +39,7 @@ function contexto(c: Catalogo) {
     `Entrega urgente: +${Math.round(c.urgente * 100)} % sobre el precio base.`,
     'Proceso: pedido y cuestionario → el cliente elige dominio y envía su contenido desde «Mis proyectos» → diseño → revisión con vista previa → pago final → publicación.',
     `Contacto humano: ${c.contacto || 'solo por correo o desde el formulario de contacto de la web'}. Email: ${c.email}. ${c.respuesta || ''}.`,
-    c.whatsapp ? `WhatsApp: ${c.whatsapp} (contesta un asistente con IA; escribiendo «persona» atiende alguien del equipo). No hay atención por llamada.` : 'NO hay WhatsApp ni teléfono. Nunca los menciones como forma de contacto.',
+    'NO hay WhatsApp ni teléfono. Nunca los menciones como forma de contacto.',
     c.aceptaPedidos === false ? 'Ahora mismo NO se aceptan pedidos nuevos: solo lista de espera.' : '',
     'Derecho de desistimiento: 14 días naturales desde la compra; si el cliente pidió empezar antes, se descuenta la parte ya hecha. Se ejerce desde su proyecto.',
     'Los clientes siguen su pedido en «Mis proyectos» (etapas, mensajes, archivos, pagos y vista previa). Las webs se pueden enseñar en aurevixweb.es/<nombre> cuando el equipo las publica.',
@@ -50,7 +50,7 @@ function contexto(c: Catalogo) {
 const REGLAS_CHAT = `Eres el asistente de atención al cliente de la web.
 - Responde en el idioma del cliente: español de España por defecto, o inglés si te escribe en inglés o si los datos indican que ve la web en inglés. Tono profesional, cercano y directo. Frases cortas.
 - Responde solo sobre los servicios, precios, plazos, pagos y proceso descritos. Usa exclusivamente esos datos; no inventes precios, plazos, descuentos ni promesas.
-- Si no sabes algo o el cliente necesita un presupuesto especial, dile que pulse «Hablar con una persona del equipo» o que escriba por correo. Menciona WhatsApp solo si aparece en el contacto; nunca ofrezcas llamadas.
+- Si no sabes algo o el cliente necesita un presupuesto especial, dile que pulse «Hablar con una persona del equipo» o que escriba por correo. NUNCA menciones WhatsApp ni teléfono.
 - Si más abajo aparecen «Pedidos de este cliente», úsalos para responder sobre su pedido (etapa, qué le toca hacer, fecha de entrega, pagos). No inventes nada que no esté ahí. Si no aparecen y pregunta por su pedido, dile que inicie sesión.
 - Sé útil y concreto: di siempre cuál es el siguiente paso que puede dar.
 - Cuando encaje, recomienda un tipo de web concreto y explica por qué en una o dos frases.
