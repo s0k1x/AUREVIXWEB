@@ -249,6 +249,7 @@
       <tbody>
         <tr><td><code>sb-…-auth-token</code></td><td>Necesaria</td><td>Mantener tu sesión iniciada (Supabase)</td><td>Hasta que cierres sesión</td></tr>
         <tr><td><code>tm_cookies</code></td><td>Necesaria</td><td>Recordar tu elección sobre cookies</td><td>Hasta que la cambies</td></tr>
+        <tr><td><code>tm_humano</code></td><td>Necesaria (seguridad)</td><td>Recordar que este navegador ha pasado la verificación anti-robots, para no pedírtela en cada visita</td><td>30 días</td></tr>
         <tr><td>Caché de la app, <code>tm_ajustes_web</code></td><td>Necesaria</td><td>Que la web abra rápido y funcione sin conexión (copia de los precios y avisos públicos de la web)</td><td>Hasta la próxima versión</td></tr>
         <tr><td><code>tm_apariencia</code>, <code>tm_borrador</code>, <code>tm_vista</code>, <code>tm_visor_disp</code></td><td>Preferencias que eliges tú</td><td>Tema, tamaño de letra, borrador del pedido y cómo ves el panel y la vista previa. Si rechazas las cookies, no se guardan</td><td>Hasta que las borres o rechaces</td></tr>
         <tr><td><code>tm_ref</code></td><td>Preferencias (solo si aceptas)</td><td>Recordar el vendedor que te recomendó si llegas desde su enlace. Sin tu permiso solo vale mientras tienes la página abierta</td><td>30 días</td></tr>
@@ -256,6 +257,8 @@
       </tbody>
     </table></div>
     <p>Puedes cambiar tu elección cuando quieras desde «Cookies» en el pie de página o en Ajustes → Privacidad, y borrarlas desde tu navegador.</p>
+    <p><b>Verificación anti-robots.</b> Para proteger la web de robots y abusos, la primera vez que entras y cuando detectamos algo inusual (muchos intentos seguidos) usamos Cloudflare Turnstile. Cloudflare analiza datos técnicos de tu navegador y tu conexión (como la dirección IP) solo para comprobar que eres una persona; no los usa para publicidad. Cloudflare actúa como encargado del tratamiento y la base legal es nuestro interés legítimo en mantener la web segura.</p>
+    <p><b>Notificaciones.</b> Si activas las notificaciones en un dispositivo, guardamos la dirección técnica que da tu navegador para poder enviártelas, junto a tu cuenta. Se borra al desactivarlas o al cerrar sesión en ese dispositivo. Por correo solo te enviamos las facturas, los recibos de tus pagos y los códigos para entrar.</p>
     <p><b>Recuento de visitas sin cookies.</b> Para saber cuánta gente visita la web contamos las visitas de forma agregada: por cada visita sumamos 1 a un contador del día con la página, la web desde la que llegas (por ejemplo, google.com), el tipo de dispositivo (móvil, tableta u ordenador) y el idioma. No guardamos tu IP ni ningún identificador, no usamos cookies ni guardamos nada en tu dispositivo, y no se puede saber quién ha visitado la web. Si tu navegador tiene activado «No rastrear» o «Global Privacy Control», no se cuenta tu visita. Los contadores se borran a los 13 meses.</p>
     <p><button class="btn btn-sm btn-ghost" data-cookies>Configurar cookies</button></p>
 

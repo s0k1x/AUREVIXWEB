@@ -203,28 +203,35 @@ const TIPOS_AVISO = U => [
 ].filter(x => x[2]);
 async function notificaciones() {
   const n = U.datos?.notif || {};
-  const permiso = 'Notification' in window ? Notification.permission : 'no';
-  body.innerHTML = bloque('Avisos', 'Siempre los verás en la campana. Elige cuáles quieres recibir también por correo y en este dispositivo.', `
+  const { estadoPush, activarPush, desactivarPush, esIOS } = await import('./push.js');
+  const estado = await estadoPush();
+  const textoPush = {
+    activas: 'Activadas en este dispositivo. Te llegan aunque tengas la web cerrada, como un WhatsApp.',
+    apagadas: 'Te avisamos al momento en este dispositivo, aunque tengas la web cerrada.',
+    bloqueadas: 'Las tienes bloqueadas para esta web. Actívalas en los ajustes del navegador y vuelve aquí.',
+    instalar: 'En iPhone y iPad: pulsa Compartir → «Añadir a pantalla de inicio», abre la web desde ese icono y actívalas aquí.',
+    no: 'Este navegador no admite notificaciones. Prueba con Chrome, Edge, Firefox o Safari.'
+  }[estado];
+  body.innerHTML = bloque('Avisos', 'Siempre los verás en la campana. Además, te llegan como notificación a los dispositivos donde las actives.', `
     <form id="fNotif">
-      ${interruptor({ id: 'correoAv', titulo: 'Avisos por correo', texto: `Te escribimos a ${esc(U.email)} cuando haya novedades. Como mucho un correo cada 30 minutos por proyecto.`, checked: n.correo !== false })}
-      ${interruptor({ id: 'navegador', titulo: 'Notificaciones en este dispositivo', texto: permiso === 'denied' ? 'Las tienes bloqueadas en el navegador. Actívalas en los ajustes del navegador.' : permiso === 'no' ? 'Tu navegador no admite notificaciones. En iPhone, instala la web como app.' : 'Te avisamos aunque tengas la web en otra pestaña', checked: !!n.navegador && permiso === 'granted' })}
+      ${interruptor({ id: 'pushAv', titulo: 'Notificaciones en este dispositivo', texto: textoPush, checked: estado === 'activas' && n.push !== false, disabled: ['bloqueadas', 'instalar', 'no'].includes(estado) })}
       <div class="aj-sub">${TIPOS_AVISO(U).map(([k, t]) => interruptor({ id: 'n_' + k, titulo: t, checked: n[k] !== false })).join('')}</div>
       ${guardarBtn('gNotif')}
-      <p class="muted aj-nota">${icono('mail')} Los recibos de tus pagos y los códigos para entrar te llegan siempre por correo.</p>
+      <p class="muted aj-nota">${icono('mail')} Por correo solo te llegan las facturas, los recibos de tus pagos y los códigos para entrar.${esIOS() ? '' : ' Puedes activar las notificaciones en cada dispositivo que uses (móvil, ordenador…).'}</p>
     </form>`);
   $('#fNotif').addEventListener('submit', async e => {
     e.preventDefault();
     const b = $('#gNotif'); ocupado(b, true);
-    let nav = $('#navegador').checked;
-    if (nav && 'Notification' in window && Notification.permission !== 'granted') {
-      nav = (await Notification.requestPermission()) === 'granted';
-      if (!nav) toast('No has dado permiso para las notificaciones', 'err');
-    }
-    const notif = { correo: $('#correoAv').checked, navegador: nav, ...Object.fromEntries(TIPOS_AVISO(U).map(([k]) => [k, $('#n_' + k).checked])) };
+    let push = $('#pushAv').checked;
+    try {
+      if (push && estado !== 'activas') await activarPush();
+      if (!push && estado === 'activas') await desactivarPush();
+    } catch (err) { toast(err.message, 'err'); push = false; }
+    const notif = { push, correo: false, navegador: false, ...Object.fromEntries(TIPOS_AVISO(U).map(([k]) => [k, $('#n_' + k).checked])) };
     try {
       U = await store.guardarPerfil({ datos: { notif } });
-      if (nav) try { new Notification('AurevixWeb', { body: 'Las notificaciones están activadas.', icon: 'icons/icon-192.png' }); } catch { /* móvil: solo desde la app */ }
-      toast('Preferencias de avisos guardadas', 'ok');
+      toast(push ? 'Notificaciones activadas en este dispositivo' : 'Preferencias de avisos guardadas', 'ok');
+      notificaciones();
     } catch (err) { toast(err.message, 'err'); }
     ocupado(b, false);
   });
@@ -351,6 +358,10 @@ async function negocio() {
     ${bloque('Recomienda a un amigo', 'Cada cliente tiene su código (AMIGO-…) en «Mis proyectos». Su amigo tiene un descuento en su primera web y, cuando paga, en el panel te aparece para que des el premio a quien le recomendó. Antes de activarlo, ejecuta supabase/referidos-v66.sql en Supabase.', `
       ${interruptor({ id: 'refActivo', titulo: 'Activar «Recomienda a un amigo»', checked: !!a.referidos?.activo })}
       <div class="row-2"><label class="aj-num"><span>Descuento para el amigo (%)</span><input type="number" min="1" max="50" name="refPct" value="${a.referidos?.pct ?? 10}"></label>${texto('refPremio', 'Premio para quien recomienda', a.referidos?.premio || '', 'maxlength="120"', 'Ej.: un mes de mantenimiento gratis')}</div>`)}
+    ${bloque('Verificación anti-robots (Cloudflare)', 'Comprueba que quien entra es una persona: la primera vez que visita la web y cuando hace algo inusual (muchos intentos seguidos). Casi siempre pasa sola, sin puzles. Crea el widget gratis en Cloudflare → Turnstile, pega aquí la clave del sitio y pon la clave secreta en Supabase (Edge Functions → Secrets → TURNSTILE_SECRET).', `
+      ${interruptor({ id: 'tsActivo', titulo: 'Activar la verificación', checked: !!a.turnstile?.activo })}
+      ${texto('tsSiteKey', 'Clave del sitio (Site Key)', a.turnstile?.siteKey || '', 'autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="0x4AAAA…"', 'Es la clave pública. La secreta nunca va aquí.')}
+      ${interruptor({ id: 'tsLogin', titulo: 'Pedirla también al entrar a la cuenta', texto: 'Actívalo solo si has activado el captcha (Turnstile) en Supabase → Authentication → Attack Protection.', checked: !!a.turnstile?.login })}`)}
     ${bloque('Creadores de vídeo', 'Pago fijo por cada vídeo aprobado y publicado. Se muestra en «Trabaja con nosotros» y en el panel de cada creador.', `
       <div class="aj-nums">
         <label class="aj-num"><span>Pago por vídeo (€)</span><input type="number" min="0" step="1" name="vPrecio" value="${a.videos.precio}"></label>
@@ -383,7 +394,7 @@ async function negocio() {
     const o = ORIGINAL.config;
     await guardar({
       aviso: o.aviso, anuncio: o.anuncio, aceptarPedidos: o.aceptarPedidos, mensajeCerrado: o.mensajeCerrado, horario: o.horario, respuesta: o.respuesta, email: o.email,
-      senal: o.senal, comision: o.comision, urgente: o.urgente, temporada: o.temporada, pagos: o.pagos, trustpilot: o.trustpilot, referidos: o.referidos, casos: CONFIG.casos || [], bienvenida: o.bienvenida, videos: o.videos, redes: o.redes, asistente: { activo: o.asistente.activo, saludo: o.asistente.saludo },
+      senal: o.senal, comision: o.comision, urgente: o.urgente, temporada: o.temporada, pagos: o.pagos, trustpilot: o.trustpilot, referidos: o.referidos, casos: CONFIG.casos || [], turnstile: { ...CONFIG.turnstile }, bienvenida: o.bienvenida, videos: o.videos, redes: o.redes, asistente: { activo: o.asistente.activo, saludo: o.asistente.saludo },
       planes: Object.fromEntries(ORIGINAL.planes.map(p => [p.id, { precio: p.precio, entrega: p.entrega, dias: p.dias, activo: true, popular: !!p.popular }])),
       extras: Object.fromEntries(ORIGINAL.extras.map(x => [x.id, { precio: x.precio, activo: true }]))
     }, null, $('#resetNeg'));
@@ -406,6 +417,7 @@ async function negocio() {
     })).filter(c => c.codigo);
     if (new Set(lista.map(c => c.codigo)).size !== lista.length) return toast('Hay dos cupones con el mismo código', 'err');
     const casos = $$('#casosAj .cs-aj').map(c => Object.fromEntries(['nombre', 'sector', 'url', 'texto'].map(k => [k, $(`[data-k=${k}]`, c).value.trim()]))).filter(c => c.nombre || c.url);
+    if ($('#tsActivo').checked && !/^[\w-]{10,100}$/.test(v('tsSiteKey'))) return toast('Para activar la verificación, pega la clave del sitio de Cloudflare', 'err');
     const casoMal = casos.find(c => !c.nombre || !/^https:\/\/\S+\.\S+$/i.test(c.url));
     if (casoMal) return toast('Cada caso necesita nombre y una dirección que empiece por https://', 'err');
     if (v('tpCco') && !/^\S+@\S+\.\S+$/.test(v('tpCco'))) return toast('Revisa la dirección de invitaciones de Trustpilot', 'err');
@@ -414,6 +426,7 @@ async function negocio() {
       aceptarPedidos: $('#aceptarPedidos').checked, mensajeCerrado: v('mensajeCerrado'),
       email: v('email') || CONFIG.email, horario: v('horario'), respuesta: v('respuesta'),
       redes: { instagram: v('instagram'), tiktok: v('tiktok'), linkedin: v('linkedin'), whatsapp: v('whatsapp').replace(/\D/g, '') }, trustpilot: v('trustpilot'),
+      turnstile: { activo: $('#tsActivo').checked, siteKey: v('tsSiteKey'), login: $('#tsLogin').checked },
       referidos: { activo: $('#refActivo').checked, pct: Math.min(50, Math.max(1, +v('refPct') || 10)), premio: v('refPremio') }, casos,
       bienvenida: { activo: $('#bvActivo').checked, codigo: v('bvCodigo').toUpperCase().replace(/[^A-Z0-9_-]/g, '') || ORIGINAL.config.bienvenida.codigo, pct: Math.min(100, Math.max(1, +v('bvPct') || 10)) },
       videos: { precio: Math.max(0, +v('vPrecio') || 0), bonus: Math.max(0, +v('vBonus') || 0), visitas: Math.max(0, +v('vVisitas') || 0), maxMes: Math.max(1, +v('vMax') || 1) },

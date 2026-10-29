@@ -245,13 +245,12 @@ export async function entrarConGithub() {
    Brevo, ver LEEME) y lo comprueba él; la web nunca lo ve antes de que lo
    escribas. Al crear la cuenta, el mismo código verifica el correo.
    Para crearla hace falta el nombre (y aceptar las condiciones en el formulario). */
-export async function enviarCodigo(email, { nombre = '' } = {}) {
+export async function enviarCodigo(email, { nombre = '', captchaToken = '' } = {}) {
   if (modoDemo) { nombreDemo = nombre; return; }
   if (nombre) nombrePendiente = nombre;
-  const { error } = await sb.auth.signInWithOtp({
-    email,
-    options: nombre ? { shouldCreateUser: true, data: { name: nombre, full_name: nombre }, emailRedirectTo: volverA() } : { shouldCreateUser: false }
-  });
+  const opciones = nombre ? { shouldCreateUser: true, data: { name: nombre, full_name: nombre }, emailRedirectTo: volverA() } : { shouldCreateUser: false };
+  if (captchaToken) opciones.captchaToken = captchaToken; // lo comprueba Supabase si tiene el captcha activado
+  const { error } = await sb.auth.signInWithOtp({ email, options: opciones });
   if (error) throw new Error(traducirError(error));
 }
 let nombreDemo = '';
@@ -276,7 +275,29 @@ export function entrarDemo(rol) {
 
 export async function cerrarSesion() {
   if (modoDemo) { local.set('sesion', null); emitir(null); return; }
+  // Este dispositivo deja de recibir las notificaciones de esta cuenta
+  await Promise.race([bajaPushDispositivo(), new Promise(r => setTimeout(r, 2500))]);
   await sb.auth.signOut();
+}
+
+/* ---------- Notificaciones push (supabase/push-v68.sql, js/push.js) ---------- */
+export async function guardarSuscripcionPush({ endpoint, p256dh, auth, dispositivo }) {
+  necesitaUsuario();
+  if (modoDemo) return;
+  comprobar(await limite(sb.from('push_subs').upsert({ endpoint, p256dh, auth, dispositivo: String(dispositivo || '').slice(0, 120), uid: usuario.uid }, { onConflict: 'endpoint' })));
+}
+export async function borrarSuscripcionPush(endpoint) {
+  if (modoDemo || !usuario) return;
+  comprobar(await limite(sb.from('push_subs').delete().eq('endpoint', endpoint)));
+}
+async function bajaPushDispositivo() {
+  try {
+    const reg = await navigator.serviceWorker?.getRegistration();
+    const sub = await reg?.pushManager?.getSubscription();
+    if (!sub) return;
+    await sb.from('push_subs').delete().eq('endpoint', sub.endpoint);
+    await sub.unsubscribe();
+  } catch { /* sin notificaciones en este dispositivo */ }
 }
 
 /* ---------- Ayudas para Supabase ----------

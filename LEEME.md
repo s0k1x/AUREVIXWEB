@@ -957,3 +957,41 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
   - Se comprueba en el servidor.
 - Cuando el amigo paga, en **Panel → Resumen → «Para hoy»** aparece «Premio para X». En la ficha del pedido verás «Recomendado por» y un botón para marcar el premio como dado.
 - Las condiciones están en los términos. El enlace se recuerda 30 días solo si se aceptan las preferencias de cookies (`tm_amigo`).
+
+## 47. Versión v68 — Correo creado por nosotros, notificaciones push, verificación anti-robots y cookies centradas
+**Correo del negocio: lo creamos nosotros**
+- En el cuestionario, el cliente elige el nombre de su Gmail (o del correo con su dominio). Le explicamos que lo creamos nosotros y le pasamos el usuario y la contraseña.
+- En el **panel**, en la ficha del pedido → «Acceso al correo del cliente»: cuando lo hayas creado, pon el usuario y una contraseña temporal (8 caracteres o más) y pulsa «Dar acceso al cliente».
+- El cliente lo ve en «Mis proyectos». La contraseña sale oculta, con botones para verla y copiarla, y un aviso para que la cambie al entrar.
+
+**Correos solo para facturas; lo demás, notificaciones (como WhatsApp)**
+- La función `notificar` ya **no manda correos**. Ahora manda una **notificación push** a cada dispositivo donde la persona las activó. Llegan aunque la web esté cerrada.
+- Esto incluye cambios de etapa, mensajes, vista previa, pagos por revisar, soporte, pedidos nuevos (al propietario) y vídeos.
+- Por correo solo llegan las facturas y los recibos (función `correo`) y los códigos de acceso.
+- Se activan en **Ajustes → Avisos → «Notificaciones en este dispositivo»**. También sale un aviso «Activar notificaciones» en «Mis proyectos» y en el panel.
+- **iPhone y iPad:** solo funcionan con la web instalada (Compartir → «Añadir a pantalla de inicio») y abierta desde ese icono (iOS 16.4 o superior).
+- En Android, el ordenador y Mac funcionan directamente.
+- Ya está todo configurado en Supabase:
+  - tablas `push_subs` (los dispositivos) y `claves_push`;
+  - claves VAPID: las creó la función la primera vez y están en una tabla que solo lee el servidor; nadie tiene que copiar ninguna clave.
+- Al cerrar sesión, ese dispositivo deja de recibir las notificaciones de la cuenta.
+
+**Verificación anti-robots (Cloudflare Turnstile)**
+- **La primera vez que alguien entra** (y luego cada 30 días) sale una pantalla centrada: «Comprobando que eres una persona». Casi siempre pasa sola en un segundo.
+- **Se vuelve a pedir si hay algo inusual:**
+  - más de 3 códigos de acceso en 10 minutos;
+  - 3 códigos mal escritos;
+  - más de 2 mensajes de contacto en 10 minutos;
+  - más de 3 pedidos en 30 minutos;
+  - más de 25 páginas en 2 minutos.
+- El token se comprueba en el servidor (función `verificar`).
+- Los buscadores (Google…) no la ven, para no perder posicionamiento. El panel y los ajustes del equipo tampoco la piden.
+- **Para activarla (gratis):**
+  1. En dash.cloudflare.com → **Turnstile** → *Add widget*: dominio `aurevixweb.es`, modo **Managed**. Te da dos claves.
+  2. La **Site Key** (pública): pégala en **Ajustes → Negocio → «Verificación anti-robots»** y activa el interruptor.
+  3. La **Secret Key**: pégala en **Supabase → Edge Functions → Secrets** con el nombre `TURNSTILE_SECRET`. Sin ella, la función deja pasar sin comprobar.
+  4. Opcional, y más seguro para entrar: en **Supabase → Authentication → Attack Protection** activa el captcha con Turnstile y la misma Secret Key. Después marca **«Pedirla también al entrar a la cuenta»** en Ajustes. Hazlo en ese orden: si activas el captcha en Supabase y no marcas la casilla, nadie podrá entrar.
+
+**Cookies**
+- En ordenador, el aviso de cookies sale **en el centro de la pantalla**, con el fondo oscurecido, igual que en el móvil.
+- La política de privacidad ya incluye a Cloudflare, las notificaciones y el pase `tm_humano`.

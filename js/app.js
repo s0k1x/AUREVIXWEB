@@ -945,7 +945,7 @@ function pintarResumen() {
       <h4 class="rs-h">Contacto</h4>
       ${fila('Nombre', r.contactoNombre)}${fila('Teléfono', r.telefono)}${fila('Correo', r.email)}
       <h4 class="rs-h">Dominio y correo</h4>
-      ${fila(r.dominioTipo === 'propio' ? 'Tu dominio' : 'Dominio nuevo', r.dominio ? 'www.' + r.dominio : '')}${fila(r.correoTipo === 'gmail' ? 'Correo (Gmail, gratis)' : 'Correo con tu dominio', r.correo)}
+      ${fila(r.dominioTipo === 'propio' ? 'Tu dominio' : 'Dominio nuevo', r.dominio ? 'www.' + r.dominio : '')}${fila(r.correoTipo === 'gmail' ? 'Correo (Gmail, gratis, lo creamos nosotros)' : 'Correo con tu dominio', r.correo)}
     </div>
     <div class="rs-card">
       <div class="rs-row"><span>${esc(p.nombre)}</span><b>${euros(p.precio)}</b></div>
@@ -1029,6 +1029,8 @@ async function confirmarPedido() {
       return toast('El descuento de bienvenida es solo para la primera web. Hemos actualizado el total.', 'err');
     }
   }
+  try { await import('./verificacion.js').then(v => v.siEsInusual('pedido')); }
+  catch (er) { return toast(er.message, 'err'); }
   ocupado(btn, true);
   const d = datos();
   try {
@@ -1115,6 +1117,23 @@ function resumenProyectos() {
   </div>`;
 }
 
+/* Acceso al correo que hemos creado (lo rellena el equipo en el panel) */
+function accesoCorreo(p) {
+  const c = p.accesos?.correo;
+  if (!c?.usuario) return '';
+  return `<div class="mp-dato mp-dato-ancho mp-acceso">${icono('key')}<span>Acceso a tu correo</span>
+    <b>${esc(c.usuario)} <button type="button" class="link-btn" data-copy="${esc(c.usuario)}" aria-label="Copiar usuario">${icono('copy')}</button></b>
+    ${c.clave ? `<small>Contraseña: <code class="mp-clave" data-clave="${esc(c.clave)}">••••••••</code> <button type="button" class="link-btn" data-ver-clave>Ver</button> · <button type="button" class="link-btn" data-copy="${esc(c.clave)}">Copiar</button></small>
+    <small class="mp-acceso-nota">Cámbiala la primera vez que entres${/@gmail\.com$/i.test(c.usuario) ? ' (en myaccount.google.com → Seguridad)' : ''}.</small>` : ''}</div>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-ver-clave]');
+  if (!b) return;
+  const code = b.parentElement.querySelector('.mp-clave'), ver = code.textContent.startsWith('•');
+  code.textContent = ver ? code.dataset.clave : '••••••••';
+  b.textContent = ver ? 'Ocultar' : 'Ver';
+});
+
 /* Recomienda a un amigo: el código del cliente, para copiarlo o compartir el enlace */
 function tarjetaAmigo() {
   const r = CONFIG.referidos, u = store.usuarioActual();
@@ -1175,6 +1194,7 @@ function pestanaHTML(p) {
     <aside class="mp-lado">
       <div class="mp-dato">${icono('calendar')}<span>Entrega prevista</span><b>${fecha(fechaEntrega(p))}</b></div>
       ${p.dominio ? `<div class="mp-dato mp-dato-ancho">${icono('link')}<span>${p.dominio.correo ? 'Dominio y correo' : 'Dominio'}</span><b>www.${esc(p.dominio.nombre)}${p.dominio.tipo === 'propio' ? ' <em>(ya es tuyo)</em>' : ''}</b>${p.dominio.correo ? `<small>${esc(p.dominio.correo)}${p.dominio.correoTipo === 'gmail' ? ' · Gmail' : ''}</small>` : ''}</div>` : ''}
+      ${accesoCorreo(p)}
       ${p.asignadoNombre ? `<div class="mp-dato">${icono('laptop')}<span>Responsable</span><b>${esc(p.asignadoNombre)}</b></div>` : ''}
       <div class="mp-dato">${icono('euro')}<span>Pago</span><b>${esc((PAGOS[p.pagoEstado || 'pendiente'] || PAGOS.pendiente).txt)}</b></div>
       <div class="mp-dato">${icono('chart')}<span>Avance</span><b>${Math.round(indiceEtapa(p) / (ETAPAS.length - 1) * 100)} %</b></div>
@@ -1202,7 +1222,8 @@ async function pintarPedidos() {
       return;
     }
     if (!abierto || !misPedidos.some(p => p.id === abierto)) abierto = misPedidos.length === 1 ? misPedidos[0].id : '';
-    list.innerHTML = resumenProyectos() + tarjetaAmigo() + misPedidos.map(tarjetaProyecto).join('');
+    list.innerHTML = resumenProyectos() + '<div id="mpPush"></div>' + tarjetaAmigo() + misPedidos.map(tarjetaProyecto).join('');
+    import('./push.js').then(m => m.montarAvisoPush($('#mpPush'))).catch(() => {});
     etiquetas(list);
     montarPestana();
   } catch (e) {
@@ -1412,6 +1433,9 @@ $('#contactoForm').addEventListener('submit', async e => {
   if (!terminosAceptados('ctTerms')) return;
   err('');
   const b = e.submitter; ocupado(b, true);
+  try {
+    await import('./verificacion.js').then(v => v.siEsInusual('contacto'));
+  } catch (er) { ocupado(b, false); return err(er.message); }
   try {
     await store.crearTicket(d);
     $('#contactoForm').innerHTML = `<div class="exito"><div class="ok-ic">${icono('check')}</div><h3>Mensaje enviado</h3><p class="muted">Gracias, ${esc(d.nombre.split(' ')[0])}. Te responderemos a <b>${esc(d.email)}</b>. ${esc(CONFIG.respuesta)}.</p></div>`;

@@ -154,9 +154,9 @@ export const opciones = (name, valores, marcado = valores[0], tipo = 'radio') =>
   `<div class="opts">${valores.map(v => `<label class="opt"><input type="${tipo}" name="${name}" value="${esc(v)}" ${(Array.isArray(marcado) ? marcado.includes(v) : v === marcado) ? 'checked' : ''}><span><i>${esc(v)}</i></span></label>`).join('')}</div>`;
 
 /** Interruptor */
-export const interruptor = ({ id, name = id, titulo, texto = '', checked = false }) =>
+export const interruptor = ({ id, name = id, titulo, texto = '', checked = false, disabled = false }) =>
   `<label class="switch-row" for="${id}"><span><b>${esc(titulo)}</b>${texto ? `<small>${esc(texto)}</small>` : ''}</span>
-    <span class="switch"><input type="checkbox" id="${id}" name="${name}" ${checked ? 'checked' : ''}><span class="slider"></span></span></label>`;
+    <span class="switch"><input type="checkbox" id="${id}" name="${name}" ${checked ? 'checked' : ''}${disabled ? ' disabled' : ''}><span class="slider"></span></span></label>`;
 
 /* ---------- IVA y datos legales ---------- */
 /** Desglose de un precio con IVA incluido: { base, cuota, pct } */
@@ -552,7 +552,11 @@ function crearLogin() {
   const enviar = async btn => {
     ocupado(btn, true);
     try {
-      await store.enviarCodigo(email, { nombre: registro ? $('#lgName').value.trim() : '' });
+      // Verificación anti-robots: si se piden muchos códigos seguidos, y al entrar si está activado
+      const v = await import('./verificacion.js');
+      await v.siEsInusual('codigo');
+      const captchaToken = await v.tokenParaEntrar();
+      await store.enviarCodigo(email, { nombre: registro ? $('#lgName').value.trim() : '', captchaToken });
       return true;
     } catch (err) {
       if (/ninguna cuenta/.test(err.message)) error(err.message, { txt: 'Crear cuenta', fn: () => { setModo(true); $('#lgName').focus(); } });
@@ -597,6 +601,8 @@ function crearLogin() {
       delete d.dataset.exito;
       otp.estado('error', err.message);
       otp.campo.select();
+      // Varios códigos mal seguidos: se comprueba que no es un robot probando a ciegas
+      import('./verificacion.js').then(v => v.trasFallo('codigoMal')).catch(er => otp.estado('error', er.message));
     }
     ocupado(b, false);
   });
@@ -765,6 +771,8 @@ export async function arrancar(pagina) {
   await Promise.race([cargarAjustesWeb(), new Promise(r => setTimeout(r, 2500))]);
   aplicarTemporada(CONFIG.temporada, { animar: ['inicio', 'trabaja'].includes(pagina) });
   contarVisita(pagina);
+  // Verificación anti-robots en las páginas públicas (primera visita o algo inusual)
+  if (!['panel', 'ajustes', 'vista'].includes(pagina) && CONFIG.turnstile?.activo) import('./verificacion.js').then(m => m.puertaDeEntrada()).catch(() => {});
   pintarAnuncio();
   pintarPie();
   vigilarMarcas();

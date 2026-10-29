@@ -59,6 +59,11 @@ export const CONFIG = {
   // whatsapp: el número con prefijo de país, solo cifras (p. ej. 34600111222). Si lo pones, sale el botón de WhatsApp
   redes: { instagram: '', tiktok: '', linkedin: '', whatsapp: '' },
 
+  // Verificación anti-robots (Cloudflare Turnstile). Se activa en Ajustes → Negocio.
+  // siteKey es la clave PÚBLICA del widget; la secreta va en Supabase (TURNSTILE_SECRET).
+  // login: pedirla también al entrar (solo si activas el captcha en Supabase → Authentication).
+  turnstile: { activo: false, siteKey: '', login: false },
+
   // «Revisa tu web gratis»: funciona sin clave. Si un día Google limita las revisiones,
   // crea una clave de PageSpeed Insights en Google Cloud, restríngela a aurevixweb.es y ponla aquí
   pagespeedKey: '',

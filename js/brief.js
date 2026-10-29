@@ -50,7 +50,7 @@ export function datosBrief(p, archivos = []) {
       ]),
       sec('Dominio y correo', [
         kv('Dominio', dominio ? `www.${dominio}${(d.tipo || r.dominioTipo) === 'propio' ? ' (ya es del cliente: hay que conectarlo)' : ' (registrar nuevo a nombre del cliente)'}` : 'Sin elegir todavía'),
-        kv('Correo del negocio', correo ? `${correo} · ${correoTipo === 'gmail' ? 'Gmail del cliente (gratis)' : 'buzón con su dominio (crear y configurar)'}` : 'Sin elegir todavía')
+        kv('Correo del negocio', correo ? `${correo} · ${correoTipo === 'gmail' ? 'Gmail (lo creamos nosotros y le pasamos usuario y contraseña)' : 'buzón con su dominio (crear, configurar y pasarle usuario y contraseña)'}` : 'Sin elegir todavía')
       ]),
       sec('Contenido que ha enviado', [
         kv('Sobre el negocio', c.sobre), kv('Servicios y precios', c.servicios), kv('Horario', c.horario), kv('Dirección o zona', c.zona),
