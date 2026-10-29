@@ -57,6 +57,8 @@ store.alCambiarUsuario(async u => {
   $('#pnAjustes').hidden = false;
   await cargar();
   if (pedidoHash) abrirPedido(pedidoHash);
+  // La IA de WhatsApp usa los mismos precios y planes que la web
+  if (u.role === 'owner') import('./asistente.js').then(m => m.guardarCatalogoIA()).catch(e => console.warn(e));
 });
 // Al pulsar un aviso de la campana estando ya en el panel
 addEventListener('hashchange', () => {

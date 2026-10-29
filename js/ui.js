@@ -344,6 +344,7 @@ export function pintarPie() {
           <a href="trabaja-con-nosotros">Trabaja con nosotros</a>
           <a href="./#contacto">Contacto</a>
           <a href="${mailLink('Consulta desde la web')}">${esc(CONFIG.email)}</a>
+          ${CONFIG.whatsapp?.activo ? `<a href="https://wa.me/${CONFIG.whatsapp.numero.replace(/\D/g, '')}" target="_blank" rel="noopener">WhatsApp ${esc(CONFIG.whatsapp.numero)}</a>` : ''}
         </div>
         <div class="footer-col"><b>Legal</b>
           <a href="terminos-y-privacidad#aviso-legal">Aviso legal</a>

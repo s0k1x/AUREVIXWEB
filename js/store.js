@@ -876,7 +876,7 @@ export async function enlacesWeb(lista) {
    ========================================================== */
 const RESERVADOS = new Set(['index', 'panel', 'ajustes', 'diseno', 'vista-previa', 'trabaja', 'trabaja-con-nosotros', 'terminos', 'terminos-y-privacidad',
   'offline', 'sin-conexion', 'plantilla', 'js', 'icons', 'fuentes', 'library', 'biblioteca-ui', 'supabase', 'sw', 'manifest', '404', 'admin', 'api',
-  'www', 'app', 'login', 'cuenta', 'aurevix', 'aurevixweb', 'web', 'webs', 'blog', 'ayuda', 'contacto', 'precios', 'legal', 'privacidad', 'cookies']);
+  'www', 'app', 'login', 'cuenta', 'aurevix', 'aurevixweb', 'web', 'webs', 'blog', 'ayuda', 'contacto', 'precios', 'legal', 'privacidad', 'cookies', 'whatsapp']);
 /** Convierte un texto en un nombre de enlace válido (minúsculas, sin tildes, con guiones) */
 export const aSlug = t => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ñ/g, 'n')
   .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48).replace(/-+$/, '');
