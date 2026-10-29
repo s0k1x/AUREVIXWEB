@@ -27,7 +27,8 @@ const SECCIONES = u => [
   ['notificaciones', 'Avisos', 'bell', !!u],
   ['apariencia', 'Apariencia', 'palette', true],
   ['privacidad', 'Privacidad y cookies', 'shield', true],
-  ['negocio', 'Negocio', 'gear', u && u.role === 'owner']
+  ['negocio', 'Negocio', 'gear', u && u.role === 'owner'],
+  ['libreria', 'Librería', 'layers', u && u.role === 'owner']
 ].filter(x => x[3]);
 
 
@@ -44,7 +45,7 @@ const guardarBtn = (id, txt = 'Guardar cambios') => `<div class="aj-acc"><button
 const texto = (name, label, value = '', attrs = '', hint = '') => campo({ id: 'f_' + name.replace(/\W/g, '_'), name, label, value, attrs, hint });
 
 async function pintar() {
-  const fn = { perfil, cuenta, facturacion, trabajo, notificaciones, apariencia, privacidad, negocio }[seccion];
+  const fn = { perfil, cuenta, facturacion, trabajo, notificaciones, apariencia, privacidad, negocio, libreria }[seccion];
   body.innerHTML = '<div class="skeleton"></div>';
   body.onchange = null;
   try { await fn(); } catch (e) { console.error(e); body.innerHTML = bloque('No se han podido cargar los ajustes', esc(e.message), ''); }
@@ -403,6 +404,47 @@ async function negocio() {
       asistente: { activo: $('#asistActivo').checked, saludo: v('saludo') },
       planes, extras
     }, { lista }, $('#gNeg'), { cco: v('tpCco') });
+  });
+}
+/* ==========================================================
+   LIBRERÍA: suscripciones (solo propietario)
+   Quien paga la cuota (Bizum o transferencia) pide el acceso desde la Librería
+   y llega como consulta. Aquí se activa, se alarga un mes o se quita.
+   ========================================================== */
+async function libreria() {
+  const precio = CONFIG.libreria?.precio || 9;
+  body.innerHTML = bloque('Librería · suscripciones', `Cuota de ${euros(precio)}/mes. El equipo entra siempre; el resto necesita la suscripción activa. Las peticiones de acceso te llegan a Soporte.`, '<div id="libLista" class="lib-lista" aria-busy="true"><p class="muted">Cargando…</p></div>');
+  let usuarios = [], subs = [];
+  try { [usuarios, subs] = await Promise.all([store.listarUsuarios(), store.listarSuscripciones()]); }
+  catch (e) { $('#libLista').innerHTML = `<p class="muted">${esc(e.message || 'No se han podido cargar las suscripciones.')}</p>`; return; }
+  const porUid = new Map(subs.map(x => [x.uid, x.hasta]));
+  const fechaL = t => new Date(t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+  const pintar = () => {
+    const clientes = usuarios.filter(u => u.role === 'client')
+      .sort((a, b) => (porUid.get(b.uid) || 0) - (porUid.get(a.uid) || 0) || a.name.localeCompare(b.name));
+    $('#libLista').removeAttribute('aria-busy');
+    $('#libLista').innerHTML = clientes.length ? clientes.map(u => {
+      const h = porUid.get(u.uid) || 0, activa = h > Date.now();
+      return `<div class="lib-fila" data-uid="${esc(u.uid)}">
+        ${avatar(u)}<div class="lib-qui"><b>${esc(u.name)}</b><small>${esc(u.email)}</small></div>
+        <span class="lib-est ${activa ? 'on' : h ? 'fin' : ''}">${activa ? `Hasta el ${fechaL(h)}` : h ? `Terminó el ${fechaL(h)}` : 'Sin suscripción'}</span>
+        <div class="lib-acc">
+          <button type="button" class="btn btn-sm btn-primary" data-lib-mes><span>${activa ? '+1 mes' : 'Activar 1 mes'}</span></button>
+          ${h ? `<button type="button" class="icon-btn sm" data-lib-quitar aria-label="Quitar la suscripción de ${esc(u.name)}">${icono('trash')}</button>` : ''}
+        </div>
+      </div>`;
+    }).join('') : '<p class="muted">Aún no hay clientes registrados.</p>';
+  };
+  pintar();
+  $('#libLista').addEventListener('click', async e => {
+    const fila = e.target.closest('.lib-fila'); if (!fila) return;
+    const uid = fila.dataset.uid, b = e.target.closest('button'); if (!b) return;
+    ocupado(b, true);
+    try {
+      if (b.hasAttribute('data-lib-mes')) { porUid.set(uid, await store.alargarSuscripcion(uid, 1, porUid.get(uid))); toast('Suscripción activada un mes más', 'ok'); }
+      else if (b.hasAttribute('data-lib-quitar')) { if (!confirm('¿Quitar el acceso a la Librería?')) { ocupado(b, false); return; } await store.quitarSuscripcion(uid); porUid.delete(uid); toast('Suscripción quitada'); }
+      pintar();
+    } catch (err) { toast(err.message || 'No se ha podido guardar', 'err'); ocupado(b, false); }
   });
 }
 const filaCupon = c => `<div class="cp">

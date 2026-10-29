@@ -5,7 +5,7 @@
    ========================================================== */
 export const EN = {
   // v59 · calculadora
-  'Tu presupuesto': 'Your quote', 'Urgente': 'Rush', 'opcionales': 'optional', '¿Para cuándo la necesitas?': 'When do you need it?', 'Plazo normal': 'Standard timing',
+  'Tu presupuesto': 'Your quote', 'La Librería es para suscriptores': 'The Library is for subscribers', 'Tu suscripción ha terminado': 'Your subscription has ended', 'Entrar para suscribirme': 'Sign in to subscribe', 'Ya he pagado: activar mi acceso': "I've paid: activate my access", 'Cómo pagar': 'How to pay', 'Cuotas mensuales': 'Monthly fees', 'se cobran cada mes desde la publicación': 'charged monthly from launch', 'Correo con tu dominio': 'Email with your domain', 'Urgente': 'Rush', 'opcionales': 'optional', '¿Para cuándo la necesitas?': 'When do you need it?', 'Plazo normal': 'Standard timing',
   'Descuento de bienvenida en tu primer pedido': 'Welcome discount on your first order', 'Al entregarte la web': 'When we deliver your website',
   'Entrega estimada:': 'Estimated delivery:', 'Ver presupuesto': 'See quote',
   'Precio final. Bizum o transferencia. 14 días para desistir.': 'Final price. Bizum or bank transfer. 14 days to withdraw.',
@@ -395,6 +395,8 @@ const fecha = t => t
 const dias = n => `${n} day${n === '1' ? '' : 's'}`;
 
 export const PATRONES = [
+  [/^Cuesta (.+ €) al mes y se añade a tu pedido como cuota mensual\.$/, m => `It costs ${m[1]} a month and is added to your order as a monthly fee.`],
+  [/^\+ (.+ €)\/mes de cuotas$/, m => `+ ${m[1]}/month in fees`],
   [/^Hacia el (.+)$/, m => `By ${m[1]}`],
   [/^Hoy, para empezar \((\d+) %\)$/, m => `Today, to start (${m[1]} %)`],
   [/^Entrega urgente \(\+(\d+) %\)$/, m => `Rush delivery (+${m[1]} %)`],
