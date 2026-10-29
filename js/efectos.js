@@ -179,7 +179,7 @@ export function confeti() {
   const dpr = Math.min(2, devicePixelRatio || 1);
   const W = c.width = innerWidth * dpr, H = c.height = innerHeight * dpr;
   const x = c.getContext('2d');
-  const colores = ['#c8f560', '#ffffff', '#9fd23a', '#ffd166', '#7cc4ff'];
+  const colores = [getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#c8f560', '#ffffff', '#9fd23a', '#ffd166', '#7cc4ff'];
   const piezas = Array.from({ length: 120 }, () => ({
     x: W / 2 + (Math.random() - .5) * W * .3, y: H * .45,
     vx: (Math.random() - .5) * 16 * dpr, vy: (-Math.random() * 14 - 6) * dpr,

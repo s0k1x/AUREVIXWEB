@@ -34,6 +34,9 @@ export const CONFIG = {
 
   /* FORMAS DE PAGO: Bizum y transferencia bancaria (gratis; tú confirmas el pago en el panel)
      Deja bizum en '' para no ofrecerlo. Lo normal es cambiarlo desde Ajustes → Negocio → «Cobros y comisiones». */
+  // Temporada de la web (colores y ambiente): 'auto' según la fecha, '' ninguna, o halloween, blackfriday,
+  // navidad, anonuevo, sanvalentin, verano. Se cambia en Ajustes → Negocio → «Temporada».
+  temporada: 'auto',
   // Suscripción a la Librería de componentes (se paga por Bizum o transferencia y se activa en Ajustes → Librería)
   libreria: { precio: 9 },
   pagos: {

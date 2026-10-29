@@ -5,7 +5,7 @@
   --bg:#0c0c0e; --bg2:#111115; --card:#16161b; --card2:#1d1d24; --field:#0f0f12;
   --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
   --text:#f3f1ea; --muted:#a19f96; --dim:#86837c;
-  --accent:#c8f560; --accent-soft:rgba(200,245,96,.12); --ink:#0c0c0e;
+  --accent:#c8f560; --accent-soft:color-mix(in srgb,var(--accent) 12%,transparent); --ink:#0c0c0e;
   --ok:#4ade80; --warn:#fbbf24; --info:#60a5fa; --danger:#f87171; --violet:#b98cff;
   --r:18px; --max:1880px; --gutter:clamp(18px,3vw,60px); --borde:clamp(16px,1.8vw,34px);
   --fm:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -50,7 +50,7 @@ body::after{content:"";position:fixed;inset:0;z-index:3000;pointer-events:none;o
 .btn svg{width:18px;height:18px;flex:none}
 .btn:disabled{opacity:.55;pointer-events:none}
 .btn-primary{background:var(--accent);color:var(--ink)}
-.btn-primary:hover{background:#d8ff80}
+.btn-primary:hover{background:color-mix(in srgb,var(--accent) 75%,#fff)}
 .btn-ghost{border-color:var(--line);background:rgba(255,255,255,.03)}
 .btn-ghost:hover{border-color:var(--line2)}
 .btn-dark{background:var(--ink);color:var(--accent)}
@@ -97,8 +97,8 @@ body::after{content:"";position:fixed;inset:0;z-index:3000;pointer-events:none;o
 .avatar.sm{width:30px;height:30px;font-size:12px}
 .user-wrap{position:relative}
 .user-btn{display:flex;align-items:center;gap:10px;height:46px;padding:4px 12px 4px 4px;border-radius:99px;border:1px solid var(--line2);background:rgba(255,255,255,.04)}
-.user-btn:hover{border-color:rgba(200,245,96,.5);background:rgba(200,245,96,.06)}
-.user-btn .avatar{width:36px;height:36px;box-shadow:0 0 0 2px var(--bg),0 0 0 3px rgba(200,245,96,.45)}
+.user-btn:hover{border-color:color-mix(in srgb,var(--accent) 50%,transparent);background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.user-btn .avatar{width:36px;height:36px;box-shadow:0 0 0 2px var(--bg),0 0 0 3px color-mix(in srgb,var(--accent) 45%,transparent)}
 .ub-txt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;text-align:left}
 .ub-txt b{font-size:14px}
 .ub-txt small{font-family:var(--fm);font-size:10.5px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
@@ -151,13 +151,13 @@ body::after{content:"";position:fixed;inset:0;z-index:3000;pointer-events:none;o
 .check-card b{display:block;font-size:15px;font-weight:600}
 .check-card small{color:var(--muted);font-size:13px}
 .check-card .pr{font-weight:700;font-family:var(--fd);white-space:nowrap}
-.check-card:has(input:checked){border-color:rgba(200,245,96,.45);background:var(--accent-soft)}
+.check-card:has(input:checked){border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:var(--accent-soft)}
 .check-card input:focus-visible ~ .ck-mark{outline:2px solid var(--accent);outline-offset:3px}
 
 /* Estados */
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;white-space:nowrap;background:rgba(255,255,255,.07);color:var(--muted)}
 .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-.p-new{background:rgba(200,245,96,.13);color:var(--accent)}
+.p-new{background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--accent)}
 .p-work{background:rgba(96,165,250,.14);color:var(--info)}
 .p-rev{background:rgba(251,191,36,.14);color:var(--warn)}
 .p-done{background:rgba(74,222,128,.14);color:var(--ok)}
@@ -258,7 +258,7 @@ dialog.dlg::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit
    Iconos en lugar de emojis
    ========================================================== */
 .empty .em,.gate .em,.estado-cand .big{width:64px;height:64px;margin:0 auto 14px;border-radius:20px;display:grid;place-items:center;font-size:0;
-  background:var(--accent-soft);color:var(--accent);border:1px solid rgba(200,245,96,.25);box-shadow:0 10px 30px -12px rgba(200,245,96,.4)}
+  background:var(--accent-soft);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);box-shadow:0 10px 30px -12px color-mix(in srgb,var(--accent) 40%,transparent)}
 .empty .em svg,.gate .em svg,.estado-cand .big svg{width:28px;height:28px}
 .saludo{display:inline-grid;place-items:center;vertical-align:middle;width:1em;height:1em;color:var(--accent);transform-origin:70% 80%;animation:saludar 2.2s var(--e-out) .4s 2}
 .saludo svg{width:.8em;height:.8em}
@@ -270,7 +270,7 @@ dialog.dlg::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit
 .pc-time svg,.mp-who svg,.cand-meta svg,.dz-scroll svg,.demo-banner svg,.demo-box b svg,.link-btn svg,.od-pay p svg{width:14px;height:14px;flex:none}
 .od-note svg,.nota svg{width:18px;height:18px;flex:none;color:var(--accent)}
 .pf-ic svg{width:26px;height:26px}
-.vj > span{display:inline-grid!important;place-items:center;width:52px;height:52px;border-radius:16px;background:var(--accent-soft);color:var(--accent);border:1px solid rgba(200,245,96,.2)}
+.vj > span{display:inline-grid!important;place-items:center;width:52px;height:52px;border-radius:16px;background:var(--accent-soft);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 20%,transparent)}
 .vj > span svg{width:24px;height:24px}
 .cero-ic svg,.cero-mini svg{width:24px;height:24px}
 .toast .t-ic svg{width:14px;height:14px}
