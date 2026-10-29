@@ -12,6 +12,7 @@ import { $, $$, esc, euros, icono, toast, arrancar, pedirLogin, ocupado, campo, 
 import { leerApariencia, guardarApariencia } from './apariencia.js';
 import { abrirCookies, consentimiento } from './cookies.js';
 import { ORIGINAL, ajustesActuales, guardarAjustesWeb } from './sitio.js';
+import { TEMPORADAS, temporadaPorFecha, aplicarTemporada } from './temporada.js';
 
 await arrancar('ajustes');
 
@@ -300,6 +301,9 @@ async function negocio() {
   body.innerHTML = `
   <form id="fNeg" novalidate>
     ${store.modoDemo ? `<p class="aj-nota demo">${icono('flask')} Modo demo: estos ajustes se guardan solo en este navegador. Con Supabase se aplican a todos los visitantes.</p>` : ''}
+    ${bloque('Temporada', 'Colores y ambiente de la web para cada época del año. «Automática» cambia sola según la fecha. Al pulsar una la ves aquí mismo; se aplica a todos al guardar.', `
+      <div class="tp-grid" role="radiogroup" aria-label="Temporada">${[['', 'Ninguna', 'Los colores de siempre', ['#c8f560', '#16161b']], ['auto', 'Automática', `Ahora: ${TEMPORADAS[temporadaPorFecha()]?.nombre || 'ninguna'}`, ['#c8f560', '#ff8a1f']], ...Object.entries(TEMPORADAS).map(([k, t]) => [k, t.nombre, t.desc, t.muestra])]
+        .map(([k, n, d, m]) => `<label class="tp-op"><input type="radio" name="temporada" value="${k}" ${(a.temporada || '') === k ? 'checked' : ''}><span class="tp-in"><i class="tp-muestra" style="--a:${m[0]};--b:${m[1]}"></i><b>${esc(n)}</b><small>${esc(d)}</small></span></label>`).join('')}</div>`)}
     ${bloque('Portada y pedidos', 'Lo que ven los visitantes al entrar.', `
       ${texto('aviso', 'Texto de la píldora de la portada', a.aviso, 'maxlength="70"', 'Ej.: Plazas abiertas para nuevos proyectos este mes')}
       ${interruptor({ id: 'anuncioActivo', titulo: 'Mostrar franja de aviso arriba del todo', texto: 'Para ofertas, vacaciones o cambios de horario', checked: a.anuncio.activo })}
@@ -360,6 +364,8 @@ async function negocio() {
       ${campo({ id: 'f_saludo', name: 'saludo', label: 'Mensaje de bienvenida', type: 'textarea', value: a.asistente.saludo, attrs: 'maxlength="300"' })}`)}
     <div class="aj-fijo"><button type="button" class="btn btn-ghost" id="resetNeg" title="Restablecer valores originales" aria-label="Restablecer valores originales">${icono('undo')}<span>Restablecer</span></button><button class="btn btn-primary" type="submit" id="gNeg">${icono('check')}<span>Guardar cambios</span></button></div>
   </form>`;
+  // Vista previa de la temporada al momento (se guarda con «Guardar cambios»)
+  $('#fNeg').addEventListener('change', e => { if (e.target.name === 'temporada') aplicarTemporada(e.target.value); });
   $('#addCupon').addEventListener('click', () => { $('#cupones').insertAdjacentHTML('beforeend', filaCupon({ codigo: '', pct: 10, hasta: '', activo: true })); $('#cupones .cp:last-child input').focus(); });
   $('#cupones').addEventListener('click', e => { if (e.target.closest('[data-quitar-cp]')) e.target.closest('.cp').remove(); });
   $('#cupones').addEventListener('input', e => { if (e.target.dataset.k === 'codigo') e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9_-]/g, ''); });
@@ -368,7 +374,7 @@ async function negocio() {
     const o = ORIGINAL.config;
     await guardar({
       aviso: o.aviso, anuncio: o.anuncio, aceptarPedidos: o.aceptarPedidos, mensajeCerrado: o.mensajeCerrado, horario: o.horario, respuesta: o.respuesta, email: o.email,
-      senal: o.senal, comision: o.comision, urgente: o.urgente, pagos: o.pagos, trustpilot: o.trustpilot, bienvenida: o.bienvenida, videos: o.videos, redes: o.redes, asistente: { activo: o.asistente.activo, saludo: o.asistente.saludo },
+      senal: o.senal, comision: o.comision, urgente: o.urgente, temporada: o.temporada, pagos: o.pagos, trustpilot: o.trustpilot, bienvenida: o.bienvenida, videos: o.videos, redes: o.redes, asistente: { activo: o.asistente.activo, saludo: o.asistente.saludo },
       planes: Object.fromEntries(ORIGINAL.planes.map(p => [p.id, { precio: p.precio, entrega: p.entrega, dias: p.dias, activo: true, popular: !!p.popular }])),
       extras: Object.fromEntries(ORIGINAL.extras.map(x => [x.id, { precio: x.precio, activo: true }]))
     }, null, $('#resetNeg'));
@@ -401,7 +407,7 @@ async function negocio() {
       senal: +v('senal'), urgente: (+v('urgente')) / 100, comision: +v('comision'),
       pagos: { titular: v('titular'), iban: v('iban'), bizum: v('bizum') },
       legal: { titular: v('lgTitular'), nif: v('lgNif').toUpperCase().replace(/\s/g, ''), domicilio: v('lgDomicilio'), email: v('lgEmail'), actividad: v('lgActividad') },
-      asistente: { activo: $('#asistActivo').checked, saludo: v('saludo') },
+      asistente: { activo: $('#asistActivo').checked, saludo: v('saludo') }, temporada: v('temporada'),
       planes, extras
     }, { lista }, $('#gNeg'), { cco: v('tpCco') });
   });

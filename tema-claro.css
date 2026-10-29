@@ -1,23 +1,23 @@
 /* --- style.css --- */
-html[data-tema=claro] .pago-total{border-color:rgba(79,133,12,.28)}
-html[data-tema=claro] .btn-primary:hover{background:#5c9a10}
+html[data-tema=claro] .pago-total{border-color:color-mix(in srgb,var(--accent) 28%,transparent)}
+html[data-tema=claro] .btn-primary:hover{background:color-mix(in srgb,var(--accent) 88%,#fff)}
 html[data-tema=claro] .btn-ghost{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .icon-btn{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .demo-banner{background:#f7ecc4;color:#5a4a10}
 html[data-tema=claro] .demo-banner .link-btn{color:#7a5a00}
 html[data-tema=claro] .header.scrolled,html[data-tema=claro] .header.open{background:var(--bg)}
-html[data-tema=claro] .avatar{background:linear-gradient(135deg,var(--accent),#4f850c)}
+html[data-tema=claro] .avatar{background:linear-gradient(135deg,var(--accent),var(--accent))}
 html[data-tema=claro] .user-btn{background:rgba(20,20,26,0.036)}
-html[data-tema=claro] .user-btn:hover{border-color:rgba(79,133,12,.5);background:rgba(79,133,12,.06)}
-html[data-tema=claro] .user-btn .avatar{box-shadow:0 0 0 2px var(--bg),0 0 0 3px rgba(79,133,12,.45)}
+html[data-tema=claro] .user-btn:hover{border-color:color-mix(in srgb,var(--accent) 50%,transparent);background:color-mix(in srgb,var(--accent) 6%,transparent)}
+html[data-tema=claro] .user-btn .avatar{box-shadow:0 0 0 2px var(--bg),0 0 0 3px color-mix(in srgb,var(--accent) 45%,transparent)}
 html[data-tema=claro] .user-menu{box-shadow:0 24px 60px rgba(0,0,0,.14)}
 html[data-tema=claro] .user-menu a:hover,html[data-tema=claro] .user-menu button:hover{background:rgba(20,20,26,0.045)}
 html[data-tema=claro] .role-tag{background:rgba(20,20,26,0.063)}
 html[data-tema=claro] .field input::placeholder,html[data-tema=claro] .field textarea::placeholder{color:#9a978e}
 html[data-tema=claro] .check-card{background:rgba(20,20,26,0.018)}
-html[data-tema=claro] .check-card:has(input:checked){border-color:rgba(79,133,12,.45)}
+html[data-tema=claro] .check-card:has(input:checked){border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
 html[data-tema=claro] .pill{background:rgba(20,20,26,0.063)}
-html[data-tema=claro] .p-new{background:rgba(79,133,12,.13)}
+html[data-tema=claro] .p-new{background:color-mix(in srgb,var(--accent) 13%,transparent)}
 html[data-tema=claro] .dlg-x{background:rgba(20,20,26,0.054)}
 html[data-tema=claro] .social{background:rgba(20,20,26,0.036)}
 html[data-tema=claro] .demo-box{background:#fbf3d6;color:#5a4a10}
@@ -25,11 +25,11 @@ html[data-tema=claro] .demo-box p{color:#6b5a20}
 @media (max-width:900px){
   html[data-tema=claro] .nav{background:rgba(246,245,240,.97)}
 }
-html[data-tema=claro] .empty .em,html[data-tema=claro] .gate .em,html[data-tema=claro] .estado-cand .big{border:1px solid rgba(79,133,12,.25);box-shadow:0 10px 30px -12px rgba(79,133,12,.4)}
-html[data-tema=claro] .vj > span{border:1px solid rgba(79,133,12,.2)}
+html[data-tema=claro] .empty .em,html[data-tema=claro] .gate .em,html[data-tema=claro] .estado-cand .big{border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);box-shadow:0 10px 30px -12px color-mix(in srgb,var(--accent) 40%,transparent)}
+html[data-tema=claro] .vj > span{border:1px solid color-mix(in srgb,var(--accent) 20%,transparent)}
 /* --- componentes.css --- */
-html[data-tema=claro] .btn-primary{box-shadow:0 8px 18px -10px rgba(79,133,12,.6)}
-html[data-tema=claro] .btn-primary:hover{box-shadow:0 12px 26px -10px rgba(79,133,12,.7)}
+html[data-tema=claro] .btn-primary{box-shadow:0 8px 18px -10px color-mix(in srgb,var(--accent) 60%,transparent)}
+html[data-tema=claro] .btn-primary:hover{box-shadow:0 12px 26px -10px color-mix(in srgb,var(--accent) 70%,transparent)}
 html[data-tema=claro] .opt > span{background:rgba(20,20,26,0.036);color:rgba(20,20,26,0.648);box-shadow:rgba(0,0,0,.25) 0 2px 1px 0 inset,rgba(20,20,26,0.072) 0 1px 1px 0}
 html[data-tema=claro] .opt > span:hover{background:#e6e4dc;color:#16161b;box-shadow:rgba(0,0,0,.3) 0 -4px 1px 0 inset,rgba(20,20,26,0.09) 0 -1px 1px 0,rgba(0,0,0,.2) 0 2px 4px 1px}
 html[data-tema=claro] .opt input:checked + span{background:#d8eeac;color:#24400a;box-shadow:rgba(0,0,0,.3) 0 -4px 1px 0 inset,rgba(20,20,26,0.153) 0 -1px 1px 0,rgba(0,0,0,.2) 0 2px 4px 1px}
@@ -37,13 +37,13 @@ html[data-tema=claro] .opt input:checked + span:hover{background:#cde79a}
 html[data-tema=claro] .slider{background:#d3d1c8}
 html[data-tema=claro] .switch-row{background:rgba(20,20,26,0.018)}
 html[data-tema=claro] .gl-checkbox__box{background:rgba(20,20,26,0.045);border:1px solid rgba(20,20,26,0.126)}
-html[data-tema=claro] .gl-checkbox__box::before{background:radial-gradient(circle at center,rgba(79,133,12,.35) 0%,transparent 70%)}
-html[data-tema=claro] .gl-checkbox:hover .gl-checkbox__box{border-color:rgba(79,133,12,.35)}
-html[data-tema=claro] .gl-checkbox__input:checked ~ .gl-checkbox__box{background:linear-gradient(135deg,#4f850c,#60f0b8);box-shadow:0 0 0 3px rgba(79,133,12,.15),0 4px 14px rgba(79,133,12,.3)}
+html[data-tema=claro] .gl-checkbox__box::before{background:radial-gradient(circle at center,color-mix(in srgb,var(--accent) 35%,transparent) 0%,transparent 70%)}
+html[data-tema=claro] .gl-checkbox:hover .gl-checkbox__box{border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+html[data-tema=claro] .gl-checkbox__input:checked ~ .gl-checkbox__box{background:linear-gradient(135deg,var(--accent),#60f0b8);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent),0 4px 14px color-mix(in srgb,var(--accent) 30%,transparent)}
 html[data-tema=claro] .gl-checkbox__label{color:rgba(20,20,26,0.495)}
 html[data-tema=claro] .gl-checkbox:hover .gl-checkbox__label{color:rgba(20,20,26,0.72)}
 html[data-tema=claro] .gl-checkbox__input:checked ~ .gl-checkbox__label{color:rgba(20,20,26,0.81)}
-html[data-tema=claro] .dot-spinner__dot::before{box-shadow:0 0 20px rgba(79,133,12,.25)}
+html[data-tema=claro] .dot-spinner__dot::before{box-shadow:0 0 20px color-mix(in srgb,var(--accent) 25%,transparent)}
 html[data-tema=claro] .search-group .input::placeholder{color:#6f6c64}
 html[data-tema=claro] .search-group .input:hover{box-shadow:0 0 0 2.5px #d9d7cf,0 0 25px -15px #000}
 html[data-tema=claro] .search-icon{fill:#6f6c64}
@@ -59,17 +59,17 @@ html[data-tema=claro] .mp-dato{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .chat-fab{box-shadow:0 12px 26px -10px rgba(20,20,26,.35),0 3px 8px rgba(20,20,26,.15)}
 html[data-tema=claro] .chat-fab-ic,html[data-tema=claro] .chat-fab-x{background:rgba(246,245,240,.12)}
 html[data-tema=claro] .chat-panel{box-shadow:0 40px 90px -20px rgba(0,0,0,.14)}
-html[data-tema=claro] .chat-h{background:linear-gradient(180deg,rgba(79,133,12,.08),transparent)}
+html[data-tema=claro] .chat-h{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 8%,transparent),transparent)}
 html[data-tema=claro] .chat-rapidas button{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .reco-extra span{background:rgba(20,20,26,0.036)}
 /* --- animaciones.css --- */
 @media (hover:hover){
-  html[data-tema=claro] .btn-fill:hover{box-shadow:0 10px 30px -8px rgba(79,133,12,.5)}
+  html[data-tema=claro] .btn-fill:hover{box-shadow:0 10px 30px -8px color-mix(in srgb,var(--accent) 50%,transparent)}
 }
 @media (hover:hover){
   html[data-tema=claro] .icon-btn:hover,html[data-tema=claro] .dlg-x:hover{background:rgba(20,20,26,0.072)}
 }
-html[data-tema=claro] .foco::before{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(79,133,12,.10),transparent 45%)}
+html[data-tema=claro] .foco::before{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--accent) 10%,transparent),transparent 45%)}
 html[data-tema=claro] .plan-card.popular.foco::before{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(20,20,26,0.315),transparent 45%)}
 @media (hover:hover){
   html[data-tema=claro] .plan-card:hover,html[data-tema=claro] .op-card:hover,html[data-tema=claro] .puesto:hover{box-shadow:0 24px 50px -24px rgba(0,0,0,.14)}
@@ -78,12 +78,12 @@ html[data-tema=claro] .plan-card.popular.foco::before{background:radial-gradient
 html[data-tema=claro] .toast.ok .t-ic{background:#d8eeac;color:#2e4f0a}
 /* --- inicio.css --- */
 html[data-tema=claro] .rs-note{color:#2f4f08}
-html[data-tema=claro] .hero::before{background:radial-gradient(circle,rgba(79,133,12,.15),transparent 65%)}
+html[data-tema=claro] .hero::before{background:radial-gradient(circle,color-mix(in srgb,var(--accent) 15%,transparent),transparent 65%)}
 html[data-tema=claro] .status{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .popular .pc-ic{background:rgba(246,245,240,.1)}
 html[data-tema=claro] .popular .pc-time,html[data-tema=claro] .popular .pc-desc,html[data-tema=claro] .popular .pc-price small{color:#0b0f05}
 html[data-tema=claro] .step::before{-webkit-text-stroke:1.2px rgba(20,20,26,0.27)}
-html[data-tema=claro] .faq details[open]{border-color:rgba(79,133,12,.3)}
+html[data-tema=claro] .faq details[open]{border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
 html[data-tema=claro] .prev-stage{background:radial-gradient(circle at 50% 0,#efede6,#09090b 70%)}
 html[data-tema=claro] .prev-frame.movil{border:8px solid #ffffff;box-shadow:0 30px 80px rgba(0,0,0,.14)}
 /* --- panel.css --- */
@@ -94,15 +94,15 @@ html[data-tema=claro] .barra i{background:linear-gradient(90deg,#6aa61c,var(--ac
 html[data-tema=claro] .col{background:rgba(20,20,26,0.018)}
 html[data-tema=claro] .kcard:hover{box-shadow:0 14px 30px -16px rgba(0,0,0,.14)}
 html[data-tema=claro] .tarea:hover{background:rgba(20,20,26,0.036)}
-html[data-tema=claro] .enlace{background:linear-gradient(100deg,rgba(79,133,12,.10),transparent 60%),var(--card);border-color:rgba(79,133,12,.3)}
+html[data-tema=claro] .enlace{background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 10%,transparent),transparent 60%),var(--card);border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
 /* --- trabaja.css --- */
-html[data-tema=claro] .pct{box-shadow:0 10px 40px -10px rgba(79,133,12,.6)}
+html[data-tema=claro] .pct{box-shadow:0 10px 40px -10px color-mix(in srgb,var(--accent) 60%,transparent)}
 html[data-tema=claro] .t-stats div{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .t-stats div:first-child span{color:rgba(20,20,26,.65)}
 html[data-tema=claro] .perfil li{color:#36342f}
-html[data-tema=claro] .rango input::-webkit-slider-thumb{box-shadow:0 0 0 1px var(--accent),0 6px 20px rgba(79,133,12,.4)}
+html[data-tema=claro] .rango input::-webkit-slider-thumb{box-shadow:0 0 0 1px var(--accent),0 6px 20px color-mix(in srgb,var(--accent) 40%,transparent)}
 html[data-tema=claro] .calc-barra{background:rgba(255,255,255,.94)}
-html[data-tema=claro] .faq details[open]{border-color:rgba(79,133,12,.3)}
+html[data-tema=claro] .faq details[open]{border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
 /* --- funciones.css --- */
 html[data-tema=claro] .av-menu{box-shadow:0 24px 60px rgba(0,0,0,.14)}
 html[data-tema=claro] .av:hover{background:rgba(20,20,26,0.045)}
@@ -110,11 +110,11 @@ html[data-tema=claro] .av-ic{background:rgba(20,20,26,0.045)}
 html[data-tema=claro] .cookies{box-shadow:0 30px 80px rgba(0,0,0,.14)}
 html[data-tema=claro] .cd{background:rgba(20,20,26,0.018)}
 html[data-tema=claro] .mp-resumen > div{background:rgba(20,20,26,0.018)}
-html[data-tema=claro] .mp-resumen .turno{border-color:rgba(79,133,12,.4)}
+html[data-tema=claro] .mp-resumen .turno{border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
 html[data-tema=claro] .pg-ic{background:rgba(20,20,26,0.045)}
 html[data-tema=claro] .tl-list.act li:hover{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .hilo-rapidas button{background:rgba(20,20,26,0.027)}
-html[data-tema=claro] .tk-m.yo{border-color:rgba(79,133,12,.25)}
+html[data-tema=claro] .tk-m.yo{border-color:color-mix(in srgb,var(--accent) 25%,transparent)}
 html[data-tema=claro] .hoy-it{background:rgba(20,20,26,0.018)}
 html[data-tema=claro] .ag-g h3 span{background:rgba(20,20,26,0.054)}
 html[data-tema=claro] .ag-it:hover{background:rgba(20,20,26,0.036)}
@@ -132,13 +132,13 @@ html[data-tema=claro]{
   --bg:#f6f5f0; --bg2:#efede6; --card:#ffffff; --card2:#ffffff; --field:#f2f1eb;
   --line:rgba(20,20,26,.1); --line2:rgba(20,20,26,.18);
   --text:#16161b; --muted:#5d5b55; --dim:#7a776f;
-  --accent:#4f850c; --accent-soft:rgba(79,133,12,.11); --ink:#0c0c0e;
+  --accent:#4f850c; --accent-soft:color-mix(in srgb,var(--accent) 11%,transparent); --ink:#0c0c0e;
   --ok:#15803d; --warn:#b45309; --info:#1d4ed8; --danger:#c62828; --violet:#6d28d9;
   color-scheme:light;
 }
 html[data-tema=claro] body::after{opacity:.025;mix-blend-mode:multiply}
 html[data-tema=claro] .btn-primary,html[data-tema=claro] .msg.yo,html[data-tema=claro] .hm.yo .hm-b,html[data-tema=claro] .chat-send,html[data-tema=claro] .chat-av,html[data-tema=claro] .arch-ic,html[data-tema=claro] .compara .si,html[data-tema=claro] .anuncio{color:#fff}
-html[data-tema=claro] .btn-dark{background:#16161b;color:#c8f560}
+html[data-tema=claro] .btn-dark{background:#16161b;color:var(--accent-oscuro,#c8f560)}
 html[data-tema=claro] .kpis .kpi:first-child{color:#fff}
 html[data-tema=claro] .kpis .kpi:first-child small,html[data-tema=claro] .kpis .kpi:first-child span{color:rgba(255,255,255,.78)}
 html[data-tema=claro] .wordmark,html[data-tema=claro] .brand-card .logo2 img,html[data-tema=claro] .splash-nombre{content:url(icons/nombre-oscuro.png)}
@@ -157,7 +157,7 @@ html[data-tema=claro] .gl-checkbox__input:checked ~ .gl-checkbox__label{color:va
 html[data-tema=claro] .opt > span{color:var(--text)}
 html[data-tema=claro] .rating > label{color:#d6d3ca}
 html[data-tema=claro] .stars::before{color:#d6d3ca}
-html[data-tema=claro] .tk-m.yo{border-color:rgba(79,133,12,.25)}
+html[data-tema=claro] .tk-m.yo{border-color:color-mix(in srgb,var(--accent) 25%,transparent)}
 html[data-tema=claro] .chat-h small i{box-shadow:0 0 0 3px rgba(21,128,61,.2)}
 html[data-tema=claro] .compara thead small{color:var(--muted)}
 html[data-tema=claro] .bg-stripes{opacity:.5}

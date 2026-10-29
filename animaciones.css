@@ -18,7 +18,7 @@
 
 /* Botón fantasma que se rellena de color al pasar por encima */
 .btn-fill{background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:left center;background-size:0% 100%}
-@media (hover:hover){.btn-fill:hover{background-size:100% 100%;color:var(--ink);border-color:var(--accent);box-shadow:0 10px 30px -8px rgba(200,245,96,.5)}}
+@media (hover:hover){.btn-fill:hover{background-size:100% 100%;color:var(--ink);border-color:var(--accent);box-shadow:0 10px 30px -8px color-mix(in srgb,var(--accent) 50%,transparent)}}
 
 /* Onda al tocar (la crea efectos.js) — se nota también en el móvil */
 .ripple{position:absolute;border-radius:50%;pointer-events:none;transform:scale(0);opacity:.35;background:currentColor;animation:onda .6s var(--e-out) forwards;z-index:-1}
@@ -45,7 +45,7 @@
 .plan-card,.dz,.op-card,.kpi,.puesto,.cand,.mp,.step,.v{position:relative}
 .plan-card,.dz,.op-card,.puesto{transition:transform .5s var(--e-out),border-color .4s var(--e-out),box-shadow .5s var(--e-out)}
 .foco::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .4s var(--e-out);z-index:0;
-  background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(200,245,96,.10),transparent 45%)}
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--accent) 10%,transparent),transparent 45%)}
 .plan-card.popular.foco::before{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.35),transparent 45%)}
 @media (hover:hover){
   .foco:hover::before{opacity:1}

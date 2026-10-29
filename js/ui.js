@@ -2,6 +2,7 @@
    Piezas comunes: cabecera, pie, login, componentes, avisos
    ========================================================== */
 import { CONFIG } from '../config.js';
+import { aplicarTemporada } from './temporada.js';
 import * as store from './store.js';
 import { iniciarEfectos } from './efectos.js';
 import { icono, pintarIconos } from './iconos.js';
@@ -703,6 +704,7 @@ export async function arrancar(pagina) {
   });
   aplicarApariencia();
   aplicarCache();
+  aplicarTemporada(CONFIG.temporada); // colores al instante (el ambiente, cuando estén los ajustes)
   intro();
   pintarCabecera(pagina);
   pintarPie();
@@ -729,6 +731,7 @@ export async function arrancar(pagina) {
   catch (e) { console.error(e); toast('No se pudo conectar con el servidor', 'err'); }
   // Precios, avisos y formas de pago que ha cambiado el propietario (máx. 2,5 s de espera)
   await Promise.race([cargarAjustesWeb(), new Promise(r => setTimeout(r, 2500))]);
+  aplicarTemporada(CONFIG.temporada, { animar: ['inicio', 'trabaja'].includes(pagina) });
   pintarAnuncio();
   pintarPie();
   vigilarMarcas();

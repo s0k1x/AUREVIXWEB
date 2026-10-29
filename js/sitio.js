@@ -25,7 +25,7 @@ export function ajustesActuales() {
     horario: CONFIG.horario, respuesta: CONFIG.respuesta, email: CONFIG.email,
     senal: CONFIG.senal, comision: CONFIG.comision, urgente: CONFIG.urgente,
     pagos: { ...CONFIG.pagos }, legal: { ...CONFIG.legal }, trustpilot: CONFIG.trustpilot, bienvenida: { ...CONFIG.bienvenida }, videos: { ...CONFIG.videos }, redes: { ...CONFIG.redes },
-    asistente: { activo: CONFIG.asistente.activo, saludo: CONFIG.asistente.saludo },
+    asistente: { activo: CONFIG.asistente.activo, saludo: CONFIG.asistente.saludo }, temporada: CONFIG.temporada || '',
     planes: Object.fromEntries(PLANES.map(p => [p.id, { precio: p.precio, entrega: p.entrega, dias: p.dias, activo: p.activo !== false, popular: !!p.popular }])),
     extras: Object.fromEntries(EXTRAS.map(x => [x.id, { precio: x.precio, activo: x.activo !== false }]))
   };
@@ -52,6 +52,7 @@ function aplicar(a) {
   if (a.bienvenida) Object.assign(CONFIG.bienvenida, { activo: !!a.bienvenida.activo, codigo: txt(a.bienvenida.codigo, '').toUpperCase() || CONFIG.bienvenida.codigo, pct: Math.min(100, Math.max(1, num(a.bienvenida.pct, CONFIG.bienvenida.pct))) });
   if (a.videos) Object.assign(CONFIG.videos, { precio: Math.max(0, num(a.videos.precio, CONFIG.videos.precio)), bonus: Math.max(0, num(a.videos.bonus, CONFIG.videos.bonus)), visitas: Math.max(0, num(a.videos.visitas, CONFIG.videos.visitas)), maxMes: Math.max(1, num(a.videos.maxMes, CONFIG.videos.maxMes)) });
   if (a.redes) Object.assign(CONFIG.redes, a.redes);
+  if (typeof a.temporada === 'string') CONFIG.temporada = a.temporada;
   if (a.asistente) Object.assign(CONFIG.asistente, { activo: a.asistente.activo !== false, saludo: txt(a.asistente.saludo, CONFIG.asistente.saludo) || CONFIG.asistente.saludo });
   PLANES.forEach(p => {
     const o = a.planes?.[p.id];
