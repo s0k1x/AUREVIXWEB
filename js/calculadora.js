@@ -13,7 +13,7 @@
    ========================================================== */
 import { CONFIG } from '../config.js';
 import { planesActivos, extrasActivos } from './sitio.js';
-import { esc, euros, desgloseIVA, ivaTexto, icono } from './ui.js';
+import { esc, euros, desgloseIVA, ivaTexto, icono, toast, contarEvento } from './ui.js';
 import { IDIOMA } from './idioma.js';
 
 const quieto = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.movimiento === 'reducido';
@@ -83,6 +83,7 @@ export function montarCalculadora(raiz, { bienvenida = false } = {}) {
         <p class="cpg-fecha">${icono('calendar')}<span>Entrega estimada: <b id="calcFecha"></b></span></p>
       </div>
       <button type="button" class="btn btn-primary w100" id="calcBtn"><span>${CONFIG.aceptarPedidos ? 'Pedir esta web' : 'Apuntarme a la lista de espera'}</span></button>
+      <button type="button" class="btn btn-ghost w100 calc-pdf" id="calcPdf">${icono('download')}<span>Descargar presupuesto (PDF)</span></button>
       <p class="calc-nota">Precio final. ${formas}. 14 días para desistir.</p>
     </aside>`;
 
@@ -133,6 +134,7 @@ export function montarCalculadora(raiz, { bienvenida = false } = {}) {
     anim = requestAnimationFrame(paso);
   };
 
+  let ultimo = null;
   const pintar = () => {
     const plan = planes.find(p => p.id === E.plan) || planes[0];
     const sel = extras.filter(x => E.extras.has(x.id));
@@ -144,6 +146,9 @@ export function montarCalculadora(raiz, { bienvenida = false } = {}) {
     const total = Math.round((bruto - dto) * 100) / 100;
     const senal = Math.round(total * CONFIG.senal) / 100;
     const diasN = plan.dias || 14, diasU = Math.round(diasN * .6);
+    // Lo que se necesita para el presupuesto en PDF
+    ultimo = { plan, extras: sel, urgente: E.urgente, pctUrgente: urg, recargo: rec, descuento: dto, pctDescuento: CONFIG.bienvenida?.pct, total, senal,
+      resto: Math.round((total - senal) * 100) / 100, mensual, entrega: entregaEn(E.urgente ? diasU : diasN) };
 
     pintarLineas([
       { k: 'plan', t: plan.nombre, v: euros(base) },
@@ -176,6 +181,7 @@ export function montarCalculadora(raiz, { bienvenida = false } = {}) {
   };
 
   raiz.addEventListener('change', e => {
+    contarEvento('calculadora');
     const n = e.target;
     if (n.name === 'calcPlan') { E.plan = n.value; pintarDetalle(); }
     else if (n.name === 'calcExtra') n.checked ? E.extras.add(n.value) : E.extras.delete(n.value);
@@ -185,6 +191,13 @@ export function montarCalculadora(raiz, { bienvenida = false } = {}) {
   });
   $('#calcBtn').addEventListener('click', () => {
     document.dispatchEvent(new CustomEvent('aurevix:pedir', { detail: { plan: E.plan, urgente: E.urgente, extras: [...E.extras] } }));
+  });
+  $('#calcPdf').addEventListener('click', async e => {
+    const b = e.currentTarget, t = b.querySelector('span'), antes = t.textContent;
+    b.disabled = true; t.textContent = 'Preparando el PDF…';
+    try { await (await import('./presupuesto.js')).descargarPresupuesto(ultimo); contarEvento('presupuesto'); }
+    catch (err) { toast(err.message || 'No se ha podido crear el PDF', 'err'); }
+    b.disabled = false; t.textContent = antes;
   });
   $('.calc-barra a').addEventListener('click', e => {
     e.preventDefault();

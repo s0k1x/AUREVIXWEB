@@ -155,3 +155,6 @@ html[data-tema=claro] .hero-iso{opacity:1;background-image:url("data:image/svg+x
 .secnav a:focus-visible{outline:none}
 .secnav a:focus-visible i{outline:2px solid var(--accent);outline-offset:3px}
 @media (max-width:1099px){.secnav{display:none}}
+/* Descargar el presupuesto en PDF (debajo de «Pedir esta web») */
+.calc-res > .btn.calc-pdf{margin-top:10px;gap:8px}
+.calc-pdf svg{width:17px;height:17px}

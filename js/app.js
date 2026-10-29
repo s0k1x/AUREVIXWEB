@@ -5,7 +5,7 @@ import { CONFIG, PLANES, EXTRAS, COMPARATIVA } from '../config.js';
 import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from './store.js';
 import {
-  $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, pedirLogin, arrancar, mailLink, refPedido, whatsappLink,
+  $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, pedirLogin, arrancar, mailLink, refPedido, whatsappLink, contarEvento,
   ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados, desgloseIVA, ivaTexto, infoDatos, descargar,
   estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
 } from './ui.js';
@@ -629,6 +629,7 @@ function restaurarBorrador(b) {
 function abrirCompra(planId, plantillaInicial = '', { urgente = false, extras = [] } = {}) {
   const plan = PLANES.find(p => p.id === planId);
   if (!plan) return;
+  contarEvento('pedido');
   // Agenda completa: en vez del cuestionario, lista de espera
   if (!CONFIG.aceptarPedidos) return irAContacto('espera', `Lista de espera: ${plan.nombre}`);
   W = { plan, paso: 0, max: 0, plantilla: plantillaInicial || plan.plantillas[0] || 'cero', colorCustom: '', clave: Date.now().toString(36) + Math.random().toString(36).slice(2, 8) };
@@ -1044,6 +1045,7 @@ async function confirmarPedido() {
       ...(W.cupon ? { cupon: W.cupon.codigo, descuento: d.descuento, precioSinDescuento: d.bruto } : {}),
       ref: leerRef() && leerRef() !== u.uid ? leerRef() : ''
     });
+    contarEvento('pedido-hecho');
     exito(pedido);
   } catch (e) {
     console.error(e);

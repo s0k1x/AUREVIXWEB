@@ -38,6 +38,17 @@ function contarVisita(pagina) {
   store.contarVisita(pagina, origen.slice(0, 60), dispositivo, document.documentElement.lang === 'en' ? 'en' : 'es');
 }
 
+/** Pasos del embudo de ventas (Panel → Resumen): calculadora, presupuesto, pedido empezado y hecho.
+    Se guardan como «ev-…» en los mismos contadores de visitas (sin cookies), una vez por página cargada. */
+const eventosContados = new Set();
+export function contarEvento(nombre) {
+  if (eventosContados.has(nombre) || /bot|crawl|spider|slurp|lighthouse|headless/i.test(navigator.userAgent)) return;
+  if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl) return;
+  eventosContados.add(nombre);
+  const dispositivo = matchMedia('(pointer: coarse)').matches ? (Math.min(screen.width, screen.height) >= 700 ? 'tablet' : 'movil') : 'ordenador';
+  store.contarVisita(`ev-${nombre}`.slice(0, 40), '', dispositivo, document.documentElement.lang === 'en' ? 'en' : 'es');
+}
+
 /** Enlace de WhatsApp del negocio (Ajustes → Redes). Vacío si no hay número */
 export const whatsappLink = (texto = '') => {
   const n = String(CONFIG.redes?.whatsapp || '').replace(/\D/g, '');

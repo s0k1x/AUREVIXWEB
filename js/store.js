@@ -1025,3 +1025,31 @@ export async function listarVisitas(dias = 30) {
   const desde = new Date(Date.now() - (dias - 1) * DIA).toISOString().slice(0, 10);
   return comprobar(await limite(sb.from('visitas').select('dia, pagina, origen, dispositivo, idioma, visitas').gte('dia', desde).limit(10000)));
 }
+
+/* ---------- Facturas para el gestor y copia de seguridad (solo equipo) ---------- */
+export async function listarFacturas() {
+  necesitaUsuario();
+  if (modoDemo) return local.get('facturas', []);
+  return comprobar(await limite(sb.from('facturas').select('numero, fase, created_at, datos').order('anio').order('n').limit(10000)));
+}
+/** Todo lo que el propietario puede leer, en un solo objeto (para guardarlo como JSON).
+    No incluye los archivos subidos (fotos, logotipos…), que están en el almacenamiento de Supabase. */
+const TABLAS_COPIA = ['pedidos', 'facturas', 'perfiles', 'tickets', 'mensajes', 'resenas', 'candidaturas', 'videos', 'suscripciones', 'webs_publicas', 'webs_ia', 'ajustes', 'privado', 'visitas'];
+export async function copiaDeSeguridad() {
+  necesitaUsuario();
+  const copia = { creada: new Date().toISOString(), web: location.host, tablas: {} };
+  if (modoDemo) {
+    for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith('tm_')) copia.tablas[k] = local.get(k.slice(3), null); }
+    return copia;
+  }
+  for (const t of TABLAS_COPIA) {
+    const filas = [];
+    for (let desde = 0; ; desde += 1000) {
+      const { data, error } = await limite(sb.from(t).select('*').range(desde, desde + 999), 30000);
+      if (error) { copia.tablas[t] = { error: traducirError(error) }; break; }
+      filas.push(...data);
+      if (data.length < 1000) { copia.tablas[t] = filas; break; }
+    }
+  }
+  return copia;
+}

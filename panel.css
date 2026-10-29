@@ -370,3 +370,23 @@ html[data-tema=claro] .ent.tarde .ent-d b{color:#c23b3b}
 @media (max-width:640px){.vis-dias{gap:2px;height:120px}.vis-dia::after{display:none}}
 .vis-dia:nth-child(-n+3)::after{left:0;transform:none}
 .vis-dia:nth-last-child(-n+3)::after{left:auto;right:0;transform:none}
+
+/* Embudo de ventas (tarjeta de visitas) */
+.vis-embudo-h{margin-top:30px}
+.vis-embudo{list-style:none;display:grid;gap:10px;margin:4px 0 0;padding:0}
+.vis-embudo li{display:grid;grid-template-columns:minmax(0,200px) 1fr 44px 56px;gap:12px;align-items:center;font-size:14px}
+.vis-embudo li > span{color:var(--muted)}
+.vis-embudo li > div{height:12px;border-radius:99px;background:var(--field);overflow:hidden}
+.vis-embudo li i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+.vis-embudo li b{text-align:right;font-variant-numeric:tabular-nums}
+.vis-embudo li small{color:var(--dim);text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:640px){.vis-embudo li{grid-template-columns:1fr 40px 50px}.vis-embudo li > div{grid-column:1/-1;grid-row:2}}
+
+/* Facturas para el gestor y copia de seguridad */
+.adm-cols{margin-top:18px}
+.adm-card p.muted{font-size:14px;margin:-4px 0 14px}
+.adm-fila{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.adm-fila .fc-select{flex:1 1 200px;margin:0}
+.adm-res{font-size:13.5px;color:var(--muted);margin-top:10px;min-height:1.2em}
+.adm-tag{font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--field);color:var(--muted)}
+.adm-tag.mal{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
