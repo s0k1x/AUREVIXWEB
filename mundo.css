@@ -4,11 +4,13 @@
    ========================================================== */
 .mundo{display:none}
 /* Empieza debajo de la cabecera (--cab lo mide js/mundo.js), que se esconde al bajar y deja el vídeo a pantalla completa */
-html.mundo-ok .mundo{display:block;height:700vh;padding:0;margin-top:calc(-1 * var(--cab,67px));position:relative;background:#000}
+html.mundo-ok .mundo{display:block;height:620vh;padding:0;margin-top:calc(-1 * var(--cab,67px));position:relative;background:#000}
 html.mundo-ok .header{background:var(--bg);border-color:var(--line)}
 .mundo-pin{position:sticky;top:0;height:100vh;overflow:hidden;background:#000;isolation:isolate}
 .mundo-foto,.mundo-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .mundo-video{opacity:0;transition:opacity .4s ease}
+/* Pantallas muy panorámicas (21:9…): el vídeo entero, para no cortar los textos de arriba y abajo */
+@media (min-aspect-ratio:17/9){.mundo-foto,.mundo-video{object-fit:contain}}
 .mundo.con-video .mundo-video{opacity:1}
 
 /* Pista para bajar: se va en cuanto empieza el scroll */

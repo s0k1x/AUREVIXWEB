@@ -16,9 +16,9 @@ function iniciar() {
   const v = sec.querySelector('.mundo-video');
   const foto = sec.querySelector('.mundo-foto');
   const barra = sec.querySelector('.mundo-barra i');
-  // Segundo de cada foto fija (video/mundo-N.webp) sobre 41 s de vídeo
-  const FOTOS = [1, 9, 14.6, 17.5, 21, 26.5, 30.5, 35, 39.5];
-  const LARGO = 41;
+  // Segundo de cada foto fija (video/intro-N.webp) sobre 35 s de vídeo
+  const FOTOS = [1, 5.5, 8.5, 10.5, 15, 19.5, 23.5, 28, 32];
+  const LARGO = 35;
   const clamp = n => Math.min(1, Math.max(0, n));
   let objetivo = 0, actual = 0, dur = 0, listo = false, vivo = false, fotoN = 0, ultimo = -1;
 
@@ -34,7 +34,7 @@ function iniciar() {
     const t = p * LARGO;
     let n = 1;
     FOTOS.forEach((s, i) => { if (t >= s - 1.5) n = i + 1; });
-    if (n !== fotoN) { fotoN = n; foto.src = `video/mundo-${n}.webp`; }
+    if (n !== fotoN) { fotoN = n; foto.src = `video/intro-${n}.webp`; }
   }
 
   function cuadro() {
@@ -61,11 +61,11 @@ function iniciar() {
 
   ponerFoto(progreso());
   // El resto de fotos, por detrás (pesan poco) para que no haya huecos al bajar rápido
-  addEventListener('load', () => FOTOS.forEach((_, i) => { const im = new Image(); im.src = `video/mundo-${i + 1}.webp`; }), { once: true });
+  addEventListener('load', () => FOTOS.forEach((_, i) => { const im = new Image(); im.src = `video/intro-${i + 1}.webp`; }), { once: true });
 
   // Con ahorro de datos se queda en fotos fijas
   if (navigator.connection?.saveData) return;
-  fetch('video/mundo.mp4')
+  fetch('video/intro.mp4')
     .then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); })
     .then(b => {
       v.addEventListener('loadedmetadata', () => {
