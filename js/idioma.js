@@ -46,16 +46,49 @@ export function cambiarIdioma(v, origen) {
   guardar(v);
   const u = new URL(location.href);
   u.searchParams.delete('lang');
-  if (quieto()) return location.replace(u.href);
+  // Con un #ancla (p. ej. /#webs) ir a la misma dirección solo salta al ancla y
+  // no recarga: la cortina se quedaría puesta. En ese caso, se recarga, y sin
+  // recuperar el scroll de antes (el navegador lleva al ancla como en una visita nueva).
+  const ir = () => {
+    if (u.pathname + u.search !== location.pathname + location.search) return location.replace(u.href);
+    try { history.scrollRestoration = 'manual'; } catch { /* nada */ }
+    location.reload();
+  };
+  if (quieto()) return ir();
   const r = origen?.getBoundingClientRect?.();
   const x = r ? r.left + r.width / 2 : innerWidth / 2, y = r ? r.top + r.height / 2 : innerHeight / 2;
   try { sessionStorage.setItem('tm_idioma_anim', JSON.stringify({ v, x, y })); } catch { /* sin almacenamiento */ }
   cortina(v, x, y, false);
-  setTimeout(() => location.replace(u.href), 900);
+  setTimeout(ir, 900);
+}
+
+/** Tras recargar por el cambio de idioma con un #ancla: se lleva la página a esa
+    sección (que se va moviendo mientras se pinta lo de arriba) hasta que la
+    persona toca el scroll, y luego el scroll vuelve a recordarse como siempre */
+function volverAlAncla() {
+  let tocado = false;
+  const toca = () => { tocado = true; };
+  const ops = { passive: true, once: true };
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => addEventListener(t, toca, ops));
+  const ir = () => {
+    const el = !tocado && location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+  };
+  ir();
+  const alCargar = () => {
+    ir();
+    [300, 900, 1800].forEach(ms => setTimeout(ir, ms));
+    setTimeout(() => {
+      try { history.scrollRestoration = 'auto'; } catch { /* nada */ }
+      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => removeEventListener(t, toca, ops));
+    }, 1900);
+  };
+  if (document.readyState === 'complete') alCargar(); else addEventListener('load', alCargar, { once: true });
 }
 
 /** Al llegar a la página después de cambiar de idioma: la cortina se abre */
 function abrirCortina() {
+  if (history.scrollRestoration === 'manual') volverAlAncla();
   let d = null;
   try { d = JSON.parse(sessionStorage.getItem('tm_idioma_anim') || 'null'); sessionStorage.removeItem('tm_idioma_anim'); } catch { /* nada */ }
   // La cubierta que pintó el <head> mientras cargaba (misma palabra, mismo sitio) deja paso a la cortina real
