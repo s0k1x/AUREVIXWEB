@@ -19,6 +19,8 @@ function elegido() {
   if (guardado) return guardado;
   // El panel y los ajustes son del equipo: en español salvo que se elija inglés a mano
   if (/\/(panel|ajustes)(\.html)?$/.test(location.pathname)) return 'es';
+  // Los buscadores (Google rastrea con el navegador en inglés) ven siempre el español; el inglés va en ?lang=en
+  if (/bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent)) return 'es';
   return (navigator.languages?.[0] || navigator.language || 'es').toLowerCase().startsWith('en') ? 'en' : 'es';
 }
 export const IDIOMA = elegido();

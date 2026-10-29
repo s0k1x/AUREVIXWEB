@@ -25,6 +25,24 @@ export { icono, pintarIconos };
 /* ---------- Utilidades ---------- */
 export const $ = (s, c = document) => c.querySelector(s);
 export const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+/* Visitas de las páginas públicas, sin cookies. No cuenta robots, recargas,
+   ni a quien pide no ser seguido (Do Not Track / Global Privacy Control). */
+function contarVisita(pagina) {
+  if (!['inicio', 'trabaja', 'terminos'].includes(pagina) || /bot|crawl|spider|slurp|lighthouse|headless/i.test(navigator.userAgent)) return;
+  if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl) return;
+  try { if (['reload', 'back_forward'].includes(performance.getEntriesByType('navigation')[0]?.type)) return; } catch { /* nada */ }
+  let origen = '';
+  try { const r = document.referrer && new URL(document.referrer); if (r && r.hostname !== location.hostname) origen = r.hostname.replace(/^www\./, ''); } catch { /* nada */ }
+  const ancho = Math.min(screen.width, screen.height);
+  const dispositivo = matchMedia('(pointer: coarse)').matches ? (ancho >= 700 ? 'tablet' : 'movil') : 'ordenador';
+  store.contarVisita(pagina, origen.slice(0, 60), dispositivo, document.documentElement.lang === 'en' ? 'en' : 'es');
+}
+
+/** Enlace de WhatsApp del negocio (Ajustes → Redes). Vacío si no hay número */
+export const whatsappLink = (texto = '') => {
+  const n = String(CONFIG.redes?.whatsapp || '').replace(/\D/g, '');
+  return n.length >= 8 ? `https://wa.me/${n}${texto ? `?text=${encodeURIComponent(texto)}` : ''}` : '';
+};
 export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const NF_0 = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 const NF_2 = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -358,7 +376,7 @@ export function pintarPie() {
           <a href="./#mis-pedidos">Mis proyectos</a>
           <a href="ajustes">Ajustes</a>
           <button class="link-btn" data-install hidden>${icono('download')} Instalar app</button>
-          ${Object.entries(CONFIG.redes || {}).some(([, v]) => v) ? `<span class="footer-redes">${Object.entries(CONFIG.redes || {}).filter(([, v]) => v).map(([k, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener" aria-label="${k}">${icono(k === 'linkedin' ? 'briefcase' : k)}</a>`).join('')}</span>` : ''}
+          ${Object.entries(CONFIG.redes || {}).some(([, v]) => v) ? `<span class="footer-redes">${Object.entries(CONFIG.redes || {}).filter(([, v]) => v).map(([k, v]) => `<a href="${esc(k === 'whatsapp' ? whatsappLink() : v)}" target="_blank" rel="noopener" aria-label="${k === 'whatsapp' ? 'WhatsApp' : k}">${icono(k === 'linkedin' ? 'briefcase' : k === 'whatsapp' ? 'wa' : k)}</a>`).join('')}</span>` : ''}
         </div>
       </nav>
       <p class="copy">© ${new Date().getFullYear()} ${esc(CONFIG.marca)}. Todos los derechos reservados.<small>El diseño, los textos, el código, los logotipos y las imágenes de esta web están protegidos por la Ley de Propiedad Intelectual. Queda prohibida su reproducción, distribución o transformación, total o parcial, sin autorización escrita.</small></p>
@@ -732,6 +750,7 @@ export async function arrancar(pagina) {
   // Precios, avisos y formas de pago que ha cambiado el propietario (máx. 2,5 s de espera)
   await Promise.race([cargarAjustesWeb(), new Promise(r => setTimeout(r, 2500))]);
   aplicarTemporada(CONFIG.temporada, { animar: ['inicio', 'trabaja'].includes(pagina) });
+  contarVisita(pagina);
   pintarAnuncio();
   pintarPie();
   vigilarMarcas();

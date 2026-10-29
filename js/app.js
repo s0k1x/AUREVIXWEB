@@ -5,7 +5,7 @@ import { CONFIG, PLANES, EXTRAS, COMPARATIVA } from '../config.js';
 import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from './store.js';
 import {
-  $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, pedirLogin, arrancar, mailLink, refPedido,
+  $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, pedirLogin, arrancar, mailLink, refPedido, whatsappLink,
   ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados, desgloseIVA, ivaTexto, infoDatos, descargar,
   estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
 } from './ui.js';
@@ -1323,6 +1323,8 @@ $('#ctMail b').textContent = CONFIG.email;
 $('#ctHorario b').textContent = CONFIG.horario;
 $('#ctResp b').textContent = CONFIG.respuesta;
 $$('.contacto-datos .cd > span').forEach((s, i) => (s.innerHTML = icono(['mail', 'clock', 'message'][i])));
+// WhatsApp, solo si el propietario ha puesto su número en Ajustes
+if (whatsappLink()) $('#ctMail').insertAdjacentHTML('afterend', `<a class="cd" id="ctWa" href="${esc(whatsappLink('Hola, os escribo desde la web de AurevixWeb.'))}" target="_blank" rel="noopener"><span>${icono('wa')}</span><div><small>WhatsApp</small><b>Escríbenos por WhatsApp</b></div></a>`);
 const MOTIVOS = { presupuesto: 'Quiero un presupuesto', duda: 'Tengo una duda', espera: 'Lista de espera', trabajo: 'Trabajar con vosotros', otro: 'Otro' };
 function pintarContacto() {
   const u = store.usuarioActual();
@@ -1377,6 +1379,19 @@ $('#contactoForm').addEventListener('submit', async e => {
   }
 });
 
+/* ---------- Preguntas frecuentes: lista numerada (adaptada de «Interactive Accordion» de 21st.dev) ----------
+   Sigue siendo <details> nativo (teclado, lector de pantalla y buscador funcionan igual);
+   solo se añade el número y se envuelve el texto de la pregunta para animarlo. */
+$$('.faq details').forEach((d, i) => {
+  const s = d.querySelector('summary');
+  const t = document.createElement('span');
+  t.className = 'faq-t';
+  t.append(...s.childNodes);
+  s.innerHTML = `<span class="faq-n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>`;
+  s.append(t);
+  d.classList.add('faq-it');
+});
+
 /* ---------- Buscador de preguntas frecuentes ---------- */
 $('#faqQ').addEventListener('input', e => {
   const q = e.target.value.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -1388,6 +1403,21 @@ $('#faqQ').addEventListener('input', e => {
   });
   $('#faqNada').hidden = n > 0;
 });
+
+/* ---------- Preguntas frecuentes para Google (datos estructurados FAQPage) ----------
+   Se leen del propio HTML, así nunca se desincronizan. Solo en español (los buscadores ven el español). */
+if (document.documentElement.lang === 'es') {
+  const ld = document.createElement('script');
+  ld.type = 'application/ld+json';
+  ld.textContent = JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: $$('.faq details').map(d => ({
+      '@type': 'Question', name: (d.querySelector('.faq-t') || d.querySelector('summary')).textContent.trim(),
+      acceptedAnswer: { '@type': 'Answer', text: d.querySelector('p')?.textContent.trim() || '' }
+    }))
+  });
+  document.head.appendChild(ld);
+}
 
 /* ---------- Enlaces directos ---------- */
 // #proyecto-<id> abre sus mensajes; #proyecto-<id>/pagos (enlace del correo de pago), esa pestaña

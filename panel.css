@@ -353,3 +353,20 @@ html[data-tema=claro] .ent.tarde .ent-d b{color:#c23b3b}
 .tm-w .tm-stats b,.tm-w .tm-stats li{display:inline}
 .tm-w > .avatar,.tm-w > img,.tm-w > span:first-child{align-self:start}
 .tm-acc .btn{overflow:hidden;white-space:nowrap}
+
+/* ---------- Visitas a la web (Resumen del propietario) ---------- */
+.vis-card{margin-top:18px}
+.vis-dias{display:grid;grid-template-columns:repeat(30,1fr);gap:3px;align-items:end;height:150px;margin-top:22px;padding-top:26px;border-bottom:1px solid var(--line)}
+.vis-dia{position:relative;height:100%;display:flex;align-items:flex-end;outline:none;cursor:default}
+.vis-dia i{display:block;width:100%;height:max(var(--h),2px);border-radius:4px 4px 0 0;background:var(--accent);transition:opacity .15s ease}
+.vis-dia::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);white-space:nowrap;padding:5px 9px;border-radius:8px;background:var(--text);color:var(--bg);font-size:12px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .15s ease;z-index:2}
+.vis-dia:focus-visible::after{opacity:1}
+.vis-dia:focus-visible i{opacity:1;outline:2px solid var(--accent);outline-offset:2px}
+@media (hover:hover) and (pointer:fine){.vis-dia:hover::after{opacity:1}.vis-dia:hover i{opacity:1}}
+@media (hover:hover) and (pointer:fine){.vis-dias:hover .vis-dia:not(:hover) i{opacity:.4}}
+.vis-eje{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--dim)}
+.vis-cols{margin-top:26px}
+.vis-cols .bar{grid-template-columns:minmax(0,180px) 1fr 40px}
+@media (max-width:640px){.vis-dias{gap:2px;height:120px}.vis-dia::after{display:none}}
+.vis-dia:nth-child(-n+3)::after{left:0;transform:none}
+.vis-dia:nth-last-child(-n+3)::after{left:auto;right:0;transform:none}

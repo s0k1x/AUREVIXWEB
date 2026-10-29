@@ -314,7 +314,8 @@ async function negocio() {
       <div class="row-2">${texto('email', 'Correo de contacto', a.email, 'type="email"')}${texto('horario', 'Horario de atención', a.horario, 'maxlength="80"')}</div>
       ${texto('respuesta', 'Tiempo de respuesta', a.respuesta, 'maxlength="80"')}
       <div class="row-2">${texto('instagram', 'Instagram (enlace)', a.redes.instagram, 'type="url"')}${texto('tiktok', 'TikTok (enlace)', a.redes.tiktok, 'type="url"')}</div>
-      <div class="row-2">${texto('linkedin', 'LinkedIn (enlace)', a.redes.linkedin, 'type="url"')}${texto('trustpilot', 'Trustpilot (enlace)', a.trustpilot, 'type="url"')}</div>`)}
+      <div class="row-2">${texto('linkedin', 'LinkedIn (enlace)', a.redes.linkedin, 'type="url"')}${texto('trustpilot', 'Trustpilot (enlace)', a.trustpilot, 'type="url"')}</div>
+      ${texto('whatsapp', 'WhatsApp (número)', a.redes.whatsapp || '', 'type="tel" inputmode="tel" autocomplete="off" placeholder="34600111222"', 'Con el prefijo del país y sin espacios. Si lo pones, sale un botón de WhatsApp en Contacto y en el pie. Déjalo vacío para no ofrecerlo.')}`)}
     ${bloque('Precios y plazos', 'Precio de partida, plazo que ve el cliente y días máximos para calcular la fecha de entrega.', `
       <div class="aj-tabla"><div class="aj-tr aj-th"><span>Plan</span><span>Activo</span><span>Precio (€)</span><span>Plazo</span><span>Días</span><span>Destacado</span></div>
       ${PLANES.map(p => { const o = a.planes[p.id]; return `<div class="aj-tr" data-plan="${p.id}">
@@ -401,7 +402,7 @@ async function negocio() {
       aviso: v('aviso') || ORIGINAL.config.aviso, anuncio: { activo: $('#anuncioActivo').checked, texto: v('anuncioTexto') },
       aceptarPedidos: $('#aceptarPedidos').checked, mensajeCerrado: v('mensajeCerrado'),
       email: v('email') || CONFIG.email, horario: v('horario'), respuesta: v('respuesta'),
-      redes: { instagram: v('instagram'), tiktok: v('tiktok'), linkedin: v('linkedin') }, trustpilot: v('trustpilot'),
+      redes: { instagram: v('instagram'), tiktok: v('tiktok'), linkedin: v('linkedin'), whatsapp: v('whatsapp').replace(/\D/g, '') }, trustpilot: v('trustpilot'),
       bienvenida: { activo: $('#bvActivo').checked, codigo: v('bvCodigo').toUpperCase().replace(/[^A-Z0-9_-]/g, '') || ORIGINAL.config.bienvenida.codigo, pct: Math.min(100, Math.max(1, +v('bvPct') || 10)) },
       videos: { precio: Math.max(0, +v('vPrecio') || 0), bonus: Math.max(0, +v('vBonus') || 0), visitas: Math.max(0, +v('vVisitas') || 0), maxMes: Math.max(1, +v('vMax') || 1) },
       senal: +v('senal'), urgente: (+v('urgente')) / 100, comision: +v('comision'),

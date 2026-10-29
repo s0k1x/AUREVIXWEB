@@ -2,3 +2,8 @@
 User-agent: *
 Disallow: /library/
 Disallow: /biblioteca-ui/
+Disallow: /panel
+Disallow: /ajustes
+Disallow: /vista-previa
+
+Sitemap: https://aurevixweb.es/sitemap.xml

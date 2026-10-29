@@ -871,3 +871,49 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 
 **Panel**
 - La ficha de cada pedido se abre a pantalla completa.
+
+## 45. Versión v65 — Lista de lanzamiento, estadísticas, WhatsApp, iconos vivos y herramientas
+**Lo que tienes que hacer tú (una vez)**
+1. **Estadísticas de visitas**: pega `supabase/visitas-v65.sql` en Supabase → SQL Editor → Run. Hasta entonces, el panel dice que aún no hay visitas.
+2. **WhatsApp** (opcional): Ajustes → Negocio → Redes → «WhatsApp (número)», con el prefijo 34 y sin espacios. Sale un botón en Contacto y en el pie. Vacío = no se ofrece.
+3. **HTTPS**: en GitHub → Settings → Pages, marca «Enforce HTTPS».
+4. **Google**: da de alta la web en Google Search Console y envía `https://aurevixweb.es/sitemap.xml`. Crea la **ficha de Google (Perfil de Empresa)** de AurevixWeb.
+
+**Lista de lanzamiento (los 40 puntos de los vídeos)**
+- `sitemap.xml` nuevo y `robots.txt` con el sitemap. El panel, los ajustes y la vista previa no se indexan.
+- Portada con `canonical`, OpenGraph y Twitter completos, `hreflang` (es/en) y datos estructurados ampliados (negocio + web). Las preguntas frecuentes salen a Google como `FAQPage`; se leen del propio HTML, así que no hay que tocar nada al cambiar una pregunta.
+- Google rastrea con el navegador en inglés: ahora los buscadores ven siempre el español (el inglés queda en `?lang=en`).
+- La página 404 tiene título propio.
+- Contraste: los grises más claros se han oscurecido un poco para pasar AA (4,5:1) en oscuro y en claro.
+- Revisado sin fallos:
+  - enlaces internos;
+  - errores de consola;
+  - textos alternativos;
+  - trampa antispam del formulario;
+  - avisos legales y de cookies;
+  - el resto de puntos de la lista.
+
+**Estadísticas propias (sin cookies)**
+- Cada visita a Inicio, Trabaja con nosotros o Términos suma 1 a un contador del día, por página, web de procedencia, dispositivo e idioma.
+- No se guarda ni la IP ni ningún identificador, y no se guarda nada en el dispositivo. Por eso no hace falta pedir permiso de cookies; está explicado en la política de privacidad.
+- No se cuentan robots, recargas ni a quien tiene «No rastrear» activado.
+- En **Panel → Resumen → «Visitas a la web»** ves los últimos 30 días: total, hoy, % móvil, visitas en inglés, una gráfica por día, de dónde llegan y qué páginas.
+
+**Iconos vivos** (`iconos-vivos.css`, al estilo de itshover.com)
+- Al pasar el ratón por un botón, su icono hace un gesto: la flecha empuja, enviar despega, refrescar gira, la campana suena…
+- Solo con ratón, en 200 ms, y nunca con movimiento reducido.
+
+**Preguntas frecuentes**
+- Lista numerada con subrayado animado, adaptada del componente «Interactive Accordion» de 21st.dev.
+
+**Herramientas para Claude Code** (del vídeo «Lo que le falta a Claude Code»)
+- **Playwright** y **Context7**: configurados en `.mcp.json`. La próxima vez que abras Claude Code en este proyecto te pedirá permiso para activarlos.
+  - Playwright prueba la web como un usuario.
+  - Context7 da la documentación al día de cada librería.
+- **Supabase**: ya estaba conectado.
+- **SkillUI**: el sistema de diseño de la web está en la skill `.claude/skills/aurevix-diseno` (colores, tipografía, piezas, movimiento y reglas), para que todo lo nuevo siga el mismo estilo. Para regenerarla desde tu ordenador: `npx skillui --url https://aurevixweb.es --mode ultra`.
+- **Strix** (busca fallos de seguridad atacando la web, como un hacker): necesita Docker y una clave de un modelo de IA tuya. Desde tu ordenador:
+  1. `pipx install strix-agent`
+  2. `export STRIX_LLM="anthropic/<modelo>"` y `export LLM_API_KEY="<tu clave>"`
+  3. `strix --target https://aurevixweb.es`
+- En esta sesión se ha hecho, en su lugar, una revisión de seguridad de los cambios. El contador de visitas valida todo lo que recibe y limita a 300 combinaciones al día.
