@@ -63,21 +63,37 @@ function iniciar() {
   // El resto de fotos, por detrás (pesan poco) para que no haya huecos al bajar rápido
   addEventListener('load', () => FOTOS.forEach((_, i) => { const im = new Image(); im.src = `video/intro-${i + 1}.webp`; }), { once: true });
 
-  // Con ahorro de datos se queda en fotos fijas
-  if (navigator.connection?.saveData) return;
-  fetch('video/intro.mp4')
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); })
-    .then(b => {
-      v.addEventListener('loadedmetadata', () => {
-        dur = v.duration || LARGO;
-        actual = progreso();
-        v.addEventListener('seeked', () => { listo = true; sec.classList.add('con-video'); }, { once: true });
-        v.currentTime = Math.min(actual * dur, dur - 0.05);
-        // Safari pinta mejor los saltos si el vídeo se ha reproducido una vez
-        v.play()?.then(() => v.pause()).catch(() => {});
-      }, { once: true });
-      v.preload = 'auto';
-      v.src = URL.createObjectURL(b);
-    })
-    .catch(() => {}); // sin vídeo, la intro sigue con las fotos fijas
+  // El vídeo (unos 23 MB) solo se descarga cuando la persona empieza a recorrer la intro:
+  // quien entra y se va, o pulsa «Saltar intro», no lo baja. Con ahorro de datos o una
+  // conexión lenta se queda en fotos fijas.
+  const con = navigator.connection;
+  if (con?.saveData || /(^|-)2g|3g/.test(con?.effectiveType || '')) return;
+  const gestos = ['scroll', 'wheel', 'touchmove', 'keydown'];
+  const quiereVerla = () => {
+    const r = sec.getBoundingClientRect();
+    if (r.top > innerHeight || r.bottom < innerHeight * 1.5) return; // fuera de la intro o ya casi al final
+    gestos.forEach(g => removeEventListener(g, quiereVerla));
+    cargarVideo();
+  };
+  gestos.forEach(g => addEventListener(g, quiereVerla, { passive: true }));
+  // Si se vuelve atrás y la página ya está a mitad de la intro, se carga directamente
+  if (scrollY > 0) requestAnimationFrame(quiereVerla);
+
+  function cargarVideo() {
+    fetch('video/intro.mp4')
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); })
+      .then(b => {
+        v.addEventListener('loadedmetadata', () => {
+          dur = v.duration || LARGO;
+          actual = progreso();
+          v.addEventListener('seeked', () => { listo = true; sec.classList.add('con-video'); }, { once: true });
+          v.currentTime = Math.min(actual * dur, dur - 0.05);
+          // Safari pinta mejor los saltos si el vídeo se ha reproducido una vez
+          v.play()?.then(() => v.pause()).catch(() => {});
+        }, { once: true });
+        v.preload = 'auto';
+        v.src = URL.createObjectURL(b);
+      })
+      .catch(() => {}); // sin vídeo, la intro sigue con las fotos fijas
+  }
 }

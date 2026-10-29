@@ -1,0 +1,26 @@
+# Pruebas automáticas de la web (tests/pruebas.mjs)
+# Se ejecutan en cada cambio propuesto (pull request): si algo se rompe, sale en rojo
+# antes de subirlo. Al subir a main las repite «Publicar la web» sobre la copia minificada.
+name: Pruebas de la web
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Instalar el navegador de pruebas
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.63.0
+          npx playwright install --with-deps chromium
+      - name: Probar la web en ordenador y móvil
+        run: node tests/pruebas.mjs

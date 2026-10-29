@@ -995,3 +995,45 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 **Cookies**
 - En ordenador, el aviso de cookies sale **en el centro de la pantalla**, con el fondo oscurecido, igual que en el móvil.
 - La política de privacidad ya incluye a Cloudflare, las notificaciones y el pase `tm_humano`.
+
+## 48. Versión v69 — Intro ligera, presupuesto en PDF, recordatorios, embudo, gestor, copias, pruebas y código protegido
+**Hecho y funcionando**
+- **Intro más ligera:** el vídeo (23 MB) solo se descarga cuando alguien empieza a recorrer la intro. Quien entra y se va, o pulsa «Saltar intro», gasta 1,2 MB en lugar de 24 MB. En conexiones lentas o con ahorro de datos solo se ven las fotos fijas.
+- **Presupuesto en PDF:** botón «Descargar presupuesto (PDF)» en la calculadora. El PDF se crea en el navegador del visitante (no se envía nada) con:
+  - los conceptos, el total con IVA y las cuotas mensuales;
+  - la señal y el resto, y la entrega estimada;
+  - qué incluye, las condiciones y un enlace para pedirla.
+- **Recordatorios automáticos** (Supabase, `pg_cron`, cada día a las 10:07 en invierno): llegan como notificación, nunca por correo.
+  - Al cliente: señal sin pagar, o su etapa (dominio, contenido, revisión, pago final) parada 3 días.
+  - A ti: un pago lleva más de un día por verificar.
+  - Como mucho cada 3 días y 3 veces por motivo.
+  - Para ver a quién avisaría sin mandar nada: `select public.recordatorios(true);` en el SQL Editor.
+- **Panel → Resumen:**
+  - **Embudo de ventas:** visitas → usaron la calculadora → descargaron el presupuesto → empezaron un pedido → lo hicieron, con el % de cada paso.
+  - **Facturas para tu gestor:** CSV por trimestre o año (Excel o Google Sheets), con base, IVA y total.
+  - **Copia de seguridad:** un archivo con pedidos, facturas, clientes, mensajes, reseñas y ajustes. Hazla cada semana y guárdala en Google Drive; la tarjeta te avisa si hace más de 7 días. No incluye las fotos subidas.
+- **Guías nuevas:** SEO local, cómo conseguir reseñas en Google y «¿Web o solo redes sociales?».
+- **Pruebas automáticas:** `tests/pruebas.mjs` abre las 21 páginas en ordenador y móvil y prueba lo principal (precios, calculadora y PDF, preguntas, pedido y enlaces). GitHub las pasa en cada cambio.
+
+**Proteger el código (gratis, sin cambiar el dominio)**
+- La web se navega igual, pero el código fuente (con sus comentarios, el SQL de Supabase, los scripts y las notas) deja de ser público.
+- Funciona con dos repositorios:
+  - `aurevixweb`, este, que pasa a ser **privado**;
+  - `aurevixweb-web`, **público**, que solo recibe la copia minificada que prepara `scripts/publicar.mjs` y sirve `aurevixweb.es`.
+- Cada vez que se sube un cambio a `main`, GitHub prepara la copia, la prueba y la publica sola (`.github/workflows/publicar.yml`). Si una prueba falla, no se publica.
+- Ningún método impide del todo ver el HTML, el CSS y el JS de una web, porque el navegador los necesita. Lo que se consigue es que lo publicado esté compactado y sin explicaciones, y que el código fuente quede privado.
+
+**Pasos (en este orden, para que la web no se caiga):**
+1. **Crear el repositorio público:** github.com → «+» → *New repository* → nombre `aurevixweb-web`, **Public**, sin README → *Create*.
+2. **Crear el token:**
+   - github.com → tu foto → *Settings* → *Developer settings* → *Personal access tokens* → *Fine-grained tokens* → *Generate new token*.
+   - Nombre «Publicar AurevixWeb». Caducidad: la máxima. *Repository access* → *Only select repositories* → `aurevixweb-web`.
+   - *Permissions* → *Contents*: **Read and write** → *Generate*. Copia el token.
+3. **Guardar el token como secreto:** en el repositorio `aurevixweb` → *Settings* → *Secrets and variables* → *Actions* → *New repository secret*. Nombre `PUBLICAR_TOKEN`, valor: el token.
+4. **Primera publicación:** en `aurevixweb` → pestaña *Actions* → «Publicar la web» → *Run workflow*. Tarda unos minutos y llena `aurevixweb-web`.
+5. **Pasar el dominio:**
+   - En `aurevixweb` → *Settings* → *Pages*: quita el dominio personalizado.
+   - En `aurevixweb-web` → *Settings* → *Pages*: *Deploy from a branch* → `main` / `(root)` → *Save*. En *Custom domain* pon `aurevixweb.es` y, cuando salga, marca *Enforce HTTPS*.
+   - Los DNS no se tocan.
+6. **Comprobar:** abre https://aurevixweb.es y mira que todo va.
+7. **Solo entonces:** `aurevixweb` → *Settings* → *General* → *Danger Zone* → *Change visibility* → **Private**.

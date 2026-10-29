@@ -289,8 +289,81 @@ function resumen() {
         }).join('')}</div>` : '<p class="muted" style="font-size:14px">Aún no hay trabajadores. Acepta candidaturas para formar tu equipo.</p>'}
       </div>
     </div>
+    ${adminHTML()}
     <div class="card vis-card" id="pnVisitas" aria-busy="true"><div class="card-h"><h3>Visitas a la web</h3><span class="muted" style="font-size:13px">últimos 30 días</span></div>${cargandoHTML('Cargando visitas…')}</div>`;
   pintarVisitas();
+  montarAdmin();
+}
+
+/* ---------- PROPIETARIO: facturas para el gestor y copia de seguridad ---------- */
+const FASES_FACTURA = { senal: 'Señal', resto: 'Resto (entrega)', total: 'Pago completo' };
+const ULTIMA_COPIA = 'tm_ultima_copia';
+function adminHTML() {
+  if (U.role !== 'owner') return '';
+  const hoy = new Date(), anio = hoy.getFullYear(), tri = Math.floor(hoy.getMonth() / 3) + 1;
+  // El trimestre anterior es el que suele pedir el gestor (salvo en el primero del año)
+  const opciones = [];
+  for (let a = anio; a >= anio - 2; a--) for (let t = 4; t >= 1; t--) if (a < anio || t <= tri) opciones.push([`${a}-${t}`, `${t}.º trimestre de ${a}`]);
+  for (let a = anio; a >= anio - 2; a--) opciones.push([`${a}-0`, `Todo ${a}`]);
+  const porDefecto = tri > 1 ? `${anio}-${tri - 1}` : `${anio - 1}-4`;
+  let ultima = 0;
+  try { ultima = +localStorage.getItem(ULTIMA_COPIA) || 0; } catch { /* nada */ }
+  const dias = ultima ? Math.floor((Date.now() - ultima) / 864e5) : null;
+  return `<div class="cols adm-cols">
+    <div class="card adm-card">
+      <div class="card-h"><h3>Facturas para tu gestor</h3></div>
+      <p class="muted">Todas las facturas del periodo en una hoja de cálculo (CSV para Excel o Google Sheets), con base, IVA y total.</p>
+      <div class="adm-fila"><label class="fc-select"><span>Periodo</span><select id="admPeriodo">${opciones.map(([v, t]) => `<option value="${v}"${v === porDefecto ? ' selected' : ''}>${t}</option>`).join('')}</select></label>
+      <button type="button" class="btn btn-sm btn-primary" id="admCsv">${icono('download')}<span>Descargar CSV</span></button></div>
+      <p class="adm-res" id="admRes" aria-live="polite"></p>
+    </div>
+    <div class="card adm-card">
+      <div class="card-h"><h3>Copia de seguridad</h3>${dias === null ? '<span class="adm-tag mal">Nunca</span>' : dias > 7 ? `<span class="adm-tag mal">Hace ${dias} días</span>` : `<span class="adm-tag">${dias ? `Hace ${dias} día${dias === 1 ? '' : 's'}` : 'Hoy'}</span>`}</div>
+      <p class="muted">Pedidos, facturas, clientes, mensajes, reseñas y ajustes en un archivo que guardas tú. Hazla una vez a la semana y guárdala fuera del ordenador (por ejemplo, en Google Drive). No incluye las fotos y archivos subidos.</p>
+      <button type="button" class="btn btn-sm btn-ghost" id="admCopia">${icono('download')}<span>Descargar copia de seguridad</span></button>
+    </div>
+  </div>`;
+}
+const fechaFactura = f => { const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(f.datos?.fecha || ''); return m ? new Date(+m[3], m[2] - 1, +m[1]) : new Date(f.created_at); };
+function csvFacturas(facturas, anio, tri) {
+  const L = facturas.filter(f => { const d = fechaFactura(f); return d.getFullYear() === anio && (!tri || Math.floor(d.getMonth() / 3) + 1 === tri); });
+  const num = n => (Math.round((+n || 0) * 100) / 100).toFixed(2).replace('.', ',');
+  const c = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const sum = k => L.reduce((t, f) => t + (+f.datos?.[k] || 0), 0);
+  const filas = L.map(f => {
+    const d = f.datos || {}, cl = d.cliente || {};
+    return [f.numero, fechaFactura(f).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }), cl.nombre, cl.nif, [cl.direccion, cl.cp, cl.ciudad].filter(Boolean).join(', '), cl.email,
+      (d.lineas || []).map(l => l.concepto).filter(Boolean).join(' + ') || FASES_FACTURA[f.fase] || f.fase, d.pedido, num(d.base), num(d.iva), num(d.cuota), num(d.total), d.metodo].map(c).join(';');
+  });
+  const cab = ['Número', 'Fecha', 'Cliente', 'NIF', 'Dirección', 'Correo', 'Concepto', 'Pedido', 'Base imponible', 'IVA %', 'Cuota IVA', 'Total', 'Forma de pago'].map(c).join(';');
+  const tot = [c('TOTAL'), c(''), c(''), c(''), c(''), c(''), c(`${L.length} factura${L.length === 1 ? '' : 's'}`), c(''), c(num(sum('base'))), c(''), c(num(sum('cuota'))), c(num(sum('total'))), c('')].join(';');
+  return { csv: '\ufeff' + [cab, ...filas, tot].join('\r\n'), n: L.length, base: sum('base'), cuota: sum('cuota'), total: sum('total') };
+}
+function montarAdmin() {
+  if (U.role !== 'owner' || !$('#admCsv')) return;
+  $('#admCsv').addEventListener('click', async e => {
+    const b = e.currentTarget; ocupado(b, true);
+    try {
+      const [anio, tri] = $('#admPeriodo').value.split('-').map(Number);
+      const r = csvFacturas(await store.listarFacturas(), anio, tri);
+      if (!r.n) { $('#admRes').textContent = 'No hay facturas en ese periodo.'; return; }
+      descargar(`facturas-${anio}${tri ? `-T${tri}` : ''}.csv`, new Blob([r.csv], { type: 'text/csv;charset=utf-8' }));
+      $('#admRes').innerHTML = `${r.n} factura${r.n === 1 ? '' : 's'} · base ${euros(r.base)} · IVA ${euros(r.cuota)} · <b>total ${euros(r.total)}</b>`;
+    } catch (err) { toast(err.message, 'err'); }
+    finally { ocupado(b, false); }
+  });
+  $('#admCopia').addEventListener('click', async e => {
+    const b = e.currentTarget; ocupado(b, true);
+    try {
+      const copia = await store.copiaDeSeguridad();
+      const fallos = Object.entries(copia.tablas).filter(([, v]) => v && v.error).map(([k]) => k);
+      descargar(`copia-${CONFIG.marca}-${new Date().toISOString().slice(0, 10)}.json`, new Blob([JSON.stringify(copia, null, 1)], { type: 'application/json' }));
+      try { localStorage.setItem(ULTIMA_COPIA, String(Date.now())); } catch { /* nada */ }
+      toast(fallos.length ? `Copia descargada, pero sin: ${fallos.join(', ')}` : 'Copia de seguridad descargada. Guárdala en un sitio seguro.', fallos.length ? 'err' : 'ok');
+      cargar(true);
+    } catch (err) { toast(err.message, 'err'); }
+    finally { ocupado(b, false); }
+  });
 }
 
 /* ---------- PROPIETARIO: Visitas (contadores propios, sin cookies) ---------- */
@@ -298,7 +371,8 @@ const PAGINAS_WEB = {
   inicio: 'Inicio', trabaja: 'Trabaja con nosotros', terminos: 'Términos y privacidad', 'revisa-tu-web': 'Revisa tu web', mantenimiento: 'Mantenimiento', guias: 'Guías',
   'webs-para-barberias': 'Sector: barberías', 'webs-para-centros-de-estetica': 'Sector: estética', 'webs-para-restaurantes': 'Sector: restaurantes', 'tiendas-online': 'Sector: tiendas online',
   'webs-para-gimnasios': 'Sector: gimnasios', 'webs-para-profesionales': 'Sector: profesionales', 'cuanto-cuesta-una-pagina-web': 'Guía: cuánto cuesta',
-  'que-necesita-la-web-de-mi-negocio': 'Guía: qué necesita', 'dominio-alojamiento-y-correo': 'Guía: dominio y correo', 'antes-de-lanzar-tu-web': 'Guía: antes de lanzar'
+  'que-necesita-la-web-de-mi-negocio': 'Guía: qué necesita', 'dominio-alojamiento-y-correo': 'Guía: dominio y correo', 'antes-de-lanzar-tu-web': 'Guía: antes de lanzar',
+  'seo-local-para-negocios': 'Guía: SEO local', 'como-conseguir-resenas-en-google': 'Guía: reseñas', 'web-o-redes-sociales': 'Guía: web o redes'
 };
 async function pintarVisitas() {
   const caja = $('#pnVisitas');
@@ -310,6 +384,20 @@ async function pintarVisitas() {
   caja.removeAttribute('aria-busy');
   const cab = '<div class="card-h"><h3>Visitas a la web</h3><span class="muted" style="font-size:13px">últimos 30 días · sin cookies</span></div>';
   if (!filas) { caja.innerHTML = cab + vacio('chart', 'Aún no se pueden ver las visitas. Ejecuta supabase/visitas-v65.sql en Supabase.'); return; }
+  // Los pasos del embudo («ev-…») se cuentan aparte de las visitas
+  const eventos = filas.filter(f => f.pagina.startsWith('ev-'));
+  filas = filas.filter(f => !f.pagina.startsWith('ev-'));
+  const cuenta = k => eventos.filter(f => f.pagina === 'ev-' + k).reduce((t, f) => t + f.visitas, 0);
+  const pasos = [
+    ['Visitas a la portada', filas.filter(f => f.pagina === 'inicio').reduce((t, f) => t + f.visitas, 0)],
+    ['Usaron la calculadora', cuenta('calculadora')],
+    ['Descargaron el presupuesto', cuenta('presupuesto')],
+    ['Empezaron un pedido', cuenta('pedido')],
+    ['Hicieron el pedido', cuenta('pedido-hecho')]
+  ];
+  const tope = Math.max(1, pasos[0][1]);
+  const embudo = `<div class="card-h vis-embudo-h"><h3>Embudo de ventas</h3><span class="muted" style="font-size:13px">de quien entra a quien pide</span></div>
+    <ol class="vis-embudo">${pasos.map(([t, v], i) => `<li><span>${t}</span><div aria-hidden="true"><i style="width:${Math.max(v ? 2 : 0, (v / tope) * 100)}%"></i></div><b>${v}</b><small>${i && pasos[0][1] ? `${Math.round((v / pasos[0][1]) * 1000) / 10} %` : ''}</small></li>`).join('')}</ol>`;
   const suma = (L, k) => Object.entries(L.reduce((o, f) => ((o[f[k]] = (o[f[k]] || 0) + f.visitas), o), {})).sort((a, b) => b[1] - a[1]);
   const total = filas.reduce((t, f) => t + f.visitas, 0);
   const dias = Array.from({ length: 30 }, (_, i) => {
@@ -335,7 +423,8 @@ async function pintarVisitas() {
     <div class="cols vis-cols">
       <div><div class="card-h"><h3>De dónde llegan</h3></div>${barras(origenes)}</div>
       <div><div class="card-h"><h3>Páginas</h3></div>${barras(paginas)}</div>
-    </div>`;
+    </div>
+    ${embudo}`;
 }
 
 /* ---------- PROPIETARIO: Pedidos ---------- */

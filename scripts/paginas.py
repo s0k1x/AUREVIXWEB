@@ -336,6 +336,9 @@ GUIAS_LISTA = [
     ('que-necesita-la-web-de-mi-negocio', 'Qué necesita la web de tu negocio', 'Lo imprescindible para que una web atraiga clientes, y lo que cambia según el tipo de negocio.', 'bulb'),
     ('dominio-alojamiento-y-correo', 'Dominio, alojamiento y correo: qué es cada cosa', 'Explicado sin tecnicismos: qué necesitas, a nombre de quién y cuánto cuesta.', 'globe'),
     ('antes-de-lanzar-tu-web', '20 comprobaciones antes de lanzar tu web', 'La lista que revisamos en cada web antes de publicarla. Márcala punto a punto.', 'check'),
+    ('seo-local-para-negocios', 'SEO local: cómo aparecer en Google en tu zona', 'Lo que hace que Google te enseñe cuando alguien busca lo tuyo cerca: ficha, web y reseñas.', 'pin'),
+    ('como-conseguir-resenas-en-google', 'Cómo conseguir reseñas en Google (sin trucos)', 'Cuándo pedirlas, cómo ponérselo fácil al cliente y cómo responder, también a las malas.', 'star'),
+    ('web-o-redes-sociales', '¿Web o solo redes sociales?', 'Para qué sirve cada cosa y por qué un negocio necesita algo que sea suyo.', 'globe'),
 ]
 
 G1 = guia('cuanto-cuesta-una-pagina-web', GUIAS_LISTA[0][1],
@@ -438,6 +441,70 @@ G4 = guia('antes-de-lanzar-tu-web', GUIAS_LISTA[3][1],
           <p>La parte técnica (velocidad, Google, accesibilidad) puedes comprobarla en un minuto con nuestra <a href="revisa-tu-web">revisión gratuita</a>. Si quieres, te enviamos un presupuesto para dejarla perfecta.</p>''')])
 assert sum(len(i) for _, i in CHECKLIST) == 20
 
+G5 = guia('seo-local-para-negocios', 'SEO local: cómo aparecer en Google en tu zona',
+    'Guía de SEO local para negocios: ficha de Google (Perfil de Empresa), datos iguales en todas partes, reseñas, una página por servicio y velocidad.',
+    'Cuando alguien busca «barbería cerca de mí» o «restaurante en Triana», Google enseña primero el mapa con tres negocios. Esto es lo que más influye para que salga el tuyo.',
+    [('ficha', 'La ficha de Google (Perfil de Empresa)', """
+          <p>Es lo primero que aparece en el mapa. Créala gratis en <b>business.google.com</b> y complétala entera:</p>
+          <ul>
+            <li><b>Categoría principal</b> exacta (por ejemplo, «Barbería», no solo «Peluquería»).</li>
+            <li>Dirección, teléfono, horario (también los festivos) y la <b>dirección de tu web</b>.</li>
+            <li>Fotos reales del local, del equipo y de tu trabajo. Súbelas de vez en cuando.</li>
+            <li>Los servicios o la carta, con precios si puedes.</li>
+          </ul>"""),
+     ('datos', 'Los mismos datos en todas partes', """
+          <p>Nombre, dirección y teléfono tienen que ser <b>idénticos</b> en tu web, en la ficha de Google, en redes y en directorios. Si en un sitio pone «C/ Mayor 12» y en otro «Calle Mayor, nº 12, bajo», Google duda de cuál es la buena.</p>"""),
+     ('web', 'Lo que tiene que tener tu web', """
+          <ul>
+            <li><b>Tu ciudad o barrio</b> en el título y en los textos, de forma natural: «Barbería en el centro de Sevilla».</li>
+            <li>Una <b>sección o página por cada servicio</b> importante, para que Google sepa todo lo que haces.</li>
+            <li><b>Datos estructurados</b> del negocio (dirección, horario, tipo de negocio): Google los lee directamente.</li>
+            <li>Que <b>cargue rápido en el móvil</b>. <a href="revisa-tu-web">Revisa la tuya gratis</a>.</li>
+          </ul>"""),
+     ('resenas', 'Las reseñas', """
+          <p>Cuantas más reseñas reales y recientes, y mejor respondidas, más confianza da tu ficha a Google y a quien la mira. En <a href="como-conseguir-resenas-en-google">esta guía</a> te contamos cómo conseguirlas.</p>"""),
+     ('paciencia', 'Cuánto tarda', """
+          <p>No es inmediato: los cambios suelen notarse en semanas o meses. Lo bueno es que lo que construyes se queda: no dejas de aparecer el día que dejas de pagar anuncios.</p>""")])
+
+G6 = guia('como-conseguir-resenas-en-google', 'Cómo conseguir reseñas en Google (sin trucos)',
+    'Cómo conseguir reseñas reales en Google para tu negocio: cuándo pedirlas, el enlace directo, qué decir y cómo responder a las negativas.',
+    'Las reseñas son lo que más convence a alguien que no te conoce. Conseguirlas no tiene secreto: pedirlas en el momento justo y ponerlo fácil.',
+    [('cuando', 'Pídelas en el mejor momento', """
+          <p>Justo cuando el cliente está contento: al terminar el servicio, al entregar el pedido o cuando te da las gracias. Una semana después ya no se acuerda.</p>"""),
+     ('facil', 'Pónselo fácil: el enlace directo', """
+          <ol>
+            <li>En tu Perfil de Empresa de Google, busca <b>«Pedir reseñas»</b> o <b>«Compartir perfil»</b>: te da un enlace que abre directamente la ventana para escribir la reseña.</li>
+            <li>Mándalo por WhatsApp o ponlo en un <b>código QR</b> en el mostrador o en el ticket.</li>
+            <li>Un mensaje corto basta: «Gracias por venir. Si te ha gustado, nos ayudaría mucho una reseña: [enlace]».</li>
+          </ol>"""),
+     ('responder', 'Responde a todas', """
+          <p>A las buenas, con un agradecimiento personal (no copia y pega). A las malas, con calma: agradece, reconoce lo que haya pasado y ofrece una solución por privado. Quien lee tu respuesta es el próximo cliente, no solo el que se quejó.</p>"""),
+     ('no', 'Lo que no debes hacer', """
+          <ul>
+            <li><b>No compres reseñas ni las inventes</b>: va contra las normas de Google y la ley española lo considera una práctica desleal. Google las borra y puede penalizar la ficha.</li>
+            <li>No ofrezcas descuentos a cambio de reseñas positivas.</li>
+            <li>No pidas a familiares y amigos que dejen reseñas como si fueran clientes.</li>
+          </ul>"""),
+     ('web', 'Llévalas también a tu web', """
+          <p>Enseña tus reseñas en la web con un enlace a la ficha de Google, para que quien llega a tu web vea que son reales.</p>""")])
+
+G7 = guia('web-o-redes-sociales', '¿Web o solo redes sociales?',
+    'Web o redes sociales para un negocio: qué aporta cada una, por qué conviene tener algo propio y cómo se complementan.',
+    'Las redes son estupendas para que te conozcan. Pero tu negocio no debería depender solo de un sitio que no es tuyo.',
+    [('redes', 'Para qué sirven las redes', """
+          <p>Para enseñar el día a día, crear comunidad y que te descubran. Son rápidas y gratis. El problema es que las reglas las pone otro: cambian el algoritmo, te limitan el alcance o te bloquean la cuenta, y no puedes hacer nada.</p>"""),
+     ('web', 'Para qué sirve la web', """
+          <ul>
+            <li><b>Es tuya</b>: tu dirección, tu contenido y tus clientes, sin depender de nadie.</li>
+            <li><b>Te encuentran en Google</b> cuando alguien busca lo que haces, aunque no te siga.</li>
+            <li><b>Toda la información en un sitio</b>: servicios, precios, horario, cómo llegar y cómo reservar.</li>
+            <li><b>Da confianza</b>: muchos clientes buscan la web antes de decidirse.</li>
+          </ul>"""),
+     ('juntas', 'Lo mejor: que se ayuden', """
+          <p>Usa las redes para atraer y la web para convertir: en cada publicación, el enlace a tu web para reservar, pedir o ver los precios. Y en tu web, enlaces a tus redes para que te sigan.</p>"""),
+     ('empezar', 'Si estás empezando', """
+          <p>No hace falta una web enorme: una <a href="./?comprar=landing">landing page</a> con lo esencial ya marca la diferencia. Mira <a href="cuanto-cuesta-una-pagina-web">cuánto cuesta</a> y qué incluye cada tipo de web.</p>""")])
+
 INDICE_GUIAS = pagina('guias', 'Guías para la web de tu negocio · AurevixWeb',
     'Guías claras para la web de tu negocio: cuánto cuesta, qué necesita, dominio y correo, y la lista de comprobaciones antes de lanzar.',
     f'''    <section class="pg-hero pg-hero-corto">
@@ -527,7 +594,7 @@ MANT = pagina('mantenimiento', 'Mantenimiento mensual de tu web · AurevixWeb',
 if __name__ == '__main__':
     salida = {s['slug']: sector(s, SECTORES) for s in SECTORES}
     salida.update({'guias': INDICE_GUIAS, 'cuanto-cuesta-una-pagina-web': G1, 'que-necesita-la-web-de-mi-negocio': G2,
-                   'dominio-alojamiento-y-correo': G3, 'antes-de-lanzar-tu-web': G4, 'revisa-tu-web': REVISA, 'mantenimiento': MANT})
+                   'dominio-alojamiento-y-correo': G3, 'antes-de-lanzar-tu-web': G4, 'seo-local-para-negocios': G5, 'como-conseguir-resenas-en-google': G6, 'web-o-redes-sociales': G7, 'revisa-tu-web': REVISA, 'mantenimiento': MANT})
     for slug, h in salida.items():
         (RAIZ / f'{slug}.html').write_text(h, encoding='utf-8')
     urls = [('', 'weekly', '1.0'), *[(s, 'monthly', '0.8') for s in [x['slug'] for x in SECTORES]],
