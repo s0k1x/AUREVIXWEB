@@ -635,3 +635,40 @@ html.zoom-ok .vt-capa iframe{transform:none;zoom:var(--s)}
 @media (max-width:700px){#webs{contain-intrinsic-size:auto 4050px}#disenos{contain-intrinsic-size:auto 3670px}#como{contain-intrinsic-size:auto 970px}#opiniones{contain-intrinsic-size:auto 1070px}.join-sec{contain-intrinsic-size:auto 570px}#faq{contain-intrinsic-size:auto 1420px}#contacto{contain-intrinsic-size:auto 1320px}#footer{contain-intrinsic-size:auto 730px}}
 /* Al saltar a un apartado se dibuja todo un momento para que el salto caiga justo */
 html.ancla #webs,html.ancla #disenos,html.ancla #como,html.ancla #opiniones,html.ancla .join-sec,html.ancla #faq,html.ancla #contacto,html.ancla #footer{content-visibility:visible}
+
+/* ---------- Preguntas frecuentes: lista numerada con subrayado vivo ----------
+   Adaptada de «Interactive Accordion» (21st.dev, jatin-yadav05) a CSS sin librerías.
+   Sin tarjetas: una línea fina por pregunta; al pasar el ratón la línea se llena un
+   30 % y el título se acerca; al abrir, el número se rellena, la línea se completa
+   y el + se convierte en ×. */
+.faq{gap:0}
+.faq details.faq-it{background:none;border:0;border-radius:0;padding:0;position:relative}
+.faq-it > summary{position:relative;padding:20px 4px;gap:18px;justify-content:flex-start;font-size:17px;box-shadow:inset 0 -1px 0 var(--line)}
+.faq-it > summary::before{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--text);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--e-spring)}
+.faq-it[open] > summary::before{transform:scaleX(1);background:var(--accent)}
+.faq-it > summary::after{margin-left:auto;color:var(--muted);opacity:.7;transition:transform .35s var(--e-spring),color .2s ease,opacity .2s ease}
+.faq-it[open] > summary::after{color:var(--accent);opacity:1}
+.faq-n{position:relative;flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;font-family:var(--fm);font-size:12.5px;font-weight:500;letter-spacing:.04em;color:var(--muted);transition:color .2s ease}
+.faq-n::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--accent);transform:scale(.6);opacity:0;z-index:-1;transition:transform .35s var(--e-spring),opacity .2s ease}
+.faq-it > summary{isolation:isolate}
+.faq-it[open] .faq-n{color:var(--ink)}
+.faq-it[open] .faq-n::before{transform:scale(1);opacity:1}
+.faq-t{transition:transform .35s var(--e-spring),color .2s ease;color:var(--muted)}
+.faq-it[open] .faq-t{color:var(--text);transform:translateX(4px)}
+.faq-it > p{padding:18px 8px 24px 60px;color:var(--muted)}
+.faq-it[open] > p{animation:faq-entra .4s var(--e-spring) both}
+@keyframes faq-entra{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@media (hover:hover) and (pointer:fine){
+  .faq-it > summary:hover{color:inherit}
+  .faq-it > summary:hover::before{transform:scaleX(.3)}
+  .faq-it[open] > summary:hover::before{transform:scaleX(1)}
+  .faq-it > summary:hover .faq-t{color:var(--text);transform:translateX(4px)}
+  .faq-it > summary:hover .faq-n::before{transform:scale(.85);opacity:.12}
+  .faq-it[open] > summary:hover .faq-n::before{transform:scale(1);opacity:1}
+  .faq-it > summary:hover::after{opacity:1}
+}
+.faq-it > summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+@media (max-width:640px){.faq-it > summary{gap:12px;font-size:16px;padding:16px 2px}.faq-n{width:32px;height:32px;font-size:11.5px}.faq-it > p{padding:14px 4px 20px 46px}}
+@media (prefers-reduced-motion:reduce){.faq-it[open] > p{animation:none}}
+html[data-movimiento=reducido] .faq-it[open] > p{animation:none}
+html[data-tema=claro] .faq-it[open] .faq-n{color:#fff}

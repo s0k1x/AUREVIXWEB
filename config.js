@@ -49,7 +49,8 @@ export const CONFIG = {
   trustpilot: '',
 
   // Redes sociales de la marca (déjalas en '' si no las tienes)
-  redes: { instagram: '', tiktok: '', linkedin: '' },
+  // whatsapp: el número con prefijo de país, solo cifras (p. ej. 34600111222). Si lo pones, sale el botón de WhatsApp
+  redes: { instagram: '', tiktok: '', linkedin: '', whatsapp: '' },
 
   // Inicio de sesión con GitHub además de Google (actívalo también en Supabase)
   loginGithub: false,

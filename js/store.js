@@ -975,3 +975,18 @@ export async function borrarWeb(version) {
     if (error) throw new Error(traducirError(error));
   }
 }
+
+/* ---------- Estadísticas de visitas (supabase/visitas-v65.sql) ----------
+   Sin cookies ni datos de la persona: solo se suma 1 al contador del día
+   para esa página, web de procedencia, tipo de dispositivo e idioma. */
+export function contarVisita(pagina, origen, dispositivo, idioma) {
+  if (modoDemo || !sb) return;
+  sb.rpc('contar_visita', { p_pagina: pagina, p_origen: origen, p_dispositivo: dispositivo, p_idioma: idioma }).then(() => {}, () => {});
+}
+/** Visitas de los últimos «dias» días (solo propietario) */
+export async function listarVisitas(dias = 30) {
+  necesitaUsuario();
+  if (modoDemo) return [];
+  const desde = new Date(Date.now() - (dias - 1) * DIA).toISOString().slice(0, 10);
+  return comprobar(await limite(sb.from('visitas').select('dia, pagina, origen, dispositivo, idioma, visitas').gte('dia', desde).limit(10000)));
+}

@@ -283,6 +283,48 @@ function resumen() {
           return `<div class="tl">${avatar(w, 'sm')}<span>${esc(w.name)}${w.datos?.disponible === false ? ' <em class="no-disp">no disponible</em>' : ''}</span><b>${n} activo${n === 1 ? '' : 's'}</b></div>`;
         }).join('')}</div>` : '<p class="muted" style="font-size:14px">Aún no hay trabajadores. Acepta candidaturas para formar tu equipo.</p>'}
       </div>
+    </div>
+    <div class="card vis-card" id="pnVisitas" aria-busy="true"><div class="card-h"><h3>Visitas a la web</h3><span class="muted" style="font-size:13px">últimos 30 días</span></div>${cargandoHTML('Cargando visitas…')}</div>`;
+  pintarVisitas();
+}
+
+/* ---------- PROPIETARIO: Visitas (contadores propios, sin cookies) ---------- */
+const PAGINAS_WEB = { inicio: 'Inicio', trabaja: 'Trabaja con nosotros', terminos: 'Términos y privacidad' };
+async function pintarVisitas() {
+  const caja = $('#pnVisitas');
+  if (!caja) return;
+  let filas;
+  try { filas = await store.listarVisitas(30); }
+  catch { filas = null; }
+  if (!caja.isConnected) return;
+  caja.removeAttribute('aria-busy');
+  const cab = '<div class="card-h"><h3>Visitas a la web</h3><span class="muted" style="font-size:13px">últimos 30 días · sin cookies</span></div>';
+  if (!filas) { caja.innerHTML = cab + vacio('chart', 'Aún no se pueden ver las visitas. Ejecuta supabase/visitas-v65.sql en Supabase.'); return; }
+  const suma = (L, k) => Object.entries(L.reduce((o, f) => ((o[f[k]] = (o[f[k]] || 0) + f.visitas), o), {})).sort((a, b) => b[1] - a[1]);
+  const total = filas.reduce((t, f) => t + f.visitas, 0);
+  const dias = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date(Date.now() - (29 - i) * 864e5);
+    const clave = new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+    return { d, n: filas.filter(f => f.dia === clave).reduce((t, f) => t + f.visitas, 0) };
+  });
+  const max = Math.max(1, ...dias.map(x => x.n));
+  const movil = filas.filter(f => f.dispositivo !== 'ordenador').reduce((t, f) => t + f.visitas, 0);
+  const origenes = suma(filas, 'origen').map(([k, v]) => [k || 'Directo o buscador sin datos', v]);
+  const paginas = suma(filas, 'pagina').map(([k, v]) => [PAGINAS_WEB[k] || k, v]);
+  const fmt = d => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+  const barras = (L, maxL = Math.max(1, ...L.map(x => x[1]))) => L.length ? `<div class="bars">${L.slice(0, 6).map(([k, v]) => `<div class="bar"><span title="${esc(k)}">${esc(k)}</span><div aria-hidden="true"><i style="width:${(v / maxL) * 100}%"></i></div><b>${v}</b></div>`).join('')}</div>` : vacio('chart', 'Sin datos todavía');
+  caja.innerHTML = `${cab}
+    <div class="kpis k4">
+      <div class="kpi"><small>Visitas</small><b>${total}</b><span>en 30 días</span></div>
+      <div class="kpi"><small>Hoy</small><b>${dias[29].n}</b><span>${fmt(dias[29].d)}</span></div>
+      <div class="kpi"><small>Desde el móvil</small><b>${total ? Math.round((movil / total) * 100) : 0} %</b><span>móvil y tableta</span></div>
+      <div class="kpi"><small>En inglés</small><b>${filas.filter(f => f.idioma === 'en').reduce((t, f) => t + f.visitas, 0)}</b><span>visitas</span></div>
+    </div>
+    <div class="vis-dias" role="list" aria-label="Visitas por día, últimos 30 días">${dias.map(x => `<div class="vis-dia" role="listitem" tabindex="0" aria-label="${fmt(x.d)}: ${x.n} visita${x.n === 1 ? '' : 's'}" data-tip="${fmt(x.d)} · ${x.n}"><i style="--h:${(x.n / max) * 100}%"></i></div>`).join('')}</div>
+    <div class="vis-eje" aria-hidden="true"><span>${fmt(dias[0].d)}</span><span>${fmt(dias[29].d)}</span></div>
+    <div class="cols vis-cols">
+      <div><div class="card-h"><h3>De dónde llegan</h3></div>${barras(origenes)}</div>
+      <div><div class="card-h"><h3>Páginas</h3></div>${barras(paginas)}</div>
     </div>`;
 }
 

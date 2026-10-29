@@ -131,7 +131,7 @@ html[data-tema=claro][data-contraste=alto]{--muted:#36342f;--line:rgba(20,20,26,
 html[data-tema=claro]{
   --bg:#f6f5f0; --bg2:#efede6; --card:#ffffff; --card2:#ffffff; --field:#f2f1eb;
   --line:rgba(20,20,26,.1); --line2:rgba(20,20,26,.18);
-  --text:#16161b; --muted:#5d5b55; --dim:#7a776f;
+  --text:#16161b; --muted:#5d5b55; --dim:#6b6862;
   --accent:#4f850c; --accent-soft:color-mix(in srgb,var(--accent) 11%,transparent); --ink:#0c0c0e;
   --ok:#15803d; --warn:#b45309; --info:#1d4ed8; --danger:#c62828; --violet:#6d28d9;
   color-scheme:light;

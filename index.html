@@ -46,6 +46,15 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://aurevixweb.es/">
   <meta property="og:site_name" content="AurevixWeb">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:locale:alternate" content="en_GB">
+  <meta property="og:image:alt" content="AurevixWeb · Páginas web para negocios a precio cerrado">
+  <meta name="twitter:title" content="AurevixWeb · Diseño de páginas web">
+  <meta name="twitter:description" content="Páginas web para negocios a precio cerrado. Elige el tipo de web y un diseño de partida y sigue el avance desde tu cuenta.">
+  <link rel="canonical" href="https://aurevixweb.es/">
+  <link rel="alternate" hreflang="es" href="https://aurevixweb.es/">
+  <link rel="alternate" hreflang="en" href="https://aurevixweb.es/?lang=en">
+  <link rel="alternate" hreflang="x-default" href="https://aurevixweb.es/">
   <meta name="twitter:image" content="https://aurevixweb.es/icons/og.png?v=2">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://images.pexels.com">
@@ -61,8 +70,9 @@
   <link rel="stylesheet" href="tema-claro.css">
   <link rel="stylesheet" href="pulido.css">
   <link rel="stylesheet" href="temporadas.css">
+  <link rel="stylesheet" href="iconos-vivos.css">
   <link rel="stylesheet" href="mundo.css">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"AurevixWeb","description":"Diseño de páginas web para negocios: landing pages, webs de negocio, reservas y tiendas online.","areaServed":"ES","priceRange":"149€ - 990€"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"ProfessionalService","@id":"https://aurevixweb.es/#negocio","name":"AurevixWeb","url":"https://aurevixweb.es/","description":"Diseño de páginas web para negocios: landing pages, webs de negocio, reservas y tiendas online, a precio cerrado.","logo":"https://aurevixweb.es/icons/icon-512.png","image":"https://aurevixweb.es/icons/og.png?v=2","email":"aurevixweb@gmail.com","areaServed":{"@type":"Country","name":"España"},"priceRange":"149€ - 990€","currenciesAccepted":"EUR","paymentAccepted":"Bizum, transferencia bancaria","knowsLanguage":["es","en"]},{"@type":"WebSite","@id":"https://aurevixweb.es/#web","url":"https://aurevixweb.es/","name":"AurevixWeb","inLanguage":"es-ES","publisher":{"@id":"https://aurevixweb.es/#negocio"}}]}</script>
   <!-- Precarga de los módulos: el navegador los pide todos a la vez en vez de uno tras otro -->
   <link rel="modulepreload" href="js/app.js">
   <link rel="modulepreload" href="js/ui.js">
@@ -82,7 +92,7 @@
   <link rel="modulepreload" href="js/colabora.js">
   <script>/* Sin zoom (ni doble toque ni pellizco) */document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});document.addEventListener('gesturechange',function(e){e.preventDefault()},{passive:false})</script>
   <script>/* Versión nueva de la web: se recarga una vez para no mezclar piezas de dos versiones */try{var sw=navigator.serviceWorker;if(sw&&sw.controller){window.__swVigila=1;sw.addEventListener('controllerchange',function(){var a=document.activeElement;if(window.__swRecargado||document.querySelector('dialog[open]')||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)))return;window.__swRecargado=1;location.reload()})}}catch(e){}</script>
-  <script>/* Inglés: se oculta la página un instante hasta traducirla (máximo 1,5 s) */try{var L=new URLSearchParams(location.search).get('lang')||localStorage.getItem('tm_idioma')||((navigator.language||'').toLowerCase().indexOf('en')===0?'en':'es');var A=0;try{A=sessionStorage.getItem('tm_idioma_anim')}catch(e){}if(L==='en'||A){if(L==='en')document.documentElement.lang='en';document.documentElement.classList.add('i18n-pendiente');if(A){try{var d=JSON.parse(A),h=document.documentElement;h.classList.add('i18n-anim');h.style.setProperty('--ic-palabra',JSON.stringify(d.v==='en'?'English':'Español'));h.style.setProperty('--ic-etq',JSON.stringify(d.v==='en'?'IDIOMA · LANGUAGE':'LANGUAGE · IDIOMA'))}catch(e){}}setTimeout(function(){document.documentElement.classList.remove('i18n-pendiente','i18n-anim')},1500)}}catch(e){}</script>
+  <script>/* Inglés: se oculta la página un instante hasta traducirla (máximo 1,5 s) */try{var L=new URLSearchParams(location.search).get('lang')||localStorage.getItem('tm_idioma')||(!/bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent)&&(navigator.language||'').toLowerCase().indexOf('en')===0?'en':'es');var A=0;try{A=sessionStorage.getItem('tm_idioma_anim')}catch(e){}if(L==='en'||A){if(L==='en')document.documentElement.lang='en';document.documentElement.classList.add('i18n-pendiente');if(A){try{var d=JSON.parse(A),h=document.documentElement;h.classList.add('i18n-anim');h.style.setProperty('--ic-palabra',JSON.stringify(d.v==='en'?'English':'Español'));h.style.setProperty('--ic-etq',JSON.stringify(d.v==='en'?'IDIOMA · LANGUAGE':'LANGUAGE · IDIOMA'))}catch(e){}}setTimeout(function(){document.documentElement.classList.remove('i18n-pendiente','i18n-anim')},1500)}}catch(e){}</script>
   <style>html.i18n-pendiente body{visibility:hidden}html.i18n-anim::before,html.i18n-anim::after{position:fixed;left:0;right:0;z-index:99998;text-align:center;pointer-events:none}html.i18n-anim::before{content:'';top:0;bottom:0;background:var(--bg,#0c0c0e)}html.i18n-anim::after{content:var(--ic-palabra);top:50%;transform:translateY(calc(-50% + 11px));font:800 clamp(44px,12vw,96px)/1 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:-.03em;color:var(--accent,#c8f560)}html[data-tema=claro].i18n-anim::after{color:#4f850c}html.i18n-anim body::before{content:var(--ic-etq);position:fixed;left:0;right:0;z-index:99999;top:calc(50% - clamp(44px,12vw,96px) / 2 - 5px);transform:translateY(-50%);text-align:center;font:600 12.5px/1 'Instrument Sans',system-ui,sans-serif;letter-spacing:.12em;color:var(--muted,#a19f96);visibility:visible;height:auto;bottom:auto;background:none}</style>
 </head>
 <body>

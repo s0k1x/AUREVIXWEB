@@ -18,6 +18,9 @@
   <link rel="apple-touch-icon" sizes="167x167" href="icons/apple-touch-icon-167.png">
   <link rel="apple-touch-icon" sizes="120x120" href="icons/apple-touch-icon-120.png">
   <link rel="canonical" href="https://aurevixweb.es/terminos-y-privacidad">
+  <link rel="alternate" hreflang="es" href="https://aurevixweb.es/terminos-y-privacidad">
+  <link rel="alternate" hreflang="en" href="https://aurevixweb.es/terminos-y-privacidad?lang=en">
+  <link rel="alternate" hreflang="x-default" href="https://aurevixweb.es/terminos-y-privacidad">
   <meta property="og:title" content="Términos y privacidad · AurevixWeb">
   <meta property="og:description" content="Términos del servicio, política de privacidad y cookies de AurevixWeb, explicados con claridad.">
   <meta property="og:image" content="https://aurevixweb.es/icons/og-terminos.png?v=1">
@@ -46,6 +49,7 @@
   <link rel="stylesheet" href="tema-claro.css">
   <link rel="stylesheet" href="pulido.css">
   <link rel="stylesheet" href="temporadas.css">
+  <link rel="stylesheet" href="iconos-vivos.css">
   <style>
     .legal{display:grid;grid-template-columns:230px minmax(0,1fr);gap:56px;padding-top:50px;padding-bottom:90px;max-width:1180px}
     .legal-ind{position:sticky;top:96px;align-self:start;display:grid;gap:2px;font-size:14px}
@@ -87,7 +91,7 @@
   </style>
   <script>/* Sin zoom (ni doble toque ni pellizco) */document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});document.addEventListener('gesturechange',function(e){e.preventDefault()},{passive:false})</script>
   <script>/* Versión nueva de la web: se recarga una vez para no mezclar piezas de dos versiones */try{var sw=navigator.serviceWorker;if(sw&&sw.controller){window.__swVigila=1;sw.addEventListener('controllerchange',function(){var a=document.activeElement;if(window.__swRecargado||document.querySelector('dialog[open]')||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)))return;window.__swRecargado=1;location.reload()})}}catch(e){}</script>
-  <script>/* Inglés: se oculta la página un instante hasta traducirla (máximo 1,5 s) */try{var L=new URLSearchParams(location.search).get('lang')||localStorage.getItem('tm_idioma')||((navigator.language||'').toLowerCase().indexOf('en')===0?'en':'es');var A=0;try{A=sessionStorage.getItem('tm_idioma_anim')}catch(e){}if(L==='en'||A){if(L==='en')document.documentElement.lang='en';document.documentElement.classList.add('i18n-pendiente');if(A){try{var d=JSON.parse(A),h=document.documentElement;h.classList.add('i18n-anim');h.style.setProperty('--ic-palabra',JSON.stringify(d.v==='en'?'English':'Español'));h.style.setProperty('--ic-etq',JSON.stringify(d.v==='en'?'IDIOMA · LANGUAGE':'LANGUAGE · IDIOMA'))}catch(e){}}setTimeout(function(){document.documentElement.classList.remove('i18n-pendiente','i18n-anim')},1500)}}catch(e){}</script>
+  <script>/* Inglés: se oculta la página un instante hasta traducirla (máximo 1,5 s) */try{var L=new URLSearchParams(location.search).get('lang')||localStorage.getItem('tm_idioma')||(!/bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent)&&(navigator.language||'').toLowerCase().indexOf('en')===0?'en':'es');var A=0;try{A=sessionStorage.getItem('tm_idioma_anim')}catch(e){}if(L==='en'||A){if(L==='en')document.documentElement.lang='en';document.documentElement.classList.add('i18n-pendiente');if(A){try{var d=JSON.parse(A),h=document.documentElement;h.classList.add('i18n-anim');h.style.setProperty('--ic-palabra',JSON.stringify(d.v==='en'?'English':'Español'));h.style.setProperty('--ic-etq',JSON.stringify(d.v==='en'?'IDIOMA · LANGUAGE':'LANGUAGE · IDIOMA'))}catch(e){}}setTimeout(function(){document.documentElement.classList.remove('i18n-pendiente','i18n-anim')},1500)}}catch(e){}</script>
   <style>html.i18n-pendiente body{visibility:hidden}html.i18n-anim::before,html.i18n-anim::after{position:fixed;left:0;right:0;z-index:99998;text-align:center;pointer-events:none}html.i18n-anim::before{content:'';top:0;bottom:0;background:var(--bg,#0c0c0e)}html.i18n-anim::after{content:var(--ic-palabra);top:50%;transform:translateY(calc(-50% + 11px));font:800 clamp(44px,12vw,96px)/1 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:-.03em;color:var(--accent,#c8f560)}html[data-tema=claro].i18n-anim::after{color:#4f850c}html.i18n-anim body::before{content:var(--ic-etq);position:fixed;left:0;right:0;z-index:99999;top:calc(50% - clamp(44px,12vw,96px) / 2 - 5px);transform:translateY(-50%);text-align:center;font:600 12.5px/1 'Instrument Sans',system-ui,sans-serif;letter-spacing:.12em;color:var(--muted,#a19f96);visibility:visible;height:auto;bottom:auto;background:none}</style>
 </head>
 <body>
@@ -249,6 +253,7 @@
       </tbody>
     </table></div>
     <p>Puedes cambiar tu elección cuando quieras desde «Cookies» en el pie de página o en Ajustes → Privacidad, y borrarlas desde tu navegador.</p>
+    <p><b>Recuento de visitas sin cookies.</b> Para saber cuánta gente visita la web contamos las visitas de forma agregada: por cada visita sumamos 1 a un contador del día con la página, la web desde la que llegas (por ejemplo, google.com), el tipo de dispositivo (móvil, tableta u ordenador) y el idioma. No guardamos tu IP ni ningún identificador, no usamos cookies ni guardamos nada en tu dispositivo, y no se puede saber quién ha visitado la web. Si tu navegador tiene activado «No rastrear» o «Global Privacy Control», no se cuenta tu visita. Los contadores se borran a los 13 meses.</p>
     <p><button class="btn btn-sm btn-ghost" data-cookies>Configurar cookies</button></p>
 
     <h2 id="opiniones">Opiniones de clientes</h2>

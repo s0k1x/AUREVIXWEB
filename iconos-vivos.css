@@ -1,0 +1,49 @@
+/* ==========================================================
+   ICONOS VIVOS (al estilo itshover)
+   Cada icono hace un gesto pequeño, propio de lo que significa, al pasar el
+   ratón (o al llegar con el teclado) por el botón o enlace que lo contiene:
+   la flecha empuja, enviar despega, la campana suena, refrescar gira…
+   - Solo transform, con transición (si sales a medias, vuelve sin saltos).
+   - 200 ms y curva de salida fuerte: se nota, pero no estorba.
+   - Solo con ratón (en el móvil un toque no deja el icono «pegado») y nunca
+     con movimiento reducido.
+   Para animar un icono nuevo: añade su regla abajo con su nombre (data-i).
+   Si un botón ya gira o voltea su icono por su cuenta, ponle la clase «no-vivo».
+   ========================================================== */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :is(a, button, [role=button], [role=tab], label, summary) svg[data-i] {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform .2s var(--e-spring, cubic-bezier(.23, 1, .32, 1));
+  }
+  /* Dirección: empujan hacia donde llevan */
+  :is(a, button, [role=button], summary):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=arrow] { transform: translateX(3px) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg:is([data-i=external], [data-i=share]) { transform: translate(2px, -2px) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=send] { transform: translate(2px, -2px) rotate(-6deg) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=download] { transform: translateY(2px) }
+  :is(a, button, [role=button], label):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg:is([data-i=upload], [data-i=rocket]) { transform: translateY(-2px) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg:is([data-i=undo], [data-i=reply]) { transform: translateX(-2px) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=logout] { transform: translateX(2px) }
+  /* Giros */
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=refresh] { transform: rotate(180deg) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg:is([data-i=x], [data-i=plus]) { transform: rotate(90deg) }
+  :is(a, button, [role=button], [role=tab]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=gear] { transform: rotate(60deg) }
+  :is(a, button, [role=button], [role=tab]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg:is([data-i=clock], [data-i=history]) { transform: rotate(-20deg) }
+  :is(a, button, [role=button], [role=tab]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=globe] { transform: rotate(-15deg) }
+  /* Gestos */
+  :is(a, button, [role=button], [role=tab]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=bell] { transform-origin: 50% 0; transform: rotate(12deg) }
+  :is(a, button, [role=button], [role=tab]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg:is([data-i=sparkle], [data-i=star]) { transform: rotate(18deg) scale(1.12) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=heart] { transform: scale(1.15) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg:is([data-i=mail], [data-i=message], [data-i=wa], [data-i=help]) { transform: translateY(-2px) rotate(-6deg) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=copy] { transform: translate(-1px, -1px) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=trash] { transform: rotate(-8deg) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=eye] { transform: scaleY(.82) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg:is([data-i=search], [data-i=link], [data-i=pen], [data-i=paperclip]) { transform: rotate(-10deg) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg:is([data-i=gift], [data-i=bag], [data-i=printer]) { transform: translateY(-2px) }
+  :is(a, button, [role=button], [role=tab]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg:is([data-i=chart], [data-i=trophy], [data-i=calendar], [data-i=flame]) { transform: scale(1.1) }
+  :is(a, button, [role=button]):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg:is([data-i=sun], [data-i=moon]) { transform: rotate(25deg) }
+  /* El check de «hecho» se confirma con un pequeño pulso */
+  :is(a, button, [role=button], label):not(.dlg-x, .lg-atras, .chat-fab, .no-vivo):is(:hover, :focus-visible) svg[data-i=check] { transform: scale(1.12) }
+}
+/* Movimiento reducido elegido en Apariencia */
+html[data-movimiento=reducido] svg[data-i] { transform: none !important }
