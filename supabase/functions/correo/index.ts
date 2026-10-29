@@ -9,9 +9,16 @@
 //    base de datos, no de lo que mande el navegador.
 //  - Va al correo verificado de la cuenta del cliente (y en copia
 //    al de facturación si puso otro).
+//  - Lleva la FACTURA en PDF: número correlativo por año (2026-0001…),
+//    creado una sola vez por pago (tabla «facturas», ver
+//    supabase/facturas-v61.sql). Al reenviar se usa la misma factura.
+//  - Los datos fiscales (titular, NIF, domicilio) e IVA se leen de
+//    Ajustes en la base de datos, no del navegador.
 //  Secretos: BREVO_API_KEY y BREVO_REMITENTE (correo
 //  verificado en Brevo). Nunca van en la web.
 // ==========================================================
+
+import { PDFDocument, StandardFonts, rgb } from 'npm:pdf-lib@1.17.1';
 
 const BREVO = Deno.env.get('BREVO_API_KEY') || '';
 const REMITENTE = Deno.env.get('BREVO_REMITENTE') || '';
@@ -56,9 +63,112 @@ const eur = (n: number) => `${(Math.round((n || 0) * 100) / 100).toLocaleString(
 const fecha = (t: number) => new Date(t).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Madrid' });
 const ref = (id: string) => '#' + String(id).slice(-6).toUpperCase(); // igual que refPedido de la web
 
+async function rpc(nombre: string, cuerpo: unknown) {
+  const r = await fetch(`${SB_URL}/rest/v1/rpc/${nombre}`, {
+    method: 'POST', headers: { apikey: SERVICIO, Authorization: `Bearer ${SERVICIO}`, 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo)
+  });
+  if (!r.ok) throw new Error(`RPC ${nombre} ${r.status}: ${(await r.text()).slice(0, 200)}`);
+  return r.json();
+}
+
+type Linea = { concepto: string; importe: number };
+type DatosFactura = {
+  fecha: string; emisor: Record<string, string>; cliente: Record<string, string>;
+  lineas: Linea[]; total: number; base: number; cuota: number; iva: number; pedido: string; metodo: string;
+};
+
+/* Lo que se factura en cada pago (IVA incluido en cada importe) */
+function lineasFactura(p: Record<string, any>, fase: string, pctSenal: number): Linea[] {
+  const total = p.total || 0, senal = Math.round(total * pctSenal) / 100;
+  const negocio = p.respuestas?.negocio ? ` «${p.respuestas.negocio}»` : '';
+  if (fase === 'senal') return [{ concepto: `Señal (${pctSenal} %) del diseño y publicación de ${p.planNombre || 'la web'}${negocio}`, importe: senal }];
+  if (fase === 'resto') return [{ concepto: `Pago final (${100 - pctSenal} %) del diseño y publicación de ${p.planNombre || 'la web'}${negocio}`, importe: Math.round((total - senal) * 100) / 100 }];
+  const unicos = (p.extras || []).filter((x: any) => !x.mensual);
+  const urg = p.urgente ? total - (p.precioBase || 0) - unicos.reduce((s: number, x: any) => s + x.precio, 0) + (p.descuento || 0) : 0;
+  return [
+    { concepto: `Diseño y publicación de ${p.planNombre || 'la web'}${negocio}`, importe: p.precioBase || 0 },
+    ...unicos.map((x: any) => ({ concepto: x.nombre, importe: x.precio })),
+    ...(urg > 0.004 ? [{ concepto: 'Entrega urgente', importe: Math.round(urg * 100) / 100 }] : []),
+    ...(p.descuento ? [{ concepto: `Descuento${p.cupon ? ` (${p.cupon})` : ''}`, importe: -p.descuento }] : [])
+  ];
+}
+
+/* Helvetica de los PDF solo tiene el alfabeto latino: se quita lo demás (emojis, etc.) */
+const latin = (t: unknown) => String(t ?? '').replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[^\x20-\x7E\u00A1-\u00FF\u20AC\u2013\u2014\u2026\u2022]/g, '');
+const eurPdf = (n: number) => `${(Math.round(n * 100) / 100).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+
+async function pdfFactura(numero: string, d: DatosFactura) {
+  const doc = await PDFDocument.create();
+  doc.setTitle(`Factura ${numero}`); doc.setAuthor(latin(d.emisor.titular)); doc.setCreator('AurevixWeb');
+  const pg = doc.addPage([595.28, 841.89]);
+  const f = await doc.embedFont(StandardFonts.Helvetica), fb = await doc.embedFont(StandardFonts.HelveticaBold);
+  const negro = rgb(0.086, 0.086, 0.106), gris = rgb(0.42, 0.41, 0.38), linea = rgb(0.87, 0.86, 0.83), lima = rgb(0.784, 0.961, 0.376);
+  const M = 50, W = 595.28 - M * 2;
+  const txt = (t: string, x: number, y: number, o: { size?: number; bold?: boolean; color?: any; der?: boolean; centro?: boolean } = {}) => {
+    const fuente = o.bold ? fb : f, size = o.size || 10, s = latin(t);
+    const w = fuente.widthOfTextAtSize(s, size);
+    pg.drawText(s, { x: o.der ? x - w : o.centro ? x - w / 2 : x, y, size, font: fuente, color: o.color || negro });
+  };
+  const partir = (t: string, ancho: number, size = 10, fuente = f) => {
+    const out: string[] = []; let l = '';
+    for (const w of latin(t).split(/\s+/)) { const c = l ? `${l} ${w}` : w; if (fuente.widthOfTextAtSize(c, size) > ancho && l) { out.push(l); l = w; } else l = c; }
+    if (l) out.push(l); return out;
+  };
+  // Cabecera
+  pg.drawRectangle({ x: 0, y: 841.89 - 6, width: 595.28, height: 6, color: lima });
+  let conLogo = false;
+  try {
+    const png = await (await fetch(`${WEB}/icons/logo-a.png`)).arrayBuffer();
+    const img = await doc.embedPng(png); pg.drawImage(img, { x: M, y: 770, width: 30, height: 30 }); conLogo = true;
+  } catch { /* sin logo */ }
+  txt('AurevixWeb', conLogo ? M + 40 : M, 780, { size: 16, bold: true });
+  txt('FACTURA', 595.28 - M, 786, { size: 20, bold: true, der: true });
+  txt(`Nº ${numero}`, 595.28 - M, 768, { size: 11, der: true });
+  txt(`Fecha: ${d.fecha}`, 595.28 - M, 754, { size: 10, color: gris, der: true });
+  // Emisor y cliente
+  let y = 712;
+  txt('EMISOR', M, y, { size: 8.5, bold: true, color: gris }); txt('CLIENTE', M + W / 2 + 10, y, { size: 8.5, bold: true, color: gris });
+  const bloque = (lineas: string[], x: number) => { let yy = y - 16; for (const l of lineas.filter(Boolean)) for (const p of partir(l, W / 2 - 20)) { txt(p, x, yy); yy -= 14; } return yy; };
+  const e = d.emisor, c = d.cliente;
+  const y1 = bloque([e.titular, e.nif && `NIF: ${e.nif}`, e.domicilio, e.email], M);
+  const y2 = bloque([c.nombre, c.nif && `NIF: ${c.nif}`, c.direccion, [c.cp, c.ciudad].filter(Boolean).join(' '), c.email], M + W / 2 + 10);
+  y = Math.min(y1, y2) - 20;
+  // Tabla
+  pg.drawRectangle({ x: M, y: y - 6, width: W, height: 24, color: rgb(0.953, 0.949, 0.933) });
+  txt('Concepto', M + 10, y + 2, { size: 9.5, bold: true }); txt('Importe (IVA incl.)', 595.28 - M - 10, y + 2, { size: 9.5, bold: true, der: true });
+  y -= 28;
+  for (const l of d.lineas) {
+    const partes = partir(l.concepto, W - 150);
+    partes.forEach((p, i) => txt(p, M + 10, y - i * 14));
+    txt(eurPdf(l.importe), 595.28 - M - 10, y, { der: true });
+    y -= partes.length * 14 + 8;
+    pg.drawLine({ start: { x: M, y: y + 4 }, end: { x: M + W, y: y + 4 }, thickness: 0.6, color: linea });
+    y -= 6;
+  }
+  // Totales
+  y -= 8;
+  const fila = (a: string, b: string, o: { bold?: boolean; size?: number } = {}) => { txt(a, 595.28 - M - 150, y, { ...o, der: false }); txt(b, 595.28 - M - 10, y, { ...o, der: true }); y -= (o.size || 10) + 8; };
+  if (d.iva) { fila('Base imponible', eurPdf(d.base)); fila(`IVA (${d.iva} %)`, eurPdf(d.cuota)); }
+  pg.drawLine({ start: { x: 595.28 - M - 160, y: y + 10 }, end: { x: 595.28 - M, y: y + 10 }, thickness: 0.8, color: negro });
+  y -= 4;
+  fila('TOTAL', eurPdf(d.total), { bold: true, size: 13 });
+  // Pie
+  y -= 20;
+  for (const l of [
+    `Pagado por ${d.metodo}. Referencia del pedido ${d.pedido}.`,
+    d.iva ? '' : 'Operación sin IVA.',
+    'Las cuotas mensuales (mantenimiento, correo) se facturan aparte cada mes.'
+  ].filter(Boolean)) for (const p of partir(l, W, 9)) { txt(p, M, y, { size: 9, color: gris }); y -= 13; }
+  txt(`${latin(e.titular)}${e.nif ? ` · NIF ${e.nif}` : ''} · ${WEB.replace('https://', '')}`, 297.64, 40, { size: 8, color: gris, centro: true });
+  const out = await doc.save();
+  // base64 sin desbordar la pila
+  let bin = ''; for (let i = 0; i < out.length; i += 0x8000) bin += String.fromCharCode(...out.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+
 type Empresa = { marca?: string; email?: string; senal?: number; iva?: number; legal?: Record<string, string> };
 
-function correoHTML(p: Record<string, any>, id: string, fase: string, e: Empresa, fact: Record<string, string>) {
+function correoHTML(p: Record<string, any>, id: string, fase: string, e: Empresa, fact: Record<string, string>, numero = '') {
   const total = p.total || 0;
   const pctSenal = Number(e.senal) || 50;
   const senal = Math.round(total * pctSenal) / 100;
@@ -97,7 +207,7 @@ function correoHTML(p: Record<string, any>, id: string, fase: string, e: Empresa
   </td></tr>
   <tr><td style="height:4px;background:#c8f560;font-size:0;line-height:0">&nbsp;</td></tr>
   <tr><td style="padding:32px 32px 8px">
-    <p style="margin:0 0 6px;font-size:13px;color:#86837c">Pedido ${ref(id)} · ${fecha(Date.now())}</p>
+    <p style="margin:0 0 6px;font-size:13px;color:#86837c">Pedido ${ref(id)}${numero ? ` · Factura ${numero}` : ''} · ${fecha(Date.now())}</p>
     <h1 style="margin:0 0 14px;font-size:26px;line-height:1.2;letter-spacing:-.02em">Pago confirmado</h1>
     <p style="margin:0 0 14px;font-size:16px;line-height:1.55">Hola${nombre ? ` ${esc(nombre)}` : ''}, hemos recibido ${concepto} de tu proyecto <b>«${esc(negocio)}»</b>. Gracias por tu confianza.</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0 6px;background:#f6f8ef;border-radius:12px"><tr>
@@ -119,12 +229,12 @@ function correoHTML(p: Record<string, any>, id: string, fase: string, e: Empresa
   <tr><td style="padding:22px 32px 6px">
     <p style="margin:0 0 18px;font-size:15px;line-height:1.55">${siguiente}</p>
     <a href="${enlace}" style="display:inline-block;background:#c8f560;color:#0c0c0e;text-decoration:none;font-weight:700;font-size:15px;padding:14px 24px;border-radius:999px">Ver mi proyecto</a>
-    <p style="margin:16px 0 0;font-size:13px;line-height:1.5;color:#86837c">En «Mis proyectos → Pagos» puedes descargar el recibo de cada pago.</p>
+    <p style="margin:16px 0 0;font-size:13px;line-height:1.5;color:#86837c">${numero ? `La factura ${numero} va adjunta a este correo en PDF.` : 'En «Mis proyectos → Pagos» puedes descargar el recibo de cada pago.'}</p>
   </td></tr>
   <tr><td style="padding:26px 32px 30px">
     <p style="margin:0;padding-top:16px;border-top:1px solid #eeede8;font-size:12px;line-height:1.6;color:#86837c">
       ${esc(L.titular || marca)}${L.nif ? ` · NIF ${esc(L.nif)}` : ''}${L.domicilio ? ` · ${esc(L.domicilio)}` : ''}<br>
-      Este correo es un justificante de pago y no sustituye a la factura. Datos de facturación: ${esc([fact.razon, fact.nif].filter(Boolean).join(' · ') || 'los de tu cuenta')}.<br>
+      ${numero ? `Te adjuntamos la factura nº ${numero} en PDF.` : 'Este correo es un justificante de pago.'} Datos de facturación: ${esc([fact.razon, fact.nif].filter(Boolean).join(' · ') || 'los de tu cuenta')}.<br>
       ¿Dudas? Responde a este correo o escríbenos a ${esc(L.email || e.email || '')}. Condiciones y privacidad: ${WEB}/terminos-y-privacidad
     </p>
   </td></tr>
@@ -136,9 +246,9 @@ function correoHTML(p: Record<string, any>, id: string, fase: string, e: Empresa
     ...filas.map(([c, v]) => `${c}: ${eur(v)}`),
     `Total${iva ? ' (IVA incluido)' : ''}: ${eur(total)}`, `Pagado hasta hoy: ${eur(pagado)}`, ...(pendiente ? [`Pendiente: ${eur(pendiente)}`] : []), '',
     siguiente, `Ver mi proyecto: ${enlace}`, '',
-    'Este correo es un justificante de pago y no sustituye a la factura.'
+    numero ? `Te adjuntamos la factura nº ${numero} en PDF.` : 'Este correo es un justificante de pago.'
   ].join('\n');
-  const asunto = `${fase === 'senal' ? 'Señal recibida' : 'Pago completado'} · «${negocio}» (${ref(id)})`;
+  const asunto = `${numero ? `Factura ${numero} · ` : ''}${fase === 'senal' ? 'Señal recibida' : 'Pago completado'} · «${negocio}» (${ref(id)})`;
   return { html, texto, asunto };
 }
 
@@ -164,8 +274,29 @@ Deno.serve(async req => {
     if (!valido(para)) return json({ error: 'El cliente no tiene un correo verificado' }, 422);
     const copia = String(fact.emailFact || '').trim().toLowerCase();
     const cc = valido(copia) && copia !== para.toLowerCase() ? [{ email: copia }] : [];
-    const e: Empresa = { marca: String(empresa?.marca || 'AurevixWeb').slice(0, 60), email: String(empresa?.email || '').slice(0, 120), senal: Number(empresa?.senal) || 50, iva: Number(empresa?.iva) || 0, legal: empresa?.legal || {} };
-    const { html, texto, asunto } = correoHTML(p, fila.id, fase, e, fact);
+    // Datos fiscales y porcentajes: de Ajustes (base de datos); lo del navegador solo como respaldo
+    const [aj] = await leer('ajustes?clave=eq.web&select=datos').catch(() => []);
+    const w = (aj?.datos || {}) as Record<string, any>;
+    const legal = { ...(empresa?.legal || {}), ...(w.legal || {}) } as Record<string, string>;
+    const e: Empresa = {
+      marca: String(w.marca || empresa?.marca || 'AurevixWeb').slice(0, 60), email: String(w.email || empresa?.email || '').slice(0, 120),
+      senal: Number(w.senal ?? empresa?.senal) || 50, iva: Number(p.iva ?? w.iva ?? empresa?.iva ?? 21) || 0, legal
+    };
+    // La factura: una por pago y con número correlativo (si ya existe, la misma)
+    const lineas = lineasFactura(p, fase, e.senal!);
+    const totalF = Math.round(lineas.reduce((s2, l) => s2 + l.importe, 0) * 100) / 100;
+    const ivaF = e.iva || 0, baseF = ivaF ? Math.round(totalF / (1 + ivaF / 100) * 100) / 100 : totalF;
+    const datosF: DatosFactura = {
+      fecha: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Europe/Madrid' }),
+      emisor: { titular: legal.titular || e.marca!, nif: legal.nif || '', domicilio: legal.domicilio || '', email: legal.email || e.email || '' },
+      cliente: { nombre: fact.razon || p.clienteNombre || p.respuestas?.contactoNombre || '', nif: fact.nif || '', direccion: fact.direccion || '', cp: fact.cp || '', ciudad: fact.ciudad || '', email: para },
+      lineas, total: totalF, base: baseF, cuota: Math.round((totalF - baseF) * 100) / 100, iva: ivaF, pedido: ref(fila.id),
+      metodo: p.pagoMetodo === 'bizum' ? 'Bizum' : 'transferencia bancaria'
+    };
+    const fac = await rpc('crear_factura', { p_pedido: fila.id, p_uid: fila.uid, p_fase: fase, p_datos: datosF });
+    const numero = String(fac.numero);
+    const pdf = await pdfFactura(numero, { ...datosF, ...(fac.datos || {}) } as DatosFactura);
+    const { html, texto, asunto } = correoHTML(p, fila.id, fase, e, fact, numero);
     const r = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: { 'api-key': BREVO, 'Content-Type': 'application/json', accept: 'application/json' },
@@ -174,14 +305,15 @@ Deno.serve(async req => {
         to: [{ email: para, name: String(fact.razon || p.clienteNombre || '').slice(0, 80) || undefined }],
         ...(cc.length ? { cc } : {}),
         ...(e.email ? { replyTo: { email: e.email, name: e.marca } } : {}),
-        subject: asunto, htmlContent: html, textContent: texto, tags: ['pago', fase]
+        subject: asunto, htmlContent: html, textContent: texto, tags: ['pago', fase],
+        attachment: [{ name: `Factura-${numero}.pdf`, content: pdf }]
       })
     });
     if (!r.ok) {
       console.error('Brevo', r.status, (await r.text()).slice(0, 300));
       return json({ error: r.status === 401 ? 'La clave de Brevo no es válida' : 'Brevo no ha podido enviar el correo' }, 502);
     }
-    return json({ enviado: true, para });
+    return json({ enviado: true, para, factura: numero });
   } catch (err) {
     console.error(err);
     return json({ error: 'No se ha podido enviar el correo' }, 500);
