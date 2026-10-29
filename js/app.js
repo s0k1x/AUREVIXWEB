@@ -920,13 +920,13 @@ function pintarResumen() {
       </div>
       <div class="rs-row"><span>Entrega prevista</span><b>${esc(W.plan.entrega)}${d.urgente ? ' (urgente: antes)' : ''}</b></div>
       ${d.mensual ? `<div class="rs-row"><span>Cuota mensual</span><b>${euros(d.mensual)}/mes</b></div>` : ''}
-      <div class="rs-note">Para empezar pagas la señal de <b>${euros(d.total * CONFIG.senal / 100)}</b> (${CONFIG.senal} %) por transferencia y el resto cuando la web esté lista y te guste.</div>
+      <div class="rs-note">Para empezar pagas la señal de <b>${euros(d.total * CONFIG.senal / 100)}</b> (${CONFIG.senal} %) por ${CONFIG.pagos?.bizum ? 'Bizum o transferencia' : 'transferencia'} y el resto cuando la web esté lista y te guste.</div>
     </div>
     <div class="rs-legal">
       <p><b>Antes de confirmar</b></p>
       <ul>
         <li>Contratas con ${esc(CONFIG.legal?.titular && !/^tu nombre/i.test(CONFIG.legal.titular) ? `${CONFIG.legal.titular} (NIF ${CONFIG.legal.nif})` : CONFIG.marca)}, ${esc(CONFIG.legal?.actividad || 'diseño web').toLowerCase()}. Datos completos en el <a href="terminos-y-privacidad#aviso-legal" target="_blank">aviso legal</a>.</li>
-        <li>${CONFIG.iva ? `Precio final con el ${CONFIG.iva} % de IVA incluido` : 'Precio final, sin IVA'}. Pago solo por transferencia bancaria.</li>
+        <li>${CONFIG.iva ? `Precio final con el ${CONFIG.iva} % de IVA incluido` : 'Precio final, sin IVA'}. Pago por ${CONFIG.pagos?.bizum ? 'Bizum o transferencia bancaria' : 'transferencia bancaria'}.</li>
         <li>Tienes <b>14 días naturales para desistir</b> sin dar explicaciones, desde «Mis proyectos». <a href="terminos-y-privacidad#desistimiento" target="_blank">Cómo funciona</a>.</li>
       </ul>
       <label class="rs-inicio"><input type="checkbox" id="wizInicio" ${W.inicioAnticipado ? 'checked' : ''}>

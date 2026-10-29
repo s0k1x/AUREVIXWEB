@@ -21,6 +21,11 @@ export const EN = {
   'Modo demo: escribe 6 cifras cualquiera (000000 da error).': 'Demo mode: type any 6 digits (000000 gives an error).', 'Crear cuenta': 'Create account',
   'No hay ninguna cuenta con ese email. Regístrate primero.': 'There is no account with that email. Sign up first.', 'El código no es correcto o ha caducado. Pide otro.': 'The code is wrong or has expired. Ask for another one.',
   'Enviar recibo': 'Send receipt', 'Reenviar recibo': 'Resend receipt', 'El cliente aún no ha recibido el recibo por correo': 'The client has not received the receipt by email yet',
+  'Al momento': 'Instant', 'En 1 día hábil': 'In 1 business day', 'Forma de pago': 'Payment method',
+  'Ya he hecho el Bizum': "I've sent the Bizum", 'Teléfono': 'Phone', 'Bizum o transferencia': 'Bizum or bank transfer', 'sin tarjeta y sin comisiones': 'no card, no fees',
+  'Escribe el concepto tal cual: así sabemos de quién es el pago. Bizum llega al momento y no tiene comisiones.': 'Type the reference exactly as shown so we know who the payment is from. Bizum arrives instantly and has no fees.',
+  'Avisos por correo': 'Email notifications', 'Los recibos de tus pagos y los códigos para entrar te llegan siempre por correo.': 'Payment receipts and sign-in codes are always sent by email.',
+  'Siempre los verás en la campana. Elige cuáles quieres recibir también por correo y en este dispositivo.': 'You will always see them in the bell. Choose which ones you also want by email and on this device.',
   'Con tu dominio': 'With your domain', 'Más profesional: info@ con el nombre de tu web': 'More professional: info@ with your website name',
   'Escribe tu Gmail. Si aún no tienes, créalo gratis en': "Enter your Gmail. If you don't have one yet, create it for free at", 'y vuelve aquí.': 'and come back here.',
   'Tu Gmail': 'Your Gmail', 'Cómo empieza tu correo': 'How your email starts',
@@ -384,6 +389,7 @@ const fecha = t => t
 const dias = n => `${n} day${n === '1' ? '' : 's'}`;
 
 export const PATRONES = [
+  [/^Te escribimos a (.+) cuando haya novedades\. Como mucho un correo cada 30 minutos por proyecto\.$/, m => `We email ${m[1]} when there is news. At most one email every 30 minutes per project.`],
   [/^pide otro en (0:\d\d)$/, m => `ask for another in ${m[1]}`],
   [/^Paso (\d+) de (\d+) · (.+)$/, (m, T) => `Step ${m[1]} of ${m[2]} · ${T(m[3])}`],
   [/^Paso (\d+) de (\d+)$/, m => `Step ${m[1]} of ${m[2]}`],
