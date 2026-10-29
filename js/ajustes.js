@@ -202,12 +202,13 @@ const TIPOS_AVISO = U => [
 async function notificaciones() {
   const n = U.datos?.notif || {};
   const permiso = 'Notification' in window ? Notification.permission : 'no';
-  body.innerHTML = bloque('Avisos en la web', 'Siempre los verás en la campana. Elige de cuáles quieres recibir también una notificación en este dispositivo.', `
+  body.innerHTML = bloque('Avisos', 'Siempre los verás en la campana. Elige cuáles quieres recibir también por correo y en este dispositivo.', `
     <form id="fNotif">
+      ${interruptor({ id: 'correoAv', titulo: 'Avisos por correo', texto: `Te escribimos a ${esc(U.email)} cuando haya novedades. Como mucho un correo cada 30 minutos por proyecto.`, checked: n.correo !== false })}
       ${interruptor({ id: 'navegador', titulo: 'Notificaciones en este dispositivo', texto: permiso === 'denied' ? 'Las tienes bloqueadas en el navegador. Actívalas en los ajustes del navegador.' : permiso === 'no' ? 'Tu navegador no admite notificaciones. En iPhone, instala la web como app.' : 'Te avisamos aunque tengas la web en otra pestaña', checked: !!n.navegador && permiso === 'granted' })}
       <div class="aj-sub">${TIPOS_AVISO(U).map(([k, t]) => interruptor({ id: 'n_' + k, titulo: t, checked: n[k] !== false })).join('')}</div>
       ${guardarBtn('gNotif')}
-      <p class="muted aj-nota">${icono('mail')} Si necesitamos algo urgente de ti, te escribimos además a ${esc(U.email)}.</p>
+      <p class="muted aj-nota">${icono('mail')} Los recibos de tus pagos y los códigos para entrar te llegan siempre por correo.</p>
     </form>`);
   $('#fNotif').addEventListener('submit', async e => {
     e.preventDefault();
@@ -217,7 +218,7 @@ async function notificaciones() {
       nav = (await Notification.requestPermission()) === 'granted';
       if (!nav) toast('No has dado permiso para las notificaciones', 'err');
     }
-    const notif = { navegador: nav, ...Object.fromEntries(TIPOS_AVISO(U).map(([k]) => [k, $('#n_' + k).checked])) };
+    const notif = { correo: $('#correoAv').checked, navegador: nav, ...Object.fromEntries(TIPOS_AVISO(U).map(([k]) => [k, $('#n_' + k).checked])) };
     try {
       U = await store.guardarPerfil({ datos: { notif } });
       if (nav) try { new Notification('AurevixWeb', { body: 'Las notificaciones están activadas.', icon: 'icons/icon-192.png' }); } catch { /* móvil: solo desde la app */ }
@@ -326,13 +327,14 @@ async function negocio() {
         <label class="aj-ck c-act"><input type="checkbox" data-k="activo" ${o.activo ? 'checked' : ''}><span class="ck-mark"></span><small class="aj-cel-t">Activo</small></label>
         <label class="aj-cel c-pre"><small class="aj-cel-t">Precio (€)</small><input type="number" min="0" step="1" inputmode="numeric" data-k="precio" value="${o.precio}" aria-label="Precio de ${esc(x.nombre)}"></label>
       </div>`; }).join('')}</div>`)}
-    ${bloque('Cobros y comisiones', 'Los clientes pagan solo por transferencia bancaria a esta cuenta.', `
+    ${bloque('Cobros y comisiones', 'Los clientes pagan por Bizum (si pones un teléfono) o por transferencia bancaria a esta cuenta.', `
       <div class="aj-nums">
         <label class="aj-num"><span>Señal al empezar (%)</span><input type="number" min="0" max="100" name="senal" value="${a.senal}"></label>
         <label class="aj-num"><span>Recargo urgente (%)</span><input type="number" min="0" max="200" name="urgente" value="${pct(a.urgente)}"></label>
         <label class="aj-num"><span>Comisión vendedores (%)</span><input type="number" min="0" max="100" name="comision" value="${a.comision}"></label>
       </div>
-      <div class="row-2">${texto('titular', 'Titular de la cuenta', a.pagos.titular)}${texto('iban', 'IBAN', a.pagos.iban, 'autocapitalize="characters"')}</div>`)}
+      <div class="row-2">${texto('titular', 'Titular de la cuenta', a.pagos.titular)}${texto('iban', 'IBAN', a.pagos.iban, 'autocapitalize="characters"')}</div>
+      ${texto('bizum', 'Teléfono de Bizum', a.pagos.bizum || '', 'type="tel" autocomplete="off"', 'El móvil con el que cobras por Bizum. Déjalo vacío para no ofrecer Bizum.')}`)}
     ${bloque('Datos legales', 'Salen en el aviso legal, las condiciones, la política de privacidad y los recibos. Son obligatorios para vender (LSSI y Ley de Consumidores).', `
       <div class="row-2">${texto('lgTitular', 'Nombre y apellidos', a.legal?.titular || '', 'maxlength="120" autocomplete="name"')}${texto('lgNif', 'NIF', a.legal?.nif || '', 'maxlength="15" autocapitalize="characters"')}</div>
       ${texto('lgDomicilio', 'Domicilio profesional completo', a.legal?.domicilio || '', 'maxlength="200"', 'Calle, número, código postal, ciudad y provincia')}
@@ -396,7 +398,7 @@ async function negocio() {
       bienvenida: { activo: $('#bvActivo').checked, codigo: v('bvCodigo').toUpperCase().replace(/[^A-Z0-9_-]/g, '') || ORIGINAL.config.bienvenida.codigo, pct: Math.min(100, Math.max(1, +v('bvPct') || 10)) },
       videos: { precio: Math.max(0, +v('vPrecio') || 0), bonus: Math.max(0, +v('vBonus') || 0), visitas: Math.max(0, +v('vVisitas') || 0), maxMes: Math.max(1, +v('vMax') || 1) },
       senal: +v('senal'), urgente: (+v('urgente')) / 100, comision: +v('comision'),
-      pagos: { titular: v('titular'), iban: v('iban') },
+      pagos: { titular: v('titular'), iban: v('iban'), bizum: v('bizum') },
       legal: { titular: v('lgTitular'), nif: v('lgNif').toUpperCase().replace(/\s/g, ''), domicilio: v('lgDomicilio'), email: v('lgEmail'), actividad: v('lgActividad') },
       asistente: { activo: $('#asistActivo').checked, saludo: v('saludo') },
       planes, extras

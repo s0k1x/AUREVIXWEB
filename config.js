@@ -32,9 +32,10 @@ export const CONFIG = {
   // Emails que entran como PROPIETARIO (acceso total al panel)
   propietarios: ['aurevixweb@gmail.com'],
 
-  /* FORMA DE PAGO: solo transferencia bancaria (gratis; tú confirmas el pago en el panel)
-     (Lo normal es cambiarlo desde Ajustes → Negocio → «Cobros y comisiones») */
+  /* FORMAS DE PAGO: Bizum y transferencia bancaria (gratis; tú confirmas el pago en el panel)
+     Deja bizum en '' para no ofrecerlo. Lo normal es cambiarlo desde Ajustes → Negocio → «Cobros y comisiones». */
   pagos: {
+    bizum: '',
     iban: 'ES00 0000 0000 0000 0000 0000',
     titular: 'Tu nombre y apellidos'
   },

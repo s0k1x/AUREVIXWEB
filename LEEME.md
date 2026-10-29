@@ -857,3 +857,17 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 4. **Códigos de acceso** (los envía Supabase usando Brevo): Brevo → *SMTP & API* → *SMTP*: copia el usuario (login) y crea una clave SMTP. En Supabase → Authentication → *Emails* → *SMTP Settings* → activa «Enable custom SMTP»: remitente `hola@aurevixweb.es`, nombre «AurevixWeb», host `smtp-relay.brevo.com`, puerto `587`, usuario y clave SMTP de Brevo.
 5. **Plantillas**: Supabase → Authentication → *Emails* → *Templates*. En **Magic link** y en **Confirm signup** pon como asunto `Tu código de AurevixWeb: {{ .Token }}` y como contenido el de `supabase/plantillas/codigo-acceso.html` (usa `{{ .Token }}`, el código; sin eso llegaría un enlace en vez del código).
 6. Recomendado: Authentication → *Sign In / Providers* → *Email*: «Email OTP Expiration» = 600 (10 minutos) y «Email OTP Length» = 6. Y en *Rate Limits*, «emails per hour» al menos 30.
+
+## 44. Versión v58 — Bizum, avisos por correo y ficha a pantalla completa
+**Bizum**
+- Vuelve como forma de pago junto a la transferencia. Pon tu móvil de Bizum en **Ajustes → Negocio → Cobros y comisiones → «Teléfono de Bizum»**. Si lo dejas vacío, solo se ofrece la transferencia.
+- Al pagar, el cliente elige **Bizum** (al momento) o **Transferencia** (1 día hábil) y ve los datos de cada uno con botones para copiarlos. En el panel verás por qué método dice que ha pagado.
+
+**Avisos por correo**
+- Todo lo que sale en la campana (pedido nuevo, cambio de etapa, vista previa lista, pago por revisar, mensajes, soporte, vídeos) llega también **por correo**, con el diseño de la web y un botón que lleva directo al proyecto o al pedido.
+- No satura: como mucho un correo cada 30 minutos por persona, proyecto y tipo de aviso (el resto se ve en la campana). Al cliente no le llega el aviso de «pago» porque ya recibe el recibo.
+- Cada persona lo apaga o elige qué tipos quiere en **Ajustes → Avisos** («Avisos por correo»).
+- Lo hace la función **`notificar`** de Supabase con Brevo (mismos secretos que los recibos). Para activarlo hay que pegar **una vez** `supabase/avisos-correo-v58.sql` en Supabase → SQL Editor → Run: crea el disparador que llama a la función con cada aviso nuevo.
+
+**Panel**
+- La ficha de cada pedido se abre a pantalla completa.

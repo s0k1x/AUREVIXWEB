@@ -20,7 +20,7 @@ const json = (datos: unknown, status = 200) =>
 
 type Mensaje = { rol: 'user' | 'model'; texto: string };
 type Catalogo = {
-  marca: string; senal: number; urgente: number; email: string; contacto?: string; horario?: string; respuesta?: string; aceptaPedidos?: boolean; notas?: string[];
+  marca: string; formasPago?: string; senal: number; urgente: number; email: string; contacto?: string; horario?: string; respuesta?: string; aceptaPedidos?: boolean; notas?: string[];
   planes: { id: string; nombre: string; precio: number; entrega: string; desc: string; incluye: string[]; plantillas: string[] }[];
   extras: { id: string; nombre: string; precio: number; mensual?: boolean; desc: string }[];
   plantillas: { id: string; nombre: string; sector: string; desc: string }[];
@@ -35,7 +35,7 @@ function contexto(c: Catalogo) {
     ...c.extras.map(x => `- ${x.nombre} (id ${x.id}): ${x.precio} €${x.mensual ? '/mes' : ''}. ${x.desc}`),
     'Diseños de partida disponibles:',
     ...c.plantillas.map(t => `- ${t.nombre} (id ${t.id}): ${t.sector}. ${t.desc}`),
-    `Forma de pago: ${c.senal} % al empezar y el resto al aprobar la web, solo por transferencia bancaria (los datos aparecen al pagar). Los precios llevan el IVA incluido.`,
+    `Forma de pago: ${c.senal} % al empezar y el resto al aprobar la web, por ${c.formasPago || 'transferencia bancaria'} (los datos aparecen al pagar). Los precios llevan el IVA incluido.`,
     `Entrega urgente: +${Math.round(c.urgente * 100)} % sobre el precio base.`,
     'Proceso: pedido y cuestionario → el cliente elige dominio y envía su contenido desde «Mis proyectos» → diseño → revisión con vista previa → pago final → publicación.',
     `Contacto humano: ${c.contacto || 'solo por correo o desde el formulario de contacto de la web'}. Email: ${c.email}. ${c.respuesta || ''}.`,

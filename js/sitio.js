@@ -46,7 +46,7 @@ function aplicar(a) {
   CONFIG.senal = Math.min(100, Math.max(0, num(a.senal, CONFIG.senal)));
   CONFIG.comision = Math.min(100, Math.max(0, num(a.comision, CONFIG.comision)));
   CONFIG.urgente = Math.min(2, Math.max(0, num(a.urgente, CONFIG.urgente)));
-  if (a.pagos) Object.assign(CONFIG.pagos, Object.fromEntries(['iban', 'titular'].filter(k => typeof a.pagos[k] === 'string').map(k => [k, a.pagos[k].trim()])));
+  if (a.pagos) Object.assign(CONFIG.pagos, Object.fromEntries(['bizum', 'iban', 'titular'].filter(k => typeof a.pagos[k] === 'string').map(k => [k, a.pagos[k].trim()])));
   if (a.legal) Object.assign(CONFIG.legal, Object.fromEntries(['titular', 'nif', 'domicilio', 'email', 'actividad'].filter(k => typeof a.legal[k] === 'string' && a.legal[k].trim()).map(k => [k, a.legal[k].trim()])));
   CONFIG.trustpilot = txt(a.trustpilot, CONFIG.trustpilot);
   if (a.bienvenida) Object.assign(CONFIG.bienvenida, { activo: !!a.bienvenida.activo, codigo: txt(a.bienvenida.codigo, '').toUpperCase() || CONFIG.bienvenida.codigo, pct: Math.min(100, Math.max(1, num(a.bienvenida.pct, CONFIG.bienvenida.pct))) });

@@ -41,7 +41,13 @@ export function botonPago(p) {
   </button>`;
 }
 
-/* ---------- Forma de pago: solo transferencia bancaria ---------- */
+/* ---------- Formas de pago: Bizum (si hay teléfono) y transferencia ---------- */
+function metodos() {
+  const m = [];
+  if (P.bizum) m.push({ id: 'bizum', nombre: 'Bizum', icono: 'phone', sub: 'Al momento' });
+  if (P.iban) m.push({ id: 'transferencia', nombre: 'Transferencia', icono: 'bank', sub: 'En 1 día hábil' });
+  return m;
+}
 const fila = (k, v, copiar = v) =>
   `<div class="pay-row"><span>${esc(k)}</span><b>${esc(v)}</b>${copiar ? `<button type="button" class="icon-btn sm" data-copy="${esc(copiar)}" aria-label="Copiar ${esc(k)}">${icono('copy')}</button>` : ''}</div>`;
 
@@ -62,6 +68,7 @@ export function abrirPago(p, fase = faseDePago(p), alTerminar = () => {}) {
   const imp = fase === 'senal' ? importeSenal(p) : importeResto(p);
   const ref = refPedido(p.id);
   const concepto = `${ref} ${p.respuestas?.negocio || ''}`.trim().slice(0, 35);
+  const M = metodos();
   // contenedor nuevo en cada apertura (así no se acumulan eventos)
   const body = document.createElement('div');
   $('#pagoBody', dlg).replaceChildren(body);
@@ -74,27 +81,42 @@ export function abrirPago(p, fase = faseDePago(p), alTerminar = () => {}) {
       <b>${euros(imp)}</b>
       <span>IVA incluido · total del proyecto ${euros(p.total || 0)}</span>
     </div>
-    ${P.iban ? `
-    <p class="pay-how">${icono('bank')}<span>Haz una <b>transferencia bancaria</b> desde la app o la web de tu banco con estos datos. Toca el botón de cada uno para copiarlo.</span></p>
-    <div class="pay-detail">
-      ${fila('IBAN', P.iban, P.iban.replace(/\s/g, ''))}${fila('Titular', P.titular, '')}${fila('Importe', euros(imp), String(imp).replace('.', ','))}${fila('Concepto', concepto)}
-    </div>
-    <p class="muted pago-nota">Escribe el concepto tal cual: así sabemos de quién es el pago. Entre bancos españoles suele llegar en un día hábil (al momento si haces una transferencia inmediata). Sin comisiones por nuestra parte.</p>
-    <button class="btn btn-primary w100" id="pagoOk" type="button"><span>Ya he hecho la transferencia</span></button>`
-    : `<div class="empty"><b>Aún no tenemos los datos de pago configurados</b><p>Escríbenos y te los enviamos.</p></div>`}`;
+    ${M.length > 1 ? `<div class="pay-metodos" role="radiogroup" aria-label="Forma de pago">${M.map((x, i) => `
+      <label class="pay-met"><input type="radio" name="metodo" value="${x.id}" ${i ? '' : 'checked'}><span>${icono(x.icono)}<b>${x.nombre}</b><small>${x.sub}</small></span></label>`).join('')}</div>` : ''}
+    <div id="pagoDetalle"></div>`;
 
-  $('#pagoOk', body)?.addEventListener('click', async e => {
-    const btn = e.currentTarget;
+  const pintar = m => {
+    const d = $('#pagoDetalle', body);
+    if (m === 'bizum') d.innerHTML = `
+      <p class="pay-how">${icono('phone')}<span>Abre la app de tu banco → <b>Bizum</b> → <b>Enviar dinero</b> y usa estos datos. Toca el botón de cada uno para copiarlo.</span></p>
+      <div class="pay-detail">${fila('Teléfono', P.bizum, P.bizum.replace(/\s/g, ''))}${fila('Importe', euros(imp), String(imp).replace('.', ','))}${fila('Concepto', concepto)}</div>
+      <p class="muted pago-nota">Escribe el concepto tal cual: así sabemos de quién es el pago. Bizum llega al momento y no tiene comisiones.</p>
+      <button class="btn btn-primary w100" id="pagoOk" type="button" data-metodo="bizum"><span>Ya he hecho el Bizum</span></button>`;
+    else if (m === 'transferencia') d.innerHTML = `
+      <p class="pay-how">${icono('bank')}<span>Haz una <b>transferencia bancaria</b> desde la app o la web de tu banco con estos datos. Toca el botón de cada uno para copiarlo.</span></p>
+      <div class="pay-detail">${fila('IBAN', P.iban, P.iban.replace(/\s/g, ''))}${fila('Titular', P.titular, '')}${fila('Importe', euros(imp), String(imp).replace('.', ','))}${fila('Concepto', concepto)}</div>
+      <p class="muted pago-nota">Escribe el concepto tal cual: así sabemos de quién es el pago. Entre bancos españoles suele llegar en un día hábil (al momento si haces una transferencia inmediata). Sin comisiones por nuestra parte.</p>
+      <button class="btn btn-primary w100" id="pagoOk" type="button" data-metodo="transferencia"><span>Ya he hecho la transferencia</span></button>`;
+    else d.innerHTML = `<div class="empty"><b>Aún no tenemos los datos de pago configurados</b><p>Escríbenos y te los enviamos.</p></div>`;
+  };
+  pintar(M[0]?.id);
+  body.addEventListener('change', e => { if (e.target.name === 'metodo') pintar(e.target.value); });
+
+  body.addEventListener('click', async e => {
+    const btn = e.target.closest('#pagoOk');
+    if (!btn) return;
+    const metodo = btn.dataset.metodo;
     ocupado(btn, true);
     try {
-      const cambios = await store.avisarPago(p.id, { metodo: 'transferencia', fase });
+      const cambios = await store.avisarPago(p.id, { metodo, fase });
       Object.assign(p, cambios);
-      const msg = `Hola, acabo de hacer la transferencia de ${fase === 'senal' ? 'la señal' : 'el resto'} (${euros(imp)}) del pedido ${ref}. Adjunto el justificante.`;
+      const que = metodo === 'bizum' ? 'el Bizum' : 'la transferencia';
+      const msg = `Hola, acabo de hacer ${que} de ${fase === 'senal' ? 'la señal' : 'el resto'} (${euros(imp)}) del pedido ${ref}. Adjunto el justificante.`;
       body.innerHTML = `
         <div class="exito">
           <div class="ok-ic">${icono('check')}</div>
           <h3>Aviso de pago recibido</h3>
-          <p class="muted">Gracias. En cuanto nos llegue la transferencia de <b>${euros(imp)}</b> la confirmamos y lo verás en «Mis proyectos».</p>
+          <p class="muted">Gracias. En cuanto nos llegue ${que} de <b>${euros(imp)}</b> lo confirmamos, lo verás en «Mis proyectos» y te llegará el recibo por correo.</p>
           <a class="btn btn-ghost w100" href="${mailLink(`Justificante de pago ${ref}`, msg)}">${icono('mail')} Enviar justificante por correo</a>
           <p class="muted" style="font-size:13px;margin:-4px 0 12px">También puedes subir el justificante en la pestaña «Archivos» de tu proyecto.</p>
           <button class="btn btn-ghost w100" data-close type="button">Cerrar</button>
@@ -108,7 +130,6 @@ export function abrirPago(p, fase = faseDePago(p), alTerminar = () => {}) {
 
   abrir(dlg);
 }
-
 /* ---------- Reseñas ---------- */
 let rdlg;
 export function abrirResena(p, alTerminar = () => {}) {
