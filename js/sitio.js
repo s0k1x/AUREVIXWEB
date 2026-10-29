@@ -95,6 +95,8 @@ export async function guardarAjustesWeb(a) {
   await store.guardarAjustes('web', a);
   aplicar(a);
   try { localStorage.setItem(CACHE, JSON.stringify(a)); } catch { /* sin almacenamiento */ }
+  // La IA de WhatsApp responde con los precios nuevos
+  import('./asistente.js').then(m => m.guardarCatalogoIA()).catch(e => console.warn(e));
 }
 
 export const planesActivos = () => PLANES.filter(p => p.activo !== false);

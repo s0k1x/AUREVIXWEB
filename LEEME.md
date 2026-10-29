@@ -836,3 +836,29 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
   2. El prompt se puede retocar y copiar, y **«Descargar PDF»** crea un PDF ordenado: portada con el nombre y el color del cliente, resumen, logotipo (el archivo que lleve «logo» en el nombre), todas las secciones, lista de archivos con hasta 8 fotos en miniatura y el prompt al final.
 - El PDF se crea en el navegador con jsPDF (`js/vendor/jspdf.umd.min.js`, licencia MIT); solo se descarga al pulsar el botón.
 - La función `asistente` comprueba con la sesión de quien llama que es del equipo antes de generar un brief: un cliente no puede usarla para eso.
+
+## 42. Versión v55 — WhatsApp con IA (+34 666 96 21 50)
+La IA contesta por WhatsApp igual que el asistente de la web: mismos precios y planes, y si el número coincide con el teléfono de un pedido, le dice al cliente en qué punto va su proyecto.
+
+**Cómo funciona**
+- **OpenWA** (gratuito, de código abierto) corre en un VPS y está vinculado al número como un «dispositivo vinculado», igual que WhatsApp Web. El número sigue funcionando en tu móvil.
+- Cada mensaje que llega, OpenWA lo manda firmado a la función **`whatsapp`** de Supabase. La función comprueba la firma, guarda la conversación (tablas `wa_chats` y `wa_mensajes`, que solo puede leer el equipo), pregunta a Gemini y contesta por OpenWA.
+- En el primer mensaje avisa de que es un asistente con IA. Solo contesta a chats individuales que escriben primero: nunca a grupos ni envía mensajes por su cuenta. Como mucho 40 respuestas por chat y día.
+- Si el cliente escribe **«persona»**, la IA se aparta 24 h de ese chat y os llega un aviso al panel.
+- Si **contestáis vosotros desde el móvil**, la IA se aparta 12 h de ese chat para no pisaros.
+- Los precios los coge del catálogo que se guarda solo cuando el propietario abre el panel o cambia los ajustes (clave `ia` de la tabla `ajustes`).
+
+**Instalación (una vez)**
+1. **Contrata un VPS** con Ubuntu 24.04 y al menos 2 GB de RAM (mejor 4 GB), en la Unión Europea. Por ejemplo, Hetzner Cloud CX22, unos 4–5 € al mes.
+2. **Entra en el servidor**. Desde el iPhone, con la app gratuita **Termius**: nueva conexión con la IP del servidor, usuario `root` y la contraseña que te manda el proveedor.
+3. **Pega este comando** y pulsa Intro:
+   `curl -fsSL https://aurevixweb.es/whatsapp/instalar.sh | bash`
+   Tarda unos minutos. Instala Docker, OpenWA y HTTPS, y lo conecta con Supabase.
+4. Cuando salga un **código de 8 letras**: en el móvil, WhatsApp → Ajustes → **Dispositivos vinculados** → Vincular un dispositivo → **«Vincular con el número de teléfono»** y escríbelo.
+5. Al terminar salen **4 datos** (`OPENWA_URL`, `OPENWA_SESION`, `OPENWA_CLAVE`, `WHATSAPP_SECRETO`). Ponlos en Supabase → Edge Functions → **Secrets**, o pásaselos a Claude para que los ponga.
+6. Pruébalo escribiendo al número desde otro móvil. Cuando conteste, pon `whatsapp.activo: true` en `config.js`: la web y el asistente empezarán a enseñar el WhatsApp como forma de contacto.
+
+**Avisos**
+- OpenWA no es oficial: WhatsApp podría restringir el número. Por eso la IA solo responde y nunca envía mensajes masivos. Sin la SIM no se podría recuperar el número por SMS.
+- Si WhatsApp pide crear una «llave de acceso» (passkey) al vincular, este método no funciona con esa cuenta.
+- Para ver qué pasa en el servidor: `docker logs -f openwa-api`. Para volver a vincular o reinstalar, se puede ejecutar el instalador otra vez.
