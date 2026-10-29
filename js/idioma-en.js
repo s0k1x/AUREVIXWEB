@@ -4,6 +4,17 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  // v63 · portada en capítulos
+  'Webs para negocios': 'Websites for businesses', 'Tu web, lista para vender': 'Your website, ready to sell', 'Elige un diseño': 'Pick a design',
+  'Precios cerrados': 'Fixed prices', 'Opiniones de clientes': 'Client reviews', 'Gana un 30 % por web vendida': 'Earn 30 % per website sold',
+  'Diseñamos y publicamos la web de tu negocio a precio cerrado, en una a cuatro semanas. Eliges un diseño, lo adaptamos a tu marca y sigues cada etapa desde tu cuenta.': 'We design and launch your business website at a fixed price, in one to four weeks. You pick a design, we adapt it to your brand and you follow every stage from your account.',
+  'al empezar, el resto a la entrega': 'upfront, the rest on delivery', 'Diez minutos': 'Ten minutes', 'Uno o dos días': 'One or two days', 'Una a tres semanas': 'One to three weeks', 'Un día': 'One day',
+  'Primero, eliges el tipo de web y un diseño de partida y respondes un breve cuestionario.': 'First, you choose the type of website and a starting design and answer a short questionnaire.',
+  'Después, eliges el dominio y nos envías textos, fotos y logotipo. Para empezar se abona el 50 %.': 'Then you choose the domain and send us texts, photos and logo. 50 % is paid to start.',
+  'Luego diseñamos la web y te enviamos una vista previa para aprobarla o pedir cambios.': 'Next we design the website and send you a preview to approve or request changes.',
+  'Al final abonas el resto y la publicamos en tu dominio. Te quedas con todos los accesos.': 'Finally you pay the rest and we launch it on your domain. You keep all the access.',
+  'Si tienes otra duda, pregunta al asistente o escríbenos. Respondemos en menos de 24 horas laborables.': 'If you have another question, ask the assistant or write to us. We reply within 24 business hours.',
+  'Capítulos de la página': 'Page chapters', 'Diseños de partida': 'Starting designs', 'Tipos de web': 'Types of website',
   // v59 · calculadora
   'Tu presupuesto': 'Your quote', 'La Librería es para suscriptores': 'The Library is for subscribers', 'Tu suscripción ha terminado': 'Your subscription has ended', 'Entrar para suscribirme': 'Sign in to subscribe', 'Ya he pagado: activar mi acceso': "I've paid: activate my access", 'Cómo pagar': 'How to pay', 'Cuotas mensuales': 'Monthly fees', 'se cobran cada mes desde la publicación': 'charged monthly from launch', 'Correo con tu dominio': 'Email with your domain', 'Urgente': 'Rush', 'opcionales': 'optional', '¿Para cuándo la necesitas?': 'When do you need it?', 'Plazo normal': 'Standard timing',
   'Descuento de bienvenida en tu primer pedido': 'Welcome discount on your first order', 'Al entregarte la web': 'When we deliver your website',
@@ -395,6 +406,8 @@ const fecha = t => t
 const dias = n => `${n} day${n === '1' ? '' : 's'}`;
 
 export const PATRONES = [
+  [/^Entrega en (.+)$/, (m, T) => `Delivered in ${T(m[1])}`],
+  [/^Precio de partida, (.+)$/, (m, T) => `Starting price, ${T(m[1]).charAt(0).toLowerCase() + T(m[1]).slice(1)}`],
   [/^Cuesta (.+ €) al mes y se añade a tu pedido como cuota mensual\.$/, m => `It costs ${m[1]} a month and is added to your order as a monthly fee.`],
   [/^\+ (.+ €)\/mes de cuotas$/, m => `+ ${m[1]}/month in fees`],
   [/^Hacia el (.+)$/, m => `By ${m[1]}`],
