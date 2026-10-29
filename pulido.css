@@ -376,3 +376,83 @@ html[data-tema=claro] .dom-ext-sel{color:#4f850c;background-image:url("data:imag
 .wiz-dots{padding-bottom:10px;border-bottom:1px solid var(--line)}
 /* Pantallas táctiles de cualquier tamaño (iPad): 16px para que Safari no haga zoom al escribir */
 @media (pointer:coarse){.brief-txt{font-size:16px}}
+
+/* ==========================================================
+   v57 · Recibo por correo (Brevo) en el bloque de pago
+   ========================================================== */
+.od-correo{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.od-correo small{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+.od-correo small svg{width:14px;height:14px;color:var(--ok)}
+
+/* ==========================================================
+   v57 · Entrar con un código por correo (sin contraseñas)
+   ========================================================== */
+.lg .sign{display:inline-flex;align-items:center;justify-content:center;gap:10px}
+.lg .sign svg{width:17px;height:17px;transition:transform .2s var(--e-salida)}
+@media (hover:hover) and (pointer:fine){.lg #lgSubmit:hover svg{transform:translateX(3px)}}
+.lg-nota{margin:12px 0 2px;font-size:12.5px;line-height:1.5;color:var(--muted);text-align:center;text-wrap:balance}
+.lg-nota svg{display:inline-block;width:13px;height:13px;margin-right:6px;vertical-align:-2px;color:var(--accent)}
+.form-err .link-btn{font-weight:600;color:var(--text)}
+
+/* Cambio de paso: el nuevo entra desde el lado hacia el que se avanza */
+.lg-paso.entra{animation:lgEntra .24s var(--e-salida) both}
+.lg-paso.entra-atras{animation:lgEntraAtras .24s var(--e-salida) both}
+@keyframes lgEntra{from{opacity:0;transform:translateX(16px)}}
+@keyframes lgEntraAtras{from{opacity:0;transform:translateX(-16px)}}
+
+.lg-atras{display:flex;align-items:center;gap:6px;margin:-12px 0 0 -6px;padding:0 6px;font-size:13.5px;font-weight:600;color:var(--muted);min-height:40px}
+.lg-atras svg{width:15px;height:15px;transform:scaleX(-1)}
+@media (hover:hover) and (pointer:fine){.lg-atras:hover{color:var(--text)}}
+.lg-sobre{display:grid;place-items:center;margin:12px auto 16px;width:68px;height:68px;border-radius:50%;background:radial-gradient(circle at 50% 35%,rgba(200,245,96,.22),rgba(200,245,96,.06) 70%);box-shadow:inset 0 0 0 1px rgba(200,245,96,.28)}
+.lg-sobre span{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--ink)}
+.lg-sobre svg{width:22px;height:22px}
+.lg-paso.entra .lg-sobre span{animation:lgSobre .5s .08s var(--e-salida) both}
+@keyframes lgSobre{from{opacity:0;transform:translateY(8px) scale(.9)}}
+.lg-dest{color:var(--text);font-weight:600;overflow-wrap:anywhere}
+.lg-cod{margin-top:22px}
+.lg-reenviar{margin:16px 0 2px;font-size:13.5px;color:var(--muted);text-align:center}
+.lg-reenviar .link-btn{font-weight:600;font-variant-numeric:tabular-nums}
+.lg-reenviar .link-btn:disabled{color:var(--dim);cursor:default;text-decoration:none}
+
+/* ---------- Campo de código (js/otp.js) ---------- */
+.otp{--celda:min(52px,calc((100vw - 110px) / 6.6));display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:16px}
+.otp-fila{position:relative;width:fit-content;max-width:100%}
+.otp-celdas{position:relative;display:flex;gap:8px}
+.otp-celda{position:relative;display:grid;place-items:center;width:var(--celda);aspect-ratio:5/6;border-radius:14px;background:var(--field);box-shadow:inset 0 0 0 1px var(--line2);font:600 clamp(20px,6vw,26px)/1 var(--fd);color:var(--text);font-variant-numeric:tabular-nums;transition:box-shadow .2s ease,background-color .2s ease}
+.otp-celda.otp-medio{margin-left:10px}
+.otp-celda.llena{box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.otp-celda.sel{background:rgba(200,245,96,.12)}
+.otp-celda b{font-weight:inherit}
+.otp-celda.entra b{animation:otpCifra .16s var(--e-salida)}
+@keyframes otpCifra{from{opacity:0;transform:translateY(5px) scale(.85)}}
+/* Cursor parpadeante en la casilla vacía activa */
+.otp-celda.cursor::after{content:'';position:absolute;width:2px;height:42%;border-radius:2px;background:var(--accent);animation:otpCursor 1.1s steps(1) infinite}
+@keyframes otpCursor{50%{opacity:0}}
+/* El aro que se desliza a la casilla activa */
+.otp-aro{position:absolute;left:0;top:0;height:100%;border-radius:14px;box-shadow:0 0 0 2px var(--accent),0 0 0 6px rgba(200,245,96,.16);opacity:0;pointer-events:none;transition:transform .18s var(--e-salida),opacity .15s ease}
+.otp.foco .otp-aro{opacity:1}
+.otp-campo{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;cursor:text;border:0;padding:0;caret-color:transparent;color:transparent;background:transparent}
+.otp-msg{min-height:20px;margin:0;font-size:13.5px;line-height:1.4;color:var(--muted);text-align:center}
+/* Estados */
+.otp[data-estado="error"] .otp-celda{box-shadow:inset 0 0 0 1.5px var(--danger)}
+.otp[data-estado="error"] .otp-aro{box-shadow:0 0 0 2px var(--danger),0 0 0 6px rgba(248,113,113,.16)}
+.otp[data-estado="error"] .otp-msg{color:var(--danger)}
+.otp[data-estado="cargando"] .otp-celda{opacity:.7}
+.otp[data-estado="ok"] .otp-celda{background:rgba(200,245,96,.14);box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent);animation:otpOla .4s calc(var(--i) * 50ms) var(--e-salida)}
+.otp[data-estado="ok"] .otp-msg{color:var(--accent);font-weight:600}
+.otp-celdas.sacude{animation:otpSacude .4s cubic-bezier(.36,.07,.19,.97)}
+@keyframes otpOla{50%{transform:scale(1.08)}}
+@keyframes otpSacude{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@media (prefers-reduced-motion:reduce){
+  .lg-paso.entra,.lg-paso.entra-atras{animation:lgFundido .2s ease both}
+  .lg-paso.entra .lg-sobre span,.otp-celda.entra b,.otp[data-estado="ok"] .otp-celda,.otp-celdas.sacude{animation:none}
+  .otp-aro{transition:opacity .15s ease}
+}
+@keyframes lgFundido{from{opacity:0}}
+html[data-movimiento="reducido"] .lg-paso.entra,html[data-movimiento="reducido"] .lg-paso.entra-atras{animation:lgFundido .2s ease both}
+/* Tema claro */
+html[data-tema="claro"] .otp-celda.llena{box-shadow:inset 0 0 0 1px rgba(0,0,0,.28)}
+html[data-tema="claro"] .otp[data-estado="ok"] .otp-celda{color:#3d6a0a}
+
+/* El recuadro del diálogo no es un control: sin el contorno de foco que pone el navegador al abrirlo */
+.dlg-box:focus{outline:none}

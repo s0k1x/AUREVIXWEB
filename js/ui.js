@@ -12,7 +12,7 @@ import { iniciarCookies } from './cookies.js';
 import { aplicarApariencia, guardarApariencia } from './apariencia.js';
 import { campanaHTML, iniciarAvisos } from './avisos.js';
 import { iniciarDesplegables } from './desplegable.js';
-import { montarMedidor, evaluar, MINIMO } from './contrasena.js';
+import { crearOtp } from './otp.js';
 
 // Direcciones limpias: si alguien entra con «.html» (enlaces antiguos), la barra muestra la dirección bonita
 try {
@@ -421,57 +421,77 @@ function crearLogin() {
   d.id = 'loginDlg';
   d.className = 'dlg dlg-sm';
   d.innerHTML = `
-    <div class="dlg-box form-container">
+    <div class="dlg-box form-container lg">
       <button class="dlg-x" data-close aria-label="Cerrar">${icono('x')}</button>
-      <div class="lg-marca"><img src="icons/logo-a.png" alt="" width="40" height="40">${marcaHTML()}</div>
-      <p class="title" id="lgTitle">Iniciar sesión</p>
-      <p class="subtitle" id="lgSub">Para guardar tu pedido y seguir su estado.</p>
-      <form class="form" id="lgForm" novalidate>
-        <div id="lgNameWrap" hidden>${campo({ id: 'lgName', label: 'Nombre', attrs: 'autocomplete="name"' })}</div>
-        ${campo({ id: 'lgEmail', label: 'Email', type: 'email', required: true, attrs: 'autocomplete="email" inputmode="email"' })}
-        ${campo({ id: 'lgPass', label: 'Contraseña', type: 'password', required: true, attrs: 'autocomplete="current-password"' })}
-        <div class="forgot"><button type="button" class="link-btn" id="lgForgot">¿Has olvidado la contraseña?</button></div>
-        <div id="lgTermsWrap" hidden>${aceptarTerminos('lgTerms')}</div>
-        <p class="form-err" id="lgErr" role="alert"></p>
-        <button class="btn btn-primary w100 sign" id="lgSubmit" type="submit"><span>Entrar</span></button>
-        ${infoDatos('crear y gestionar tu cuenta, tus pedidos y tus consultas')}
-      </form>
-      <div class="social-message"><div class="line"></div><p class="message">o entra con</p><div class="line"></div></div>
-      <div class="social-icons">
-        <button class="social" id="lgGoogle" type="button" aria-label="Entrar con Google">${SVG_GOOGLE}<span>Google</span></button>
-        ${CONFIG.loginGithub ? `<button class="social" id="lgGithub" type="button" aria-label="Entrar con GitHub">${SVG_GITHUB}<span>GitHub</span></button>` : ''}
-      </div>
-      <p class="signup"><span id="lgSwitchTxt">¿No tienes cuenta?</span> <button class="link-btn" id="lgSwitch" type="button">Regístrate</button></p>
-      ${store.modoDemo ? `
-      <div class="demo-box">
-        <b>${icono('flask')} Modo demo</b>
-        <p>La web todavía no está conectada a Supabase, así que el acceso es de prueba. Entra con un rol:</p>
-        <div class="demo-btns">
-          <button class="btn btn-sm btn-ghost" data-demo="client">Cliente</button>
-          <button class="btn btn-sm btn-ghost" data-demo="worker">Trabajador</button>
-          <button class="btn btn-sm btn-ghost" data-demo="owner">Dueño</button>
+      <div class="lg-paso" data-p="email">
+        <div class="lg-marca"><img src="icons/logo-a.png" alt="" width="40" height="40">${marcaHTML()}</div>
+        <p class="title" id="lgTitle">Iniciar sesión</p>
+        <p class="subtitle" id="lgSub">Para guardar tu pedido y seguir su estado.</p>
+        <form class="form" id="lgForm" novalidate>
+          <div id="lgNameWrap" hidden>${campo({ id: 'lgName', label: 'Nombre', attrs: 'autocomplete="name"' })}</div>
+          ${campo({ id: 'lgEmail', label: 'Email', type: 'email', required: true, attrs: 'autocomplete="email" inputmode="email" enterkeyhint="send"' })}
+          <div id="lgTermsWrap" hidden>${aceptarTerminos('lgTerms')}</div>
+          <p class="form-err" id="lgErr" role="alert"></p>
+          <button class="btn btn-primary w100 sign" id="lgSubmit" type="submit"><span>Enviarme un código</span>${icono('arrow')}</button>
+          <p class="lg-nota">${icono('lock')}<span>Sin contraseñas: te enviamos un código de un solo uso a tu correo.</span></p>
+          ${infoDatos('crear y gestionar tu cuenta, tus pedidos y tus consultas')}
+        </form>
+        <div class="social-message"><div class="line"></div><p class="message">o entra con</p><div class="line"></div></div>
+        <div class="social-icons">
+          <button class="social" id="lgGoogle" type="button" aria-label="Entrar con Google">${SVG_GOOGLE}<span>Google</span></button>
+          ${CONFIG.loginGithub ? `<button class="social" id="lgGithub" type="button" aria-label="Entrar con GitHub">${SVG_GITHUB}<span>GitHub</span></button>` : ''}
         </div>
-      </div>` : ''}
+        <p class="signup"><span id="lgSwitchTxt">¿No tienes cuenta?</span> <button class="link-btn" id="lgSwitch" type="button">Regístrate</button></p>
+        ${store.modoDemo ? `
+        <div class="demo-box">
+          <b>${icono('flask')} Modo demo</b>
+          <p>La web todavía no está conectada a Supabase, así que el acceso es de prueba. Entra con un rol:</p>
+          <div class="demo-btns">
+            <button class="btn btn-sm btn-ghost" data-demo="client">Cliente</button>
+            <button class="btn btn-sm btn-ghost" data-demo="worker">Trabajador</button>
+            <button class="btn btn-sm btn-ghost" data-demo="owner">Dueño</button>
+          </div>
+        </div>` : ''}
+      </div>
+      <div class="lg-paso" data-p="codigo" hidden>
+        <button class="lg-atras link-btn" id="lgAtras" type="button">${icono('arrow')}<span>Cambiar email</span></button>
+        <div class="lg-sobre" aria-hidden="true"><span>${icono('mail')}</span></div>
+        <p class="title" id="lgCodTitle">Revisa tu correo</p>
+        <p class="subtitle"><span id="lgCodTxt">Te hemos enviado un código de 6 cifras a</span> <b id="lgDest" class="lg-dest"></b></p>
+        <form class="form lg-cod" id="lgCodForm" novalidate>
+          <div id="lgOtpCaja"></div>
+          <button class="btn btn-primary w100 sign" id="lgVerificar" type="submit"><span>Entrar</span></button>
+        </form>
+        <p class="lg-reenviar"><span>¿No te ha llegado? Mira en spam o</span> <button class="link-btn" id="lgReenviar" type="button">pide otro</button></p>
+      </div>
     </div>`;
   document.body.appendChild(d);
   etiquetas(d);
 
-  let registro = false;
-  const error = m => ($('#lgErr').textContent = m);
-  // Barra de seguridad: solo al crear la cuenta (al entrar no se juzga la contraseña que ya tienes)
-  const medidor = montarMedidor($('#lgPass'), { email: () => $('#lgEmail').value, nombre: () => $('#lgName').value });
+  let registro = false, email = '', reloj = null;
+  const error = (m, accion) => {
+    const e = $('#lgErr');
+    e.textContent = m;
+    if (accion) { const b = document.createElement('button'); b.type = 'button'; b.className = 'link-btn'; b.textContent = accion.txt; b.addEventListener('click', accion.fn); e.append(' ', b); }
+  };
+  const quieto = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Pasos: el nuevo entra deslizándose desde el lado al que se avanza */
+  const ir = (paso, atras = false) => {
+    $$('.lg-paso', d).forEach(x => { x.hidden = x.dataset.p !== paso; });
+    const nuevo = $(`.lg-paso[data-p="${paso}"]`, d);
+    nuevo.classList.remove('entra', 'entra-atras'); void nuevo.offsetWidth;
+    if (!quieto()) nuevo.classList.add(atras ? 'entra-atras' : 'entra');
+    d.querySelector('.dlg-box').scrollTop = 0;
+  };
+
   const setModo = r => {
     registro = r;
-    $('#lgPass').closest('.fc').nextElementSibling.classList.toggle('pw-off', !r);
-    medidor.actualizar();
     $('#lgNameWrap').hidden = !r;
     $('#lgTermsWrap').hidden = !r;
-    $('.forgot', d).hidden = r;
     $('#lgTitle').textContent = r ? 'Crear cuenta' : 'Iniciar sesión';
-    $('#lgSubmit span').textContent = r ? 'Crear cuenta' : 'Entrar';
     $('#lgSwitchTxt').textContent = r ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?';
     $('#lgSwitch').textContent = r ? 'Inicia sesión' : 'Regístrate';
-    $('#lgPass').autocomplete = r ? 'new-password' : 'current-password';
     error('');
   };
   $('#lgSwitch').addEventListener('click', () => setModo(!registro));
@@ -485,37 +505,85 @@ function crearLogin() {
   $('#lgGoogle').addEventListener('click', social(store.entrarConGoogle));
   $('#lgGithub')?.addEventListener('click', social(store.entrarConGithub));
 
+  /* Paso 2: el código */
+  const otp = crearOtp({ etiqueta: 'Código de 6 cifras', alCompletar: () => $('#lgCodForm').requestSubmit() });
+  $('#lgOtpCaja').append(otp.el);
+  const cuentaAtras = () => {
+    clearInterval(reloj);
+    let s = 60;
+    const b = $('#lgReenviar');
+    const pintar = () => { b.disabled = s > 0; b.textContent = s > 0 ? `pide otro en 0:${String(s).padStart(2, '0')}` : 'pide otro'; };
+    pintar();
+    reloj = setInterval(() => { s--; pintar(); if (s <= 0) clearInterval(reloj); }, 1000);
+  };
+  const enviar = async btn => {
+    ocupado(btn, true);
+    try {
+      await store.enviarCodigo(email, { nombre: registro ? $('#lgName').value.trim() : '' });
+      return true;
+    } catch (err) {
+      if (/ninguna cuenta/.test(err.message)) error(err.message, { txt: 'Crear cuenta', fn: () => { setModo(true); $('#lgName').focus(); } });
+      else error(err.message);
+      return false;
+    } finally { ocupado(btn, false); }
+  };
+
   $('#lgForm').addEventListener('submit', async e => {
     e.preventDefault();
-    const nombre = $('#lgName').value.trim(), email = $('#lgEmail').value.trim(), pass = $('#lgPass').value;
+    const nombre = $('#lgName').value.trim();
+    email = $('#lgEmail').value.trim().toLowerCase();
     const marcar = (id, mal) => $('#' + id).closest('.fc').classList.toggle('error', mal);
     if (registro && !nombre) { marcar('lgName', true); return error('Escribe tu nombre'); }
     if (!/^\S+@\S+\.\S+$/.test(email)) { marcar('lgEmail', true); return error('Escribe un email válido'); }
-    if (!pass) { marcar('lgPass', true); return error('Escribe tu contraseña'); }
-    if (registro && !store.modoDemo && !evaluar(pass, { email, nombre }).ok) { marcar('lgPass', true); return error(`La contraseña necesita al menos ${MINIMO} caracteres, con letras y números.`); }
     if (registro && !terminosAceptados('lgTerms')) return;
-    ocupado($('#lgSubmit'), true); error('');
-    try {
-      if (registro) await store.registrarConEmail(nombre, email, pass);
-      else await store.entrarConEmail(email, pass);
-    } catch (err) { error(err.message); }
-    ocupado($('#lgSubmit'), false);
+    error('');
+    if (!(await enviar($('#lgSubmit')))) return;
+    $('#lgDest').textContent = email;
+    $('#lgCodTitle').textContent = registro ? 'Verifica tu correo' : 'Revisa tu correo';
+    $('#lgCodTxt').textContent = registro ? 'Para verificar tu correo y crear la cuenta, escribe el código de 6 cifras que hemos enviado a' : 'Te hemos enviado un código de 6 cifras a';
+    $('#lgVerificar span').textContent = registro ? 'Verificar y crear cuenta' : 'Entrar';
+    otp.limpiar();
+    if (store.modoDemo) otp.estado('idle', 'Modo demo: escribe 6 cifras cualquiera (000000 da error).');
+    ir('codigo');
+    cuentaAtras();
+    setTimeout(() => otp.enfocar(), 260);
   });
 
-  $('#lgForgot').addEventListener('click', async () => {
-    const email = $('#lgEmail').value.trim();
-    if (!/^\S+@\S+\.\S+$/.test(email)) return error('Escribe tu email arriba y vuelve a pulsar');
-    try { await store.recuperarPass(email); toast('Te hemos enviado un email para cambiar la contraseña'); }
-    catch (err) { error(err.message); }
+  $('#lgCodForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const c = otp.valor;
+    if (c.length < 6) { otp.estado('error', 'Faltan cifras: el código tiene 6.'); return otp.enfocar(); }
+    const b = $('#lgVerificar');
+    ocupado(b, true);
+    otp.estado('cargando', 'Comprobando el código…');
+    try {
+      d.dataset.exito = '1';
+      await store.verificarCodigo(email, c);
+      otp.estado('ok', registro ? 'Correo verificado. ¡Bienvenido!' : 'Código correcto. Entrando…');
+    } catch (err) {
+      delete d.dataset.exito;
+      otp.estado('error', err.message);
+      otp.campo.select();
+    }
+    ocupado(b, false);
   });
+  $('#lgReenviar').addEventListener('click', async e => {
+    if (await enviar(e.currentTarget)) { otp.limpiar(); otp.estado('idle', 'Te hemos enviado un código nuevo.'); cuentaAtras(); otp.enfocar(); }
+  });
+  $('#lgAtras').addEventListener('click', () => { clearInterval(reloj); ir('email', true); setTimeout(() => $('#lgEmail').focus(), 60); });
 
   $$('[data-demo]', d).forEach(b => b.addEventListener('click', () => store.entrarDemo(b.dataset.demo)));
 
   d.addEventListener('close', () => {
+    clearInterval(reloj);
+    delete d.dataset.exito;
+    ir('email');
     if (loginResolver) { loginResolver(store.usuarioActual()); loginResolver = null; }
   });
   store.alCambiarUsuario(u => {
-    if (u && d.open) { cerrar(d); toast(`Sesión iniciada como ${u.name.split(' ')[0]}`, 'ok'); }
+    if (!u || !d.open) return;
+    // Tras un código correcto se deja ver la ola verde antes de cerrar
+    setTimeout(() => { if (d.open) { cerrar(d); toast(`Sesión iniciada como ${u.name.split(' ')[0]}`, 'ok'); } }, d.dataset.exito ? 750 : 0);
   });
   return d;
 }
