@@ -10,6 +10,7 @@ import {
   estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
 } from './ui.js';
 import { planesActivos, extrasActivos } from './sitio.js';
+import './mundo.js';
 import { montarHilo, montarArchivos, abrirRecibo } from './colabora.js';
 import { botonPago, abrirPago, abrirResena, animarYPagar } from './pago.js';
 import { recomendar, iniciarChat } from './asistente.js';

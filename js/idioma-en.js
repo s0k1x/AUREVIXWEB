@@ -62,7 +62,7 @@ export const EN = {
   'Idioma': 'Language', 'Español': 'Español', 'English': 'English',
   // ---- Cabecera, menú y pie ----
   'Webs y precios': 'Websites & pricing', 'Diseños': 'Designs', 'Librería': 'Library', 'Opiniones': 'Reviews', 'Contacto': 'Contact',
-  'Trabaja con nosotros': 'Work with us', 'Entrar': 'Sign in', 'Abrir menú': 'Open menu', 'Cerrar': 'Close', 'Saltar al contenido': 'Skip to content',
+  'Trabaja con nosotros': 'Work with us', 'Entrar': 'Sign in', 'Abrir menú': 'Open menu', 'Cerrar': 'Close', 'Saltar al contenido': 'Skip to content', 'Saltar intro': 'Skip intro', 'Desplázate para descubrirlo': 'Scroll to explore',
   'Mi cuenta': 'My account', 'Tu cuenta': 'Your account', 'Mis proyectos': 'My projects', 'Ajustes': 'Settings', 'Cerrar sesión': 'Sign out', 'Ayuda': 'Help',
   'Ayuda y soporte': 'Help & support', 'Avisos': 'Notifications', 'Ajustes de avisos': 'Notification settings', 'No tienes avisos': 'No notifications',
   'Aquí verás los cambios de tus proyectos, pagos y mensajes.': 'Updates on your projects, payments and messages will appear here.',

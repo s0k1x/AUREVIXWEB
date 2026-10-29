@@ -31,6 +31,7 @@
   <meta name="copyright" content="© AurevixWeb. Todos los derechos reservados.">
   <meta name="author" content="AurevixWeb">
   <script>try{var a=JSON.parse(localStorage.getItem('tm_apariencia')||'{}'),d=document.documentElement;if(a.tema==='claro'||(a.tema==='sistema'&&matchMedia('(prefers-color-scheme: light)').matches))d.dataset.tema='claro';if(a.texto&&a.texto!=='normal')d.dataset.texto=a.texto;if(a.movimiento==='reducido')d.dataset.movimiento='reducido';if(a.contraste)d.dataset.contraste='alto'}catch(e){}try{if(sessionStorage.getItem('tm_intro')!=='1'&&!location.hash&&!location.search&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('intro');setTimeout(function(){document.documentElement.classList.remove('intro')},5000)}}catch(e){}</script>
+  <script>/* Intro de vídeo de la portada: solo en ordenador y con animaciones */try{var dm=document.documentElement,ap=JSON.parse(localStorage.getItem('tm_apariencia')||'{}');if(matchMedia('(hover: hover) and (pointer: fine) and (min-width: 900px)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&ap.movimiento!=='reducido')dm.classList.add('mundo-ok')}catch(e){}</script>
   <script>/* Al recargar o volver atrás no se repiten las animaciones de entrada */try{var n=performance.getEntriesByType('navigation')[0];if(n&&(n.type==='reload'||n.type==='back_forward'))document.documentElement.classList.add('sin-entrada')}catch(e){}</script>
   <link rel="preload" as="image" href="icons/logo-a.png">
   <link rel="preload" as="image" href="icons/nombre.png">
@@ -60,6 +61,7 @@
   <link rel="stylesheet" href="tema-claro.css">
   <link rel="stylesheet" href="pulido.css">
   <link rel="stylesheet" href="temporadas.css">
+  <link rel="stylesheet" href="mundo.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"AurevixWeb","description":"Diseño de páginas web para negocios: landing pages, webs de negocio, reservas y tiendas online.","areaServed":"ES","priceRange":"149€ - 990€"}</script>
   <!-- Precarga de los módulos: el navegador los pide todos a la vez en vez de uno tras otro -->
   <link rel="modulepreload" href="js/app.js">
@@ -89,8 +91,19 @@
   <header id="header"></header>
 
   <main>
+    <!-- ===== INTRO EN VÍDEO (solo ordenador): el scroll mueve el vídeo ===== -->
+    <section class="mundo" id="mundo" aria-label="Presentación de AurevixWeb">
+      <div class="mundo-pin">
+        <img class="mundo-foto" alt="" aria-hidden="true" decoding="async">
+        <video class="mundo-video" muted playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+        <p class="mundo-pista" aria-hidden="true"><span class="mundo-raton"></span><span>Desplázate para descubrirlo</span></p>
+        <a href="#portada" class="mundo-saltar">Saltar intro <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+        <div class="mundo-barra" aria-hidden="true"><i></i></div>
+      </div>
+    </section>
+
     <!-- ===== PORTADA ===== -->
-    <section class="hero">
+    <section class="hero" id="portada">
       <div class="hero-bg hero-iso" aria-hidden="true"></div>
       <div class="wrap hero-grid">
         <div class="hero-copy">

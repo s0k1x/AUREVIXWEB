@@ -1,0 +1,37 @@
+/* ==========================================================
+   INTRO EN VÍDEO (solo ordenador, ver js/mundo.js)
+   Sin html.mundo-ok (móvil, tablet, movimiento reducido) no ocupa nada.
+   ========================================================== */
+.mundo{display:none}
+/* Empieza debajo de la cabecera (--cab lo mide js/mundo.js), que se esconde al bajar y deja el vídeo a pantalla completa */
+html.mundo-ok .mundo{display:block;height:700vh;padding:0;margin-top:calc(-1 * var(--cab,67px));position:relative;background:#000}
+html.mundo-ok .header{background:var(--bg);border-color:var(--line)}
+.mundo-pin{position:sticky;top:0;height:100vh;overflow:hidden;background:#000;isolation:isolate}
+.mundo-foto,.mundo-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.mundo-video{opacity:0;transition:opacity .4s ease}
+.mundo.con-video .mundo-video{opacity:1}
+
+/* Pista para bajar: se va en cuanto empieza el scroll */
+.mundo-pista{position:absolute;z-index:2;left:50%;bottom:44px;transform:translateX(-50%);margin:0;display:flex;flex-direction:column;align-items:center;gap:12px;
+  font-size:13px;font-weight:600;letter-spacing:.04em;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.45);transition:opacity .5s ease,transform .5s ease}
+.mundo-raton{width:22px;height:34px;border:2px solid rgba(255,255,255,.85);border-radius:12px;position:relative}
+.mundo-raton::after{content:"";position:absolute;left:50%;top:7px;width:3px;height:7px;margin-left:-1.5px;border-radius:2px;background:#fff;animation:mundo-rueda 1.8s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes mundo-rueda{0%{transform:translateY(0);opacity:1}70%{transform:translateY(9px);opacity:0}100%{transform:translateY(0);opacity:0}}
+.mundo.empezado .mundo-pista{opacity:0;transform:translate(-50%,8px)}
+
+/* Saltar la intro: siempre a mano, discreto */
+.mundo-saltar{position:absolute;z-index:2;right:28px;top:calc(var(--cab,67px) + 20px);display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;
+  font-size:13.5px;font-weight:600;color:#fff;text-decoration:none;background:rgba(12,12,14,.55);border:1px solid rgba(255,255,255,.18);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:background-color .2s ease,border-color .2s ease,opacity .4s ease}
+.mundo-saltar svg{width:15px;height:15px}
+.mundo-saltar:hover{background:rgba(12,12,14,.78);border-color:rgba(255,255,255,.32)}
+.mundo-saltar:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.mundo.final .mundo-saltar{opacity:0;pointer-events:none}
+
+/* Progreso: una línea fina abajo */
+.mundo-barra{position:absolute;z-index:2;left:0;right:0;bottom:0;height:2px;background:rgba(255,255,255,.12);transition:opacity .4s ease}
+.mundo.final .mundo-barra{opacity:0}
+.mundo-barra i{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left}
+
+/* Mientras se ve la intro, sin el ambiente de temporada encima */
+html.mundo-viendo .temporada-ambiente{opacity:0!important}
