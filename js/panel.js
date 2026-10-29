@@ -997,7 +997,7 @@ function abrirPedido(id) {
           <p class="od-pay-info">${pago === 'verificando'
             ? `${icono('euro')}<span>El cliente indica que ha pagado ${p.pagoFase === 'resto' ? 'el resto' : 'la señal'} (<b class="nw">${euros(p.pagoFase === 'resto' ? p.total - senal : senal)}</b>) por <b>${METODOS[p.pagoMetodo] || p.pagoMetodo}</b> ${p.pagoAviso ? haceCuanto(p.pagoAviso) : ''}. Compruébalo en tu banco y márcalo como <b>Pagado</b> (o «Señal pagada»).</span>`
             : p.pagoMetodo ? `Último pago por ${METODOS[p.pagoMetodo] || p.pagoMetodo}.` : `Señal: ${euros(senal)} · Resto: ${euros((p.total || 0) - senal)}`}</p>
-          ${['senal', 'pagado'].includes(pago) && puedeEditar ? `<div class="od-correo">${(c => c ? `<small>${icono('check')} Recibo enviado por correo ${haceCuanto(c)}</small>` : '<small>El cliente aún no ha recibido el recibo por correo</small>')(Math.max(p.correos?.senal || 0, p.correos?.resto || 0, p.correos?.total || 0))}<button type="button" class="btn btn-sm btn-ghost" id="odCorreo">${icono('mail')}<span>${p.correos ? 'Reenviar recibo' : 'Enviar recibo'}</span></button></div>` : ''}
+          ${['senal', 'pagado'].includes(pago) && puedeEditar ? `<div class="od-correo">${(c => c ? `<small>${icono('check')} Factura enviada por correo ${haceCuanto(c)}${p.facturas ? ` · ${esc(Object.values(p.facturas).join(', '))}` : ''}</small>` : '<small>El cliente aún no ha recibido la factura por correo</small>')(Math.max(p.correos?.senal || 0, p.correos?.resto || 0, p.correos?.total || 0))}<button type="button" class="btn btn-sm btn-ghost" id="odCorreo">${icono('mail')}<span>${p.correos ? 'Reenviar factura' : 'Enviar factura'}</span></button></div>` : ''}
         </div>
         ${bloqueWeb(p, puedeEditar)}
         <form class="od-urls" id="odUrls" novalidate>
@@ -1416,12 +1416,13 @@ async function correoPago(p, fase, { reenviar = false, btn = null } = {}) {
   ocupado(btn, true);
   try {
     const r = await store.enviarCorreoPago(p.id, fase, { reenviar });
-    if (r?.demo) toast('Modo demo: con Brevo conectado, el cliente recibiría ahora el recibo por correo', 'ok');
+    if (r?.demo) toast('Modo demo: con Brevo conectado, el cliente recibiría ahora la factura en PDF por correo', 'ok');
     else if (r?.enviado) {
       const correos = { ...(p.correos || {}), [fase]: Date.now() };
-      await store.actualizarPedido(p.id, { correos });
-      p.correos = correos;
-      toast(`Recibo enviado por correo a ${r.para}`, 'ok');
+      const facturas = r.factura ? { ...(p.facturas || {}), [fase]: r.factura } : p.facturas;
+      await store.actualizarPedido(p.id, { correos, ...(facturas ? { facturas } : {}) });
+      p.correos = correos; if (facturas) p.facturas = facturas;
+      toast(r.factura ? `Factura ${r.factura} enviada a ${r.para}` : `Recibo enviado por correo a ${r.para}`, 'ok');
       if ($('#orderDlg')?.open) abrirPedido(p.id);
     }
   } catch (err) {
