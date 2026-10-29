@@ -45,23 +45,22 @@ export function dominioHTML({ tipo = 'nuevo', nombre = '', ext = '.es', correoTi
         <label class="dom-op"><input type="radio" name="domTipo" value="nuevo" ${propio ? '' : 'checked'}><span><b>Quiero uno nuevo</b><small>Lo registramos a tu nombre</small></span></label>
         <label class="dom-op"><input type="radio" name="domTipo" value="propio" ${propio ? 'checked' : ''}><span><b>Ya tengo dominio</b><small>Lo conectamos a tu web</small></span></label>
       </div>
-      <label class="dom-linea" aria-label="Nombre del dominio">
-        <span class="dom-fijo" aria-hidden="true">www.</span>${auto('dom-in', 'domNombre', nombre, propio ? 'tunegocio.com' : 'tunegocio', 'inputmode="url" enterkeyhint="next" maxlength="80"')}<span class="dom-suf" aria-hidden="true">${esc(ext)}</span>
-        <svg class="dom-lapiz" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>
+      <div class="dom-caja"><label class="dom-linea" aria-label="Nombre del dominio">
+        <span class="dom-fijo" aria-hidden="true">www.</span>${auto('dom-in', 'domNombre', nombre, propio ? 'tunegocio.com' : 'tunegocio', 'inputmode="url" enterkeyhint="next" maxlength="80"')}
       </label>
-      <div class="dom-exts" role="radiogroup" aria-label="Extensión">
-        ${EXTENSIONES.map(x => `<label class="dom-x"><input type="radio" name="domExt" value="${x}" ${x === ext ? 'checked' : ''}><span>${x}</span></label>`).join('')}
-      </div>
+      <select class="dom-ext-sel" name="domExt" aria-label="Extensión del dominio">${EXTENSIONES.map(x => `<option value="${x}"${x === ext ? ' selected' : ''}>${x}</option>`).join('')}</select></div>
       <p class="dom-nota" data-dom-nota>${propio ? 'Escríbelo entero, con su extensión. Más adelante te diremos cómo conectarlo.' : 'Solo letras, números y guiones. Comprobamos que esté libre antes de registrarlo.'}</p>
       ${(pd => pd ? `<p class="dom-nota dom-solo-nuevo">Registrarlo con el alojamiento del primer año cuesta ${euros(pd)} y se añade a tu pedido como extra.</p>` : '')(extrasActivos().find(x => x.id === 'dominio')?.precio)}
     </div>
     ${conCorreo ? `
     <div class="dom-sec">
       <h4 class="dom-h">Correo de tu negocio</h4>
-      <div class="dom-tipo dom-ctipo" role="radiogroup" aria-label="Tipo de correo">
-        <label class="dom-op"><input type="radio" name="domCorreoTipo" value="gmail" ${correoTipo === 'dominio' ? '' : 'checked'}><span><b>Gmail <em class="dom-gratis">Gratis</em></b><small>Tu correo personal de Gmail. Si no tienes, se crea gratis en un minuto</small></span></label>
-        <label class="dom-op"><input type="radio" name="domCorreoTipo" value="dominio" ${correoTipo === 'dominio' ? 'checked' : ''}><span><b>Con tu dominio${pc ? ` <em class="dom-precio-op">+${euros(pc)}</em>` : ''}</b><small>Más profesional: info@ con el nombre de tu web</small></span></label>
-      </div>
+      <label class="fc-select dom-csel"><span>Tipo de correo</span><select name="domCorreoTipo">
+        <option value="gmail"${correoTipo === 'dominio' ? '' : ' selected'}>Gmail · Gratis</option>
+        <option value="dominio"${correoTipo === 'dominio' ? ' selected' : ''}>Con tu dominio${pc ? ` · +${euros(pc)}` : ''}</option>
+      </select></label>
+      <p class="dom-nota dom-cor-gmail">Tu correo personal de Gmail. Si no tienes, se crea gratis en un minuto.</p>
+      <p class="dom-nota dom-cor-dom">Más profesional: info@ con el nombre de tu web.</p>
       <div class="dom-cor dom-cor-gmail">
         <label class="dom-linea" aria-label="Tu Gmail">${auto('dom-gin', 'domGmail', gmail, 'tunegocio', 'inputmode="email" maxlength="30"')}<span class="dom-fijo">@gmail.com</span>
           <svg class="dom-lapiz" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg></label>
@@ -78,6 +77,9 @@ export function dominioHTML({ tipo = 'nuevo', nombre = '', ext = '.es', correoTi
   </div>`;
 }
 
+// Valor de un desplegable o de un grupo de opciones
+const valor = (d, name) => { const el = d.querySelector(`select[name=${name}]`); return el ? el.value : d.querySelector(`[name=${name}]:checked`)?.value; };
+
 /** Lee el bloque. Devuelve { ok, motivo, campo, tipo, dominio, correoTipo, correo, correoNombre } */
 export function leerDominio(raiz) {
   const d = raiz.querySelector('[data-dom]');
@@ -90,12 +92,12 @@ export function leerDominio(raiz) {
     if (!/^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,24}$/.test(dominio)) { motivo = 'Escribe tu dominio completo, por ejemplo tunegocio.com'; campo = '.dom-in'; }
   } else {
     const nombre = limpiarNombre(crudo);
-    dominio = nombre + (d.querySelector('[name=domExt]:checked')?.value || '.es');
+    dominio = nombre + (valor(d, 'domExt') || '.es');
     if (!/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/.test(nombre) || nombre.length < 2) { motivo = 'Escribe un nombre para tu dominio: letras, números y guiones (sin espacios ni tildes)'; campo = '.dom-in'; }
   }
   const conCorreo = !!d.querySelector('[name=domCorreoTipo]');
   if (!conCorreo) return { ok: !motivo, motivo, campo, tipo, dominio, correoTipo: '', correo: '', correoNombre: '' };
-  const correoTipo = d.querySelector('[name=domCorreoTipo]:checked')?.value || 'gmail';
+  const correoTipo = valor(d, 'domCorreoTipo') || 'gmail';
   let correo = '', correoNombre = '';
   if (correoTipo === 'gmail') {
     correoNombre = limpiarGmail(d.querySelector('.dom-gin').value).replace(/^\.+|\.+$/g, '');
@@ -115,19 +117,18 @@ export function montarDominio(raiz, { alCambiar = () => {} } = {}) {
   const d = raiz.querySelector('[data-dom]');
   if (!d || d.dataset.montado) return;
   d.dataset.montado = '1';
-  const input = d.querySelector('.dom-in'), suf = d.querySelector('.dom-suf'), nota = d.querySelector('[data-dom-nota]');
+  const input = d.querySelector('.dom-in'), nota = d.querySelector('[data-dom-nota]');
   const espejo = el => { el.parentElement.dataset.v = el.value || el.placeholder; };
   const pintar = () => {
     const tipo = d.querySelector('[name=domTipo]:checked')?.value || 'nuevo';
     d.dataset.tipo = tipo;
-    const ext = d.querySelector('[name=domExt]:checked')?.value || '.es';
-    suf.textContent = ext;
+    const ext = valor(d, 'domExt') || '.es';
     const nombre = tipo === 'propio' ? limpiarNombre(input.value, true) : limpiarNombre(input.value);
     const dom = nombre ? (tipo === 'propio' ? nombre : nombre + ext) : (tipo === 'propio' ? 'tunegocio.com' : 'tunegocio' + ext);
     d.querySelector('[data-dom-web]').textContent = 'www.' + dom;
     d.querySelectorAll('[data-dom-dominio]').forEach(b => (b.textContent = dom));
     d.querySelectorAll('.dom-auto input').forEach(espejo);
-    const ct = d.querySelector('[name=domCorreoTipo]:checked')?.value;
+    const ct = valor(d, 'domCorreoTipo');
     if (ct) {
       d.dataset.correoTipo = ct;
       const ci = d.querySelector('.dom-cin'), gi = d.querySelector('.dom-gin');
@@ -142,7 +143,7 @@ export function montarDominio(raiz, { alCambiar = () => {} } = {}) {
     const v = f(el.value);
     if (v !== el.value) el.value = v;
     d.classList.remove('dom-mal');
-    el.closest('.dom-linea')?.classList.remove('mal');
+    (el.closest('.dom-caja') || el.closest('.dom-linea'))?.classList.remove('mal');
     pintar();
   });
   limpiarAlEscribir(input, v => (d.querySelector('[name=domTipo]:checked')?.value === 'propio' ? limpiarNombre(v, true) : limpiarNombre(v)));
@@ -154,7 +155,7 @@ export function montarDominio(raiz, { alCambiar = () => {} } = {}) {
       input.placeholder = propio ? 'tunegocio.com' : 'tunegocio';
       // Al pasar de «ya tengo» a «nuevo» se quita la extensión que se hubiera escrito
       if (!propio) input.value = limpiarNombre(input.value.replace(/\.[a-z.]+$/, ''));
-      else if (input.value && !input.value.includes('.')) input.value += d.querySelector('[name=domExt]:checked')?.value || '.es';
+      else if (input.value && !input.value.includes('.')) input.value += valor(d, 'domExt') || '.es';
       nota.textContent = propio ? 'Escríbelo entero, con su extensión. Más adelante te diremos cómo conectarlo.' : 'Solo letras, números y guiones. Comprobamos que esté libre antes de registrarlo.';
     }
     if (e.target.name === 'domCorreoTipo') {
@@ -177,6 +178,6 @@ export function montarDominio(raiz, { alCambiar = () => {} } = {}) {
 export function marcarError(raiz, r) {
   const el = r?.campo && raiz.querySelector(r.campo);
   if (!el) return;
-  el.closest('.dom-linea')?.classList.add('mal');
+  (el.closest('.dom-caja') || el.closest('.dom-linea'))?.classList.add('mal');
   el.focus();
 }

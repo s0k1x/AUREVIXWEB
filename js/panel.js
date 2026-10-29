@@ -957,6 +957,7 @@ function abrirPedido(id) {
     <div class="od-head">
       <div class="od-head-t">${metaHTML([refPedido(p.id), fecha(p.createdAt)])}<h2 id="odTitle">${esc(neg(p))}</h2>${metaHTML([p.planNombre, pl ? 'Diseño ' + pl.nombre : 'Diseño a medida'])}</div>
       <div class="od-head-r">
+        <button class="btn btn-sm btn-ghost od-brief-btn" id="odBrief" title="La IA ordena todo lo del cliente en un prompt y un PDF"><span>Brief con IA</span>${icono('sparkle')}</button>
         <button class="btn btn-sm btn-ghost" id="odFicha" title="Copia en un texto todo lo que ha pedido y enviado el cliente"><span>Copiar ficha</span>${icono('copy')}</button>
         <button class="btn btn-sm btn-ghost" id="odRecibo" title="Resumen imprimible del pedido"><span>Recibo</span>${icono('printer')}</button>
         ${pl ? `<button class="btn btn-sm btn-ghost" id="odExport" title="Descarga el diseño con el nombre y color del cliente"><span>Exportar HTML</span>${icono('download')}</button>` : ''}
@@ -1140,6 +1141,7 @@ function abrirPedido(id) {
   });
   $('#odExport', box)?.addEventListener('click', e => exportarHTML(p, e.currentTarget));
   $('#odFicha', box)?.addEventListener('click', () => copiar(fichaTexto(p)));
+  $('#odBrief', box)?.addEventListener('click', () => abrirBrief(p));
   $('#odRecordar', box)?.addEventListener('click', async e => {
     const b = e.currentTarget;
     if (p.recordado && Date.now() - p.recordado < 864e5 && !confirm('Ya se le recordó hace menos de un día. ¿Enviar otro recordatorio?')) return;
@@ -1398,6 +1400,62 @@ async function archivosSoltados(dt) {
    marco oculto, se copia tal cual y se le añade el código que
    hace funcionar menú, carrito, reservas y animaciones.
    ========================================================== */
+/* ---------- Brief con IA: prompt + PDF con todo lo del cliente ---------- */
+async function abrirBrief(p) {
+  let dlg = $('#briefDlg');
+  if (!dlg) {
+    dlg = document.createElement('dialog');
+    dlg.className = 'dlg brief-dlg';
+    dlg.id = 'briefDlg';
+    dlg.setAttribute('aria-labelledby', 'briefT');
+    document.body.appendChild(dlg);
+  }
+  dlg.innerHTML = `<div class="dlg-box brief-box">
+    <div class="brief-head">
+      <div><h2 id="briefT">${esc(neg(p))}</h2><p class="brief-sub">${icono('sparkle')} Prompt y PDF con todo lo del cliente</p></div>
+      <button class="icon-btn" data-close aria-label="Cerrar">${icono('x')}</button>
+    </div>
+    <div class="brief-cuerpo" aria-live="polite">
+      <div class="brief-carga"><span class="brief-orbe" aria-hidden="true"></span><p id="briefEstado">Reuniendo lo que ha enviado el cliente…</p></div>
+    </div></div>`;
+  abrir(dlg);
+  const estado = t => { const e = $('#briefEstado', dlg); if (e) e.textContent = t; };
+  try {
+    const m = await import('./brief.js');
+    const archivos = await store.listarArchivos(p.id).catch(() => []);
+    const b = m.datosBrief(p, archivos);
+    estado(store.iaDisponible() ? 'La IA está escribiendo el prompt…' : 'Preparando el prompt…');
+    const prompt = await m.promptIA(b);
+    if (!dlg.open) return;
+    const nDatos = b.secciones.reduce((s, x) => s + x.filas.length, 0);
+    $('.brief-cuerpo', dlg).innerHTML = `
+      <div class="brief-resumen">
+        <span><b>${b.secciones.length}</b> secciones</span><span><b>${nDatos}</b> datos</span><span><b>${archivos.length}</b> archivos</span>
+        <span class="brief-origen ${prompt.ia ? 'ia' : ''}">${prompt.ia ? 'Escrito por la IA' : 'Automático, sin IA'}</span>
+      </div>
+      <label class="brief-label" for="briefTxt">Prompt para crear la web</label>
+      <textarea id="briefTxt" class="brief-txt" spellcheck="false">${esc(prompt.texto)}</textarea>
+      <p class="brief-nota">Puedes retocarlo aquí: el PDF lleva el texto tal y como lo dejes.</p>
+      <div class="brief-acc">
+        <button class="btn btn-ghost" id="briefCopiar" type="button">${icono('copy')}<span>Copiar prompt</span></button>
+        <button class="btn btn-primary" id="briefPdf" type="button">${icono('download')}<span>Descargar PDF</span></button>
+      </div>`;
+    $('#briefCopiar', dlg).addEventListener('click', () => copiar($('#briefTxt', dlg).value));
+    $('#briefPdf', dlg).addEventListener('click', async e => {
+      const btn = e.currentTarget, span = $('span', btn), antes = span.textContent;
+      ocupado(btn, true);
+      try {
+        const nombre = await m.pdfBrief(p, b, { ...prompt, texto: $('#briefTxt', dlg).value }, archivos, { alProgreso: t => { span.textContent = t; } });
+        toast(`PDF descargado: ${nombre}`);
+      } catch (err) { toast(err.message || 'No se ha podido crear el PDF', 'err'); }
+      span.textContent = antes;
+      ocupado(btn, false);
+    });
+  } catch (err) {
+    $('.brief-cuerpo', dlg).innerHTML = `<p class="brief-error">${esc(err.message || 'No se ha podido preparar el brief')}</p>`;
+  }
+}
+
 async function exportarHTML(p, btn) {
   const r = p.respuestas || {};
   ocupado(btn, true);
