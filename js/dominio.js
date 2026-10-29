@@ -57,7 +57,7 @@ export function dominioHTML({ tipo = 'nuevo', nombre = '', ext = '.es', correoTi
       <h4 class="dom-h">Correo de tu negocio</h4>
       <label class="fc-select dom-csel"><span>Tipo de correo</span><select name="domCorreoTipo">
         <option value="gmail"${correoTipo === 'dominio' ? '' : ' selected'}>Gmail · Gratis</option>
-        <option value="dominio"${correoTipo === 'dominio' ? ' selected' : ''}>Con tu dominio${pc ? ` · +${euros(pc)}` : ''}</option>
+        <option value="dominio"${correoTipo === 'dominio' ? ' selected' : ''}>Con tu dominio${pc ? ` · ${euros(pc)}/mes` : ''}</option>
       </select></label>
       <p class="dom-nota dom-cor-gmail">Tu correo personal de Gmail. Si no tienes, se crea gratis en un minuto.</p>
       <p class="dom-nota dom-cor-dom">Más profesional: info@ con el nombre de tu web.</p>
@@ -70,7 +70,7 @@ export function dominioHTML({ tipo = 'nuevo', nombre = '', ext = '.es', correoTi
         <label class="dom-linea" aria-label="Cómo empieza tu correo">${auto('dom-cin', 'domCorreo', correo, 'info', 'maxlength="40"')}<span class="dom-fijo">@<b data-dom-dominio></b></span>
           <svg class="dom-lapiz" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg></label>
         <div class="dom-chips">${CORREOS.map(c => `<button type="button" class="dom-chip${c === correo ? ' on' : ''}" data-correo="${c}">${c}@</button>`).join('')}</div>
-        <p class="dom-nota"><span>Lo creamos y te lo dejamos configurado en el móvil y el ordenador.</span>${pc ? ` <span>Cuesta ${euros(pc)} el primer año y se añade a tu pedido como extra.</span>` : ''}</p>
+        <p class="dom-nota"><span>Lo creamos y te lo dejamos configurado en el móvil y el ordenador.</span>${pc ? ` <span>Cuesta ${euros(pc)} al mes y se añade a tu pedido como cuota mensual.</span>` : ''}</p>
       </div>
     </div>` : ''}
     <div class="dom-ver" aria-live="polite"><span><small>Tu web</small><b data-dom-web></b></span>${conCorreo ? '<span><small>Tu correo</small><b data-dom-mail></b></span>' : ''}</div>

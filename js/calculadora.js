@@ -153,7 +153,7 @@ export function montarCalculadora(raiz, { bienvenida = false } = {}) {
     ]);
     contar($('#calcTotal'), total);
     $('#calcBarraTotal').textContent = euros(total);
-    $('#calcMes').textContent = mensual ? `+ ${euros(mensual)}/mes de mantenimiento` : '';
+    $('#calcMes').textContent = mensual ? `+ ${euros(mensual)}/mes de cuotas` : '';
     const iva = desgloseIVA(total);
     $('#calcIva').textContent = CONFIG.iva ? `${ivaTexto()} · base ${euros(iva.base)} + IVA ${iva.pct} % ${euros(iva.cuota)}` : ivaTexto();
     $('#calcSenal').textContent = euros(senal);

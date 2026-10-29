@@ -1120,7 +1120,7 @@ function pestanaHTML(p) {
     return `<div class="pg">
       ${fila(`Señal (${CONFIG.senal} %)`, s, ['senal', 'pagado'].includes(e), 'senal')}
       ${fila('Pago final', r, e === 'pagado', 'resto')}
-      ${p.mensual ? `<div class="pg-fila"><span class="pg-ic">${icono('calendar')}</span><div><b>Mantenimiento</b><small>Se cobra cada mes desde la publicación</small></div><b>${euros(p.mensual)}/mes</b></div>` : ''}
+      ${p.mensual ? `<div class="pg-fila"><span class="pg-ic">${icono('calendar')}</span><div><b>Cuotas mensuales</b><small>${esc((p.extras || []).filter(x => x.mensual).map(x => x.nombre).join(' · ') || 'Mantenimiento')} · se cobran cada mes desde la publicación</small></div><b>${euros(p.mensual)}/mes</b></div>` : ''}
       ${p.descuento ? `<p class="ac-nota">${icono('tag')} Cupón ${esc(p.cupon || '')}: −${euros(p.descuento)} ya descontados del total.</p>` : ''}
       <div class="pg-pie"><div class="mp-pay">${botonPago(p)}</div>
         <button type="button" class="btn btn-sm btn-ghost" data-recibo="${p.id}" data-fase="">${icono('printer')}<span>Resumen del pedido</span></button></div>
@@ -1399,6 +1399,12 @@ if (hash === '#mis-pedidos' || hash.startsWith('#proyecto-')) {
 } else if (hash === '#soporte') {
   history.replaceState(null, '', location.pathname);
   abrirSoporte();
+}
+// Desde la Librería: entrar y volver a ella
+if (hash === '#entrar-libreria') {
+  history.replaceState(null, '', location.pathname);
+  (store.usuarioActual() ? Promise.resolve(store.usuarioActual()) : pedirLogin('Entra para suscribirte a la Librería.'))
+    .then(u => { if (u) location.href = 'library/'; });
 }
 addEventListener('hashchange', () => {
   if (location.hash === '#mis-pedidos') { history.replaceState(null, '', location.pathname); abrirPedidos(); }

@@ -1290,3 +1290,20 @@ html[data-tema=claro] .pw-medidor[data-n="3"] .pw-nivel b{color:#4d7c0f}
 html[data-tema=claro] .pw-medidor[data-n="3"] .pw-barra i.on{background:#65a30d}
 html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 @media (prefers-reduced-motion:reduce){.pw-barra i,.pw-reglas li{transition:none}}
+
+/* ---------- Ajustes → Librería (suscripciones) ---------- */
+.lib-lista{display:flex;flex-direction:column}
+.lib-fila{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.lib-fila:first-child{border-top:0}
+.lib-qui{display:flex;flex-direction:column;min-width:0}
+.lib-qui b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-qui small{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-est{font-size:13px;color:var(--muted);white-space:nowrap}
+.lib-est.on{color:var(--accent);font-weight:600}
+.lib-est.fin{color:var(--warn)}
+.lib-acc{display:flex;align-items:center;gap:6px}
+@media (max-width:640px){
+  .lib-fila{grid-template-columns:auto minmax(0,1fr);row-gap:8px}
+  .lib-est{grid-column:2}
+  .lib-acc{grid-column:1/-1;justify-content:flex-end}
+}

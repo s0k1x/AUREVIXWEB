@@ -779,6 +779,67 @@ async function cargar() {
   abrirDesdeHash();
 }
 
+/* ---------- Suscripción (9 €/mes) ----------
+   El equipo entra siempre. El resto necesita la suscripción activa (se activa en
+   Ajustes → Librería). Sin ella se enseña la pantalla para suscribirse. */
+async function abrirSiHayAcceso() {
+  document.documentElement.classList.add('lb-comprobando');
+  let a = { acceso: false, sesion: false };
+  let store = null;
+  try {
+    store = await import('../js/store.js');
+    await Promise.race([store.iniciar(), new Promise((_, no) => setTimeout(() => no(new Error('lento')), 12000))]);
+    a = await store.accesoLibreria();
+  } catch (e) { console.warn('No se ha podido comprobar la suscripción:', e?.message || e); }
+  document.documentElement.classList.remove('lb-comprobando');
+  if (a.acceso) { cargar(); sesion(); return; }
+  pintarSuscripcion(a, store);
+}
+
+async function pintarSuscripcion(a, store) {
+  const { CONFIG } = await import('../config.js');
+  try { const s = await import('../js/sitio.js'); s.aplicarCache(); await Promise.race([s.cargarAjustesWeb(), new Promise(r => setTimeout(r, 2500))]); } catch { /* precios por defecto */ }
+  const precio = CONFIG.libreria?.precio || 9;
+  const eur = n => `${String(n).replace('.', ',')} €`;
+  const P = CONFIG.pagos || {};
+  const u = store?.usuarioActual?.();
+  const caducada = a.hasta && a.hasta < Date.now();
+  const concepto = `Librería ${(u?.name || '').trim().split(/\s+/)[0] || ''}`.trim();
+  const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  document.body.classList.add('lb-sin-acceso');
+  const main = $('#lbMain');
+  main.innerHTML = `
+    <section class="lb-paga" aria-labelledby="lbPagaT">
+      <span class="lb-paga-ic">${icono('lock')}</span>
+      <h1 id="lbPagaT">${caducada ? 'Tu suscripción ha terminado' : 'La Librería es para suscriptores'}</h1>
+      <p class="lb-paga-sub">${caducada ? `Terminó el ${new Date(a.hasta).toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })}. Renuévala para seguir usando los componentes.` : 'Cientos de componentes web listos para copiar: botones, tarjetas, formularios, animaciones y más, con su código y su licencia.'}</p>
+      <div class="lb-paga-precio"><b>${eur(precio)}</b><span>al mes · IVA incluido · sin permanencia</span></div>
+      <ul class="lb-paga-lista">
+        <li>${icono('check')}<span>Acceso a toda la colección mientras dure tu suscripción</span></li>
+        <li>${icono('check')}<span>Vista previa en vivo, código y descarga en .zip</span></li>
+        <li>${icono('check')}<span>Se renueva cada mes; si no pagas, se corta sin más</span></li>
+      </ul>
+      ${a.sesion ? `
+        <div class="lb-paga-datos">
+          <p><b>Cómo pagar</b></p>
+          ${P.bizum ? `<p>Bizum al <b>${esc(P.bizum)}</b></p>` : ''}
+          ${P.iban ? `<p>Transferencia a <b>${esc(P.iban)}</b>${P.titular ? ` (${esc(P.titular)})` : ''}</p>` : ''}
+          <p>Concepto: <b>${esc(concepto)}</b></p>
+        </div>
+        <button type="button" class="btn btn-primary" id="lbPedir"><span>Ya he pagado: activar mi acceso</span></button>
+        <p class="lb-paga-nota">Lo activamos en cuanto llegue el pago (normalmente el mismo día) y te avisamos.</p>`
+      : `<a class="btn btn-primary" href="../#entrar-libreria"><span>Entrar para suscribirme</span></a>
+        <p class="lb-paga-nota">Entra con tu correo: te enviamos un código, sin contraseñas.</p>`}
+    </section>`;
+  $('#lbPedir')?.addEventListener('click', async e => {
+    const b = e.currentTarget; b.disabled = true;
+    try {
+      await store.crearTicket({ tipo: 'libreria', asunto: 'Suscripción a la Librería', mensaje: `${u?.name || ''} (${u?.email || ''}) dice que ha pagado la suscripción a la Librería (${eur(precio)}/mes). Concepto: ${concepto}. Actívala en Ajustes → Librería.` });
+      b.outerHTML = `<p class="lb-paga-ok">${icono('check')}<span>¡Recibido! Te avisamos en cuanto esté activa.</span></p>`;
+    } catch (err) { b.disabled = false; toast(err.message || 'No se ha podido enviar. Prueba otra vez.', 'err'); }
+  });
+}
+
 /* Saber si quien mira es del equipo (para el filtro «Usable en webs de clientes» por defecto) */
 async function sesion() {
   try {
@@ -798,6 +859,5 @@ pintarTema();
 pintarPie();
 iniciarObservadores();
 eventos();
-cargar();
-sesion();
+abrirSiHayAcceso();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(() => {});
