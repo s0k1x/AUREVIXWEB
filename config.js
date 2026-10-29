@@ -22,6 +22,13 @@ export const CONFIG = {
   // Descuento de bienvenida: solo vale en la PRIMERA web de cada cliente
   bienvenida: { activo: true, codigo: 'BIENVENIDA10', pct: 10 },
 
+  // Recomienda a un amigo: cada cliente tiene su código AMIGO-XXXXXXXX. Su amigo tiene «pct» % en su
+  // primera web y el cliente recibe «premio» (lo das tú desde el panel). Necesita supabase/referidos-v66.sql
+  referidos: { activo: false, pct: 10, premio: 'un mes de mantenimiento gratis' },
+
+  // Webs de clientes reales que quieres enseñar en la portada (Ajustes → Negocio → Casos reales)
+  casos: [],
+
   /* CREADORES DE VÍDEO: pago fijo por cada vídeo aprobado y publicado
      · precio: lo que cobra por vídeo
      · bonus: extra si el vídeo supera «visitas» visualizaciones en 14 días
@@ -51,6 +58,10 @@ export const CONFIG = {
   // Redes sociales de la marca (déjalas en '' si no las tienes)
   // whatsapp: el número con prefijo de país, solo cifras (p. ej. 34600111222). Si lo pones, sale el botón de WhatsApp
   redes: { instagram: '', tiktok: '', linkedin: '', whatsapp: '' },
+
+  // «Revisa tu web gratis»: funciona sin clave. Si un día Google limita las revisiones,
+  // crea una clave de PageSpeed Insights en Google Cloud, restríngela a aurevixweb.es y ponla aquí
+  pagespeedKey: '',
 
   // Inicio de sesión con GitHub además de Google (actívalo también en Supabase)
   loginGithub: false,
