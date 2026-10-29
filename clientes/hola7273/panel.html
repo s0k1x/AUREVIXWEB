@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es-ES">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel de citas · Hola7273!</title>
+<meta name="description" content="Panel privado de Hola7273! para ver las citas.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://www.hola7273.es/panel.html">
+<meta name="theme-color" content="#0e0c0a">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="Hola7273!">
+<meta property="og:title" content="Panel de citas · Hola7273!">
+<meta property="og:description" content="Panel privado de Hola7273! para ver las citas.">
+<meta property="og:url" content="https://www.hola7273.es/panel.html">
+<meta property="og:image" content="https://images.pexels.com/photos/8218487/pexels-photo-8218487.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1200">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="img/icono-180.png">
+<link rel="preload" href="fuentes/oswald-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fuentes/work-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://images.pexels.com">
+<link rel="stylesheet" href="css/estilos.css?v=1">
+<script src="js/config.js?v=1" defer></script>
+<script src="js/citas.js?v=1" defer></script>
+<script src="js/panel.js?v=1" defer></script>
+</head>
+<body class="panel-body">
+
+<main id="contenido">
+<header class="pn-top"><div class="w"><a class="lg" href="index.html" aria-label="Hola7273!, ir al inicio"><svg class="lg-marca" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><defs><clipPath id="postep"><rect x="25" y="9" width="14" height="34" rx="7"/></clipPath></defs><circle cx="32" cy="32" r="29.5" fill="#0e0c0a" stroke="#c4532d" stroke-width="3"/><circle cx="32" cy="32" r="24.5" fill="none" stroke="#c4532d" stroke-opacity=".35" stroke-width="1"/><g clip-path="url(#postep)"><rect x="25" y="9" width="14" height="34" fill="#f3ebde"/><path stroke="#c4532d" stroke-width="4.2" d="M18 14 46 2M18 24 46 12M18 34 46 22M18 44 46 32M18 54 46 42"/></g><rect x="25" y="9" width="14" height="34" rx="7" fill="none" stroke="#f3ebde" stroke-width="1.5"/><circle cx="32" cy="51" r="4.6" fill="#c4532d"/></svg><span class="lg-txt" aria-hidden="true">Hola7273<b>!</b></span></a><span class="pn-tag">Panel de citas</span><button class="b b2 sm" id="pnSalir" type="button" hidden>Salir</button></div></header>
+<div id="pnLogin" class="login">
+  <form class="reserva" id="loginForm" novalidate>
+    <h1>Acceso del negocio</h1>
+    <p id="loginTxt">Entra para ver y gestionar las citas reservadas.</p>
+    <div class="campo" id="loginEmailC"><label for="lEmail">Correo</label><input id="lEmail" type="email" autocomplete="username" value="hola7273@gmail.com"></div>
+    <div class="campo"><label for="lClave" id="lClaveL">Contraseña</label><input id="lClave" type="password" autocomplete="current-password" required></div>
+    <p class="msg mal" id="loginErr" role="alert" hidden></p>
+    <button class="b b1" type="submit">Entrar</button>
+    <a class="nota" href="index.html">← Volver a la web</a>
+  </form>
+</div>
+<div id="pnApp" class="w pn" hidden>
+  <p class="msg ok aviso-demo" id="pnDemo" hidden></p>
+  <h1 class="sr">Citas reservadas</h1>
+  <div class="kpis">
+    <div class="kpi"><small>Hoy</small><b id="kHoy">0</b></div>
+    <div class="kpi"><small>Próximos 7 días</small><b id="kSemana">0</b></div>
+    <div class="kpi"><small>Pendientes</small><b id="kPend">0</b></div>
+    <div class="kpi"><small>Ingresos previstos</small><b id="kEur">0 €</b></div>
+  </div>
+  <div class="pn-filtros">
+    <div class="seg" role="group" aria-label="Mostrar">
+      <button type="button" data-f="proximas" aria-pressed="true">Próximas</button>
+      <button type="button" data-f="hoy" aria-pressed="false">Hoy</button>
+      <button type="button" data-f="pasadas" aria-pressed="false">Pasadas</button>
+      <button type="button" data-f="todas" aria-pressed="false">Todas</button>
+    </div>
+    <div class="campo"><label for="pnBuscar">Buscar cliente</label><input id="pnBuscar" type="search" placeholder="Nombre o teléfono"></div>
+    <button class="b b2 sm" type="button" id="pnCsv">Exportar CSV</button>
+    <button class="b b2 sm" type="button" id="pnRecargar">Actualizar</button>
+  </div>
+  <div id="pnLista" aria-live="polite"></div>
+</div>
+</main>
+
+</body>
+</html>
