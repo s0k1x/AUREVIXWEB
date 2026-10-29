@@ -5,7 +5,7 @@
    1. Dominio: nuevo (lo registramos) o el que ya tienes.
       Se lee seguido, tal cual quedará: www.tunegocio.es
    2. Correo del negocio, a elegir:
-      - Gmail, gratis: tunegocio@gmail.com
+      - Gmail, gratis: tunegocio@gmail.com (lo creamos nosotros y le pasamos el acceso)
       - Con tu dominio, de pago (extra «correo»): info@tunegocio.es
    3. Resumen: tu web y tu correo.
    ========================================================== */
@@ -59,18 +59,18 @@ export function dominioHTML({ tipo = 'nuevo', nombre = '', ext = '.es', correoTi
         <option value="gmail"${correoTipo === 'dominio' ? '' : ' selected'}>Gmail · Gratis</option>
         <option value="dominio"${correoTipo === 'dominio' ? ' selected' : ''}>Con tu dominio${pc ? ` · ${euros(pc)}/mes` : ''}</option>
       </select></label>
-      <p class="dom-nota dom-cor-gmail">Tu correo personal de Gmail. Si no tienes, se crea gratis en un minuto.</p>
+      <p class="dom-nota dom-cor-gmail">Un Gmail para tu negocio. Lo creamos nosotros y te pasamos el usuario y la contraseña.</p>
       <p class="dom-nota dom-cor-dom">Más profesional: info@ con el nombre de tu web.</p>
       <div class="dom-cor dom-cor-gmail">
         <label class="dom-linea" aria-label="Tu Gmail">${auto('dom-gin', 'domGmail', gmail, 'tunegocio', 'inputmode="email" maxlength="30"')}<span class="dom-fijo">@gmail.com</span>
           <svg class="dom-lapiz" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg></label>
-        <p class="dom-nota">Escribe tu Gmail. Si aún no tienes, créalo gratis en <a href="https://accounts.google.com/signup" target="_blank" rel="noopener">accounts.google.com</a> y vuelve aquí.</p>
+        <p class="dom-nota">Elige cómo quieres que se llame. Si ese nombre ya está ocupado en Gmail, usamos el más parecido. Cuando esté creado, verás el usuario y la contraseña en tu proyecto.</p>
       </div>
       <div class="dom-cor dom-cor-dom">
         <label class="dom-linea" aria-label="Cómo empieza tu correo">${auto('dom-cin', 'domCorreo', correo, 'info', 'maxlength="40"')}<span class="dom-fijo">@<b data-dom-dominio></b></span>
           <svg class="dom-lapiz" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg></label>
         <div class="dom-chips">${CORREOS.map(c => `<button type="button" class="dom-chip${c === correo ? ' on' : ''}" data-correo="${c}">${c}@</button>`).join('')}</div>
-        <p class="dom-nota"><span>Lo creamos y te lo dejamos configurado en el móvil y el ordenador.</span>${pc ? ` <span>Cuesta ${euros(pc)} al mes y se añade a tu pedido como cuota mensual.</span>` : ''}</p>
+        <p class="dom-nota"><span>Lo creamos nosotros, te pasamos el usuario y la contraseña en tu proyecto y te lo dejamos configurado en el móvil y el ordenador.</span>${pc ? ` <span>Cuesta ${euros(pc)} al mes y se añade a tu pedido como cuota mensual.</span>` : ''}</p>
       </div>
     </div>` : ''}
     <div class="dom-ver" aria-live="polite"><span><small>Tu web</small><b data-dom-web></b></span>${conCorreo ? '<span><small>Tu correo</small><b data-dom-mail></b></span>' : ''}</div>
@@ -102,7 +102,7 @@ export function leerDominio(raiz) {
   if (correoTipo === 'gmail') {
     correoNombre = limpiarGmail(d.querySelector('.dom-gin').value).replace(/^\.+|\.+$/g, '');
     // Gmail: de 6 a 30 caracteres, letras, números y puntos
-    if (!motivo && (correoNombre.length < 6 || !/^[a-z0-9](?:[a-z0-9.]*[a-z0-9])?$/.test(correoNombre) || correoNombre.includes('..'))) { motivo = 'Escribe tu Gmail: de 6 a 30 letras, números o puntos (lo que va antes de @gmail.com)'; campo = '.dom-gin'; }
+    if (!motivo && (correoNombre.length < 6 || !/^[a-z0-9](?:[a-z0-9.]*[a-z0-9])?$/.test(correoNombre) || correoNombre.includes('..'))) { motivo = 'Elige el nombre de tu Gmail: de 6 a 30 letras, números o puntos (lo que va antes de @gmail.com)'; campo = '.dom-gin'; }
     correo = correoNombre ? `${correoNombre}@gmail.com` : '';
   } else {
     correoNombre = limpiarBuzon(d.querySelector('.dom-cin').value).replace(/^[._-]+|[._-]+$/g, '');

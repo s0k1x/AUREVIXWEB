@@ -56,7 +56,8 @@ export function campanaHTML() {
 
 function notificarNavegador(a) {
   const u = store.usuarioActual();
-  if (!u?.datos?.notif?.navegador || !('Notification' in window) || Notification.permission !== 'granted') return;
+  // Con las notificaciones push activas ya avisa el service worker: aquí no se duplica
+  if (!u?.datos?.notif?.navegador || u.datos.notif.push || !('Notification' in window) || Notification.permission !== 'granted') return;
   if (u.datos.notif[a.tipo] === false) return;
   try {
     const n = new Notification('AurevixWeb', { body: a.texto, icon: 'icons/icon-192.png', tag: a.id });

@@ -247,7 +247,8 @@ function resumen() {
   ];
 
   const faltan = datosLegalesPendientes();
-  body.innerHTML = `
+  setTimeout(() => import('./push.js').then(m => m.montarAvisoPush($('#pnPush'))).catch(() => {}));
+  body.innerHTML = `<div id="pnPush"></div>
     ${faltan.length ? `<a class="card aviso-legal" href="ajustes#negocio">
       <span class="aviso-legal-ic">${icono('alert')}</span>
       <span><b>Antes de vender, completa tus datos</b><small>Faltan: ${esc(faltan.join(', '))}. Son obligatorios en el aviso legal, las condiciones y los recibos, y los clientes los necesitan para pagarte. Se cambian en Ajustes → Negocio.</small></span>
@@ -1090,6 +1091,12 @@ function abrirPedido(id) {
           <div class="kv total"><span>Total</span><b>${euros(p.total || 0)}${p.mensual ? ` + ${euros(p.mensual)}/mes` : ''}</b></div>
           ${fila(`Señal (${CONFIG.senal} %)`, euros(senal))}
         </div>
+        ${puedeEditar ? `<h4 class="od-h">Acceso al correo del cliente</h4>
+        <div class="od-acceso">
+          <p class="muted">Cuando hayas creado su correo (Gmail o con su dominio), pon aquí el usuario y una contraseña temporal: el cliente los ve en su proyecto y se le pide que la cambie.</p>
+          <div class="row-2"><input id="odAccUsuario" type="email" autocomplete="off" placeholder="tunegocio@gmail.com" value="${esc(p.accesos?.correo?.usuario || p.dominio?.correo || '')}" aria-label="Usuario del correo"><input id="odAccClave" type="text" autocomplete="off" spellcheck="false" placeholder="Contraseña temporal" value="${esc(p.accesos?.correo?.clave || '')}" aria-label="Contraseña temporal"></div>
+          <button type="button" class="btn btn-sm btn-ghost" id="odAccGuardar">${icono('key')}<span>${p.accesos?.correo?.usuario ? 'Actualizar acceso' : 'Dar acceso al cliente'}</span></button>
+        </div>` : ''}
         <h4 class="od-h">Cuestionario</h4>
         <div class="kvs">
           ${fila('Sector', r.sector)}${fila('Objetivo', r.objetivo)}${fila('Web actual', r.webActual)}${fila('Estilo', r.estilo)}
@@ -1184,6 +1191,12 @@ function abrirPedido(id) {
     guardar({ fechaEntrega: new Date(y, m - 1, d, 18).getTime() }, 'Fecha de entrega actualizada', `Nueva fecha de entrega: ${d}/${m}/${y}`);
   });
   $('#odRecibo', box)?.addEventListener('click', () => abrirRecibo(p, ''));
+  $('#odAccGuardar', box)?.addEventListener('click', () => {
+    const usuario = $('#odAccUsuario', box).value.trim(), clave = $('#odAccClave', box).value.trim();
+    if (!/^\S+@\S+\.\S+$/.test(usuario)) return toast('Escribe el correo completo del cliente', 'err');
+    if (clave.length < 8) return toast('La contraseña temporal debe tener al menos 8 caracteres', 'err');
+    guardar({ accesos: { ...(p.accesos || {}), correo: { usuario, clave, fecha: Date.now() } } }, 'Acceso guardado: el cliente ya lo ve en su proyecto', `Acceso al correo entregado (${usuario})`);
+  });
   $('#odPremio', box)?.addEventListener('click', () => guardar({ premioAmigo: Date.now() }, 'Premio marcado como dado', `Premio por recomendación dado a ${recomendadoPor(p)?.name || 'quien recomendó'}`));
   $('#odCancelSi', box)?.addEventListener('click', () => {
     if (!confirm('¿Cancelar este pedido? El cliente lo verá como cancelado.')) return;

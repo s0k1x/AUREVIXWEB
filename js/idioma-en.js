@@ -12,6 +12,8 @@ export const EN = {
   'Precio final. Transferencia bancaria. 14 días para desistir.': 'Final price. Bank transfer. 14 days to withdraw.',
   // v53 · dominio y correo, contenido del proyecto, idioma
   'Dirección de tu web': 'Your website address', 'Correo de tu negocio': 'Your business email', 'Tipo de correo': 'Email type', 'Gratis': 'Free',
+  'Un Gmail para tu negocio. Lo creamos nosotros y te pasamos el usuario y la contraseña.': 'A Gmail for your business. We create it and give you the username and password.',
+  'Elige cómo quieres que se llame. Si ese nombre ya está ocupado en Gmail, usamos el más parecido. Cuando esté creado, verás el usuario y la contraseña en tu proyecto.': "Choose its name. If it's already taken on Gmail, we use the closest one. Once it's created, you'll see the username and password in your project.",
   'Tu correo personal de Gmail. Si no tienes, se crea gratis en un minuto': "Your personal Gmail. If you don't have one, it takes a minute to create for free",
   'Tu correo personal de Gmail. Si no tienes, se crea gratis en un minuto.': "Your personal Gmail. If you don't have one, it takes a minute to create for free.",
   'Más profesional: info@ con el nombre de tu web.': 'More professional: info@ with your website name.', 'Extensión del dominio': 'Domain extension',

@@ -24,7 +24,7 @@ export function ajustesActuales() {
     aviso: CONFIG.aviso, anuncio: { ...CONFIG.anuncio }, aceptarPedidos: CONFIG.aceptarPedidos, mensajeCerrado: CONFIG.mensajeCerrado,
     horario: CONFIG.horario, respuesta: CONFIG.respuesta, email: CONFIG.email,
     senal: CONFIG.senal, comision: CONFIG.comision, urgente: CONFIG.urgente,
-    pagos: { ...CONFIG.pagos }, legal: { ...CONFIG.legal }, trustpilot: CONFIG.trustpilot, bienvenida: { ...CONFIG.bienvenida }, referidos: { ...CONFIG.referidos }, casos: clonar(CONFIG.casos || []), videos: { ...CONFIG.videos }, redes: { ...CONFIG.redes },
+    pagos: { ...CONFIG.pagos }, legal: { ...CONFIG.legal }, trustpilot: CONFIG.trustpilot, bienvenida: { ...CONFIG.bienvenida }, referidos: { ...CONFIG.referidos }, casos: clonar(CONFIG.casos || []), turnstile: { ...CONFIG.turnstile }, videos: { ...CONFIG.videos }, redes: { ...CONFIG.redes },
     asistente: { activo: CONFIG.asistente.activo, saludo: CONFIG.asistente.saludo }, temporada: CONFIG.temporada || '',
     planes: Object.fromEntries(PLANES.map(p => [p.id, { precio: p.precio, entrega: p.entrega, dias: p.dias, activo: p.activo !== false, popular: !!p.popular }])),
     extras: Object.fromEntries(EXTRAS.map(x => [x.id, { precio: x.precio, activo: x.activo !== false }]))
@@ -53,6 +53,7 @@ function aplicar(a) {
   if (a.videos) Object.assign(CONFIG.videos, { precio: Math.max(0, num(a.videos.precio, CONFIG.videos.precio)), bonus: Math.max(0, num(a.videos.bonus, CONFIG.videos.bonus)), visitas: Math.max(0, num(a.videos.visitas, CONFIG.videos.visitas)), maxMes: Math.max(1, num(a.videos.maxMes, CONFIG.videos.maxMes)) });
   if (a.redes) Object.assign(CONFIG.redes, a.redes);
   if (a.referidos) Object.assign(CONFIG.referidos, { activo: !!a.referidos.activo, pct: Math.min(50, Math.max(1, num(a.referidos.pct, CONFIG.referidos.pct))), premio: txt(a.referidos.premio, CONFIG.referidos.premio).slice(0, 120) });
+  if (a.turnstile) Object.assign(CONFIG.turnstile, { activo: !!a.turnstile.activo, login: !!a.turnstile.login, siteKey: /^[\w-]{10,100}$/.test(a.turnstile.siteKey || '') ? a.turnstile.siteKey : '' });
   // Casos reales: solo enlaces https y textos cortos
   if (Array.isArray(a.casos)) CONFIG.casos = a.casos.filter(c => c && /^https:\/\/[^\s]+$/i.test(c.url || '')).slice(0, 12).map(c => ({
     nombre: txt(c.nombre, '').slice(0, 60), sector: txt(c.sector, '').slice(0, 60), url: c.url.slice(0, 200), texto: txt(c.texto, '').slice(0, 200)
