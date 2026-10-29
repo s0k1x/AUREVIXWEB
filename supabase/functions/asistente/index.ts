@@ -2,6 +2,8 @@
 //  ASISTENTE CON IA (Gemini) · función de Supabase
 //  - modo "chat":   atención al cliente en la web
 //  - modo "elegir": recomienda tipo de web y diseño
+//  - modo "brief":  (solo equipo) convierte los datos de un pedido
+//                   en un prompt detallado para crear la web
 //  La clave de Gemini se guarda como secreto en Supabase
 //  (GEMINI_API_KEY). Nunca va dentro de la web.
 // ==========================================================
@@ -61,6 +63,33 @@ const REGLAS_ELEGIR = `Recomienda el tipo de web y el diseño de partida que mej
 - "extras": ids de extras que de verdad le harían falta (puede estar vacío).
 - "urgente": true solo si el cliente dice que tiene prisa.`;
 
+const REGLAS_BRIEF = `Eres director de proyecto en un estudio de diseño web. Recibes la ficha completa de un pedido (datos del cliente, negocio, contenido, dominio, archivos y cambios pedidos).
+Escribe UN prompt en español de España, listo para pegar en una IA que programe la web, con estas secciones en este orden y con títulos en mayúsculas:
+1. OBJETIVO DEL PROYECTO
+2. NEGOCIO Y PÚBLICO
+3. ESTRUCTURA Y PÁGINAS (secciones de la home en orden y páginas extra)
+4. CONTENIDO Y TEXTOS (usa literalmente los textos del cliente; si faltan, indica qué tono usar)
+5. IDENTIDAD VISUAL (diseño de partida, colores, tipografía, logotipo y fotos: nombra los archivos)
+6. FUNCIONALIDADES Y EXTRAS
+7. DOMINIO, CORREO Y DATOS DE CONTACTO
+8. SEO Y RENDIMIENTO (palabras clave locales, metadatos, accesibilidad, móvil primero)
+9. CAMBIOS PEDIDOS (si los hay)
+10. CHECKLIST DE ENTREGA
+Reglas: usa solo los datos de la ficha. No inventes precios, datos de contacto, servicios ni textos del cliente. Si un dato importante falta, escribe [FALTA: qué falta]. Sin emojis. Texto plano con guiones para las listas. Entre 450 y 1100 palabras.`;
+
+/** ¿Quien llama es del equipo? (se comprueba con su sesión, nunca con lo que diga el cuerpo) */
+async function esEquipo(req: Request) {
+  const auth = req.headers.get('Authorization') || '';
+  const url = Deno.env.get('SUPABASE_URL'), anon = Deno.env.get('SUPABASE_ANON_KEY');
+  if (!auth.startsWith('Bearer ') || !url || !anon) return false;
+  const r = await fetch(`${url}/rest/v1/rpc/es_equipo`, {
+    method: 'POST',
+    headers: { Authorization: auth, apikey: anon, 'Content-Type': 'application/json' },
+    body: '{}'
+  });
+  return r.ok && (await r.json()) === true;
+}
+
 async function gemini(cuerpo: unknown) {
   const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODELO}:generateContent`, {
     method: 'POST',
@@ -78,7 +107,19 @@ Deno.serve(async req => {
   if (!CLAVE) return json({ error: 'Falta GEMINI_API_KEY' }, 500);
 
   try {
-    const { modo, mensajes, catalogo, cliente } = await req.json() as { modo: string; mensajes: Mensaje[]; catalogo: Catalogo; cliente?: string };
+    const cuerpo = await req.json();
+    if (cuerpo?.modo === 'brief') {
+      if (!(await esEquipo(req))) return json({ error: 'Solo para el equipo' }, 403);
+      const datos = String(cuerpo.datos || '').slice(0, 14000);
+      if (datos.length < 40) return json({ error: 'Petición incompleta' }, 400);
+      const prompt = await gemini({
+        systemInstruction: { parts: [{ text: REGLAS_BRIEF }] },
+        contents: [{ role: 'user', parts: [{ text: datos }] }],
+        generationConfig: { temperature: 0.3, maxOutputTokens: 3000 }
+      });
+      return json({ prompt });
+    }
+    const { modo, mensajes, catalogo, cliente } = cuerpo as { modo: string; mensajes: Mensaje[]; catalogo: Catalogo; cliente?: string };
     const datosCliente = typeof cliente === 'string' && cliente.trim() ? `\n\nPedidos de este cliente (datos reales de su cuenta):\n${cliente.slice(0, 2500)}` : '';
     if (!catalogo?.planes?.length || !Array.isArray(mensajes) || !mensajes.length) return json({ error: 'Petición incompleta' }, 400);
     // Límites para evitar abusos

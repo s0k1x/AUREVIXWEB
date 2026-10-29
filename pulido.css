@@ -312,3 +312,67 @@ html[data-tema=claro] .ic-texto b{color:#4f850c}
   #pedidosDlg .mp-proyecto.abierto{padding:14px 6px;border-color:transparent;background:transparent}
   #pedidosDlg .mp-proyecto.abierto + .mp-proyecto,#pedidosDlg .mp-proyecto + .mp-proyecto.abierto{margin-top:6px}
 }
+
+/* ==========================================================
+   v54 · Dominio y correo con desplegables
+   ========================================================== */
+/* Campo del dominio con la extensión como desplegable a la derecha: www.tunegocio [.es ▾] */
+.dom-caja{display:flex;align-items:center;min-width:0;border:1px solid var(--line2);border-radius:14px;background:var(--field);transition:border-color .2s ease,box-shadow .2s ease}
+.dom-caja:focus-within,.dom-caja:has(.dd-campo.foco){border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.dom-caja .dom-linea{flex:1;border:0;background:none;box-shadow:none;padding-right:8px}
+.dom-caja .dom-linea:focus-within{box-shadow:none}
+.dom-caja .dom-linea .dom-lapiz{display:none}
+.dom-caja.mal{border-color:var(--danger)}
+.dom-caja > .dd-campo,.dom-caja > select{flex:none;margin-right:8px}
+.dom-ext-sel{appearance:none;-webkit-appearance:none;height:40px;padding:0 30px 0 14px;border:0;border-radius:99px;background:var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8f560' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center/14px;color:var(--accent);font:700 16px/1 var(--fb);cursor:pointer}
+html[data-tema=claro] .dom-ext-sel{color:#4f850c;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f850c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")}
+.dom-caja .dd-btn{border-radius:99px}
+.dom[data-tipo=propio] .dom-caja > .dd-campo,.dom[data-tipo=propio] .dom-caja > select{display:none}
+.dom[data-tipo=propio] .dom-caja .dom-linea{padding-right:16px}
+/* Tipo de correo: desplegable a todo el ancho */
+.dom-csel{margin:0}
+.dom-csel > span:not(.dd-campo){color:var(--muted);font-size:13px;margin-bottom:6px}
+.dom-csel select{appearance:none;-webkit-appearance:none;width:100%;height:56px;padding:0 44px 0 16px;border:1px solid var(--line2);border-radius:14px;background:var(--field) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a19f96' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center/18px;color:var(--text);font:600 17px var(--fb)}
+.dom-csel .dd-campo.foco select{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.dom-csel .dd-btn{border-radius:14px}
+@media (max-width:420px){.dom-csel select{font-size:16px}}
+.dom-csel .dd-campo{display:block;width:100%}
+
+/* ==========================================================
+   v54 · Brief con IA (panel): prompt + PDF del proyecto
+   ========================================================== */
+.od-brief-btn svg{color:var(--accent)}
+.brief-box{max-width:760px;display:flex;flex-direction:column;gap:16px;padding:26px}
+.brief-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.brief-head h2{font:600 clamp(22px,3vw,28px)/1.15 var(--fd);letter-spacing:-.02em;margin:0;overflow-wrap:anywhere;text-wrap:balance}
+.brief-sub{display:flex;align-items:flex-start;gap:6px;margin:6px 0 0;font-size:14px;color:var(--muted)}
+.brief-sub svg{width:15px;height:15px;flex:none;margin-top:2px;color:var(--accent)}
+.brief-carga{display:grid;justify-items:center;gap:16px;padding:44px 10px;text-align:center;color:var(--muted)}
+.brief-orbe{width:54px;height:54px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--violet),var(--info),var(--accent));-webkit-mask:radial-gradient(circle,transparent 52%,#000 54%);mask:radial-gradient(circle,transparent 52%,#000 54%);animation:briefGira 1.1s linear infinite}
+@keyframes briefGira{to{transform:rotate(1turn)}}
+@media (prefers-reduced-motion:reduce){.brief-orbe{animation-duration:4s}}
+.brief-resumen{display:flex;flex-wrap:wrap;gap:8px}
+.brief-resumen span{padding:6px 12px;border-radius:999px;background:var(--card2);border:1px solid var(--line);font-size:13px;color:var(--muted)}
+.brief-resumen b{color:var(--text);font-variant-numeric:tabular-nums}
+.brief-origen.ia{color:var(--ink)!important;background:var(--accent)!important;border-color:transparent!important;font-weight:600}
+.brief-label{font:500 12px var(--fm);text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:-8px}
+.brief-txt{width:100%;min-height:min(46vh,420px);resize:vertical;background:var(--field);color:var(--text);border:1px solid var(--line2);border-radius:14px;padding:14px 16px;font:13.5px/1.55 var(--fm);white-space:pre-wrap}
+.brief-txt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.brief-nota{margin:-6px 0 0;font-size:13px;color:var(--dim)}
+.brief-acc{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.brief-acc .btn{min-height:46px}
+.brief-error{color:var(--danger);padding:24px 0}
+@media (max-width:560px){
+  .brief-box{padding:20px 16px;max-height:100%;border-radius:20px}
+  .brief-box{gap:14px}
+  .brief-resumen span{padding:5px 10px;font-size:12.5px}
+  .brief-txt{font-size:16px;min-height:38vh;line-height:1.5}
+  /* Los botones siempre a mano, aunque el texto sea largo */
+  .brief-head h2{font-size:21px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .brief-acc{position:sticky;bottom:-20px;margin:0 -16px -20px;padding:12px 16px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--card) 22%);flex-direction:column-reverse;gap:8px}
+  .brief-acc .btn{width:100%;justify-content:center}
+}
+/* Los puntos de los pasos no se pegan al contenido que se desplaza debajo */
+.wiz-dots{padding-bottom:10px;border-bottom:1px solid var(--line)}
+/* Pantallas táctiles de cualquier tamaño (iPad): 16px para que Safari no haga zoom al escribir */
+@media (pointer:coarse){.brief-txt{font-size:16px}}

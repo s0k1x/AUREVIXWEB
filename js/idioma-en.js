@@ -7,6 +7,11 @@ export const EN = {
   // v53 · dominio y correo, contenido del proyecto, idioma
   'Dirección de tu web': 'Your website address', 'Correo de tu negocio': 'Your business email', 'Tipo de correo': 'Email type', 'Gratis': 'Free',
   'Tu correo personal de Gmail. Si no tienes, se crea gratis en un minuto': "Your personal Gmail. If you don't have one, it takes a minute to create for free",
+  'Tu correo personal de Gmail. Si no tienes, se crea gratis en un minuto.': "Your personal Gmail. If you don't have one, it takes a minute to create for free.",
+  'Más profesional: info@ con el nombre de tu web.': 'More professional: info@ with your website name.', 'Extensión del dominio': 'Domain extension',
+  'Brief con IA': 'AI brief', 'Prompt y PDF con todo lo del cliente': 'Prompt and PDF with everything from the client', 'Prompt para crear la web': 'Prompt to build the website', 'Copiar prompt': 'Copy prompt', 'Descargar PDF': 'Download PDF',
+  'Escrito por la IA': 'Written by AI', 'Automático, sin IA': 'Automatic, no AI', 'Puedes retocarlo aquí: el PDF lleva el texto tal y como lo dejes.': 'You can edit it here: the PDF uses the text exactly as you leave it.',
+  'Reuniendo lo que ha enviado el cliente…': 'Gathering everything the client sent…', 'La IA está escribiendo el prompt…': 'The AI is writing the prompt…', 'Preparando el prompt…': 'Preparing the prompt…',
   'Con tu dominio': 'With your domain', 'Más profesional: info@ con el nombre de tu web': 'More professional: info@ with your website name',
   'Escribe tu Gmail. Si aún no tienes, créalo gratis en': "Enter your Gmail. If you don't have one yet, create it for free at", 'y vuelve aquí.': 'and come back here.',
   'Tu Gmail': 'Your Gmail', 'Cómo empieza tu correo': 'How your email starts',

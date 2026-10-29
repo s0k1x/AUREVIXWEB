@@ -828,3 +828,11 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 - **Botón «Ver tu diseño: …»**: texto corto que ya no se corta. El dato «Dominio y correo» enseña cada cosa en su línea.
 - **App instalada**: el cuestionario y los diálogos ya no quedan debajo de la hora y la batería del móvil.
 - **Idioma**: interruptor ES | EN con pastilla que se desliza (en el menú del móvil, «Español | English»). Al cambiar, un círculo crece desde el botón y escribe el idioma nuevo letra a letra; la página se carga traducida y el círculo se cierra. Con «reducir movimiento» el cambio es instantáneo.
+
+## 41. Versión v54 — desplegables de dominio y correo, y brief con IA
+- **Dominio y correo con desplegables**: la extensión (`.es`, `.com`…) se elige en un desplegable pegado al nombre (`www.tunegocio` `[.es ▾]`) y el tipo de correo también (**Gmail · Gratis** o **Con tu dominio · +30 €**). En el móvil se abren como hoja desde abajo, igual que el resto de desplegables.
+- **Brief con IA** (panel → abre un pedido → «Brief con IA»): reúne todo lo del cliente (pedido, contacto, negocio, dominio y correo, contenido, cambios pedidos y archivos) y:
+  1. La IA (función `asistente`, modo `brief`, solo para el equipo) escribe un **prompt detallado** para crear la web, por apartados (objetivo, estructura, textos, identidad visual, extras, SEO, checklist). No inventa nada: lo que falta lo marca como `[FALTA: …]`. Si la IA no está disponible se hace uno automático con los mismos datos.
+  2. El prompt se puede retocar y copiar, y **«Descargar PDF»** crea un PDF ordenado: portada con el nombre y el color del cliente, resumen, logotipo (el archivo que lleve «logo» en el nombre), todas las secciones, lista de archivos con hasta 8 fotos en miniatura y el prompt al final.
+- El PDF se crea en el navegador con jsPDF (`js/vendor/jspdf.umd.min.js`, licencia MIT); solo se descarga al pulsar el botón.
+- La función `asistente` comprueba con la sesión de quien llama que es del equipo antes de generar un brief: un cliente no puede usarla para eso.
