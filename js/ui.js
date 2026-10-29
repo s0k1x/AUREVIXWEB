@@ -161,11 +161,11 @@ export function datosLegalesPendientes() {
 /** Información básica de protección de datos (primera capa, art. 13 RGPD y art. 11 LOPDGDD) junto a cada formulario */
 export const infoDatos = finalidad => {
   const L = CONFIG.legal || {};
-  return `<p class="info-datos"><b>Protección de datos.</b> Responsable: ${esc(L.titular && !/^tu nombre/i.test(L.titular) ? L.titular : CONFIG.marca)}. Finalidad: ${esc(finalidad)}. No cedemos tus datos a terceros salvo obligación legal; usamos proveedores que los tratan por nuestra cuenta. Puedes ejercer tus derechos de acceso, rectificación, supresión y demás escribiendo a ${esc(L.email || CONFIG.email)}. <a href="terminos-y-privacidad#privacidad" target="_blank">Más información</a>.</p>`;
+  return `<p class="info-datos"><b>Protección de datos.</b> Responsable: ${esc(L.titular && !/^tu nombre/i.test(L.titular) ? L.titular : CONFIG.marca)}. Finalidad: ${esc(finalidad)}. No cedemos tus datos a terceros salvo obligación legal; usamos proveedores que los tratan por nuestra cuenta. Puedes ejercer tus derechos de acceso, rectificación, supresión y demás escribiendo a ${esc(L.email || CONFIG.email)}. <a href="terminos-y-privacidad#privacidad" target="_blank" rel="noopener">Más información</a>.</p>`;
 };
 
 /** Aceptar términos */
-export const aceptarTerminos = (id, texto = 'Acepto los <a href="terminos-y-privacidad" target="_blank">términos y condiciones</a> y la <a href="terminos-y-privacidad#privacidad" target="_blank">política de privacidad</a>') =>
+export const aceptarTerminos = (id, texto = 'Acepto los <a href="terminos-y-privacidad" target="_blank" rel="noopener">términos y condiciones</a> y la <a href="terminos-y-privacidad#privacidad" target="_blank" rel="noopener">política de privacidad</a>') =>
   `<label class="gl-checkbox" id="${id}Wrap">
     <input class="gl-checkbox__input" type="checkbox" id="${id}" name="${id}">
     <span class="gl-checkbox__box"><svg class="gl-checkbox__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
@@ -691,7 +691,7 @@ function iniciarVelo() {
 let ultimoFallo = 0;
 export async function arrancar(pagina) {
   document.documentElement.classList.add('js');
-  iniciarIdioma().catch(e => console.warn(e)).finally(() => document.documentElement.classList.remove('i18n-pendiente'));
+  iniciarIdioma().catch(e => console.warn(e)).finally(() => document.documentElement.classList.remove('i18n-pendiente', 'i18n-anim'));
   vigilarCampos();
   // Red de seguridad: si algo falla sin control, se avisa (sin repetir el aviso en bucle)
   addEventListener('unhandledrejection', e => {

@@ -4,6 +4,12 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  // v59 · calculadora
+  'Tu presupuesto': 'Your quote', 'Urgente': 'Rush', 'opcionales': 'optional', '¿Para cuándo la necesitas?': 'When do you need it?', 'Plazo normal': 'Standard timing',
+  'Descuento de bienvenida en tu primer pedido': 'Welcome discount on your first order', 'Al entregarte la web': 'When we deliver your website',
+  'Entrega estimada:': 'Estimated delivery:', 'Ver presupuesto': 'See quote',
+  'Precio final. Bizum o transferencia. 14 días para desistir.': 'Final price. Bizum or bank transfer. 14 days to withdraw.',
+  'Precio final. Transferencia bancaria. 14 días para desistir.': 'Final price. Bank transfer. 14 days to withdraw.',
   // v53 · dominio y correo, contenido del proyecto, idioma
   'Dirección de tu web': 'Your website address', 'Correo de tu negocio': 'Your business email', 'Tipo de correo': 'Email type', 'Gratis': 'Free',
   'Tu correo personal de Gmail. Si no tienes, se crea gratis en un minuto': "Your personal Gmail. If you don't have one, it takes a minute to create for free",
@@ -389,6 +395,11 @@ const fecha = t => t
 const dias = n => `${n} day${n === '1' ? '' : 's'}`;
 
 export const PATRONES = [
+  [/^Hacia el (.+)$/, m => `By ${m[1]}`],
+  [/^Hoy, para empezar \((\d+) %\)$/, m => `Today, to start (${m[1]} %)`],
+  [/^Entrega urgente \(\+(\d+) %\)$/, m => `Rush delivery (+${m[1]} %)`],
+  [/^Bienvenida \(−(\d+) %\)$/, m => `Welcome (−${m[1]} %)`],
+  [/^\+ (.+ €)\/mes de mantenimiento$/, m => `+ ${m[1]}/month maintenance`],
   [/^Te escribimos a (.+) cuando haya novedades\. Como mucho un correo cada 30 minutos por proyecto\.$/, m => `We email ${m[1]} when there is news. At most one email every 30 minutes per project.`],
   [/^pide otro en (0:\d\d)$/, m => `ask for another in ${m[1]}`],
   [/^Paso (\d+) de (\d+) · (.+)$/, (m, T) => `Step ${m[1]} of ${m[2]} · ${T(m[3])}`],

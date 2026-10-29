@@ -72,11 +72,27 @@ document.addEventListener('load', e => {
    ========================================================== */
 const VITRINA = ['filo', 'calma', 'brasa', 'kiosko', 'pulso', 'lienzo'];
 const DURA = 5200;
-let vtIdx = 0, vtTimer = null, vtPausa = false;
+let vtIdx = 0, vtTimer = null, vtPausa = false, vtTurno = 0;
+// Chrome, Edge y Firefox reducen la web con «zoom» (nítido). Safari se queda con scale:
+// su zoom no siempre llega al contenido del iframe
+if (/(Chrome|Firefox)\//.test(navigator.userAgent) && !/iP(hone|ad|od)/.test(navigator.userAgent)) document.documentElement.classList.add('zoom-ok');
+// Dos capas por pantalla: una se ve y la otra carga el diseño siguiente.
+// La web va con «zoom» (no con scale): el navegador la dibuja ya a su tamaño final y el texto sale nítido.
 const capas = el => {
-  el.innerHTML = '<iframe tabindex="-1" aria-hidden="true" title=""></iframe><iframe tabindex="-1" aria-hidden="true" title=""></iframe>';
-  return [...el.querySelectorAll('iframe')];
+  el.innerHTML = '<div class="vt-capa"><iframe tabindex="-1" aria-hidden="true" title=""></iframe></div>'.repeat(2);
+  return [...el.querySelectorAll('.vt-capa')];
 };
+/* Espera a que las fotos de la parte visible hayan llegado (como mucho 3 s) para no enseñar huecos */
+const fotosListas = f => new Promise(ok => {
+  let doc; try { doc = f.contentDocument; } catch { return ok(); }
+  const imgs = doc ? [...doc.images].filter(i => i.getBoundingClientRect().top < 1600) : [];
+  imgs.forEach(i => { i.loading = 'eager'; });
+  const pend = imgs.filter(i => !i.complete);
+  if (!pend.length) return ok();
+  let n = pend.length; const fin = () => { if (--n <= 0) ok(); };
+  pend.forEach(i => { i.addEventListener('load', fin, { once: true }); i.addEventListener('error', fin, { once: true }); });
+  setTimeout(ok, 3000);
+});
 const vt = { pc: capas($('#vtPc')), mv: capas($('#vtMv')), activa: 0 };
 function escalaVitrina() {
   const pc = $('#vtPc'), mv = $('#vtMv');
@@ -94,18 +110,24 @@ function mostrarVitrina(i) {
   vtIdx = (i + VITRINA.length) % VITRINA.length;
   const id = VITRINA[vtIdx], p = plantillaPorId(id);
   const old = vt.activa, sig = 1 - old;
-  ['pc', 'mv'].forEach(k => {
-    const f = vt[k][sig], o = vt[k][old];
-    f.classList.remove('on', 'vt-rec');
-    f.onload = () => requestAnimationFrame(() => {
-      f.classList.add('on');
-      o.classList.remove('on', 'vt-rec');
-      setTimeout(() => f.classList.add('vt-rec'), 700);
-    });
+  // Portátil y móvil cargan el diseño en la capa oculta y cambian a la vez, cuando los dos están listos
+  const turno = ++vtTurno;
+  Promise.all(['pc', 'mv'].map(k => new Promise(ok => {
+    const c = vt[k][sig], f = c.firstElementChild;
+    c.classList.remove('on', 'vt-rec');
+    f.onload = () => fotosListas(f).then(ok);
     f.src = urlPlantilla(id, '', '', true);
-  });
-  vt.activa = sig;
-  $('#vtUrl').textContent = p.dominio;
+  }))).then(() => requestAnimationFrame(() => {
+    if (turno !== vtTurno) return; // mientras tanto se ha pedido otro diseño
+    vt.activa = sig; // la capa visible solo cambia cuando el nuevo diseño ya se ve
+    $('#vtUrl').textContent = p.dominio;
+    ['pc', 'mv'].forEach(k => {
+      const c = vt[k][sig];
+      c.classList.add('on');
+      vt[k][old].classList.remove('on', 'vt-rec');
+      setTimeout(() => turno === vtTurno && c.classList.add('vt-rec'), 700);
+    });
+  }));
   $$('#vtChips [data-vt]').forEach((b, k) => {
     b.classList.toggle('on', k === vtIdx);
     b.setAttribute('aria-selected', k === vtIdx);
@@ -184,7 +206,9 @@ alAcercarse($('#calc'), () => import('./calculadora.js').then(m => m.montarCalcu
   const io = new IntersectionObserver(es => {
     for (const e of es) vis.set(e.target, e.isIntersecting ? e.intersectionRect.height : 0);
     marcar();
-  }, { threshold: [0, .1, .25, .5, .75, 1] });
+  // Solo cuenta la franja central de la pantalla: así se esconde mientras pasan
+  // la portada, las garantías y las cintas (van a todo el ancho y se taparían)
+  }, { threshold: [0, .1, .25, .5, .75, 1], rootMargin: '-40% 0px -40% 0px' });
   SEC.forEach(([el]) => io.observe(el));
 })();
 /* Botones del asistente: abren lo que corresponde en la propia web */
@@ -925,14 +949,14 @@ function pintarResumen() {
     <div class="rs-legal">
       <p><b>Antes de confirmar</b></p>
       <ul>
-        <li>Contratas con ${esc(CONFIG.legal?.titular && !/^tu nombre/i.test(CONFIG.legal.titular) ? `${CONFIG.legal.titular} (NIF ${CONFIG.legal.nif})` : CONFIG.marca)}, ${esc(CONFIG.legal?.actividad || 'diseño web').toLowerCase()}. Datos completos en el <a href="terminos-y-privacidad#aviso-legal" target="_blank">aviso legal</a>.</li>
+        <li>Contratas con ${esc(CONFIG.legal?.titular && !/^tu nombre/i.test(CONFIG.legal.titular) ? `${CONFIG.legal.titular} (NIF ${CONFIG.legal.nif})` : CONFIG.marca)}, ${esc(CONFIG.legal?.actividad || 'diseño web').toLowerCase()}. Datos completos en el <a href="terminos-y-privacidad#aviso-legal" target="_blank" rel="noopener">aviso legal</a>.</li>
         <li>${CONFIG.iva ? `Precio final con el ${CONFIG.iva} % de IVA incluido` : 'Precio final, sin IVA'}. Pago por ${CONFIG.pagos?.bizum ? 'Bizum o transferencia bancaria' : 'transferencia bancaria'}.</li>
-        <li>Tienes <b>14 días naturales para desistir</b> sin dar explicaciones, desde «Mis proyectos». <a href="terminos-y-privacidad#desistimiento" target="_blank">Cómo funciona</a>.</li>
+        <li>Tienes <b>14 días naturales para desistir</b> sin dar explicaciones, desde «Mis proyectos». <a href="terminos-y-privacidad#desistimiento" target="_blank" rel="noopener">Cómo funciona</a>.</li>
       </ul>
       <label class="rs-inicio"><input type="checkbox" id="wizInicio" ${W.inicioAnticipado ? 'checked' : ''}>
         <span>Quiero que empecéis mi web <b>antes de que terminen los 14 días</b>. Sé que, si desisto, pagaré la parte del trabajo ya hecha y que, cuando la web esté terminada y entregada, ya no podré desistir. <small>Si no lo marcas, empezamos el día 15.</small></span></label>
     </div>
-    <div class="rs-terms">${aceptarTerminos('wizTerms', 'He leído y acepto las <a href="terminos-y-privacidad#condiciones" target="_blank">condiciones de contratación</a> y la <a href="terminos-y-privacidad#privacidad" target="_blank">política de privacidad</a>')}</div>
+    <div class="rs-terms">${aceptarTerminos('wizTerms', 'He leído y acepto las <a href="terminos-y-privacidad#condiciones" target="_blank" rel="noopener">condiciones de contratación</a> y la <a href="terminos-y-privacidad#privacidad" target="_blank" rel="noopener">política de privacidad</a>')}</div>
     ${store.usuarioActual() ? '' : '<p class="muted rs-login">Al confirmar te pediremos iniciar sesión para que puedas seguir tu pedido.</p>'}
     ${infoDatos('preparar, hacer y facturar tu web, y atenderte durante el proyecto')}`;
   vigilarMiniaturas($('#resumen'));
@@ -1310,7 +1334,7 @@ function pintarContacto() {
     ${campo({ id: 'ctAsunto', name: 'asunto', label: 'Asunto', required: true, attrs: 'maxlength="120"' })}
     ${campo({ id: 'ctMsg', name: 'mensaje', label: 'Cuéntanos tu proyecto o tu duda', type: 'textarea', required: true, attrs: 'maxlength="3000"' })}
     <input type="text" name="web" tabindex="-1" autocomplete="off" class="trampa" aria-hidden="true">
-    ${aceptarTerminos('ctTerms', 'He leído y acepto la <a href="terminos-y-privacidad#privacidad" target="_blank">política de privacidad</a>')}
+    ${aceptarTerminos('ctTerms', 'He leído y acepto la <a href="terminos-y-privacidad#privacidad" target="_blank" rel="noopener">política de privacidad</a>')}
     ${infoDatos('responder a tu mensaje; lo conservamos hasta un año después de resolverlo')}
     <div class="ct-btns"><button class="btn btn-primary" type="submit"><span>Enviar mensaje</span>${icono('send')}</button>
     <a class="btn btn-ghost" id="ctCorreo" href="${mailLink('Consulta desde la web')}">${icono('mail')}<span>Abrir mi correo</span></a></div>
