@@ -52,8 +52,8 @@ html[data-tema=claro] .pay-cta .pc-card-line{background:#6aa61c}
 html[data-tema=claro] .pay-cta .pc-euro{color:#d8eeac}
 html[data-tema=claro] .brand-card{--bg:#ffffff}
 html[data-tema=claro] .bg-stripes{background:linear-gradient(135deg,#f6f5f0 25%,#ebe9e2 25%,#ebe9e2 50%,#f6f5f0 50%,#f6f5f0 75%,#ebe9e2 75%,#ebe9e2)}
-html[data-tema=claro] .bg-bands{background:repeating-linear-gradient(135deg,#f1f0ea 0px,#f1f0ea 60px,#f1f0ea99 70px,#f4f3ee 130px)}
-html[data-tema=claro] .splash{background:repeating-linear-gradient(135deg,#f1f0ea 0px,#f1f0ea 60px,#ffffff 70px,#f4f3ee 130px)}
+html[data-tema=claro] .bg-bands{background:var(--bg2)}
+html[data-tema=claro] .splash{background:var(--bg)}
 html[data-tema=claro] .splash .brand-card{background:#ffffff;box-shadow:0 30px 80px rgba(0,0,0,.14)}
 html[data-tema=claro] .mp-dato{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .chat-fab{box-shadow:0 12px 26px -10px rgba(20,20,26,.35),0 3px 8px rgba(20,20,26,.15)}
@@ -147,7 +147,7 @@ html[data-tema=claro] .header.scrolled,html[data-tema=claro] .header.open{border
 html[data-tema=claro] .user-menu,html[data-tema=claro] .av-menu,html[data-tema=claro] .cookies,html[data-tema=claro] .chat-panel{box-shadow:0 24px 60px rgba(20,20,26,.16)}
 html[data-tema=claro] dialog.dlg::backdrop{background:rgba(20,20,26,.45)}
 html[data-tema=claro] .dlg-box{box-shadow:0 30px 80px rgba(20,20,26,.18)}
-html[data-tema=claro] .splash{background:repeating-linear-gradient(135deg,#f3f2ec 0px,#f3f2ec 60px,#ecebe4 70px,#e8e6de 130px)}
+
 html[data-tema=claro] .aj-fijo{background:rgba(255,255,255,.92)}
 html[data-tema=claro] .od-fecha input,html[data-tema=claro] .cp label input[type=date]{color-scheme:light}
 html[data-tema=claro] .fc input,html[data-tema=claro] .fc textarea{color:var(--text)}

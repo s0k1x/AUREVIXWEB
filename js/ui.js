@@ -361,7 +361,10 @@ export function pintarPie() {
   if (!f) return;
   f.className = 'footer';
   f.innerHTML = `
-    <div class="footer-brand bg-bands"><div class="wrap">${tarjetaMarca('in-view')}</div></div>
+    <div class="footer-brand"><div class="wrap fb-fila">
+      <div class="fb-marca"><span data-marca>${marcaHTML()}</span><p>Páginas web para negocios, a precio cerrado. Te la diseñamos, la publicamos y sigues cada paso desde tu cuenta.</p></div>
+      <a class="btn btn-primary" href="./#webs"><span>Ver webs y precios</span>${icono('arrow')}</a>
+    </div></div>
     <div class="wrap footer-inner">
       <nav class="footer-cols" aria-label="Pie de página">
         <div class="footer-col"><b>Servicios</b>

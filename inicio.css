@@ -319,12 +319,6 @@ dialog.dlg-prev{padding:0}
 @keyframes girar{to{transform:rotate(360deg)}}
 
 /* Cinta de sectores */
-.cinta{border-block:1px solid var(--line);overflow:hidden;padding:18px 0;background:var(--bg2)}
-.cinta-track{display:flex;width:max-content;animation:cinta 38s linear infinite}
-.cinta:hover .cinta-track{animation-play-state:paused}
-.cinta-track span{display:flex;align-items:center;gap:34px;padding-right:34px;font-family:var(--fd);font-size:22px;font-weight:600;color:var(--muted);white-space:nowrap;letter-spacing:-.01em}
-.cinta-track span::after{content:"✦";color:var(--accent);font-size:13px}
-@keyframes cinta{to{transform:translateX(-50%)}}
 
 /* Precios en tipografía mono */
 .pc-price small,.pc-time,.info-price small,.wiz-total small,.trust span{font-family:var(--fm);font-size:11.5px;letter-spacing:.04em}
@@ -345,7 +339,6 @@ dialog.dlg-prev{padding:0}
 @media (max-width:980px){
 }
 @media (max-width:640px){
-  .cinta-track span{font-size:18px;gap:26px;padding-right:26px}
   .wa-fab{height:52px;padding:0 13px;right:14px}
 }
 /* Color "original del diseño" */
@@ -419,7 +412,7 @@ dialog.dlg-prev{padding:0}
 .steps.timeline{position:relative;--prog:0}
 .steps.timeline .step{border-top:0;padding-top:34px;position:relative}
 .steps.timeline::before,.steps.timeline::after{content:"";position:absolute;left:0;right:0;top:8px;height:2px;border-radius:2px;background:var(--line2)}
-.steps.timeline::after{background:var(--accent);transform-origin:left;transform:scaleX(var(--prog));box-shadow:0 0 12px color-mix(in srgb,var(--accent) 60%,transparent)}
+.steps.timeline::after{background:var(--accent);transform-origin:left;transform:scaleX(var(--prog))}
 .st-dot{position:absolute;left:0;top:1px;width:16px;height:16px;border-radius:50%;background:var(--bg2);border:2px solid var(--line2);z-index:1;transition:background .4s var(--e-out),border-color .4s,transform .5s var(--e-spring),box-shadow .4s}
 .step.hecho .st-dot{background:var(--accent);border-color:var(--accent);transform:scale(1.15);box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 15%,transparent)}
 .step.hecho::before{-webkit-text-stroke-color:var(--accent)}
@@ -577,26 +570,9 @@ html.zoom-ok .vt-capa iframe{transform:none;zoom:var(--s)}
 .sello{transition:transform .5s var(--e-spring)}
 .vt-capa{will-change:transform,opacity}
 
-/* Dos cintas cruzadas a todo el ancho */
-.cintas{position:relative;overflow:hidden;overflow:clip;padding:46px 0;margin:-10px 0}
-.cintas .cinta{position:relative;z-index:1;width:104%;margin-left:-2%;padding:20px 0;border:0;background:var(--accent);transform:rotate(-2deg);box-shadow:0 20px 50px -20px color-mix(in srgb,var(--accent) 45%,transparent)}
-.cintas .cinta .cinta-track span{color:var(--ink);font-size:clamp(20px,2.2vw,30px);font-weight:800;letter-spacing:-.02em}
-.cintas .cinta .cinta-track span::after{color:var(--ink);opacity:.5}
-.cintas .cinta-b{position:absolute;z-index:0;left:0;top:50%;margin-top:-34px;background:#1a1a20;box-shadow:none;transform:rotate(2.2deg);border-block:1px solid var(--line2)}
-.cintas .cinta-b .cinta-track{animation-direction:reverse;animation-duration:46s}
-.cintas .cinta-b .cinta-track span{color:var(--muted);font-family:var(--fm);font-size:clamp(13px,1.1vw,16px);font-weight:500;text-transform:uppercase;letter-spacing:.08em}
-.cintas .cinta-b .cinta-track span::after{color:var(--accent);opacity:1}
 @media (max-width:640px){
   .sello{right:0;top:-30px}
-  .cintas{padding:34px 0}
-  .cintas .cinta{padding:15px 0;transform:rotate(-3deg)}
-  .cintas .cinta-b{margin-top:-24px;transform:rotate(3deg)}
 }
-@media (prefers-reduced-motion:reduce){.cinta-track{animation:none}}
-/* Las cintas van giradas: en pantallas anchas sus bordes suben ~2 vw.
-   El hueco crece con el ancho para que nunca tapen las garantías. */
-.cintas{margin:0}
-@media (min-width:641px){.cintas{padding-block:calc(2.4vw + 16px)}}
 .garantias{position:relative;z-index:2}
 /* Vista previa en modo móvil: marco de teléfono centrado */
 .prev-frame{transition:width .5s var(--e-out),height .5s var(--e-out),border-radius .5s var(--e-out)}

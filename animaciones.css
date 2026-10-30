@@ -139,13 +139,13 @@ dialog.dlg-side:not([open]) .dlg-box{transform:translateX(40px)}
 .toast{transition:opacity .35s var(--e-out),transform .5s var(--e-spring)}
 
 /* ---------- Barra de progreso de lectura ---------- */
-.progreso{position:fixed;left:0;top:0;height:2px;width:100%;z-index:60;background:var(--accent);transform-origin:left;transform:scaleX(var(--p,0));box-shadow:0 0 10px var(--accent);pointer-events:none}
+.progreso{position:fixed;left:0;top:0;height:2px;width:100%;z-index:60;background:var(--accent);transform-origin:left;transform:scaleX(var(--p,0));pointer-events:none}
 
 @keyframes pop{from{transform:scale(0)}}
 
 @media (prefers-reduced-motion:reduce){
   .js .reveal{filter:none}
-  .hero-copy > *,.hero-art,.sello,.cinta-track,.wa-fab::before{animation:none!important}
+  .hero-copy > *,.hero-art,.sello,.wa-fab::before{animation:none!important}
   .scribble path{stroke-dashoffset:0;animation:none}
 }
 .num{font:inherit;color:inherit;font-style:normal;font-variant-numeric:tabular-nums}
