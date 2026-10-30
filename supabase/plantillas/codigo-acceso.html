@@ -1,65 +1,64 @@
-<!doctype html>
-<!-- Plantilla del correo con el código de acceso (Supabase → Authentication → Emails → Templates).
-     Se pega igual en «Magic link» y en «Confirm signup».
-     Asunto: Tu código de AurevixWeb: {{ .Token }}
-     Se usa para entrar y para verificar el correo al crear la cuenta (no hay contraseñas).
-     {{ .Token }} es el código de 6 cifras y {{ .Email }} el correo del cliente: no se deben cambiar.
-     La cabecera es la imagen https://aurevixweb.es/icons/email-cabecera.png (logo y nombre reales). -->
-<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="dark light">
-<meta name="supported-color-schemes" content="dark light">
-<title>Tu código de acceso</title>
-</head>
-<body style="margin:0;padding:0;background:#0c0c0e;-webkit-text-size-adjust:100%">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#0c0c0e;font-size:1px;line-height:1px">Tu código es {{ .Token }}. Caduca en 10 minutos.&#8199;&zwnj;&#8199;&zwnj;&#8199;&zwnj;&#8199;&zwnj;&#8199;&zwnj;&#8199;&zwnj;&#8199;&zwnj;</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0c0c0e" style="background:#0c0c0e">
-  <tr><td align="center" style="padding:28px 14px 36px">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px">
-
-      <tr><td bgcolor="#16161b" style="background:#16161b;border:1px solid #2a2a31;border-radius:22px;overflow:hidden">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-
-          <!-- Cabecera con el logo -->
-          <tr><td align="center" bgcolor="#0c0c0e" style="background:#0c0c0e;border-radius:21px 21px 0 0;font-size:0;line-height:0">
-            <a href="https://aurevixweb.es" target="_blank" style="text-decoration:none"><img src="https://aurevixweb.es/icons/email-cabecera.png" width="480" height="210" alt="AurevixWeb" style="display:block;width:100%;max-width:480px;height:auto;border:0;border-radius:21px 21px 0 0;font-family:'Bricolage Grotesque',-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:26px;line-height:210px;font-weight:700;color:#c8f560;text-align:center"></a>
-          </td></tr>
-
-          <tr><td align="center" style="padding:36px 28px 0">
-            <h1 style="margin:0 0 12px;font-family:'Bricolage Grotesque',-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:30px;line-height:1.15;font-weight:700;letter-spacing:-.02em;color:#f3f1ea;text-align:center">Tu código de acceso</h1>
-            <p style="margin:0 auto 28px;max-width:340px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;color:#b7b5ac;text-align:center">Vuelve a AurevixWeb y escríbelo en las casillas para entrar o verificar tu correo.</p>
-
-            <!-- El código -->
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-              <td align="center" bgcolor="#11140a" style="background:#11140a;background-image:linear-gradient(180deg,#171c0b,#0f0f12);border:1.5px solid #4f6a1c;border-radius:18px;padding:26px 8px;box-shadow:0 0 0 5px rgba(200,245,96,.07),0 12px 34px rgba(200,245,96,.10)">
-                <span style="display:block;font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:44px;line-height:1;font-weight:700;letter-spacing:.26em;text-indent:.26em;color:#c8f560">{{ .Token }}</span>
-              </td>
-            </tr></table>
-
-            <p style="margin:16px 0 0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;color:#b7b5ac;text-align:center">Caduca en <b style="color:#f3f1ea">10 minutos</b> y solo sirve una vez.</p>
-          </td></tr>
-
-          <tr><td style="padding:30px 28px 0"><div style="height:1px;line-height:1px;font-size:1px;background:#2a2a31">&nbsp;</div></td></tr>
-
-          <tr><td style="padding:22px 28px 32px">
-            <p style="margin:0 0 10px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.6;color:#d6d4cb;text-align:center"><b>¿No has sido tú?</b></p>
-            <p style="margin:0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13.5px;line-height:1.65;color:#9a978e;text-align:center">Ignora este correo: sin el código nadie puede entrar en tu cuenta. No se lo des a nadie, ni siquiera a nosotros; nunca te lo pediremos.</p>
-          </td></tr>
-
-        </table>
-      </td></tr>
-
-      <!-- Pie -->
-      <tr><td align="center" style="padding:24px 10px 0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12.5px;line-height:1.7;color:#86837c;text-align:center">
-        Enviado a {{ .Email }}<br>
-        <a href="https://aurevixweb.es" style="color:#b7b5ac;text-decoration:underline">aurevixweb.es</a> &nbsp;·&nbsp; <a href="https://aurevixweb.es/terminos-y-privacidad" style="color:#b7b5ac;text-decoration:underline">Términos y privacidad</a><br>
-        AurevixWeb · Páginas web para negocios
-      </td></tr>
-
-    </table>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><title>Tu código</title>
+<style>
+  body{margin:0;padding:0;-webkit-text-size-adjust:100%}
+  a{color:#16161b}
+  .oscuro{display:none!important}
+  @media (prefers-color-scheme: dark){
+    .fondo{background:#0c0c0e!important}
+    .tarjeta{background:#16161b!important;border-color:#2a2a31!important}
+    .t{color:#f3f1ea!important} .x{color:#d6d4cc!important} .m{color:#a19f96!important}
+    .caja{background:#1d1f17!important;border-color:#33402a!important}
+    .linea{border-color:#2a2a31!important}
+    .claro{display:none!important} .oscuro{display:inline-block!important}
+    a{color:#f3f1ea!important} .btn a{color:#0c0c0e!important}
+  }
+  @media (max-width:600px){ .pad{padding-left:24px!important;padding-right:24px!important} .h1{font-size:24px!important} .grande{font-size:34px!important} .cod{font-size:34px!important;letter-spacing:8px!important} }
+</style></head>
+<body class="fondo" style="margin:0;padding:0;background:#f4f3ef;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#16161b">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">Tu código de acceso. Caduca en 10 minutos.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="fondo" style="background:#f4f3ef"><tr><td align="center" style="padding:32px 12px 40px">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
+    <tr><td class="tarjeta" style="background:#ffffff;border:1px solid #e7e5df;border-radius:20px;overflow:hidden">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr><td class="pad" style="padding:26px 36px 22px">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+            <td style="vertical-align:middle"><a href="https://aurevixweb.es" style="text-decoration:none">
+              <img src="https://aurevixweb.es/icons/logo-a.png" width="28" height="28" alt="" style="vertical-align:middle;border:0;margin-right:10px">
+              <img class="claro" src="https://aurevixweb.es/icons/nombre-oscuro.png" width="132" height="13" alt="AurevixWeb" style="vertical-align:middle;border:0">
+              <img class="oscuro" src="https://aurevixweb.es/icons/nombre.png" width="132" height="13" alt="AurevixWeb" style="vertical-align:middle;border:0;display:none">
+            </a></td>
+            <td align="right" class="m" style="vertical-align:middle;font-size:12px;color:#7c7a73;letter-spacing:.02em;white-space:nowrap">Código de acceso</td>
+          </tr></table>
+        </td></tr>
+        <tr><td class="linea" style="border-top:1px solid #e7e5df;font-size:0;line-height:0">&nbsp;</td></tr>
+        
+  <tr><td class="pad" style="padding:36px 36px 8px">
+    <h1 class="t h1" style="margin:0 0 12px;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:-.02em;color:#16161b">Tu código de acceso</h1>
+    <p class="x" style="margin:0 0 26px;font-size:16px;line-height:1.6;color:#3d3c38">Escribe este código en AurevixWeb para entrar o verificar tu correo.</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+      <td class="caja" align="center" style="background:#f7f9f0;border:1px solid #e3ecc8;border-radius:16px;padding:26px 12px 22px">
+        <div class="t cod" style="font-family:'SF Mono','SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace;font-size:42px;line-height:1;font-weight:700;letter-spacing:12px;color:#16161b;padding-left:12px">{{ .Token }}</div>
+        <div class="m" style="margin-top:14px;font-size:13px;color:#7c7a73">Caduca en 10 minutos · Solo sirve una vez</div>
+      </td>
+    </tr></table>
   </td></tr>
-</table>
-</body>
-</html>
+  <tr><td class="pad" style="padding:22px 36px 34px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+      <td class="linea" style="border-top:1px solid #e7e5df;padding-top:20px">
+        <p class="t" style="margin:0 0 6px;font-size:14px;font-weight:600;color:#16161b">¿No lo has pedido tú?</p>
+        <p class="m" style="margin:0;font-size:14px;line-height:1.6;color:#7c7a73">Ignora este correo: sin el código nadie puede entrar. No se lo des a nadie; en AurevixWeb nunca te lo pediremos.</p>
+        <p class="m" style="margin:12px 0 0;font-size:12px;color:#7c7a73">Pedido desde aurevixweb.es.</p>
+      </td>
+    </tr></table>
+  </td></tr>
+      </table>
+    </td></tr>
+    <tr><td align="center" class="pad m" style="padding:26px 36px 0;font-size:12px;line-height:1.7;color:#7c7a73">
+      
+      <a href="https://aurevixweb.es" class="m" style="color:#7c7a73;text-decoration:underline">aurevixweb.es</a> ·
+      <a href="https://aurevixweb.es/terminos-y-privacidad" class="m" style="color:#7c7a73;text-decoration:underline">Privacidad</a>
+      <br><span style="opacity:.85">Recibes este correo porque alguien ha pedido entrar en AurevixWeb con esta dirección.</span>
+    </td></tr>
+  </table>
+</td></tr></table></body></html>

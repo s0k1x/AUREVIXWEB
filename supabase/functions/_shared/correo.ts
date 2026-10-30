@@ -111,6 +111,8 @@ export async function estadoBrevo() {
   try {
     const r = await fetch(`${API}/account`, { headers: { 'api-key': CLAVE, accept: 'application/json' }, signal: AbortSignal.timeout(8000) });
     const texto = await r.text();
+    // Una clave limitada solo a envíos (lo recomendable) no puede leer la cuenta: no es un error
+    if (r.status === 403 && texto.includes('not authorized for resource')) return { ok: true, nota: 'la clave solo puede enviar (no lee la cuenta)' };
     if (!r.ok) return { ok: false, motivo: motivoDe(r.status, texto), detalle: `${r.status} ${texto.slice(0, 200)}` };
     const j = JSON.parse(texto);
     const planes = (j.plan || []).map((p: { type?: string; credits?: number; creditsType?: string }) => `${p.type}:${p.credits ?? '?'} ${p.creditsType || ''}`.trim());
@@ -131,21 +133,65 @@ export async function estadoBrevo() {
 
 export const esc = (t: unknown) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
-/** Diseño común de los correos: cabecera oscura con el logotipo, franja lima y pie */
-export function plantilla({ titulo, previa, cuerpo, pie = '' }: { titulo: string; previa: string; cuerpo: string; pie?: string }) {
-  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>${esc(titulo)}</title></head>
-<body style="margin:0;padding:0;background:#f3f2ee;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#16161b">
-<div style="display:none;max-height:0;overflow:hidden">${esc(previa)}</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f2ee"><tr><td align="center" style="padding:24px 12px">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden">
-  <tr><td style="background:#0c0c0e;padding:22px 28px">
-    <img src="${WEB}/icons/logo-a.png" width="32" height="32" alt="" style="vertical-align:middle;border:0">
-    <span style="vertical-align:middle;margin-left:10px;color:#f3f1ea;font-size:17px;font-weight:700">${MARCA}</span>
-  </td></tr>
-  <tr><td style="height:4px;background:#c8f560;font-size:0;line-height:0">&nbsp;</td></tr>
-  ${cuerpo}
-  <tr><td style="padding:16px 28px 28px">
-    <p style="margin:0;padding-top:14px;border-top:1px solid #eeede8;font-size:12px;line-height:1.6;color:#86837c">${pie || WEB.replace('https://', '')}</p>
-  </td></tr>
-</table></td></tr></table></body></html>`;
+/* ---------- Diseño común de los correos ----------
+   Como los recibos de las mejores empresas de software: tarjeta blanca sobre fondo cálido, cabecera
+   de marca discreta, lo importante grande, los detalles en tablas y un pie legal en gris.
+   - Tablas y estilos en línea (Gmail, Outlook, Apple Mail…); ancho máximo 560 px.
+   - Modo oscuro donde el programa lo permite (Apple Mail, iOS, Outlook.com): <style> con
+     prefers-color-scheme y el logotipo claro/oscuro intercambiado.
+   - Botón «a prueba de balas» (relleno en la celda, no en el enlace). */
+export const C = { fondo: '#f4f3ef', tarjeta: '#ffffff', borde: '#e7e5df', tinta: '#16161b', texto: '#3d3c38', gris: '#7c7a73', suave: '#f7f9f0', lima: '#c8f560', verde: '#3d6a0a' };
+
+export function boton(texto: string, url: string) {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:4px 0"><tr><td class="btn" bgcolor="${C.lima}" style="border-radius:999px;background:${C.lima}">
+    <a href="${esc(url)}" style="display:inline-block;padding:14px 26px;font-size:15px;font-weight:700;line-height:1;color:${C.tinta};text-decoration:none;border-radius:999px">${esc(texto)}&nbsp;&nbsp;→</a></td></tr></table>`;
+}
+
+export function plantilla({ titulo, previa, etiqueta = '', cuerpo, pie = '', motivo = '' }: { titulo: string; previa: string; etiqueta?: string; cuerpo: string; pie?: string; motivo?: string }) {
+  const relleno = '&#847;&zwnj;&nbsp;'.repeat(60); // que el resumen del buzón no muestre el resto del correo
+  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><title>${esc(titulo)}</title>
+<style>
+  body{margin:0;padding:0;-webkit-text-size-adjust:100%}
+  a{color:${C.tinta}}
+  .oscuro{display:none!important}
+  @media (prefers-color-scheme: dark){
+    .fondo{background:#0c0c0e!important}
+    .tarjeta{background:#16161b!important;border-color:#2a2a31!important}
+    .t{color:#f3f1ea!important} .x{color:#d6d4cc!important} .m{color:#a19f96!important}
+    .caja{background:#1d1f17!important;border-color:#33402a!important}
+    .linea{border-color:#2a2a31!important}
+    .claro{display:none!important} .oscuro{display:inline-block!important}
+    a{color:#f3f1ea!important} .btn a{color:#0c0c0e!important}
+  }
+  @media (max-width:600px){ .pad{padding-left:24px!important;padding-right:24px!important} .h1{font-size:24px!important} .grande{font-size:34px!important} .cod{font-size:34px!important;letter-spacing:8px!important} }
+</style></head>
+<body class="fondo" style="margin:0;padding:0;background:${C.fondo};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:${C.tinta}">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(previa)}${relleno}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="fondo" style="background:${C.fondo}"><tr><td align="center" style="padding:32px 12px 40px">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
+    <tr><td class="tarjeta" style="background:${C.tarjeta};border:1px solid ${C.borde};border-radius:20px;overflow:hidden">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr><td class="pad" style="padding:26px 36px 22px">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+            <td style="vertical-align:middle"><a href="${WEB}" style="text-decoration:none">
+              <img src="${WEB}/icons/logo-a.png" width="28" height="28" alt="" style="vertical-align:middle;border:0;margin-right:10px">
+              <img class="claro" src="${WEB}/icons/nombre-oscuro.png" width="132" height="13" alt="${MARCA}" style="vertical-align:middle;border:0">
+              <img class="oscuro" src="${WEB}/icons/nombre.png" width="132" height="13" alt="${MARCA}" style="vertical-align:middle;border:0;display:none">
+            </a></td>
+            ${etiqueta ? `<td align="right" class="m" style="vertical-align:middle;font-size:12px;color:${C.gris};letter-spacing:.02em;white-space:nowrap">${etiqueta}</td>` : ''}
+          </tr></table>
+        </td></tr>
+        <tr><td class="linea" style="border-top:1px solid ${C.borde};font-size:0;line-height:0">&nbsp;</td></tr>
+        ${cuerpo}
+      </table>
+    </td></tr>
+    <tr><td align="center" class="pad m" style="padding:26px 36px 0;font-size:12px;line-height:1.7;color:${C.gris}">
+      ${pie ? `${pie}<br>` : ''}
+      <a href="${WEB}" class="m" style="color:${C.gris};text-decoration:underline">${WEB.replace('https://', '')}</a> ·
+      <a href="${WEB}/terminos-y-privacidad" class="m" style="color:${C.gris};text-decoration:underline">Privacidad</a>
+      ${motivo ? `<br><span style="opacity:.85">${motivo}</span>` : ''}
+    </td></tr>
+  </table>
+</td></tr></table></body></html>`;
 }
