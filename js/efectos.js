@@ -170,8 +170,18 @@ export function apariciones(raiz = document) {
 }
 
 /* Confeti de celebración (pedido enviado). Ligero: un canvas que se borra solo */
-export function confeti() {
+/**
+ * Celebración tipo «logro desbloqueado» (pedido enviado, pago avisado, web aprobada, reseña):
+ * - la insignia (por ejemplo .ok-ic) entra girando en 3D y se asienta sin rebotar, con un brillo que la cruza;
+ * - de ella sale una ráfaga de partículas doradas y lima que frenan con el aire, caen un poco y titilan al apagarse.
+ * Sin elemento, la ráfaga sale del centro de la pantalla. Con «menos movimiento» no hace nada.
+ */
+export function celebrar(origen) {
   if (reducido()) return;
+  const el = origen instanceof Element ? origen : null;
+  if (el) { el.classList.remove('logro'); void el.offsetWidth; el.classList.add('logro'); }
+  const r = el?.getBoundingClientRect();
+  const cx = r ? r.left + r.width / 2 : innerWidth / 2, cy = r ? r.top + r.height / 2 : innerHeight * .42;
   const c = document.createElement('canvas');
   c.className = 'confeti';
   c.setAttribute('aria-hidden', 'true');
@@ -179,27 +189,41 @@ export function confeti() {
   const dpr = Math.min(2, devicePixelRatio || 1);
   const W = c.width = innerWidth * dpr, H = c.height = innerHeight * dpr;
   const x = c.getContext('2d');
-  const colores = [getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#c8f560', '#ffffff', '#9fd23a', '#ffd166', '#7cc4ff'];
-  const piezas = Array.from({ length: 120 }, () => ({
-    x: W / 2 + (Math.random() - .5) * W * .3, y: H * .45,
-    vx: (Math.random() - .5) * 16 * dpr, vy: (-Math.random() * 14 - 6) * dpr,
-    r: (4 + Math.random() * 5) * dpr, a: Math.random() * 6, va: (Math.random() - .5) * .3,
-    col: colores[(Math.random() * colores.length) | 0], forma: Math.random() > .5
-  }));
-  const t0 = performance.now();
+  const lima = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#c8f560';
+  const colores = ['#ffd166', '#f5c542', '#fff1bf', '#ffe08a', lima, lima, '#ffffff'];
+  const N = innerWidth < 600 ? 70 : 110;
+  const piezas = Array.from({ length: N }, (_, i) => {
+    const ang = (i / N) * Math.PI * 2 + Math.random() * .5, vel = (6 + Math.random() * 11) * dpr;
+    return {
+      x: cx * dpr, y: cy * dpr, vx: Math.cos(ang) * vel, vy: Math.sin(ang) * vel - 2.5 * dpr,
+      r: (2 + Math.random() * 3.6) * dpr, col: colores[(Math.random() * colores.length) | 0],
+      forma: Math.random() < .55 ? 'estrella' : Math.random() < .5 ? 'rombo' : 'punto',
+      giro: Math.random() * 6, vg: (Math.random() - .5) * .25, fase: Math.random() * 6, vida: .65 + Math.random() * .35
+    };
+  });
+  const estrella = (r) => { x.beginPath(); for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4, l = k % 2 ? r * .38 : r * 1.6; x.lineTo(Math.cos(a) * l, Math.sin(a) * l); } x.closePath(); x.fill(); };
+  const t0 = performance.now(), DUR = 2300;
   const paso = t => {
-    const k = (t - t0) / 2600;
+    const k = (t - t0) / DUR;
     x.clearRect(0, 0, W, H);
-    piezas.forEach(p => {
-      p.vy += .42 * dpr; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.a += p.va;
-      x.save(); x.globalAlpha = Math.max(0, 1 - k); x.translate(p.x, p.y); x.rotate(p.a); x.fillStyle = p.col;
-      p.forma ? x.fillRect(-p.r, -p.r / 2, p.r * 2, p.r) : (x.beginPath(), x.arc(0, 0, p.r / 1.6, 0, 7), x.fill());
+    x.globalCompositeOperation = 'lighter';
+    for (const p of piezas) {
+      p.vx *= .955; p.vy = p.vy * .955 + .16 * dpr; p.x += p.vx; p.y += p.vy; p.giro += p.vg;
+      const vida = Math.max(0, 1 - k / p.vida);
+      if (!vida) continue;
+      const titila = .55 + .45 * Math.sin(t / 55 + p.fase);
+      x.save(); x.globalAlpha = vida * (k > .25 ? titila : 1); x.translate(p.x, p.y); x.rotate(p.giro); x.fillStyle = p.col;
+      if (p.forma === 'estrella') estrella(p.r);
+      else if (p.forma === 'rombo') { x.beginPath(); x.moveTo(0, -p.r * 1.4); x.lineTo(p.r * .7, 0); x.lineTo(0, p.r * 1.4); x.lineTo(-p.r * .7, 0); x.closePath(); x.fill(); }
+      else { x.beginPath(); x.arc(0, 0, p.r * .7, 0, 7); x.fill(); }
       x.restore();
-    });
+    }
     k < 1 ? requestAnimationFrame(paso) : c.remove();
   };
   requestAnimationFrame(paso);
 }
+/** Compatibilidad: el confeti de antes ahora es la celebración (desde el centro o desde un elemento) */
+export const confeti = origen => celebrar(origen);
 
 /* Botón «volver arriba» con anillo de progreso (aparece en páginas largas) */
 function arriba() {

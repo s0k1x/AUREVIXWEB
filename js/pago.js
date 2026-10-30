@@ -5,6 +5,7 @@ import { CONFIG } from '../config.js';
 import * as store from './store.js';
 import { etapaDe } from './proyecto.js';
 import { $, esc, euros, icono, abrir, toast, ocupado, campo, selectorEstrellas, mailLink, refPedido, PAGOS } from './ui.js';
+import { celebrar } from './efectos.js';
 
 const P = CONFIG.pagos || {};
 
@@ -121,6 +122,7 @@ export function abrirPago(p, fase = faseDePago(p), alTerminar = () => {}) {
           <p class="muted" style="font-size:13px;margin:-4px 0 12px">También puedes subir el justificante en la pestaña «Archivos» de tu proyecto.</p>
           <button class="btn btn-ghost w100" data-close type="button">Cerrar</button>
         </div>`;
+      celebrar(body.querySelector('.ok-ic'));
       alTerminar(p);
     } catch (err) {
       toast(err.message || 'No se pudo avisar del pago', 'err');
@@ -172,6 +174,7 @@ export function abrirResena(p, alTerminar = () => {}) {
           <a class="btn btn-primary w100" href="${esc(CONFIG.dominio ? `https://es.trustpilot.com/evaluate/${CONFIG.dominio}` : CONFIG.trustpilot)}" target="_blank" rel="noopener" data-copy="${esc(texto)}">${icono('star')}<span>Opinar también en Trustpilot</span></a>` : ''}
           <button class="btn btn-ghost w100" data-close type="button">Cerrar</button>
         </div>`;
+      celebrar(body.querySelector('.ok-ic'));
       alTerminar(p);
     } catch (err) {
       toast(err.message || 'No se pudo enviar', 'err');

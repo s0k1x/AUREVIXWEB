@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>AurevixWeb · vídeo promo 15 s</title>
+<meta name="robots" content="noindex">
+<!--
+  Vídeo promo de 15 s (60 fps). Se graba con: node scripts/grabar-promo.cjs
+  Tamaño por la dirección: ?w=1920&h=1080 (horizontal) o ?w=1080&h=1920 (vertical).
+  Todo el movimiento son animaciones WAAPI en pausa: el grabador pone cada fotograma a mano
+  (currentTime), así sale perfecto aunque el ordenador vaya lento.
+  Reglas (skill «cinetic», MIT): una idea, un objeto que recorre todo (la ventana del navegador),
+  textos en trozos cortos, un solo acento (lima = «hecho / en marcha»), sin rebotes ni partículas.
+-->
+<link rel="stylesheet" href="../fuentes/fuentes.css">
+<style>
+  :root{--bg:#0c0c0e;--card:#16161b;--card2:#1d1d24;--line:rgba(255,255,255,.1);--text:#f3f1ea;--muted:#a19f96;--acc:#c8f560;--ink:#0c0c0e;
+    --fd:'Bricolage Grotesque',system-ui,sans-serif;--fb:'Instrument Sans',system-ui,sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:var(--W);height:var(--H);overflow:hidden;background:var(--bg)}
+  body{font-family:var(--fb);color:var(--text);-webkit-font-smoothing:antialiased}
+  #escena{position:relative;width:var(--W);height:var(--H);overflow:hidden;
+    background:radial-gradient(ellipse 70% 60% at 62% 45%,rgba(200,245,96,.07),transparent 70%),var(--bg)}
+  .u{--u:calc(var(--H) / 1080)}
+  /* Ventana del navegador: el objeto que recorre todo el vídeo */
+  #ventana{position:absolute;left:var(--vx);top:var(--vy);width:var(--vw);aspect-ratio:16/10.4;border-radius:calc(18 * var(--u));
+    background:var(--card);border:calc(2 * var(--u)) solid var(--line);overflow:hidden;transform-origin:50% 50%;
+    box-shadow:0 calc(40 * var(--u)) calc(90 * var(--u)) calc(-30 * var(--u)) rgba(0,0,0,.8)}
+  .barra{display:flex;align-items:center;gap:calc(10 * var(--u));height:9%;padding:0 3%;border-bottom:calc(2 * var(--u)) solid var(--line);background:var(--card2)}
+  .barra i{width:calc(12 * var(--u));height:calc(12 * var(--u));border-radius:50%;background:#3a3a44;flex:none}
+  .url{margin-left:2%;height:58%;flex:1;max-width:46%;border-radius:99px;background:#0f0f12;display:flex;align-items:center;gap:calc(8 * var(--u));padding:0 calc(16 * var(--u));
+    font:500 calc(19 * var(--u))/1 var(--fb);color:var(--muted);white-space:nowrap;overflow:hidden}
+  .url .cand{width:calc(14 * var(--u));height:calc(14 * var(--u));flex:none;opacity:0}
+  #urlTxt{display:inline-block;clip-path:inset(0 100% 0 0)}
+  #cursor{width:calc(2 * var(--u));height:55%;background:var(--acc)}
+  .dentro{position:absolute;inset:9% 0 0 0;padding:4% 5%}
+  .nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:5%}
+  .nav b{font:800 calc(24 * var(--u))/1 var(--fd);letter-spacing:-.02em}
+  .nav span{display:flex;gap:calc(18 * var(--u))}
+  .nav span i{width:calc(56 * var(--u));height:calc(8 * var(--u));border-radius:9px;background:#2c2c35}
+  .heroW h4{font:800 calc(62 * var(--u))/.95 var(--fd);letter-spacing:-.035em;text-transform:uppercase;max-width:62%}
+  .heroW p{margin:3% 0 4%;width:48%;height:calc(10 * var(--u));border-radius:9px;background:#2c2c35;box-shadow:0 calc(18 * var(--u)) 0 #24242b}
+  .heroW .cta{display:inline-flex;align-items:center;height:calc(48 * var(--u));padding:0 calc(26 * var(--u));border-radius:99px;background:var(--acc);color:var(--ink);font:700 calc(18 * var(--u))/1 var(--fb);letter-spacing:.06em;text-transform:uppercase}
+  .tarjetas{position:absolute;left:5%;right:5%;bottom:6%;display:grid;grid-template-columns:repeat(3,1fr);gap:3%}
+  .tarjetas div{aspect-ratio:4/3;border-radius:calc(12 * var(--u));background:linear-gradient(160deg,#2a2a33,#1b1b21);border:calc(2 * var(--u)) solid var(--line);position:relative;overflow:hidden}
+  .tarjetas div::after{content:"";position:absolute;left:10%;bottom:12%;width:50%;height:calc(9 * var(--u));border-radius:9px;background:#3a3a44}
+  .pin{position:absolute;right:9%;top:30%;display:flex;align-items:center;gap:calc(10 * var(--u));padding:calc(10 * var(--u)) calc(16 * var(--u));border-radius:calc(14 * var(--u));
+    background:var(--text);color:var(--ink);font:600 calc(18 * var(--u))/1.2 var(--fb);box-shadow:0 calc(16 * var(--u)) calc(30 * var(--u)) rgba(0,0,0,.5)}
+  .pin b{width:calc(30 * var(--u));height:calc(30 * var(--u));border-radius:50%;background:var(--acc);display:grid;place-items:center;font:800 calc(15 * var(--u))/1 var(--fd)}
+  .enlinea{position:absolute;right:3%;top:2.2%;display:flex;align-items:center;gap:calc(8 * var(--u));font:600 calc(17 * var(--u))/1 var(--fb);color:var(--acc)}
+  .enlinea i{width:calc(10 * var(--u));height:calc(10 * var(--u));border-radius:50%;background:var(--acc)}
+  /* Etapas */
+  #etapas{position:absolute;left:var(--vx);width:var(--vw);top:calc(var(--vy) + var(--vw) * 10.4 / 16 + 44 * var(--u));display:flex;justify-content:space-between}
+  #etapas::before,#linea{content:"";position:absolute;left:calc(11 * var(--u));right:calc(11 * var(--u));top:calc(10 * var(--u));height:calc(3 * var(--u));background:#2c2c35;border-radius:9px}
+  #linea{background:var(--acc);transform-origin:0 50%;transform:scaleX(0)}
+  .et{position:relative;display:grid;justify-items:center;gap:calc(14 * var(--u));font:600 calc(21 * var(--u))/1 var(--fb);color:var(--muted)}
+  .et:first-child{justify-items:start}.et:last-child{justify-items:end}
+  .et i{width:calc(23 * var(--u));height:calc(23 * var(--u));border-radius:50%;background:#2c2c35;border:calc(3 * var(--u)) solid var(--bg);position:relative}
+  .et i::after{content:"";position:absolute;inset:calc(-3 * var(--u));border-radius:50%;background:var(--acc);transform:scale(0.4);opacity:0}
+  /* Precio */
+  #precio{position:absolute;display:flex;align-items:baseline;gap:calc(12 * var(--u));padding:calc(20 * var(--u)) calc(30 * var(--u));border-radius:calc(20 * var(--u));background:var(--text);color:var(--ink);
+    left:calc(var(--vx) + var(--vw) - 230 * var(--u));top:calc(var(--vy) - 40 * var(--u));box-shadow:0 calc(24 * var(--u)) calc(50 * var(--u)) rgba(0,0,0,.6)}
+  #precio small{font:600 calc(20 * var(--u))/1 var(--fb);color:#5b5953}
+  #precio b{font:800 calc(54 * var(--u))/1 var(--fd);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  /* Textos: trozos cortos, uno tras otro */
+  .copy{position:absolute;left:var(--cx);top:var(--cy);width:var(--cw);font:800 var(--cs)/.98 var(--fd);letter-spacing:-.04em}
+  .copy span{display:block;clip-path:inset(0 0 100% 0)}
+  .copy .acc{color:var(--acc)}
+  /* Cierre */
+  #cierre{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:calc(26 * var(--u))}
+  #marca{display:flex;align-items:center;gap:calc(26 * var(--u))}
+  #logo{width:calc(130 * var(--u));height:calc(130 * var(--u));opacity:0}
+  #nombre{font:800 calc(104 * var(--u))/1 var(--fd);letter-spacing:-.04em;clip-path:inset(0 100% 0 0)}
+  #nombre em{font-style:normal;color:var(--acc)}
+  #web{font:600 calc(32 * var(--u))/1 var(--fb);color:var(--muted);letter-spacing:.01em;opacity:0}
+</style>
+</head>
+<body>
+<div id="escena" class="u">
+  <div class="copy" id="c1"><span>¿Tu negocio</span><span>sin web?</span></div>
+  <div class="copy" id="c2"><span>Te la</span><span class="acc">hacemos.</span></div>
+  <div class="copy" id="c3"><span>Sigues cada</span><span class="acc">paso.</span></div>
+  <div class="copy" id="c4"><span>Precio</span><span class="acc">cerrado.</span></div>
+
+  <div id="ventana">
+    <div class="barra"><i></i><i></i><i></i>
+      <div class="url"><svg class="cand" viewBox="0 0 24 24" fill="none" stroke="#c8f560" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span id="urlTxt">tu-negocio.es</span><i id="cursor"></i></div>
+    </div>
+    <div class="enlinea" id="enlinea"><i></i>En línea</div>
+    <div class="dentro">
+      <div class="nav" id="wNav"><b>BARBERÍA FILO</b><span><i></i><i></i><i></i></span></div>
+      <div class="heroW" id="wHero"><h4>Cortes con oficio.</h4><p></p><span class="cta">Reservar cita</span></div>
+      <div class="tarjetas" id="wTarj"><div></div><div></div><div></div></div>
+      <div class="pin" id="pin"><b>A</b>Logo más grande</div>
+    </div>
+  </div>
+
+  <div id="etapas"><i id="linea"></i>
+    <div class="et"><i></i>Pedido</div><div class="et"><i></i>Diseño</div><div class="et"><i></i>Revisión</div><div class="et"><i></i>Publicada</div>
+  </div>
+
+  <div id="precio"><small>desde</small><b>149 €</b></div>
+
+  <div id="cierre">
+    <div id="marca"><img id="logo" src="../icons/logo-a-verde.png" alt=""><div id="nombre">Aurevix<em>Web</em></div></div>
+    <div id="web">aurevixweb.es</div>
+  </div>
+</div>
+<script>
+const q = new URLSearchParams(location.search);
+const W = +q.get('w') || 1920, H = +q.get('h') || 1080, vertical = H > W;
+const R = document.documentElement.style;
+R.setProperty('--W', W + 'px'); R.setProperty('--H', H + 'px');
+const u = vertical ? (W * .9) / 998 : H / 1080;
+// Composición: horizontal → textos a la izquierda y ventana a la derecha; vertical → textos arriba y ventana debajo
+if (!vertical) {
+  R.setProperty('--vw', (W * .52) + 'px'); R.setProperty('--vx', (W * .4) + 'px'); R.setProperty('--vy', (H * .17) + 'px');
+  R.setProperty('--cx', (W * .065) + 'px'); R.setProperty('--cy', (H * .36) + 'px'); R.setProperty('--cw', (W * .32) + 'px'); R.setProperty('--cs', (118 * u) + 'px');
+} else {
+  const v = W * .9; R.setProperty('--vw', v + 'px'); R.setProperty('--vx', (W * .05) + 'px'); R.setProperty('--vy', (H * .36) + 'px');
+  R.setProperty('--cx', (W * .08) + 'px'); R.setProperty('--cy', (H * .15) + 'px'); R.setProperty('--cw', (W * .84) + 'px'); R.setProperty('--cs', (W * .14) + 'px');
+  document.querySelector('.u').style.setProperty('--u', (v / 998) + 'px'); // misma escala interior que la ventana horizontal
+}
+
+/* ---------- Movimiento: dos curvas de la casa ---------- */
+const SALE = 'cubic-bezier(.23,1,.32,1)';      // entra/sale: rápido y se posa
+const MUEVE = 'cubic-bezier(.77,0,.175,1)';    // se desplaza en pantalla
+const $ = s => document.querySelector(s);
+const anims = [];
+// La primera animación de cada elemento rellena hacia atrás (su estado inicial manda desde el fotograma 0);
+// las siguientes solo hacia delante, para no tapar a la anterior mientras esperan su turno
+const vistos = new WeakSet();
+const A = (el, kf, ini, dur, easing = SALE) => { const fill = vistos.has(el) ? 'forwards' : 'both'; vistos.add(el); anims.push(el.animate(kf, { delay: ini, duration: dur, easing, fill })); };
+const aparece = (el, ini, dur = 520, dy = 18) => A(el, [{ opacity: 0, transform: `translateY(${dy * u}px)` }, { opacity: 1, transform: 'none' }], ini, dur);
+const copyEntra = (id, ini, entre = 360) => [...$(id).children].forEach((s, i) => A(s, [{ clipPath: 'inset(0 0 100% 0)', transform: `translateY(${40 * u}px)` }, { clipPath: 'inset(0 0 0% 0)', transform: 'none' }], ini + i * entre, 620));
+const copySale = (id, ini) => A($(id), [{ opacity: 1, transform: 'none', filter: 'blur(0)' }, { opacity: 0, transform: `translateY(${-24 * u}px)`, filter: `blur(${6 * u}px)` }], ini, 380, 'cubic-bezier(.4,0,1,1)');
+
+/* 0,0–1,9 · Gancho: ventana vacía, se escribe «tu-negocio.es» */
+A($('#ventana'), [{ opacity: 0, transform: 'scale(.94)' }, { opacity: 1, transform: 'none' }], 0, 700);
+A($('#urlTxt'), [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)' }], 450, 780, 'steps(13, end)');
+A($('#cursor'), [{ opacity: 1 }, { opacity: 0 }, { opacity: 1 }], 0, 500, 'steps(2, jump-none)'); anims.at(-1).effect.updateTiming({ iterations: 4 });
+copyEntra('#c1', 350, 420);
+['#wNav', '#wHero', '#wTarj', '#pin', '#enlinea'].forEach(s => $(s).style.opacity = 0);
+copySale('#c1', 2100);
+
+/* 2,2–5,0 · La web se monta sola */
+aparece($('#wNav'), 2350);
+A($('#wHero h4'), [{ clipPath: 'inset(0 0 100% 0)', transform: `translateY(${30 * u}px)` }, { clipPath: 'inset(0 0 0% 0)', transform: 'none' }], 2500, 700);
+A($('#wHero'), [{ opacity: 0 }, { opacity: 1 }], 2450, 1);
+A($('#wHero p'), [{ opacity: 0 }, { opacity: 1 }], 2800, 400);
+A($('#wHero .cta'), [{ opacity: 0, transform: 'scale(.92)' }, { opacity: 1, transform: 'none' }], 3000, 480);
+A($('#wTarj'), [{ opacity: 0 }, { opacity: 1 }], 3100, 1);
+[...$('#wTarj').children].forEach((t, i) => A(t, [{ opacity: 0, transform: `translateY(${40 * u}px)` }, { opacity: 1, transform: 'none' }], 3150 + i * 90, 620));
+copyEntra('#c2', 2900);
+copySale('#c2', 5000);
+
+/* 5,2–8,9 · Etapas: el lima avanza; en Revisión aparece un comentario; en Publicada, el candado y «En línea» */
+aparece($('#etapas'), 5000, 600, 24);
+copyEntra('#c3', 5300);
+const nodos = [...document.querySelectorAll('.et')];
+const t0 = 5600, paso = 850;
+A($('#linea'), [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], t0, paso * 3, MUEVE);
+nodos.forEach((n, i) => {
+  const t = t0 + i * paso;
+  A(n.querySelector('i'), [{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], t, 420);
+  anims.push(n.querySelector('i').animate([{ opacity: 0, transform: 'scale(.4)' }, { opacity: 1, transform: 'scale(1)' }], { delay: t, duration: 360, easing: SALE, fill: 'both', pseudoElement: '::after' }));
+  A(n, [{ color: '#a19f96' }, { color: '#f3f1ea' }], t, 300, 'ease');
+});
+A($('#pin'), [{ opacity: 0, transform: `translateY(${16 * u}px) scale(.96)` }, { opacity: 1, transform: 'none' }], t0 + paso * 2 - 120, 480);
+A($('#pin'), [{ opacity: 1 }, { opacity: 0 }], t0 + paso * 3 - 260, 260, 'ease');
+A($('#wHero h4'), [{ transform: 'none' }, { transform: 'scale(1.06)' }], t0 + paso * 2 + 350, 520, MUEVE);
+anims.at(-1).effect.target.style.transformOrigin = '0 50%';
+A($('.url .cand'), [{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'none' }], t0 + paso * 3, 420);
+aparece($('#enlinea'), t0 + paso * 3 + 80, 420, 8);
+copySale('#c3', 8800);
+
+/* 9,0–11,0 · Precio cerrado: la etiqueta se posa sobre la esquina, sin rebote */
+A($('#precio'), [{ opacity: 0, transform: `translateY(${-60 * u}px) rotate(-4deg)` }, { opacity: 1, transform: 'rotate(-4deg)' }], 9000, 700);
+copyEntra('#c4', 9250);
+copySale('#c4', 11000);
+
+/* 11,0–12,4 · La ventana se recoge y se convierte en el logo */
+const fueraW = [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `scale(.86)` }];
+A($('#etapas'), [{ opacity: 1 }, { opacity: 0 }], 11000, 360, 'ease');
+A($('#precio'), [{ opacity: 1, transform: 'rotate(-4deg)' }, { opacity: 0, transform: `rotate(-4deg) translateY(${-30 * u}px)` }], 11000, 380, 'cubic-bezier(.4,0,1,1)');
+const r = $('#ventana').getBoundingClientRect();
+const dx = W / 2 - (r.left + r.width / 2) - (vertical ? 0 : 0), dy = H / 2 - (r.top + r.height / 2) - 30 * u;
+A($('#ventana'), [{ transform: 'none', borderRadius: `${18 * u}px`, opacity: 1 }, { transform: `translate(${dx}px,${dy}px) scale(${(130 * u) / r.width}, ${(130 * u) / r.height})`, borderRadius: `${r.width * .5}px`, opacity: 1 },
+  { transform: `translate(${dx}px,${dy}px) scale(${(130 * u) / r.width}, ${(130 * u) / r.height})`, borderRadius: `${r.width * .5}px`, opacity: 0 }], 11150, 1150, MUEVE);
+anims.at(-1).effect.setKeyframes([{ transform: 'none', borderRadius: `${18 * u}px`, opacity: 1, offset: 0 },
+  { transform: `translate(${dx}px,${dy}px) scale(${(130 * u) / r.width}, ${(130 * u) / r.height})`, borderRadius: `${r.width * .5}px`, opacity: 1, offset: .82 },
+  { transform: `translate(${dx}px,${dy}px) scale(${(130 * u) / r.width}, ${(130 * u) / r.height})`, borderRadius: `${r.width * .5}px`, opacity: 0, offset: 1 }]);
+/* 12,0–15,0 · Cierre: logo, nombre que se descubre desde el logo y la dirección */
+A($('#logo'), [{ opacity: 0, transform: 'scale(.9)' }, { opacity: 1, transform: 'none' }], 12050, 520);
+A($('#marca'), [{ transform: `translateX(${(vertical ? 220 : 300) * u}px)` }, { transform: 'none' }], 12400, 900, MUEVE);
+A($('#nombre'), [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)' }], 12500, 820, MUEVE);
+A($('#web'), [{ opacity: 0, transform: `translateY(${12 * u}px)` }, { opacity: 1, transform: 'none' }], 13200, 600);
+
+anims.forEach(a => a.pause());
+window.DURACION = 15000;
+window.irA = ms => { anims.forEach(a => { a.currentTime = ms; }); };
+window.listo = document.fonts.ready.then(() => Promise.all([...document.images].map(i => i.decode().catch(() => {}))));
+irA(0);
+</script>
+</body>
+</html>

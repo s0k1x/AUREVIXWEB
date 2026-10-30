@@ -1196,3 +1196,13 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **Hojas de fotogramas limpias:** las 7 hojas (`icons/asistente/*.webp`) llevaban un velo casi invisible (alfa 4-9 de 255): la textura de grano de la página se coló al generarlas. Sobre fondo oscuro se veía como un rectángulo detrás del robot. Ahora son transparentes de verdad y pesan la mitad (5,6 MB → 1,9 MB en total). Se piden con `?v=2` para que nadie siga viendo las viejas.
 - `scripts/generar-mascota.js` oculta el grano de la página (`body::before/after`) al hacer las fotos, para que no vuelva a pasar.
 - **Bienvenida y despedida de la cuenta:** el fondo es opaco del todo (antes, al 97 %, se leía la página por detrás).
+
+### v83 — celebración «logro desbloqueado» y vídeo promo de 15 s
+- **Celebración (`celebrar()` en `js/efectos.js`):** idea sacada de prompt-motion.com («badge unlock»). La insignia verde entra girando en 3D y se asienta sin rebote, la cruza un brillo y suelta una ráfaga de estrellas, rombos y puntos dorados y lima. Las partículas frenan con el aire, caen un poco y titilan al apagarse.
+  - Se ve al enviar el pedido, al avisar del pago, al dejar una reseña y al aprobar la web (sustituye al confeti de antes, y `confeti()` llama a esta).
+  - Con «menos movimiento» no se hace.
+- **Vídeo promo de 15 s (`promo/promo-15s.html` + `scripts/grabar-promo.cjs`):** sigue las reglas de oficio de la skill `cinetic` (licencia MIT).
+  - Una idea y un objeto que la recorre: la ventana del navegador, que se monta, avanza por las etapas, recibe el precio y acaba convertida en el logo.
+  - Textos en trozos cortos (13 palabras en total), un solo acento (el lima, que significa «hecho»), sin rebotes y sin partículas.
+  - Se graba fotograma a fotograma a 60 fps con Playwright y ffmpeg, en horizontal (1920×1080) y en vertical (1080×1920): `node scripts/grabar-promo.cjs http://127.0.0.1:8731 salida 1920 1080`. Los vídeos no van en la web (pesan); se suben a redes.
+  - No lleva sonido: se le pone la música en la app de cada red.
