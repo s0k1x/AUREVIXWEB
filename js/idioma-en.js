@@ -4,6 +4,13 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  // v99 · base de conocimiento del asistente
+  'Puedes reservar una llamada sin compromiso: elige día y hora entre los huecos libres con «Reservar una llamada» (en Contacto) y te llamamos nosotros.': 'You can book a no-obligation call: pick a day and time from the free slots with “Book a call” (in Contact) and we will call you.',
+  'Ahora mismo no hay llamadas disponibles. Escríbenos desde el formulario de contacto o por correo y te respondemos enseguida.': 'There are no calls available right now. Write to us from the contact form or by email and we will reply right away.',
+  'En el configurador ves en vivo cómo queda tu web mientras eliges. Y con «Revisa tu web», en la portada, medimos gratis tu web actual con Google y la comparamos con una nuestra.': 'In the configurator you see your website live as you choose. And with “Check your website”, on the home page, we measure your current site for free with Google and compare it with one of ours.',
+  'Al confirmar el pedido firmas el presupuesto en pantalla, con el dedo o el ratón, y la firma queda en tu recibo. Antes de confirmar ves el total con todos los extras.': 'When you confirm the order you sign the quote on screen, with your finger or the mouse, and the signature appears on your receipt. Before confirming you see the total with all the extras.',
+  'Con el mantenimiento mensual recibes cada día 1 un informe en PDF con visitas, contactos y de dónde llegan, y te avisamos por correo antes de cada cuota. Puedes desactivar los recordatorios en Ajustes → Avisos.': 'With monthly maintenance you get a PDF report on the 1st of each month with visits, contacts and where they come from, and we email you before each fee. You can turn the reminders off in Settings → Notifications.',
+  'Cambia entre claro y oscuro con el botón del sol o la luna, y el idioma con el selector Español/English. El color del asistente se cambia con la paleta del chat.': 'Switch between light and dark with the sun or moon button, and the language with the Español/English selector. The assistant’s colour is changed with the palette button in the chat.',
   // v92–v95 · sesión, antes y después, revisa tu web, llamadas, firma, tema, mantenimiento y avisos
   'Hola': 'Hi', 'Entrando en tu cuenta': 'Signing you in', 'Cerrando tu sesión': 'Signing you out',
   'El antes y el después': 'Before and after', 'La misma barbería, con una web de hace años y con un diseño nuestro. Desliza para compararlas.': 'The same barbershop, with a years-old website and with one of our designs. Slide to compare them.',
