@@ -4,7 +4,7 @@
 import { CONFIG } from '../config.js';
 import { aplicarTemporada } from './temporada.js';
 import * as store from './store.js';
-import { iniciarEfectos } from './efectos.js';
+import { iniciarEfectos, vibrar } from './efectos.js';
 import { icono, pintarIconos } from './iconos.js';
 import { aplicarCache, cargarAjustesWeb } from './sitio.js';
 import { vigilarCampos } from './validar.js';
@@ -264,21 +264,62 @@ export const tarjetaMarca = (cls = '') => `
 
 /* ---------- Avisos ---------- */
 let toastTimer;
+/* ---------- Avisos (toast) ----------
+   Siguiendo a Sonner (la librería de avisos de Emil Kowalski), en versión propia y sin dependencias:
+   - Siempre por encima de todo, también de los diálogos abiertos: va en la capa superior del navegador
+     (popover). Antes, con un diálogo abierto, el aviso quedaba tapado.
+   - Los errores se anuncian al momento (role="alert"); el resto, con calma (role="status").
+   - El tiempo se para mientras el ratón está encima o la pestaña no se ve, y sigue donde iba.
+   - En el móvil se quita deslizándolo hacia abajo, por donde entró.
+   - Entra y sale por el mismo sitio (abajo). */
+let avisoRestante = 0, avisoDesde = 0;
+const conPopover = typeof HTMLElement !== 'undefined' && 'showPopover' in HTMLElement.prototype;
+function quitarAviso(t) {
+  clearTimeout(toastTimer); t.classList.remove('show'); t.style.transform = '';
+  // Cuando termina de irse, fuera de la capa superior
+  setTimeout(() => { if (!t.classList.contains('show') && conPopover) try { t.hidePopover(); } catch { /* ya estaba */ } }, 450);
+}
+function seguirAviso(t) { clearTimeout(toastTimer); avisoDesde = Date.now(); toastTimer = setTimeout(() => quitarAviso(t), avisoRestante); t.style.setProperty('--estado', 'running'); }
+function pararAviso(t) { if (!t.classList.contains('show')) return; clearTimeout(toastTimer); avisoRestante = Math.max(800, avisoRestante - (Date.now() - avisoDesde)); t.style.setProperty('--estado', 'paused'); }
+function crearAviso() {
+  const t = document.createElement('div');
+  t.id = 'toast';
+  if (conPopover) t.popover = 'manual';
+  document.body.appendChild(t);
+  t.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') pararAviso(t); });
+  t.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && t.classList.contains('show')) seguirAviso(t); });
+  document.addEventListener('visibilitychange', () => (document.hidden ? pararAviso(t) : t.classList.contains('show') && seguirAviso(t)));
+  // Deslizar hacia abajo para quitarlo (con un toque rápido basta: cuenta la velocidad, no solo la distancia)
+  let y0 = 0, t0 = 0, dy = 0;
+  t.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') return; y0 = e.clientY; t0 = Date.now(); dy = 0; t.setPointerCapture(e.pointerId); pararAviso(t); t.classList.add('arrastra'); });
+  t.addEventListener('pointermove', e => { if (!t.classList.contains('arrastra')) return; dy = e.clientY - y0; t.style.transform = `translate(-50%,${dy > 0 ? dy : dy / 4}px)`; });
+  const soltar = () => {
+    if (!t.classList.contains('arrastra')) return;
+    t.classList.remove('arrastra');
+    if (dy > 40 || dy / Math.max(1, Date.now() - t0) > .11) { quitarAviso(t); vibrar('toque'); }
+    else { t.style.transform = ''; seguirAviso(t); }
+  };
+  t.addEventListener('pointerup', soltar); t.addEventListener('pointercancel', soltar);
+  return t;
+}
 export function toast(texto, tipo = '') {
-  let t = $('#toast');
-  if (!t) {
-    t = document.createElement('div');
-    t.id = 'toast'; t.setAttribute('role', 'status');
-    document.body.appendChild(t);
-  }
+  const t = $('#toast') || crearAviso();
   const ic = icono({ ok: 'check', err: 'alert' }[tipo] || 'bulb');
+  t.setAttribute('role', tipo === 'err' ? 'alert' : 'status');
+  t.setAttribute('aria-live', tipo === 'err' ? 'assertive' : 'polite');
   t.innerHTML = `<span class="t-ic">${ic}</span><span>${esc(texto)}</span>`;
+  // Encima de todo: si ya estaba en la capa superior se saca y se vuelve a poner, para quedar por encima del último diálogo
+  if (conPopover) { try { if (t.matches(':popover-open')) t.hidePopover(); t.showPopover(); } catch { /* sin popover */ } }
+  else { const dlg = [...document.querySelectorAll('dialog[open]')].pop(); (dlg || document.body).appendChild(t); }
   t.className = 'toast';
+  t.style.transform = '';
   void t.offsetWidth;
   t.className = `toast show ${tipo}`;
-  clearTimeout(toastTimer);
+  if (tipo === 'err') vibrar('error'); // con el aviso visible, nunca sola
   // Los errores se quedan más tiempo para que dé tiempo a leerlos
-  toastTimer = setTimeout(() => t.classList.remove('show'), tipo === 'err' ? 6500 : 3200);
+  avisoRestante = tipo === 'err' ? 6500 : 3200;
+  t.style.setProperty('--dura', avisoRestante + 'ms');
+  seguirAviso(t);
 }
 
 export async function copiar(texto) {

@@ -27,7 +27,7 @@
 .fc label{position:absolute;top:12px;left:0;pointer-events:none;display:flex;flex-wrap:wrap;max-width:100%;line-height:1.25}
 .fc label .fc-w{display:flex;flex:none;white-space:nowrap}
 .fc label .fc-sp{flex:none;width:.28em}
-.fc label .fc-w > span{display:inline-block;flex:none;font-size:17px;color:var(--muted);transition:.3s cubic-bezier(.68,-.55,.265,1.55)}
+.fc label .fc-w > span{display:inline-block;flex:none;font-size:17px;color:var(--muted);transition:color .25s ease,transform .3s var(--e-out)}
 .fc input:focus,.fc input:not(:placeholder-shown),.fc textarea:focus,.fc textarea:not(:placeholder-shown),.fc.lleno input,.fc.lleno textarea{border-bottom-color:var(--accent)}
 .fc input:focus + label .fc-w > span,.fc input:not(:placeholder-shown) + label .fc-w > span,
 .fc textarea:focus + label .fc-w > span,.fc textarea:not(:placeholder-shown) + label .fc-w > span,
@@ -96,13 +96,13 @@ input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;bo
 .gl-checkbox{display:inline-flex;align-items:center;gap:.85rem;cursor:pointer;user-select:none;position:relative}
 .gl-checkbox__input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
 .gl-checkbox__box{width:22px;height:22px;min-width:22px;border-radius:7px;background:rgba(255,255,255,.05);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
-  transition:background .3s ease,border-color .3s ease,box-shadow .3s ease,transform .35s cubic-bezier(.34,1.56,.64,1)}
+  transition:background .3s ease,border-color .3s ease,box-shadow .3s ease,transform .3s var(--e-out)}
 .gl-checkbox__box::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at center,rgba(200,240,96,.35) 0%,transparent 70%);opacity:0;transform:scale(0);transition:opacity .3s ease,transform .4s ease}
 .gl-checkbox:hover .gl-checkbox__box{border-color:rgba(200,240,96,.35);transform:scale(1.06)}
 .gl-checkbox__input:checked ~ .gl-checkbox__box{background:linear-gradient(135deg,#c8f060,#60f0b8);border-color:transparent;box-shadow:0 0 0 3px rgba(200,240,96,.15),0 4px 14px rgba(200,240,96,.3);transform:scale(1.05)}
 .gl-checkbox__input:checked ~ .gl-checkbox__box::before{opacity:1;transform:scale(1.5)}
 .gl-checkbox__input:focus-visible ~ .gl-checkbox__box{outline:2px solid var(--accent);outline-offset:3px}
-.gl-checkbox__check{width:13px;height:13px;color:#080a0f;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .3s cubic-bezier(.34,1.56,.64,1) .05s}
+.gl-checkbox__check{width:13px;height:13px;color:#080a0f;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .3s var(--e-out) .05s}
 .gl-checkbox__input:checked ~ .gl-checkbox__box .gl-checkbox__check{stroke-dashoffset:0}
 .gl-checkbox__label{font-size:.9rem;color:rgba(255,255,255,.55);transition:color .25s ease;line-height:1.45}
 .gl-checkbox__label a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
@@ -258,7 +258,8 @@ input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;bo
 .etapas{list-style:none;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));position:relative;margin:18px 0 6px;counter-reset:et}
 .etapas::before,.etapas::after{content:"";position:absolute;top:19px;left:calc(100% / var(--n) / 2);height:2px;border-radius:2px}
 .etapas::before{right:calc(100% / var(--n) / 2);background:var(--line2)}
-.etapas::after{width:calc((100% - 100% / var(--n)) * var(--i) / (var(--n) - 1));background:var(--accent);transition:width .8s var(--e-out)}
+/* v85 · la línea mide todo el recorrido y se llena con scaleX (tarjeta gráfica), no animando el ancho */
+.etapas::after{width:calc(100% - 100% / var(--n));transform-origin:0 50%;transform:scaleX(calc(var(--i) / (var(--n) - 1)));background:var(--accent);transition:transform .8s var(--e-out)}
 .etapas li{position:relative;z-index:1;display:flex;justify-content:center;min-width:0}
 .etapas button{appearance:none;background:none;border:0;font:inherit;color:inherit}
 .etapas .et-in,.etapas button{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;min-width:0;width:100%;padding:0 2px;color:var(--dim)}

@@ -74,3 +74,24 @@ ni brillos que recorren tarjetas: superficies lisas (`--bg`, `--bg2`, `--card`) 
 3. Todo texto nuevo en español → añade su traducción en `js/idioma-en.js`.
 4. Al subir cambios, sube `VERSION` en `sw.js` y añade los archivos nuevos a `ARCHIVOS`.
 5. Prueba en móvil (390 px) y en ordenador (1440 px), en oscuro y en claro.
+
+## Catálogo de movimiento (nombres de la skill animation-vocabulary)
+
+Cada movimiento de la web con su nombre técnico. Antes de añadir uno nuevo, mira si ya existe aquí y reutiliza su curva y su duración.
+
+| Dónde | Nombre | Cómo está hecho |
+|---|---|---|
+| Secciones al bajar | **Scroll reveal** | Fade in + translate 24 px, `--e-out`, 0,6–0,7 s, una vez |
+| Botones | **Press / Tap feedback** | `scale(.97)` en 0,1 s; hover solo con ratón (`hover:hover`) |
+| Avisos (toast) | **Slide in / Swipe to dismiss** | Entran y salen por abajo; en el móvil se quitan deslizando (con distancia o velocidad); el tiempo se pausa con el ratón encima |
+| Barra de etapas de un proyecto | **Continuity transition** | La línea se llena con `scaleX` (compositing) |
+| Maqueta y tarjetas de precios | **3D tilt** + **Perspective** 1100 px | Muelle amortiguado sin bounce, solo con ratón |
+| Insignia de éxito | **Flip** (rotateY) + **Reveal** de brillo | Sin overshoot; con partículas que frenan (follow-through) |
+| Robot del asistente volando | **Shared element transition** | Sale del botón y se convierte en el avatar del chat; anticipation al despegar, squash & stretch al aterrizar |
+| Robot en reposo | **Idle animation** / **Float** | Hojas de fotogramas en **stepped animation** (`steps(n)` con números fijos) |
+| «Escribiendo…» del chat | **Pulse** | Solo mientras la IA responde de verdad |
+| Precios y cifras | **Tabular numbers** | `font-variant-numeric: tabular-nums` |
+| Preguntas frecuentes | **Accordion / Collapse** | Única animación de altura permitida |
+| Desplegables y menús | **Origin-aware animation** | Crecen desde su botón; los diálogos, desde el centro |
+
+Reglas que no se rompen: ease-out para entrar y salir y ease-in-out para moverse, nunca ease-in. La interfaz no rebota (el **bounce** es solo para la mascota). Solo se anima transform y opacity (sin **layout thrashing**). Todo respeta el **reduced motion**. La vibración (háptica) va una vez por acción y siempre junto a algo visible.

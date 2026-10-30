@@ -10,7 +10,7 @@
   --r:18px; --max:1880px; --gutter:clamp(18px,3vw,60px); --borde:clamp(16px,1.8vw,34px);
   --fm:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
   --e-out:cubic-bezier(.23,1,.32,1); --e-io:cubic-bezier(.77,0,.175,1); --e-drawer:cubic-bezier(.32,.72,0,1);
-  --e-spring:cubic-bezier(.3,1.3,.5,1); /* rebote corto: se pasa un poco y se asienta, sin bailar */
+  --e-spring:cubic-bezier(.22,1,.36,1); /* v85: sin rebote en la interfaz (frena y se para); la mascota lleva sus propias curvas */
   --fd:'Bricolage Grotesque',system-ui,-apple-system,sans-serif;
   --fb:'Instrument Sans',system-ui,-apple-system,sans-serif;
   color-scheme:dark;

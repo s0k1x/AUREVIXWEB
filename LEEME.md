@@ -1213,3 +1213,27 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - Solo en ordenador con ratón (`hover:hover` y puntero fino) y sin «menos movimiento».
   - Se monta al primer paso del ratón, así que sirve también para tarjetas que se pintan después. En reposo quita su estilo y lo deja como estaba.
   - CSS en `pulido.css`: `.inclina` (sin transición de transform, para no suavizar dos veces) e `.inclina-brillo`.
+
+### v85 — revisión final con todas las skills de diseño
+- **Auditoría automática:** 12 páginas × 4 tamaños (360, 390, 768 y 1440 px) × tema claro y oscuro. Cero errores de JS o de carga, nada se sale de la pantalla, ningún campo hace zoom en el iPhone y no falta ningún nombre accesible. Los únicos textos de 11 px están dentro de la maqueta del portátil, a propósito.
+- **mobile-native / Apple HIG:** zona de toque de ~44 px en el logotipo, las migas de pan, los enlaces de las casillas, el aviso de la demo y el cupón, con relleno invisible compensado (nada se mueve).
+- **animation-performance:** la línea de etapas de cada proyecto se llena con `scaleX` (tarjeta gráfica) en vez de animar el ancho.
+- **impeccable (detector) y el sistema de diseño:**
+  - Fuera los resplandores de color (sombras lima) de los botones principales, «Recomendado», la etiqueta % de Trabaja con nosotros, los iconos vacíos y el avatar del chat. Ahora son sombras neutras de elevación, en oscuro y en claro.
+  - La curva `--e-spring` de la interfaz ya no rebota. Tampoco las casillas, el icono de los campos ni la insignia de éxito. La mascota conserva sus rebotes.
+  - Lo demás que marca son falsos positivos (rellenos que pone un hijo, el botón con relleno solo al pasar el ratón) o decisiones de marca (Instrument Sans, el «escribiendo…» del chat).
+- **break-ui:** el chat y el formulario de contacto aguantan textos larguísimos sin espacios, emojis, árabe y chino en 360 px sin salirse.
+- **dataviz:** el gráfico de ingresos del panel ya tenía leyenda, cifras escritas y descripción accesible por mes.
+- No aplican a esta web: `animate-expo` y `write-swift` (apps nativas), `ask-sonner` y `pick-ui-library` (librerías de React) y `animation-vocabulary` (glosario).
+
+### v86 — las skills que faltaban: ask-sonner, pick-ui-library, animate-expo y animation-vocabulary
+- **ask-sonner:** el aviso (`toast` en `js/ui.js`) sigue a Sonner, sin instalar nada.
+  - Arreglado: con un diálogo abierto, el aviso quedaba tapado debajo. Ahora va en la capa superior del navegador (`popover`) y se ve siempre.
+  - Los errores se anuncian al momento a los lectores de pantalla (`role="alert"`).
+  - El tiempo, y su barrita, se pausan con el ratón encima o con la pestaña oculta.
+  - En el móvil se quita deslizándolo hacia abajo (basta un toque rápido).
+  - Ya no parte en dos líneas un texto corto.
+- **pick-ui-library:** revisados los componentes propios frente a lo que haría una librería (Radix o Base UI). El desplegable tiene roles, flechas, Inicio y Fin, buscar por letra y devuelve el foco; los diálogos son `<dialog>` nativos; el menú abre con Enter, cierra con Escape y devuelve el foco. No hacía falta ninguna librería.
+- **animate-expo (háptica):** `vibrar()` en `js/efectos.js` (en Android; Safari del iPhone no lo permite). Una vibración por acción y junto a lo que se ve: éxito con la celebración, error con el aviso de error y un toque al descartar un aviso.
+- **animation-vocabulary:** catálogo de movimiento con el nombre técnico de cada animación de la web, en `.claude/skills/aurevix-diseno/SKILL.md`.
+- **write-swift:** no aplica; la web no tiene código Swift.
