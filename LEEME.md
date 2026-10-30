@@ -1062,3 +1062,21 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
   2. `aurevixweb` → *Settings* → *General* → *Danger Zone* → *Change visibility* → **Public**.
   3. `aurevixweb` → *Settings* → *Pages*: *Deploy from a branch* → `main` / `(root)`; en *Custom domain* `aurevixweb.es` → *Save*; cuando salga el tic verde, marca *Enforce HTTPS*.
   4. Opcional: borrar el secreto `PUBLICAR_TOKEN` (*Settings* → *Secrets and variables* → *Actions*), revocar el token «publicar-aurevix» (*Settings* de la cuenta → *Developer settings* → *Fine-grained tokens*) y borrar o archivar `aurevixweb-web`.
+
+## 51. Versión v71–v72 — sin Scroll World, portada más ordenada y robot a 60 fps
+
+**Scroll World fuera**
+- Se quita por completo la intro en vídeo con scroll de la portada: la sección, `mundo.css`, `js/mundo.js`, la carpeta `video/` (23 MB de vídeo y fotos), su entrada en la caché y la prueba que la mencionaba. La web empieza directamente en la portada.
+
+**Estructura de la portada (`index.html`)**
+- Nuevo orden, de lo que se vende a lo que se pregunta: Portada → Garantías → Tipos de web y precios → Calculadora → Cómo trabajamos → Diseños de partida → (Casos reales) → Opiniones → Preguntas frecuentes → Contacto → banda «¿Quieres vender webs?».
+- Fuera la cinta naranja inclinada (era decorativa y rompía el ritmo). La oferta de comerciales deja de ser un bloque naranja a media página y pasa a una banda discreta antes del pie.
+- Los fondos alternan uno sí y otro no (Precios, Cómo trabajamos, Opiniones y Contacto con fondo; el resto liso). La navegación lateral sigue el mismo orden.
+
+**Robot del asistente a 60 fps**
+- **Por qué iba a tirones:** el robot era un único SVG con piezas que se movían por dentro. Eso obliga al navegador a repintar el dibujo en cada fotograma, en el hilo principal, y con la página ocupada caía a 20-30 fps.
+- **Ahora, por capas** (`js/mascota.js`, estilos en `funciones.css`): cada pieza (casco, ojos, torso, brazos, piernas, llamas, sombra) es su propio SVG a tamaño completo. Se dibuja una vez y después solo se mueve con `transform` y `opacity`, que hace la tarjeta gráfica sin pasar por el hilo principal. El robot se ve igual, pero el parpadeo, la mirada, los saltos y el vuelo ya no repintan nada.
+- **Vuelo con estela:** al abrir y cerrar el chat, el robot deja chispas por el camino (también solo `transform` y `opacity`).
+- **Más expresivo:** el salto de alegría se estira al subir y se aplasta al caer, la cabeza acompaña el movimiento, y al dormir respira con todo el cuerpo.
+- **60 imágenes del robot saludando** (`icons/asistente/saluda-00.webp` … `saluda-59.webp`, un bucle perfecto de 1 segundo) y la hoja con todas juntas (`saluda.webp`, 10 × 6 fotogramas). Las genera `node scripts/generar-mascota.js http://127.0.0.1:8731` desde el propio dibujo del robot. La web usa la hoja, no las 60 por separado.
+- **Dónde se usa:** al iniciar y al cerrar sesión. Se reproduce con dos animaciones de `translate` y `transform` por pasos (`steps(10)` y `steps(6)`), que corren en la tarjeta gráfica: 60 fps exactos aunque la página esté ocupada. La hoja se descarga mientras se escribe el código de acceso, o con la página ya en reposo si hay sesión iniciada, así que no pesa para quien solo mira. Si no llega a cargarse, se ve el robot en vector como antes.

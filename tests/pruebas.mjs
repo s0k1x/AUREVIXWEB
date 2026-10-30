@@ -79,7 +79,6 @@ for (const [nombre, tipo] of [['ordenador', PC], ['móvil', MOVIL]]) {
   const pg = await ctx.newPage(); const e = errores(pg);
   await pg.goto(BASE + '/', { waitUntil: 'load' }); await pg.waitForTimeout(1000);
   ok(await pg.locator('#planes [data-comprar]').count() >= 3, 'portada: se ven los tipos de web con su botón');
-  ok(await pg.evaluate(() => getComputedStyle(document.getElementById('mundo')).display === 'none'), 'móvil: la intro en vídeo no aparece');
   await pg.locator('#calc').scrollIntoViewIfNeeded(); await pg.waitForTimeout(1200);
   ok(!!(await pg.textContent('#calcTotal'))?.includes('€'), 'calculadora: muestra el total');
   const [pdf] = await Promise.all([pg.waitForEvent('download', { timeout: 15000 }).catch(() => null), pg.click('#calcPdf')]);

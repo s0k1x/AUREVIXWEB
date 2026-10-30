@@ -10,7 +10,6 @@ import {
   estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
 } from './ui.js';
 import { planesActivos, extrasActivos } from './sitio.js';
-import './mundo.js';
 import { montarHilo, montarArchivos, abrirRecibo } from './colabora.js';
 import { botonPago, abrirPago, abrirResena, animarYPagar } from './pago.js';
 import { recomendar, iniciarChat } from './asistente.js';
@@ -205,7 +204,7 @@ function alAcercarse(el, fn, margen = '600px') {
 alAcercarse($('#calc'), () => import('./calculadora.js').then(m => m.montarCalculadora($('#calc'), { bienvenida: bvActivo() })));
 /* Navegación lateral por secciones (solo en pantallas anchas; el CSS la oculta en el resto) */
 (() => {
-  const SEC = [['webs', 'Precios'], ['calcula', 'Presupuesto'], ['disenos', 'Diseños'], ['como', 'Cómo trabajamos'], ['opiniones', 'Opiniones'], ['faq', 'Preguntas'], ['contacto', 'Contacto']]
+  const SEC = [['webs', 'Precios'], ['calcula', 'Presupuesto'], ['como', 'Cómo trabajamos'], ['disenos', 'Diseños'], ['opiniones', 'Opiniones'], ['faq', 'Preguntas'], ['contacto', 'Contacto']]
     .map(([id, t]) => [document.getElementById(id), t]).filter(([el]) => el);
   if (!SEC.length || !('IntersectionObserver' in window)) return;
   const nav = document.createElement('nav');
@@ -224,7 +223,7 @@ alAcercarse($('#calc'), () => import('./calculadora.js').then(m => m.montarCalcu
     for (const e of es) vis.set(e.target, e.isIntersecting ? e.intersectionRect.height : 0);
     marcar();
   // Solo cuenta la franja central de la pantalla: así se esconde mientras pasan
-  // la portada, las garantías y las cintas (van a todo el ancho y se taparían)
+  // la portada, las garantías y las garantías (van a todo el ancho y se taparían)
   }, { threshold: [0, .1, .25, .5, .75, 1], rootMargin: '-40% 0px -40% 0px' });
   SEC.forEach(([el]) => io.observe(el));
 })();

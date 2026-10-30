@@ -31,7 +31,6 @@
   <meta name="copyright" content="© AurevixWeb. Todos los derechos reservados.">
   <meta name="author" content="AurevixWeb">
   <script>try{var a=JSON.parse(localStorage.getItem('tm_apariencia')||'{}'),d=document.documentElement;if(a.tema==='claro'||(a.tema==='sistema'&&matchMedia('(prefers-color-scheme: light)').matches))d.dataset.tema='claro';if(a.texto&&a.texto!=='normal')d.dataset.texto=a.texto;if(a.movimiento==='reducido')d.dataset.movimiento='reducido';if(a.contraste)d.dataset.contraste='alto'}catch(e){}try{if(sessionStorage.getItem('tm_intro')!=='1'&&!location.hash&&!location.search&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('intro');setTimeout(function(){document.documentElement.classList.remove('intro')},5000)}}catch(e){}</script>
-  <script>/* Intro de vídeo de la portada: solo en ordenador y con animaciones */try{var dm=document.documentElement,ap=JSON.parse(localStorage.getItem('tm_apariencia')||'{}');if(matchMedia('(hover: hover) and (pointer: fine) and (min-width: 900px)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&ap.movimiento!=='reducido')dm.classList.add('mundo-ok')}catch(e){}</script>
   <script>/* Al recargar o volver atrás no se repiten las animaciones de entrada */try{var n=performance.getEntriesByType('navigation')[0];if(n&&(n.type==='reload'||n.type==='back_forward'))document.documentElement.classList.add('sin-entrada')}catch(e){}</script>
   <link rel="preload" as="image" href="icons/logo-a.png">
   <link rel="preload" as="image" href="icons/nombre.png">
@@ -72,7 +71,6 @@
   <link rel="stylesheet" href="temporadas.css">
   <link rel="stylesheet" href="iconos-vivos.css">
   <link rel="stylesheet" href="paginas.css">
-  <link rel="stylesheet" href="mundo.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"ProfessionalService","@id":"https://aurevixweb.es/#negocio","name":"AurevixWeb","url":"https://aurevixweb.es/","description":"Diseño de páginas web para negocios: landing pages, webs de negocio, reservas y tiendas online, a precio cerrado.","logo":"https://aurevixweb.es/icons/icon-512.png","image":"https://aurevixweb.es/icons/og.png?v=2","email":"aurevixweb@gmail.com","areaServed":{"@type":"Country","name":"España"},"priceRange":"149€ - 990€","currenciesAccepted":"EUR","paymentAccepted":"Bizum, transferencia bancaria","knowsLanguage":["es","en"]},{"@type":"WebSite","@id":"https://aurevixweb.es/#web","url":"https://aurevixweb.es/","name":"AurevixWeb","inLanguage":"es-ES","publisher":{"@id":"https://aurevixweb.es/#negocio"}}]}</script>
   <!-- Precarga de los módulos: el navegador los pide todos a la vez en vez de uno tras otro -->
   <link rel="modulepreload" href="js/app.js">
@@ -102,17 +100,6 @@
   <header id="header"></header>
 
   <main>
-    <!-- ===== INTRO EN VÍDEO (solo ordenador): el scroll mueve el vídeo ===== -->
-    <section class="mundo" id="mundo" aria-label="Presentación de AurevixWeb">
-      <div class="mundo-pin">
-        <img class="mundo-foto" alt="" aria-hidden="true" decoding="async">
-        <video class="mundo-video" muted playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
-        <p class="mundo-pista" aria-hidden="true"><span class="mundo-raton"></span><span>Desplázate para descubrirlo</span></p>
-        <a href="#portada" class="mundo-saltar">Saltar intro <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
-        <div class="mundo-barra" aria-hidden="true"><i></i></div>
-      </div>
-    </section>
-
     <!-- ===== PORTADA ===== -->
     <section class="hero" id="portada">
       <div class="hero-bg hero-iso" aria-hidden="true"></div>
@@ -158,13 +145,15 @@
       </ul>
     </div>
 
-    <!-- ===== CINTAS CRUZADAS ===== -->
-    <div class="cintas" aria-hidden="true">
-      <div class="cinta cinta-b"><div class="cinta-track"><span>Diseño personalizado</span><span>Adaptada a móvil</span><span>Entrega en 1–4 semanas</span><span>Sin permanencia</span><span>Soporte por correo</span><span>El dominio es tuyo</span><span>Diseño personalizado</span><span>Adaptada a móvil</span><span>Entrega en 1–4 semanas</span><span>Sin permanencia</span><span>Soporte por correo</span><span>El dominio es tuyo</span></div></div>
-      <div class="cinta"><div class="cinta-track"><span>Barberías</span><span>Restaurantes</span><span>Tiendas</span><span>Clínicas</span><span>Gimnasios</span><span>Academias</span><span>Fotógrafos</span><span>Estética</span><span>Barberías</span><span>Restaurantes</span><span>Tiendas</span><span>Clínicas</span><span>Gimnasios</span><span>Academias</span><span>Fotógrafos</span><span>Estética</span></div></div>
-    </div>
 
-    <!-- ===== WEBS Y PRECIOS ===== -->
+
+
+
+
+
+
+
+    <!-- ===== TIPOS DE WEB Y PRECIOS ===== -->
     <section id="webs" class="alt">
       <div class="wrap">
         <div class="sec-head reveal">
@@ -183,8 +172,7 @@
         </div>
       </div>
     </section>
-
-    <!-- ===== CALCULADORA ===== -->
+    <!-- ===== CALCULADORA DE PRESUPUESTO ===== -->
     <section id="calcula">
       <div class="wrap">
         <div class="sec-head reveal">
@@ -194,32 +182,7 @@
         <div class="calc reveal" id="calc"></div>
       </div>
     </section>
-
-    <!-- ===== DISEÑOS ===== -->
-    <section id="disenos">
-      <div class="wrap">
-        <div class="sec-head reveal">
-          <h2>Diseños de partida</h2>
-          <p class="lead">Cada diseño se adapta a tu marca: colores, tipografía, textos, fotos y secciones. Pulsa en cualquiera para verlo a pantalla completa.</p>
-        </div>
-        <div class="opts dz-filtro reveal" id="dzFiltro" role="radiogroup" aria-label="Filtrar diseños"></div>
-        <div class="disenos" id="disenosGrid"></div>
-        <nav class="pg-otros dz-sectores reveal" aria-label="Webs por sector"><b>Webs pensadas para tu sector</b><a class="pg-otro" href="webs-para-barberias">Barberías<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-centros-de-estetica">Centros de estética<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-restaurantes">Restaurantes<i data-i="arrow"></i></a><a class="pg-otro" href="tiendas-online">Tiendas online<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-gimnasios">Gimnasios<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-profesionales">Profesionales<i data-i="arrow"></i></a></nav>
-      </div>
-    </section>
-
-    <!-- ===== CASOS REALES (solo si el propietario añade alguno en Ajustes) ===== -->
-    <section id="casos" hidden>
-      <div class="wrap">
-        <div class="sec-head reveal">
-          <h2>Webs publicadas</h2>
-          <p class="lead">Algunas de las webs que hemos hecho para nuestros clientes.</p>
-        </div>
-        <div class="casos-grid" id="casosGrid"></div>
-      </div>
-    </section>
-
-    <!-- ===== CÓMO FUNCIONA ===== -->
+    <!-- ===== CÓMO TRABAJAMOS ===== -->
     <section id="como" class="alt">
       <div class="wrap">
         <div class="sec-head reveal">
@@ -233,9 +196,30 @@
         </div>
       </div>
     </section>
-
+    <!-- ===== DISEÑOS DE PARTIDA ===== -->
+    <section id="disenos">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <h2>Diseños de partida</h2>
+          <p class="lead">Cada diseño se adapta a tu marca: colores, tipografía, textos, fotos y secciones. Pulsa en cualquiera para verlo a pantalla completa.</p>
+        </div>
+        <div class="opts dz-filtro reveal" id="dzFiltro" role="radiogroup" aria-label="Filtrar diseños"></div>
+        <div class="disenos" id="disenosGrid"></div>
+        <nav class="pg-otros dz-sectores reveal" aria-label="Webs por sector"><b>Webs pensadas para tu sector</b><a class="pg-otro" href="webs-para-barberias">Barberías<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-centros-de-estetica">Centros de estética<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-restaurantes">Restaurantes<i data-i="arrow"></i></a><a class="pg-otro" href="tiendas-online">Tiendas online<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-gimnasios">Gimnasios<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-profesionales">Profesionales<i data-i="arrow"></i></a></nav>
+      </div>
+    </section>
+    <!-- ===== CASOS REALES (solo si el propietario añade alguno en Ajustes) ===== -->
+    <section id="casos" hidden>
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <h2>Webs publicadas</h2>
+          <p class="lead">Algunas de las webs que hemos hecho para nuestros clientes.</p>
+        </div>
+        <div class="casos-grid" id="casosGrid"></div>
+      </div>
+    </section>
     <!-- ===== OPINIONES ===== -->
-    <section id="opiniones">
+    <section id="opiniones" class="alt">
       <div class="wrap">
         <div class="sec-head reveal op-head">
           <div>
@@ -247,22 +231,8 @@
         <div class="op-actions" id="opActions"></div>
       </div>
     </section>
-
-    <!-- ===== TRABAJA CON NOSOTROS ===== -->
-    <section class="join-sec">
-      <div class="wrap">
-        <div class="join reveal">
-          <div>
-            <h2>Buscamos comerciales con un 30&nbsp;% de comisión por cada web vendida.</h2>
-            <p>Trabajo en remoto y con horario libre. Tú presentas nuestras webs a negocios y nosotros nos encargamos del diseño y la entrega.</p>
-          </div>
-          <a href="trabaja-con-nosotros" class="btn btn-dark" data-magnet>Ver condiciones <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== DUDAS ===== -->
-    <section id="faq" class="alt">
+    <!-- ===== PREGUNTAS FRECUENTES ===== -->
+    <section id="faq">
       <div class="wrap faq-grid">
         <div class="sec-head reveal faq-side">
           <h2>Preguntas frecuentes</h2>
@@ -285,9 +255,8 @@
         </div>
       </div>
     </section>
-
     <!-- ===== CONTACTO ===== -->
-    <section id="contacto">
+    <section id="contacto" class="alt">
       <div class="wrap contacto-grid">
         <div class="sec-head reveal">
           <h2>Cuéntanos tu proyecto</h2>
@@ -299,6 +268,18 @@
           </div>
         </div>
         <form class="card contacto-form reveal" id="contactoForm" novalidate></form>
+      </div>
+    </section>
+    <!-- ===== TRABAJA CON NOSOTROS (banda discreta antes del pie) ===== -->
+    <section class="join-sec">
+      <div class="wrap">
+        <div class="join reveal">
+          <div>
+            <h2>¿Quieres vender webs? Te pagamos un 30&nbsp;% de comisión.</h2>
+            <p>Trabajo en remoto y con horario libre. Tú presentas nuestras webs y nosotros nos encargamos del diseño y la entrega.</p>
+          </div>
+          <a href="trabaja-con-nosotros" class="btn btn-ghost">Ver condiciones <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
       </div>
     </section>
   </main>
