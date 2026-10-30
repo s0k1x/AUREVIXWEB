@@ -1225,3 +1225,15 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **break-ui:** el chat y el formulario de contacto aguantan textos larguísimos sin espacios, emojis, árabe y chino en 360 px sin salirse.
 - **dataviz:** el gráfico de ingresos del panel ya tenía leyenda, cifras escritas y descripción accesible por mes.
 - No aplican a esta web: `animate-expo` y `write-swift` (apps nativas), `ask-sonner` y `pick-ui-library` (librerías de React) y `animation-vocabulary` (glosario).
+
+### v86 — las skills que faltaban: ask-sonner, pick-ui-library, animate-expo y animation-vocabulary
+- **ask-sonner:** el aviso (`toast` en `js/ui.js`) sigue a Sonner, sin instalar nada.
+  - Arreglado: con un diálogo abierto, el aviso quedaba tapado debajo. Ahora va en la capa superior del navegador (`popover`) y se ve siempre.
+  - Los errores se anuncian al momento a los lectores de pantalla (`role="alert"`).
+  - El tiempo, y su barrita, se pausan con el ratón encima o con la pestaña oculta.
+  - En el móvil se quita deslizándolo hacia abajo (basta un toque rápido).
+  - Ya no parte en dos líneas un texto corto.
+- **pick-ui-library:** revisados los componentes propios frente a lo que haría una librería (Radix o Base UI). El desplegable tiene roles, flechas, Inicio y Fin, buscar por letra y devuelve el foco; los diálogos son `<dialog>` nativos; el menú abre con Enter, cierra con Escape y devuelve el foco. No hacía falta ninguna librería.
+- **animate-expo (háptica):** `vibrar()` en `js/efectos.js` (en Android; Safari del iPhone no lo permite). Una vibración por acción y junto a lo que se ve: éxito con la celebración, error con el aviso de error y un toque al descartar un aviso.
+- **animation-vocabulary:** catálogo de movimiento con el nombre técnico de cada animación de la web, en `.claude/skills/aurevix-diseno/SKILL.md`.
+- **write-swift:** no aplica; la web no tiene código Swift.

@@ -171,6 +171,19 @@ export function apariciones(raiz = document) {
 
 /* Confeti de celebración (pedido enviado). Ligero: un canvas que se borra solo */
 /**
+ * Respuesta háptica (vibración corta), como expo-haptics en las apps nativas, para los móviles que la permiten
+ * desde la web (Android; Safari del iPhone no deja y no pasa nada).
+ * Reglas: una por acción del usuario y en el mismo momento que lo que se ve, nunca como único aviso,
+ * nunca al hacer scroll ni en animaciones que el usuario no ha provocado.
+ *   exito → éxito de una operación · error → algo ha fallado · toque → algo encaja (soltar, descartar)
+ */
+const PATRONES = { exito: [10, 60, 14], error: [22, 50, 22], toque: 8 };
+export function vibrar(tipo = 'toque') {
+  if (document.hidden || typeof navigator.vibrate !== 'function' || !matchMedia('(pointer:coarse)').matches) return;
+  try { navigator.vibrate(PATRONES[tipo] || PATRONES.toque); } catch { /* sin vibración */ }
+}
+
+/**
  * Celebración tipo «logro desbloqueado» (pedido enviado, pago avisado, web aprobada, reseña):
  * - la insignia (por ejemplo .ok-ic) entra girando en 3D y se asienta sin rebotar, con un brillo que la cruza;
  * - de ella sale una ráfaga de partículas doradas y lima que frenan con el aire, caen un poco y titilan al apagarse.
@@ -180,6 +193,7 @@ export function celebrar(origen) {
   if (reducido()) return;
   const el = origen instanceof Element ? origen : null;
   if (el) { el.classList.remove('logro'); void el.offsetWidth; el.classList.add('logro'); }
+  vibrar('exito'); // mismo momento que la insignia
   const r = el?.getBoundingClientRect();
   const cx = r ? r.left + r.width / 2 : innerWidth / 2, cy = r ? r.top + r.height / 2 : innerHeight * .42;
   const c = document.createElement('canvas');

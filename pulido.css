@@ -545,3 +545,9 @@ html[data-tema=claro] .plan-card.popular{box-shadow:0 26px 54px -30px rgba(20,20
 html[data-tema=claro] .pct{box-shadow:0 10px 30px -12px rgba(20,20,10,.3)}
 html[data-tema=claro] .empty .em,html[data-tema=claro] .gate .em,html[data-tema=claro] .estado-cand .big{box-shadow:0 10px 24px -12px rgba(20,20,10,.25)}
 html .empty .em,html .gate .em,html .estado-cand .big{box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
+
+/* v86 · Aviso (toast) en la capa superior: por encima de los diálogos. Fuera los estilos del navegador para popover */
+.toast[popover]{inset:auto;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));margin:0;border:0;overflow:hidden;width:max-content;max-width:calc(100vw - 32px)}
+.toast.show{pointer-events:auto;touch-action:none}
+.toast.arrastra{transition:none}
+.toast.show::after{animation-duration:var(--dura,3.2s);animation-play-state:var(--estado,running)}
