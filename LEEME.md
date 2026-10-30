@@ -1332,4 +1332,4 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
     - Pantalla completa con el robot dando volteretas. Al tocarlo se asombra, bota y suelta chispas; de vez en cuando saluda.
     - Se puede escribir un mensaje opcional. Hay un enlace discreto de «Acceso del equipo»: al entrar el propietario o un trabajador, la pantalla desaparece.
     - El freno de `store.js` también actúa aunque alguien quite la pantalla desde el navegador.
-    - Límite: es una web estática, así que una persona experta podría escribir directamente en la base de datos con su sesión. Para un cierre total habría que añadir la comprobación en SQL.
+    - Cierre también en el servidor: `supabase/estado-web-v91.sql` (disparador `web_cerrada`) rechaza escribir en pedidos, consultas, mensajes, candidaturas, reseñas y vídeos mientras la web esté en demostración o mantenimiento, salvo al equipo y a las funciones del servidor.
