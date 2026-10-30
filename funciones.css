@@ -1447,26 +1447,20 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 .masc[data-estado=asombro] .ojo{transform:scale(1.3,1.42)}
 .masc.cuerpo[data-estado=asombro] .l-brazo-i{transform:rotate(128deg)}
 .masc.cuerpo[data-estado=asombro] .l-brazo-d{transform:rotate(-128deg)}
-/* Ojos arcoíris (celebraciones): seis copias de los ojos, una por color, que se funden (solo opacidad: tarjeta gráfica) */
-.ojos-arco{will-change:opacity;animation:masc-arco 1.2s linear calc(var(--i) * -.2s) infinite}
-.ojos-arco:not(:first-child){opacity:0}
-@keyframes masc-arco{0%{opacity:0}8%,25%{opacity:1}33%,100%{opacity:0}}
-
-/* Celebración (js/mascota.js → fiesta): capa por encima de todo, incluso de los diálogos (popover), sin recoger toques */
-.masc-fiesta{position:fixed;inset:0;z-index:9600;margin:0;padding:0;border:0;width:100%;height:100%;max-width:none;max-height:none;background:none;overflow:visible;pointer-events:none;color:var(--text)}
-.masc-fiesta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse min(520px,90vw) min(420px,60vh) at 50% calc(clamp(56px,16vh,170px) + min(180px,42vw) * .75),rgba(4,6,8,.78),rgba(4,6,8,.35) 55%,transparent 75%);opacity:0;transition:opacity .45s ease}
-.masc-fiesta.llega::before{opacity:1}
-.masc-fiesta.se-va::before{opacity:0;transition-duration:.6s}
-.mf-masc{position:absolute;left:50%;top:clamp(56px,16vh,170px);width:min(180px,42vw);translate:-50% 0}
-.mf-bocadillo{position:absolute;left:50%;top:calc(clamp(56px,16vh,170px) + min(180px,42vw) * 1.2 + 14px);translate:-50% 0;display:grid;gap:2px;justify-items:center;text-align:center;max-width:min(340px,86vw);padding:12px 20px;border-radius:18px;background:var(--card);border:1px solid color-mix(in srgb,var(--m-halo) 45%,var(--line));box-shadow:0 18px 40px -16px rgba(0,0,0,.6),0 0 30px -10px var(--m-halo);font-family:var(--fb);opacity:0;scale:.86;transition:opacity .25s ease,scale .45s cubic-bezier(.3,1.5,.5,1)}
-.mf-bocadillo b{font-family:var(--fd);font-size:19px;letter-spacing:-.01em}
-.mf-bocadillo small{color:var(--muted);font-size:13.5px}
-.masc-fiesta.llega .mf-bocadillo{opacity:1;scale:1}
-.masc-fiesta.se-va .mf-bocadillo{opacity:0;scale:.92;transition-duration:.2s}
-.mf-chispas{position:absolute;left:50%;top:38%;width:0;height:0}
-.mf-chispas i{position:absolute;left:0;top:0;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);opacity:0;will-change:transform,opacity}
-.masc-fiesta.llega .mf-chispas i{animation:ses-chispa 1s cubic-bezier(.2,.8,.3,1) var(--t,0s) both}
-.mf-chispas i:nth-child(3n){width:6px;height:6px;margin:-3px}
+/* Aviso de un momento importante (js/mascota.js → fiesta): notificación arriba, discreta, por encima de los diálogos */
+.masc-aviso{position:fixed;inset:auto;top:calc(14px + env(safe-area-inset-top));left:50%;z-index:9600;margin:0;padding:12px 18px 12px 12px;border:1px solid var(--line2);border-radius:16px;
+  display:flex;align-items:center;gap:12px;width:max-content;max-width:min(420px,calc(100vw - 32px));overflow:hidden;pointer-events:none;
+  background:var(--card);color:var(--text);font-family:var(--fb);box-shadow:0 16px 40px -18px rgba(0,0,0,.55),0 2px 6px -2px rgba(0,0,0,.3);
+  opacity:0;transform:translate(-50%,-10px) scale(.98);transition:opacity .28s ease,transform .45s var(--e-out)}
+.masc-aviso.on{opacity:1;transform:translate(-50%,0) scale(1)}
+.masc-aviso::backdrop{display:none}
+.ma-cara{width:38px;flex:none;border-radius:50%;box-shadow:0 0 0 1.5px color-mix(in srgb,var(--m-halo) 55%,transparent)}
+.ma-txt{display:grid;gap:1px;min-width:0}
+.ma-txt b{font-family:var(--fd);font-size:15px;font-weight:600;letter-spacing:-.01em}
+.ma-txt small{color:var(--muted);font-size:13px;line-height:1.35}
+.ma-linea{position:absolute;left:0;right:0;bottom:0;height:2px;background:transparent}
+.ma-linea i{display:block;height:100%;background:var(--m-halo);opacity:.8;transform-origin:left;transform:scaleX(0)}
+.masc-aviso.on .ma-linea i{transition:transform 3.2s linear;transform:scaleX(1)}
 
 /* Color del asistente: muestras redondas con su brillo */
 .masc-paleta{display:flex;flex-wrap:wrap;gap:10px}
@@ -1488,37 +1482,25 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 .masc-anillo{position:fixed;z-index:9400;pointer-events:none;border-radius:50%;border:2px solid var(--m-halo);will-change:transform,opacity;animation:masc-anillo .7s cubic-bezier(.2,.7,.3,1) forwards}
 @keyframes masc-anillo{from{opacity:.9;transform:scale(.6)}to{opacity:0;transform:scale(2.3)}}
 
-/* Animación al iniciar y cerrar sesión (fondo casi opaco, sin desenfoque: así va fluida en el móvil) */
-.ses-fx{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:20px;touch-action:none;background:radial-gradient(ellipse at 50% 42%,color-mix(in srgb,var(--accent) 9%,var(--bg)) 0,var(--bg) 70%);opacity:0;transition:opacity .28s ease;will-change:opacity}
+/* Al iniciar y cerrar sesión: velo suave y una tarjeta pequeña en el centro (sin desenfoque: fluido en el móvil) */
+.ses-fx{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:20px;touch-action:none;background:color-mix(in srgb,var(--bg) 72%,transparent);opacity:0;transition:opacity .28s ease;will-change:opacity}
 .ses-fx.on{opacity:1}
-.ses-caja{display:grid;justify-items:center;gap:6px;text-align:center;font-family:var(--fb);color:var(--text);transform:translateY(16px) scale(.95);transition:transform .55s cubic-bezier(.3,1.4,.5,1);will-change:transform}
+.ses-caja{position:relative;display:flex;align-items:center;gap:14px;min-width:min(300px,calc(100vw - 40px));padding:16px 20px 18px 16px;border-radius:18px;overflow:hidden;
+  background:var(--card);border:1px solid var(--line2);box-shadow:0 24px 60px -24px rgba(0,0,0,.6),0 2px 8px -2px rgba(0,0,0,.3);font-family:var(--fb);color:var(--text);
+  transform:translateY(8px) scale(.98);transition:transform .45s var(--e-out);will-change:transform}
 .ses-fx.on .ses-caja{transform:none}
-.ses-caja b{font-family:var(--fd);font-size:clamp(24px,6vw,30px);letter-spacing:-.02em;line-height:1.15}
-.ses-caja small{color:var(--muted);font-size:15px}
-.ses-masc{position:relative;width:min(190px,52vw);margin-bottom:8px}
-.ses-entra .ses-masc{animation:ses-entra .8s cubic-bezier(.3,1.5,.5,1) both}
-.ses-sale.on .ses-masc{animation:ses-asiente 1.2s ease-in-out .1s both}
-.ses-fx.con-vuelo .ses-masc{animation:none}
-.ses-fx.con-vuelo .ses-chispas i{animation-delay:calc(var(--t,0s) + 1.05s)}
-@keyframes ses-entra{0%{transform:translateY(40px) scale(.6) rotate(-10deg);opacity:0}60%{transform:translateY(-8px) scale(1.06) rotate(4deg);opacity:1}100%{transform:none;opacity:1}}
-@keyframes ses-asiente{0%,100%{transform:none}40%{transform:translateY(4px) rotate(-2deg)}}
-.ses-barra{width:132px;height:3px;border-radius:3px;background:var(--line2);overflow:hidden;margin-top:14px}
-.ses-barra i{display:block;height:100%;border-radius:inherit;background:var(--accent);transform-origin:left;animation:ses-barra 1.7s cubic-bezier(.4,0,.2,1) both}
-.ses-sale .ses-barra i{animation-duration:1.9s}
+.ses-cara{width:46px;flex:none;border-radius:50%;box-shadow:0 0 0 1.5px color-mix(in srgb,var(--m-halo) 55%,transparent),0 0 18px -6px var(--m-halo)}
+.ses-txt{display:grid;gap:2px}
+.ses-txt b{font-family:var(--fd);font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.2}
+.ses-txt small{color:var(--muted);font-size:13.5px}
+.ses-barra{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--line)}
+.ses-barra i{display:block;height:100%;background:var(--m-halo);transform-origin:left;animation:ses-barra 1.15s cubic-bezier(.4,0,.2,1) both}
+.ses-sale .ses-barra i{animation-duration:1.3s}
 @keyframes ses-barra{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-.ses-chispas{position:absolute;left:50%;top:38%;width:0;height:0;pointer-events:none}
-.ses-chispas i{position:absolute;left:0;top:0;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--m-halo);opacity:0;will-change:transform,opacity;animation:ses-chispa .95s ease-out var(--t,0s) both}
-.ses-chispas i:nth-child(3n){width:5px;height:5px;margin:-2.5px;background:#e3ffa6}
-@keyframes ses-chispa{0%{opacity:0;transform:rotate(var(--a)) translateY(-50px) scale(.4)}25%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--r) * -1.25)) scale(1)}}
-.ses-zz{position:absolute;right:16%;top:12%;pointer-events:none;font-family:var(--fd);font-weight:800;color:var(--accent)}
-.ses-zz i{position:absolute;left:0;top:0;font-style:normal;opacity:0;animation:ses-z 2s ease-out infinite}
-.ses-zz i:nth-child(1){font-size:16px;animation-delay:1.1s}
-.ses-zz i:nth-child(2){font-size:22px;animation-delay:1.6s}
-.ses-zz i:nth-child(3){font-size:28px;animation-delay:2.1s}
-@keyframes ses-z{0%{opacity:0;transform:translate(0,12px) rotate(-8deg)}25%{opacity:1}100%{opacity:0;transform:translate(26px,-44px) rotate(12deg)}}
 
 @media (prefers-reduced-motion:reduce){
   .masc,.masc *,.ses-fx *{animation:none!important}
+  .masc-aviso,.masc-aviso .ma-linea i{transition:none}
   .ses-caja,.l-ojos,.l-sigue-c,.l-cabeza,.l-brazo{transition:none}
 }
 html[data-movimiento=reducido] :is(.masc,.masc *,.ses-fx *){animation:none!important}
@@ -1606,20 +1588,20 @@ html[data-movimiento=reducido] :is(.masc,.masc *,.ses-fx *){animation:none!impor
 .seo-nota-pie{margin:0;font-size:12.5px}
 
 /* ===== Estado de la web (js/estado-web.js) ===== */
-/* Mantenimiento: pantalla completa con el robot dando volteretas (se puede jugar con él). El equipo no la ve. */
+/* Mantenimiento: página limpia y tranquila con el robot (el equipo no la ve) */
 html.en-mant,html.en-mant body{overflow:hidden}
-.mant-web{position:fixed;inset:0;z-index:9800;display:grid;place-items:center;padding:24px 20px calc(24px + env(safe-area-inset-bottom));overflow:auto;
-  background:radial-gradient(ellipse 70% 55% at 50% 38%,color-mix(in srgb,var(--m-halo) 12%,var(--bg)) 0,var(--bg) 70%);color:var(--text);font-family:var(--fb);animation:mw-entra .5s ease both}
+.mant-web{position:fixed;inset:0;z-index:9800;display:grid;place-items:center;padding:32px 24px calc(32px + env(safe-area-inset-bottom));overflow:auto;
+  background:radial-gradient(ellipse 60% 45% at 50% 36%,color-mix(in srgb,var(--m-halo) 6%,var(--bg)) 0,var(--bg) 72%);color:var(--text);font-family:var(--fb);animation:mw-entra .5s ease both}
 @keyframes mw-entra{from{opacity:0}to{opacity:1}}
-.mw-caja{display:grid;justify-items:center;gap:10px;text-align:center;max-width:440px}
-.mw-masc{position:relative;width:min(220px,56vw);padding:0;border:0;background:none;cursor:pointer;margin:0 0 6px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.mw-masc:focus-visible{outline:2px solid var(--m-halo);outline-offset:8px;border-radius:24px}
+.mw-caja{display:grid;justify-items:center;gap:12px;text-align:center;max-width:400px}
+.mw-masc{position:relative;width:min(132px,36vw);padding:0;border:0;background:none;cursor:pointer;margin:0 0 10px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.mw-masc:focus-visible{outline:1.5px solid var(--m-halo);outline-offset:10px;border-radius:24px}
 .mw-masc .masc{overflow:visible}
-.mw-chispas{position:absolute;left:50%;top:40%;width:0;height:0;pointer-events:none}
-.mw-chispas i{position:absolute;left:0;top:0;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);will-change:transform,opacity}
-.mant-web h1{margin:6px 0 0;font-family:var(--fd);font-size:clamp(26px,6.4vw,36px);line-height:1.1;letter-spacing:-.02em}
-.mant-web p{margin:0;color:var(--muted);font-size:16px;line-height:1.55}
-.mw-pista{display:inline-flex;align-items:center;gap:6px;margin-top:6px;color:var(--m-halo);font-size:13px;font-weight:600}
-.mw-correo{display:inline-flex;align-items:center;gap:8px;margin-top:8px;color:var(--text);font-size:14px;text-decoration:none;border-bottom:1px solid var(--line2)}
-.mw-equipo{margin-top:22px;font-size:12.5px;color:var(--dim)}
+.mw-etq{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border:1px solid var(--line2);border-radius:999px;font-family:var(--fm);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mw-etq i{width:6px;height:6px;border-radius:50%;background:var(--m-halo);box-shadow:0 0 8px var(--m-halo)}
+.mant-web h1{margin:2px 0 0;font-family:var(--fd);font-size:clamp(28px,6vw,38px);font-weight:600;line-height:1.1;letter-spacing:-.025em}
+.mant-web p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.6}
+.mw-correo{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:9px 16px;border:1px solid var(--line2);border-radius:999px;color:var(--text);font-size:14px;text-decoration:none;transition:border-color .2s ease,background .2s ease}
+.mw-correo:hover{border-color:color-mix(in srgb,var(--m-halo) 50%,var(--line2));background:var(--card)}
+.mw-equipo{margin-top:28px;font-size:12px;color:var(--dim)}
 @media (prefers-reduced-motion:reduce){.mant-web{animation:none}}
