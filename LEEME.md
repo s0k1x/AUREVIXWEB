@@ -1191,3 +1191,8 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **Robot del botón del asistente:** en Safari del iPhone la cara se salía del círculo y el botón se quedaba lima vacío. La animación de cada hoja de fotogramas lleva ahora números fijos (`steps(12)`…) en lugar de `steps(var(--c))`. El alto de la imagen sale de su proporción (`height:auto`) y no de un porcentaje dentro de una caja con `aspect-ratio`. Debajo del robot queda siempre el disco oscuro.
 - **Cabecera en el móvil:** al bajar por la página, asomaba contenido por detrás de la hora (iOS 26). La tapa de encima de la cabecera cubre ahora siempre la zona de la hora y 160 px más, no solo lo que se medía.
 - Comprobado en el vídeo de la prueba: el código por correo ya llega y se entra bien («Código correcto», «¡Hola, jose!»).
+
+### v82 — el robot sin nada detrás al saludar
+- **Hojas de fotogramas limpias:** las 7 hojas (`icons/asistente/*.webp`) llevaban un velo casi invisible (alfa 4-9 de 255): la textura de grano de la página se coló al generarlas. Sobre fondo oscuro se veía como un rectángulo detrás del robot. Ahora son transparentes de verdad y pesan la mitad (5,6 MB → 1,9 MB en total). Se piden con `?v=2` para que nadie siga viendo las viejas.
+- `scripts/generar-mascota.js` oculta el grano de la página (`body::before/after`) al hacer las fotos, para que no vuelva a pasar.
+- **Bienvenida y despedida de la cuenta:** el fondo es opaco del todo (antes, al 97 %, se leía la página por detrás).
