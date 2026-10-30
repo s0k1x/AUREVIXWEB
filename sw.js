@@ -1,18 +1,20 @@
 /* ==========================================================
    Service worker: la web funciona sin conexión
    Cada vez que subas cambios, sube VERSION (v13 → v14…)
-   - Páginas (HTML): internet primero (máx. 2,5 s); si tarda o no hay
-     conexión, la copia guardada.
-   - CSS, JS, imágenes y config: al instante desde la copia guardada y
-     se actualizan por detrás (la app abre sin esperar a la red). Cada
-     VERSION nueva vuelve a descargarlo todo al instalarse y borra la
-     copia anterior, así que no se mezclan versiones.
+   - Páginas, CSS, JS y config: al instante desde la copia guardada de
+     ESTA versión (la web abre sin esperar a internet y todas las piezas
+     son siempre de la misma versión). Lo que aún no está guardado va por
+     internet y se guarda.
+   - Por detrás se comprueba si la página ha cambiado en internet; si es
+     así (alguien publicó sin subir VERSION), se vuelve a descargar todo y
+     la página se recarga sola una vez. Cada VERSION nueva también lo
+     descarga todo al instalarse y borra la copia anterior.
    - Fotos de los diseños: se guardan la primera vez y después
      salen al instante.
    - Librería (/library/ y /biblioteca-ui/): NO se guarda (son miles de
      archivos); va siempre por internet con la caché normal del navegador.
    ========================================================== */
-const VERSION = 'v72';
+const VERSION = 'v74';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
@@ -60,8 +62,35 @@ async function redPrimero(req) {
   }
 }
 
-// CSS y JS: internet primero (si tarda más de 2,5 s o no hay conexión, la copia guardada).
-// Así el HTML nuevo nunca se mezcla con el JS o el CSS de la versión anterior.
+// Páginas y código: la copia de esta versión al instante; si no está, internet (y se guarda)
+async function deLaVersion(req, e) {
+  const cache = await caches.open(CACHE);
+  const guardado = await cache.match(req, { ignoreSearch: req.mode === 'navigate' });
+  if (!guardado) return redPrimero(req);
+  if (req.mode === 'navigate') e.waitUntil(comprobarCambios(req, guardado.clone()));
+  return guardado;
+}
+
+// ¿Ha cambiado la web en internet sin cambiar VERSION? Como mucho una vez por minuto
+let ultimaComprobacion = 0;
+async function comprobarCambios(req, guardado) {
+  if (Date.now() - ultimaComprobacion < 60000) return;
+  ultimaComprobacion = Date.now();
+  try {
+    const res = await fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' });
+    if (!res.ok || res.redirected) return;
+    const [nuevo, viejo] = await Promise.all([res.clone().text(), guardado.text()]);
+    if (nuevo === viejo) return;
+    const cache = await caches.open(CACHE);
+    await cache.put(req, res);
+    await Promise.all(ARCHIVOS.map(a => cache.add(new Request(a, { cache: 'reload' })).catch(() => {})));
+    // Lo que no está en ARCHIVOS (páginas de sector, guías…) se vuelve a pedir la próxima vez
+    const sueltas = (await cache.keys()).filter(r => !ARCHIVOS.some(a => new URL(a, self.registration.scope).href === r.url) && r.url !== req.url);
+    await Promise.all(sueltas.map(r => cache.delete(r)));
+    (await self.clients.matchAll({ type: 'window' })).forEach(c => c.postMessage({ tipo: 'aurevix-nueva' }));
+  } catch { /* sin conexión: ya se comprobará */ }
+}
+
 // Fuentes e imágenes propias: la copia guardada al instante y, por detrás, la de internet.
 async function guardadoYActualiza(req, e) {
   const cache = await caches.open(CACHE);
@@ -122,9 +151,8 @@ self.addEventListener('fetch', e => {
 
   if (url.hostname === 'images.pexels.com') { e.respondWith(fotoRapida(req)); return; }
   if (url.origin !== self.location.origin) return; // Supabase, Gemini, CDN: siempre en vivo
-  if (/\/(library|biblioteca-ui)\//.test(url.pathname)) return;
-  if (/\.mp4$/.test(url.pathname)) return; // el vídeo de la intro pesa mucho: lo guarda el navegador, no la app // la librería no se guarda en el móvil
+  if (/\/(library|biblioteca-ui)\//.test(url.pathname)) return; // la librería no se guarda en el móvil
 
   const codigo = req.mode === 'navigate' || ['document', 'script', 'style', 'manifest'].includes(req.destination) || /\.(m?js|css|json)$/.test(url.pathname);
-  e.respondWith(codigo ? redPrimero(req) : guardadoYActualiza(req, e));
+  e.respondWith(codigo ? deLaVersion(req, e) : guardadoYActualiza(req, e));
 });

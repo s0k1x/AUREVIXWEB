@@ -807,6 +807,16 @@ export async function arrancar(pagina) {
 
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     const registrar = () => navigator.serviceWorker.register('sw.js').catch(() => {});
+    // Si el service worker avisa de que la web ha cambiado, se recarga una vez (no mientras se escribe o hay un diálogo abierto)
+    navigator.serviceWorker.addEventListener('message', e => {
+      if (e.data?.tipo !== 'aurevix-nueva' || window.__swRecargado) return;
+      const recargar = () => {
+        const a = document.activeElement;
+        if (document.querySelector('dialog[open]') || (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) return false;
+        window.__swRecargado = 1; location.reload(); return true;
+      };
+      if (!recargar()) document.addEventListener('visibilitychange', function una() { if (document.hidden) return; if (recargar()) document.removeEventListener('visibilitychange', una); });
+    });
     document.readyState === 'complete' ? registrar() : addEventListener('load', registrar);
     // Versión nueva instalada: se recarga una vez para no mezclar piezas de dos versiones
     // (no si hay un diálogo abierto o se está escribiendo, para no perder nada)

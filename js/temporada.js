@@ -58,7 +58,7 @@ function crearAmbiente(tipo) {
   const color = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#c8f560';
   let acento = color(), claro = document.documentElement.dataset.tema === 'claro';
   const azar = (a, b) => a + Math.random() * (b - a);
-  const cuantas = () => Math.round(Math.min(46, Math.max(14, innerWidth / (tipo === 'murcielagos' ? 160 : 42))));
+  const cuantas = () => Math.round(Math.min(22, Math.max(7, innerWidth / (tipo === 'murcielagos' ? 260 : 70))));
 
   const nueva = (inicio = false) => {
     const p = { x: azar(0, W), y: inicio ? azar(0, H) : 0, t: azar(0, 1000), s: azar(.6, 1.2) };
@@ -170,16 +170,26 @@ function crearAmbiente(tipo) {
   medir();
   document.addEventListener('visibilitychange', alCambiarVisibilidad);
   addEventListener('resize', alRedimensionar);
+  // Solo arriba del todo: al bajar a leer el ambiente se desvanece y deja de dibujarse (no tapa el contenido ni gasta batería)
+  let tope = 1;
+  const alBajar = () => {
+    const k = Math.max(0, Math.min(1, 1 - scrollY / (innerHeight * .7)));
+    if (Math.abs(k - tope) < .02 && k !== 0 && k !== 1) return;
+    tope = k; c.style.opacity = c.classList.contains('on') ? k : '';
+    k === 0 ? pausar() : seguir();
+  };
+  addEventListener('scroll', alBajar, { passive: true });
   // El color se vuelve a leer si cambia el tema claro/oscuro
   const mo = new MutationObserver(() => { acento = color(); claro = document.documentElement.dataset.tema === 'claro'; });
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-tema', 'data-temporada'] });
   // Entra suave cuando el navegador está libre
-  (window.requestIdleCallback || (f => setTimeout(f, 400)))(() => { c.classList.add('on'); seguir(); });
+  (window.requestIdleCallback || (f => setTimeout(f, 400)))(() => { c.classList.add('on'); alBajar(); if (tope > 0) seguir(); });
   return {
     parar() {
       vivo = false; pausar(); mo.disconnect();
       document.removeEventListener('visibilitychange', alCambiarVisibilidad);
       removeEventListener('resize', alRedimensionar);
+      removeEventListener('scroll', alBajar);
       c.remove();
     }
   };
