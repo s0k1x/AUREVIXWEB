@@ -1382,6 +1382,7 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 
 /* Ejes de giro (% del dibujo de 400 × 470) */
 .m-todo{transform-origin:50% 95.7%}
+.masc.cara .m-todo{transform-origin:50% 28.5%} /* en la cara, todo gira y se escala desde el centro de la cabeza */
 .l-cabeza,.l-sigue-c{transform-origin:50% 51.9%}
 .l-brazo-i{transform-origin:34% 60%}.l-brazo-d{transform-origin:66% 60%}
 .l-pierna-i{transform-origin:44% 79.1%}.l-pierna-d{transform-origin:56% 79.1%}

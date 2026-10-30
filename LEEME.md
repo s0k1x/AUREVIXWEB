@@ -1348,3 +1348,20 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - Página limpia: el robot más pequeño flotando, una etiqueta «Mantenimiento», el título, el mensaje y el correo.
   - Cada 7 segundos da una voltereta suave o saluda. Al tocarlo sonríe con un pequeño bote. Sin confeti.
 - Se ha quitado el código que ya no se usa: el vuelo `trayecto()`, los ojos arcoíris y los estilos antiguos.
+
+### v93: notificaciones que no tapan botones y vuelo del chat limpio
+- **Notificaciones** (`toast()` en `js/ui.js` → `colocarAviso()`):
+  - Antes de enseñarse miran si en su sitio hay algo que se pueda tocar: un botón, un enlace o un campo.
+  - Si lo hay, suben justo por encima: el total y «Siguiente» del configurador, el campo del chat, el botón del asistente o los botones del pago.
+  - Si abajo no queda hueco, se ponen arriba.
+  - En pantallas llenas de botones, como el panel en el móvil, se quedan abajo por encima de las barras fijas.
+  - Se vuelven a colocar a los 0,38 s si algo se estaba moviendo, como un diálogo que entra.
+  - Probado en la portada, el aviso de cookies, el configurador, el chat, el pago, Mis proyectos, Ajustes y el panel, en móvil y ordenador.
+- **Vuelo del chat** (`volar()`):
+  - Curva suave que se abre hacia el centro y nunca sale de la pantalla.
+  - Solo crece un 30 % a mitad de camino; antes llegaba a ocupar media pantalla.
+  - Va siempre derecho, inclinado con suavidad hacia donde avanza, sin picado ni vueltas en un salto tan corto.
+  - Estirar y aplastar más sutil, con frenazo de propulsores al llegar.
+- **Cara del robot** (botón y cabecera del chat):
+  - Escala y gira desde el centro de la cabeza (antes lo hacía desde los pies, fuera del círculo, y se deformaba).
+  - El bote y el estirar y aplastar son mucho más suaves.
