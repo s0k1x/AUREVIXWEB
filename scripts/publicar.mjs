@@ -52,6 +52,8 @@ await rm(DIST, { recursive: true, force: true });
 await mkdir(DIST, { recursive: true });
 await recorrer(RAIZ);
 await writeFile(join(DIST, '.nojekyll'), '');
+// El dominio lo fija esta copia: así no depende de un CNAME en este repositorio (que GitHub borra al quitar el dominio de sus Pages)
+await writeFile(join(DIST, 'CNAME'), 'aurevixweb.es\n');
 const kb = b => `${Math.round(b / 1024)} KB`;
 console.log(`dist/ lista: ${n} archivos JS y CSS minificados (${kb(antes)} → ${kb(despues)}).`);
 for (const imprescindible of ['index.html', 'sw.js', 'config.js', 'CNAME', '404.html', 'js/app.js']) {
