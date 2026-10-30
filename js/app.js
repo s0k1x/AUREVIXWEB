@@ -19,6 +19,7 @@ import { confeti } from './efectos.js';
 import { comprobar as comprobarCampo } from './validar.js';
 import { dominioHTML, montarDominio, leerDominio, sugerirNombre, marcarError } from './dominio.js';
 import { prefsPermitidas, consentidoExpreso } from './cookies.js';
+import { iniciarInclinacion } from './inclinar.js';
 
 /* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor.
    Recordarlo 30 días en el navegador no es imprescindible para el visitante, así que solo se guarda
@@ -52,6 +53,7 @@ const leerAmigo = () => {
 };
 
 await arrancar('inicio');
+iniciarInclinacion();
 if (amigoSesion && CONFIG.referidos?.activo) setTimeout(() => toast(`Un amigo te recomienda: tienes un ${CONFIG.referidos.pct} % de descuento en tu primera web`, 'ok'), 1200);
 iniciarChat();
 
