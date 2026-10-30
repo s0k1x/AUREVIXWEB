@@ -16,6 +16,7 @@ import { recomendar, iniciarChat } from './asistente.js';
 import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, pedirCambios, webCliente, desistimientoHTML, puedeDesistir, finDesistimiento, estadoParaEtapa, indiceEtapa, dominioTexto, fechaEntrega, plazoTexto, plazoClase, conHistorial, lineaTiempoHTML } from './proyecto.js';
 import { importeSenal, importeResto } from './pago.js';
 import { confeti } from './efectos.js';
+import { conMantenimiento, mantClienteHTML, extrasClienteHTML, textoAcuerdo, resumirVisitas, estadisticasHTML } from './negocio.js';
 import { comprobar as comprobarCampo } from './validar.js';
 import { dominioHTML, montarDominio, leerDominio, sugerirNombre, marcarError } from './dominio.js';
 import { prefsPermitidas, consentidoExpreso } from './cookies.js';
@@ -1185,15 +1186,19 @@ function pestanaHTML(p) {
     return `<div class="pg">
       ${fila(`Señal (${CONFIG.senal} %)`, s, ['senal', 'pagado'].includes(e), 'senal')}
       ${fila('Pago final', r, e === 'pagado', 'resto')}
-      ${p.mensual ? `<div class="pg-fila"><span class="pg-ic">${icono('calendar')}</span><div><b>Cuotas mensuales</b><small>${esc((p.extras || []).filter(x => x.mensual).map(x => x.nombre).join(' · ') || 'Mantenimiento')} · se cobran cada mes desde la publicación</small></div><b>${euros(p.mensual)}/mes</b></div>` : ''}
+      ${p.mensual && !conMantenimiento(p) ? `<div class="pg-fila"><span class="pg-ic">${icono('calendar')}</span><div><b>Cuotas mensuales</b><small>${esc((p.extras || []).filter(x => x.mensual).map(x => x.nombre).join(' · ') || 'Mantenimiento')} · se cobran cada mes desde la publicación</small></div><b>${euros(p.mensual)}/mes</b></div>` : ''}
+      ${mantClienteHTML(p, { bajaPedida: bajaPedida(p) })}
+      ${extrasClienteHTML(p, CONFIG.marca)}
       ${p.descuento ? `<p class="ac-nota">${icono('tag')} Cupón ${esc(p.cupon || '')}: −${euros(p.descuento)} ya descontados del total.</p>` : ''}
       <div class="pg-pie"><div class="mp-pay">${botonPago(p)}</div>
         <button type="button" class="btn btn-sm btn-ghost" data-recibo="${p.id}" data-fase="">${icono('printer')}<span>Resumen del pedido</span></button></div>
       <p class="ac-nota">${icono('file')} ¿Necesitas factura a nombre de tu empresa? Añade tus datos fiscales en <a class="link-btn" href="ajustes#facturacion">Ajustes → Facturación</a>.</p>
     </div>`;
   }
+  const extrasPend = (p.cambiosExtra || []).some(x => x.estado === 'propuesto');
   return `<div class="mp-cuerpo">
-    <div class="mp-accion">${accionCliente(p, botonPago(p))}</div>
+    <div class="mp-accion">${extrasPend ? extrasClienteHTML(p, CONFIG.marca) : ''}${accionCliente(p, botonPago(p))}
+      ${p.publica?.slug ? `<section class="mp-est"><h4>${icono('chart')} Visitas de tu web</h4><div class="mp-est-c" data-est="${p.id}"><p class="muted">Cargando…</p></div></section>` : ''}</div>
     <aside class="mp-lado">
       <div class="mp-dato">${icono('calendar')}<span>Entrega prevista</span><b>${fecha(fechaEntrega(p))}</b></div>
       ${p.dominio ? `<div class="mp-dato mp-dato-ancho">${icono('link')}<span>${p.dominio.correo ? 'Dominio y correo' : 'Dominio'}</span><b>www.${esc(p.dominio.nombre)}${p.dominio.tipo === 'propio' ? ' <em>(ya es tuyo)</em>' : ''}</b>${p.dominio.correo ? `<small>${esc(p.dominio.correo)}${p.dominio.correoTipo === 'gmail' ? ' · Gmail' : ''}</small>` : ''}</div>` : ''}
@@ -1211,15 +1216,20 @@ function montarPestana() {
   $$('[data-form="dominio"]', $('#pedidosList')).forEach(f => montarDominio(f));
   const p = misPedidos.find(x => x.id === abierto);
   const caja = p && $(`#pest-${p.id} .mp-montaje`);
+  const est = p && $(`[data-est="${p.id}"]`);
+  if (est) store.estadisticasWeb(p.id, 30).then(f => { est.innerHTML = estadisticasHTML(resumirVisitas(f, 30), 30); }).catch(err => { est.innerHTML = `<p class="muted">${esc(err.message)}</p>`; });
   if (!caja) return;
   if (pestana === 'mensajes') desmontar = montarHilo(caja, p) || (() => {});
   if (pestana === 'archivos') montarArchivos(caja, p);
 }
 
+let misTicketsCli = [];
+const bajaPedida = p => misTicketsCli.some(t => t.tipo === 'baja' && t.pedido === p.id && t.estado !== 'cerrado');
+
 async function pintarPedidos() {
   const list = $('#pedidosList');
   try {
-    misPedidos = await store.misPedidos();
+    [misPedidos, misTicketsCli] = await Promise.all([store.misPedidos(), store.misTickets().catch(() => [])]);
     if (!misPedidos.length) {
       list.innerHTML = `<div class="empty"><div class="em">${icono('bag')}</div><b>Todavía no tienes proyectos</b><p>Elige el tipo de web que necesitas para empezar.</p><a href="#webs" class="btn btn-primary" data-close style="margin-top:18px">Ver tipos de web</a></div>`;
       return;
@@ -1288,6 +1298,29 @@ $('#pedidosList').addEventListener('click', e => {
   if (pg) {
     const p = misPedidos.find(x => x.id === pg.dataset.pagar);
     return animarYPagar(pg, () => abrirPago(p, pg.dataset.fase, pintarPedidos));
+  }
+  const xs = e.target.closest('[data-extra-si], [data-extra-no]');
+  if (xs) {
+    const p = misPedidos.find(x => x.id === xs.dataset.p), si = 'extraSi' in xs.dataset;
+    const L = (p.cambiosExtra || []).map(x => ({ ...x })), x = L.find(y => y.id === (xs.dataset.extraSi || xs.dataset.extraNo));
+    if (!x || x.estado !== 'propuesto') return;
+    if (si && !confirm(`${textoAcuerdo(x, CONFIG.marca)}\n\n¿Lo aceptas?`)) return;
+    if (!si && !confirm(`¿Rechazar el presupuesto «${x.concepto}»?`)) return;
+    const u = store.usuarioActual();
+    x.estado = si ? 'aceptado' : 'rechazado'; x.respondido = Date.now();
+    if (si) x.acuerdo = { nombre: u?.name || p.clienteNombre, texto: textoAcuerdo(x, CONFIG.marca), t: Date.now() };
+    return guardarProyecto(p, { cambiosExtra: L }, si ? 'Presupuesto aceptado. Te indicamos cómo pagarlo en Mensajes.' : 'Presupuesto rechazado', xs, `${si ? 'Aceptado' : 'Rechazado'} el presupuesto «${x.concepto}» (${euros(x.importe)})`)
+      .then(ok => ok && store.enviarMensaje(p.id, `${si ? 'He aceptado' : 'He rechazado'} el presupuesto «${x.concepto}» (${euros(x.importe)}).`).catch(() => {}));
+  }
+  const mb = e.target.closest('[data-mant-baja]');
+  if (mb) {
+    const p = misPedidos.find(x => x.id === mb.dataset.mantBaja);
+    const motivo = prompt('¿Seguro que quieres darte de baja del mantenimiento? Tu web seguirá publicada. Cuéntanos el motivo (opcional):', '');
+    if (motivo === null) return;
+    ocupado(mb, true);
+    return store.crearTicket({ tipo: 'baja', asunto: `Baja del mantenimiento · ${p.respuestas?.negocio || p.planNombre}`, mensaje: `Quiero darme de baja del mantenimiento mensual.${motivo.trim() ? `\n\nMotivo: ${motivo.trim().slice(0, 500)}` : ''}`, pedido: p.id })
+      .then(() => { toast('Solicitud de baja enviada. Te respondemos en menos de 24 h laborables.', 'ok'); return pintarPedidos(); })
+      .catch(err => { toast(err.message, 'err'); ocupado(mb, false); });
   }
   const rc = e.target.closest('[data-recibo]');
   if (rc) return abrirRecibo(misPedidos.find(x => x.id === rc.dataset.recibo), rc.dataset.fase);
@@ -1508,12 +1541,6 @@ if (hash === '#mis-pedidos' || hash.startsWith('#proyecto-')) {
 } else if (hash === '#soporte') {
   history.replaceState(null, '', location.pathname);
   abrirSoporte();
-}
-// Desde la Librería: entrar y volver a ella
-if (hash === '#entrar-libreria') {
-  history.replaceState(null, '', location.pathname);
-  (store.usuarioActual() ? Promise.resolve(store.usuarioActual()) : pedirLogin('Entra para suscribirte a la Librería.'))
-    .then(u => { if (u) location.href = 'library/'; });
 }
 addEventListener('hashchange', () => {
   if (location.hash === '#mis-pedidos') { history.replaceState(null, '', location.pathname); abrirPedidos(); }

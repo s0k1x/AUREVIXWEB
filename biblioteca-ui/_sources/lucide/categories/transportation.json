@@ -1,6 +1,0 @@
-{
-  "$schema": "../category.schema.json",
-  "title": "Transportation",
-  "description": "Icons for vehicles, transit, cargo, parking, fuel, and moving people or goods.",
-  "icon": "train-front"
-}

@@ -63,7 +63,7 @@ function sembrarDemo() {
     { ...base, id: 'o1', uid: 'u_ana', clienteNombre: 'Ana Torres', clienteEmail: 'ana@ejemplo.com', plan: 'reservas', planNombre: 'Web con reservas', precioBase: 490, extras: [{ id: 'dominio', nombre: 'Dominio + alojamiento (1er año)', precio: 60 }], urgente: false, total: 550, ref: 'u_trab', plantilla: 'calma', respuestas: { negocio: 'Estética Ana', sector: 'Belleza y estética', objetivo: 'Reservas / citas', telefono: '600 111 222', estilo: 'Elegante', color: '#6f8f72', logo: 'Sí, ya tengo', contenido: 'Tengo algunos', comentarios: 'Me gustaría que se vieran bien los precios de los tratamientos.' }, estado: 'en_curso', etapa: 'contenido', dominio: { nombre: 'esteticaana.es', tipo: 'nuevo', t: ahora - 3 * dia }, pagoEstado: 'senal', pagoMetodo: 'transferencia', asignado: 'u_trab', asignadoNombre: 'Laura Ruiz', createdAt: ahora - 5 * dia },
     { ...base, id: 'o2', uid: 'u_pepe', clienteNombre: 'Pepe Gómez', clienteEmail: 'pepe@ejemplo.com', plan: 'negocio', planNombre: 'Web de negocio', precioBase: 349, extras: [{ id: 'logo', nombre: 'Diseño de logo', precio: 80 }], urgente: false, total: 429, mensual: 15, plantilla: 'filo', respuestas: { negocio: 'Barbería Pepe', sector: 'Peluquería / barbería', objetivo: 'Que me contacten', telefono: '600 333 444', estilo: 'Oscuro', color: '#c9a24a', logo: 'No, necesito uno', contenido: 'Necesito ayuda', comentarios: '' }, estado: 'nuevo', etapa: 'recibido', pagoEstado: 'verificando', pagoMetodo: 'transferencia', pagoFase: 'senal', pagoAviso: ahora - 2 * 36e5, asignado: '', asignadoNombre: '', createdAt: ahora - 3 * dia },
     { ...base, id: 'o3', uid: 'u_carla', clienteNombre: 'Carla Díaz', clienteEmail: 'carla@ejemplo.com', plan: 'tienda', planNombre: 'Tienda online', precioBase: 690, extras: [], urgente: true, total: 862.5, ref: 'u_trab', plantilla: 'kiosko', respuestas: { negocio: 'Carla Handmade', sector: 'Tienda / comercio', objetivo: 'Vender online', telefono: '600 555 666', estilo: 'Moderno', color: '#2f5bff', logo: 'Sí, ya tengo', contenido: 'Sí, todo', comentarios: 'Vendo bisutería hecha a mano, unos 30 productos.' }, estado: 'nuevo', etapa: 'recibido', pagoEstado: 'pendiente', asignado: '', asignadoNombre: '', createdAt: ahora - dia }
-    ,{ ...base, id: 'o4', uid: 'u_marta', clienteNombre: 'Marta Gil', clienteEmail: 'marta@ejemplo.com', plan: 'landing', planNombre: 'Landing page', precioBase: 149, extras: [{ id: 'dominio', nombre: 'Dominio + alojamiento (1er año)', precio: 60 }], urgente: false, total: 209, ref: 'u_trab', plantilla: 'lienzo', respuestas: { negocio: 'Marta Fotografía', sector: 'Profesional / freelance', objetivo: 'Darme a conocer', telefono: '600 777 888', estilo: 'Minimalista', color: '', logo: 'Sí, ya tengo', contenido: 'Sí, todo', comentarios: '' }, tareas: { diseno: true, contenido: true, desarrollo: true, revision: true, publicacion: true }, estado: 'entregado', etapa: 'publicada', urlWeb: 'https://martafotografia.es', dominio: { nombre: 'martafotografia.es', tipo: 'nuevo', t: ahora - 10 * dia }, pagoEstado: 'pagado', pagoMetodo: 'transferencia', asignado: 'u_trab', asignadoNombre: 'Laura Ruiz', createdAt: ahora - 12 * dia }
+    ,{ ...base, id: 'o4', uid: 'u_marta', clienteNombre: 'Marta Gil', clienteEmail: 'marta@ejemplo.com', plan: 'landing', planNombre: 'Landing page', precioBase: 149, extras: [{ id: 'dominio', nombre: 'Dominio + alojamiento (1er año)', precio: 60 }, { id: 'mantenimiento', nombre: 'Mantenimiento', precio: 19, mensual: true }], mensual: 19, mantenimiento: { estado: 'activo', desde: ahora - 40 * dia, proximo: ahora - 10 * dia, cuotas: [{ periodo: new Date(ahora - 40 * dia).toISOString().slice(0, 7), importe: 19, pagado: ahora - 40 * dia, metodo: 'bizum' }] }, cambiosExtra: [{ id: 'demo1', concepto: 'Galería de bodas', detalle: 'Nueva página con 40 fotos y filtro por año.', importe: 90, estado: 'propuesto', propuesto: ahora - dia }], urgente: false, total: 209, ref: 'u_trab', plantilla: 'lienzo', respuestas: { negocio: 'Marta Fotografía', sector: 'Profesional / freelance', objetivo: 'Darme a conocer', telefono: '600 777 888', estilo: 'Minimalista', color: '', logo: 'Sí, ya tengo', contenido: 'Sí, todo', comentarios: '' }, tareas: { diseno: true, contenido: true, desarrollo: true, revision: true, publicacion: true }, estado: 'entregado', etapa: 'publicada', urlWeb: 'https://martafotografia.es', dominio: { nombre: 'martafotografia.es', tipo: 'nuevo', t: ahora - 10 * dia }, pagoEstado: 'pagado', pagoMetodo: 'transferencia', asignado: 'u_trab', asignadoNombre: 'Laura Ruiz', createdAt: ahora - 12 * dia }
   ];
   const apps = [
     { id: 'a1', uid: 'u_cand1', nombre: 'Marcos Vidal', email: 'marcos@ejemplo.com', telefono: '611 222 333', puesto: 'Ventas', habilidades: ['ChatGPT / Claude', 'Vender en persona', 'Vender por WhatsApp'], experiencia: 'Bastante', portfolio: 'instagram.com/marcosv', mensaje: 'Llevo 2 años vendiendo seguros y conozco a muchos negocios del barrio.', estado: 'pendiente', createdAt: ahora - 2 * dia },
@@ -487,39 +487,7 @@ export async function listarUsuarios() {
   return filas.map(u => ({ uid: u.id, name: u.name, email: u.email, photo: u.photo, datos: u.datos || {}, createdAt: Date.parse(u.created_at), role: rolDe(u.email, u.role) }));
 }
 
-/* ---------- Suscripción a la Librería ----------
-   Cada fila dice hasta cuándo tiene acceso una persona. El equipo entra siempre. */
 const DIA = 864e5;
-export async function accesoLibreria() {
-  const u = usuario;
-  if (!u) return { acceso: false, sesion: false };
-  if (esEquipo()) return { acceso: true, sesion: true, equipo: true };
-  if (modoDemo) {
-    const hasta = local.get('suscripciones', {})[u.uid] || 0;
-    return { acceso: hasta > Date.now(), sesion: true, hasta };
-  }
-  const { data } = await limite(sb.from('suscripciones').select('hasta').eq('uid', u.uid).maybeSingle(), 12000);
-  const hasta = data ? Date.parse(data.hasta) : 0;
-  return { acceso: hasta > Date.now(), sesion: true, hasta };
-}
-export async function listarSuscripciones() {
-  necesitaUsuario();
-  if (modoDemo) return Object.entries(local.get('suscripciones', {})).map(([uid, hasta]) => ({ uid, hasta }));
-  return comprobar(await limite(sb.from('suscripciones').select('uid, hasta'))).map(s => ({ uid: s.uid, hasta: Date.parse(s.hasta) }));
-}
-/** Alarga la suscripción «meses» meses (desde hoy o desde que termine, lo que sea más tarde) */
-export async function alargarSuscripcion(uid, meses = 1, actual = 0) {
-  necesitaUsuario();
-  const hasta = Math.max(Date.now(), actual || 0) + meses * 30 * DIA;
-  if (modoDemo) { const s = local.get('suscripciones', {}); s[uid] = hasta; local.set('suscripciones', s); return hasta; }
-  comprobar(await limite(sb.from('suscripciones').upsert({ uid, hasta: new Date(hasta).toISOString(), actualizado: new Date().toISOString() })));
-  return hasta;
-}
-export async function quitarSuscripcion(uid) {
-  necesitaUsuario();
-  if (modoDemo) { const s = local.get('suscripciones', {}); delete s[uid]; local.set('suscripciones', s); return; }
-  comprobar(await limite(sb.from('suscripciones').delete().eq('uid', uid)));
-}
 
 export async function cambiarRol(uid, role) {
   necesitaUsuario();
@@ -784,8 +752,10 @@ export async function borrarTicket(id) {
 }
 export async function responderTicket(t, texto) {
   const u = necesitaUsuario();
-  const respuestas = [...(t.respuestas || []), { autor: u.name, rol: u.role, texto, t: Date.now() }];
-  const cambios = { respuestas, estado: esEquipo() ? 'respondido' : 'abierto', actualizado: Date.now() };
+  const nueva = { autor: u.name, rol: u.role, texto, t: Date.now() };
+  // Se añade sobre lo que hay en el servidor (si el otro lado acaba de contestar, no se pierde su mensaje)
+  const previas = modoDemo ? t.respuestas : (comprobar(await limite(sb.from('tickets').select('datos').eq('id', t.id).single())).datos?.respuestas);
+  const cambios = { respuestas: [...(previas || []), nueva], estado: esEquipo() ? 'respondido' : 'abierto', actualizado: Date.now() };
   await actualizarTicket(t.id, cambios);
   if (modoDemo && esEquipo() && t.uid) avisoDemo(t.uid, `Hemos respondido a tu consulta «${t.asunto}»`, '', 'soporte');
   return cambios;
@@ -1053,6 +1023,56 @@ export async function listarVisitas(dias = 30) {
   return comprobar(await limite(sb.from('visitas').select('dia, pagina, origen, dispositivo, idioma, visitas').gte('dia', desde).limit(10000)));
 }
 
+/** Visitas y contactos reales de la web publicada de un pedido (supabase/plataforma-v88.sql).
+    Lo ven el cliente dueño del pedido y el equipo. Devuelve [{ dia, tipo: 'visita'|'contacto', origen, dispositivo, visitas }] */
+export async function estadisticasWeb(pedidoId, dias = 90) {
+  necesitaUsuario();
+  if (modoDemo) {
+    const L = [];
+    for (let i = dias - 1; i >= 0; i--) {
+      const d = new Date(Date.now() - i * DIA).toISOString().slice(0, 10), base = 6 + Math.round(5 * Math.sin(i / 3));
+      L.push({ dia: d, tipo: 'visita', origen: i % 3 ? 'google.com' : '', dispositivo: i % 4 ? 'movil' : 'ordenador', visitas: base });
+      if (i % 3 === 0) L.push({ dia: d, tipo: 'contacto', origen: '', dispositivo: 'movil', visitas: 1 });
+    }
+    return L;
+  }
+  const { data, error } = await limite(sb.rpc('estadisticas_web', { p_pedido: pedidoId, p_dias: dias }));
+  if (error) { if (/estadisticas_web|function|404/i.test(error.message)) throw new Error('Las estadísticas aún no están activadas (falta aplicar supabase/plataforma-v88.sql).'); throw new Error(traducirError(error)); }
+  return data || [];
+}
+/** Visita o contacto en la web publicada de un cliente (cuenta en «visitas» como w-<nombre> / c-<nombre>) */
+export function contarEnWebCliente(slug, tipo, dispositivo, origen = '') {
+  contarVisita(`${tipo === 'contacto' ? 'c' : 'w'}-${String(slug).slice(0, 38)}`.replace(/-+$/, ''), origen.slice(0, 60), dispositivo, 'es');
+}
+
+/* ---------- Gastos del negocio (solo propietario · supabase/plataforma-v88.sql) ---------- */
+const gastoDeFila = f => ({ id: f.id, fecha: f.fecha, concepto: f.concepto, categoria: f.categoria, importe: Number(f.importe), iva: Number(f.iva || 0), recurrente: !!f.recurrente, nota: f.nota || '' });
+export async function listarGastos() {
+  necesitaUsuario();
+  if (modoDemo) return local.get('gastos', []);
+  const { data, error } = await limite(sb.from('gastos').select('*').order('fecha', { ascending: false }).limit(5000));
+  if (error) { if (/gastos|relation|does not exist|404/i.test(error.message)) return null; throw new Error(traducirError(error)); }
+  return data.map(gastoDeFila);
+}
+export async function guardarGasto(g) {
+  necesitaUsuario();
+  const fila = { fecha: g.fecha, concepto: String(g.concepto).slice(0, 200), categoria: g.categoria, importe: Math.round(Number(g.importe) * 100) / 100, iva: Number(g.iva) || 0, recurrente: !!g.recurrente, nota: String(g.nota || '').slice(0, 500) };
+  if (!fila.concepto.trim() || !(fila.importe >= 0)) throw new Error('Pon un concepto y un importe válido');
+  if (modoDemo) {
+    const L = local.get('gastos', []);
+    if (g.id) local.set('gastos', L.map(x => (x.id === g.id ? { ...x, ...fila } : x)));
+    else local.set('gastos', [{ ...fila, id: nuevoId() }, ...L]);
+    return;
+  }
+  const r = g.id ? await limite(sb.from('gastos').update(fila).eq('id', g.id)) : await limite(sb.from('gastos').insert(fila));
+  comprobar(r);
+}
+export async function borrarGasto(id) {
+  necesitaUsuario();
+  if (modoDemo) { local.set('gastos', local.get('gastos', []).filter(x => x.id !== id)); return; }
+  comprobar(await limite(sb.from('gastos').delete().eq('id', id)));
+}
+
 /* ---------- Facturas para el gestor y copia de seguridad (solo equipo) ---------- */
 export async function listarFacturas() {
   necesitaUsuario();
@@ -1061,7 +1081,7 @@ export async function listarFacturas() {
 }
 /** Todo lo que el propietario puede leer, en un solo objeto (para guardarlo como JSON).
     No incluye los archivos subidos (fotos, logotipos…), que están en el almacenamiento de Supabase. */
-const TABLAS_COPIA = ['pedidos', 'facturas', 'perfiles', 'tickets', 'mensajes', 'resenas', 'candidaturas', 'videos', 'suscripciones', 'webs_publicas', 'webs_ia', 'ajustes', 'privado', 'visitas'];
+const TABLAS_COPIA = ['pedidos', 'facturas', 'gastos', 'perfiles', 'tickets', 'mensajes', 'resenas', 'candidaturas', 'videos', 'suscripciones', 'webs_publicas', 'webs_ia', 'ajustes', 'privado', 'visitas', 'avisos', 'push_subs'];
 export async function copiaDeSeguridad() {
   necesitaUsuario();
   const copia = { creada: new Date().toISOString(), web: location.host, tablas: {} };
@@ -1073,6 +1093,7 @@ export async function copiaDeSeguridad() {
     const filas = [];
     for (let desde = 0; ; desde += 1000) {
       const { data, error } = await limite(sb.from(t).select('*').range(desde, desde + 999), 30000);
+      // Una tabla que aún no existe (migración sin aplicar) no estropea la copia
       if (error) { copia.tablas[t] = { error: traducirError(error) }; break; }
       filas.push(...data);
       if (data.length < 1000) { copia.tablas[t] = filas; break; }

@@ -19,7 +19,7 @@ import { transicionSesion, precargarFrames } from './mascota.js';
 
 // Direcciones limpias: si alguien entra con «.html» (enlaces antiguos), la barra muestra la dirección bonita
 try {
-  if (/^https?:$/.test(location.protocol) && /\.html$/.test(location.pathname) && !location.pathname.includes('/library/'))
+  if (/^https?:$/.test(location.protocol) && /\.html$/.test(location.pathname))
     history.replaceState(null, '', (location.pathname.replace(/(\/index)?\.html$/, '') || '/') + location.search + location.hash);
 } catch {}
 export { icono, pintarIconos };
@@ -358,7 +358,6 @@ export function pintarCabecera(activa = '') {
       <nav class="nav" id="nav" aria-label="Principal">
         <a href="${ir('#webs')}">Webs y precios</a>
         <a href="${ir('#disenos')}">Diseños</a>
-        <a href="library/">Librería</a>
         <a href="${ir('#opiniones')}">Opiniones</a>
         <a href="${ir('#contacto')}">Contacto</a>
         <a href="trabaja-con-nosotros" class="${activa === 'trabaja' ? 'act' : ''}">Trabaja con nosotros</a>
@@ -413,7 +412,6 @@ export function pintarPie() {
           <a href="./#webs">Tipos de web y precios</a>
           <a href="./#disenos">Diseños de partida</a>
           <a href="./#como">Cómo trabajamos</a>
-          <a href="library/">Librería</a>
         </div>
         <div class="footer-col"><b>Webs para…</b>
           <a href="webs-para-barberias">Barberías y peluquerías</a>

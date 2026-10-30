@@ -122,6 +122,13 @@ for (const [nombre, tipo] of [['ordenador', PC], ['móvil', MOVIL]]) {
   const rotos = [];
   for (const h of enlaces) { const r = await ctx.request.get(h); if (r.status() >= 400) rotos.push(h.replace(BASE, '')); }
   ok(!rotos.length, `enlaces internos (${enlaces.size}) sin romper${rotos.length ? ` → ${rotos.join(', ')}` : ''}`);
+  // Sitemap: todas sus direcciones existen y están todas las páginas públicas (indexación en Google)
+  const mapa = [...(await readFile(join(RAIZ, 'sitemap.xml'), 'utf8')).matchAll(/<loc>https:\/\/aurevixweb\.es(\/[^<]*)<\/loc>/g)].map(m => m[1]);
+  const faltan = [];
+  for (const r of mapa) { const x = await ctx.request.get(BASE + r); if (x.status() >= 400) faltan.push(r); }
+  ok(!faltan.length, `sitemap (${mapa.length} direcciones) sin enlaces rotos${faltan.length ? ` → ${faltan.join(', ')}` : ''}`);
+  const fuera = PAGINAS.filter(r => !['/panel', '/ajustes'].includes(r) && !mapa.includes(r));
+  ok(!fuera.length, `todas las páginas públicas están en el sitemap${fuera.length ? ` → faltan ${fuera.join(', ')}` : ''}`);
   await ctx.close();
 }
 

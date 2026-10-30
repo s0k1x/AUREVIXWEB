@@ -11,10 +11,8 @@
      descarga todo al instalarse y borra la copia anterior.
    - Fotos de los diseños: se guardan la primera vez y después
      salen al instante.
-   - Librería (/library/ y /biblioteca-ui/): NO se guarda (son miles de
-     archivos); va siempre por internet con la caché normal del navegador.
    ========================================================== */
-const VERSION = 'v87';
+const VERSION = 'v88';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
@@ -22,7 +20,7 @@ const ARCHIVOS = [
   './', 'trabaja-con-nosotros', 'panel', 'diseno', 'terminos-y-privacidad', 'sin-conexion', 'vista-previa',
   'style.css', 'componentes.css', 'animaciones.css', 'inicio.css', 'panel.css', 'trabaja.css', 'config.js',
   'js/app.js', 'js/ui.js', 'js/store.js', 'js/plantillas.js', 'js/panel.js', 'js/pago.js', 'js/efectos.js',
-  'js/vendor/supabase.js', 'js/sinzoom.js', 'js/iconos.js', 'js/asistente.js', 'js/proyecto.js', 'js/sitio.js', 'js/cookies.js', 'js/apariencia.js', 'js/avisos.js', 'js/colabora.js', 'js/ajustes.js', 'js/otp.js', 'js/calculadora.js', 'js/validar.js', 'js/dominio.js', 'js/idioma.js', 'js/idioma-en.js', 'js/publica.js', 'js/vistaweb.js', 'js/vista.js', 'js/desplegable.js', 'js/zip.js', 'js/brief.js', 'js/temporada.js', 'js/push.js', 'js/verificacion.js', 'js/presupuesto.js',
+  'js/vendor/supabase.js', 'js/sinzoom.js', 'js/iconos.js', 'js/asistente.js', 'js/proyecto.js', 'js/negocio.js', 'js/seo.js', 'js/sitio.js', 'js/cookies.js', 'js/apariencia.js', 'js/avisos.js', 'js/colabora.js', 'js/ajustes.js', 'js/otp.js', 'js/calculadora.js', 'js/validar.js', 'js/dominio.js', 'js/idioma.js', 'js/idioma-en.js', 'js/publica.js', 'js/vistaweb.js', 'js/vista.js', 'js/desplegable.js', 'js/zip.js', 'js/brief.js', 'js/temporada.js', 'js/push.js', 'js/verificacion.js', 'js/presupuesto.js',
   'ajustes', 'funciones.css', 'widgets.css', 'tema-claro.css', 'pulido.css', 'temporadas.css', 'iconos-vivos.css', 'paginas.css', 'js/pagina.js', 'icons/nombre-oscuro.png',
   'fuentes/fuentes.css', 'fuentes/instrument-sans-latin-046090.woff2', 'fuentes/instrument-sans-latin-ext-284bb9.woff2', 'fuentes/bricolage-grotesque-latin-a97232.woff2', 'fuentes/bricolage-grotesque-latin-ext-a4fe79.woff2', 'fuentes/jetbrains-mono-latin-f70309.woff2', 'fuentes/jetbrains-mono-latin-ext-a83f17.woff2',
   'manifest.json', 'icons/logo-a.png', 'icons/logo-a-verde.png', 'js/mascota.js', 'js/mascota-hojas.js', 'js/borradores.js', 'js/inclinar.js', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
@@ -151,7 +149,6 @@ self.addEventListener('fetch', e => {
 
   if (url.hostname === 'images.pexels.com') { e.respondWith(fotoRapida(req)); return; }
   if (url.origin !== self.location.origin) return; // Supabase, Gemini, CDN: siempre en vivo
-  if (/\/(library|biblioteca-ui)\//.test(url.pathname)) return; // la librería no se guarda en el móvil
 
   const codigo = req.mode === 'navigate' || ['document', 'script', 'style', 'manifest'].includes(req.destination) || /\.(m?js|css|json)$/.test(url.pathname);
   e.respondWith(codigo ? deLaVersion(req, e) : guardadoYActualiza(req, e));

@@ -21,7 +21,7 @@
 // ==========================================================
 
 import { enviarCorreo, FalloCorreo } from '../_shared/correo.ts';
-import { correoPago, pdfFactura, ref, type DatosFactura, type Empresa } from '../_shared/plantillas.ts';
+import { correoPago, correoCobro, pdfFactura, ref, type Cobro, type DatosFactura, type Empresa } from '../_shared/plantillas.ts';
 
 const SB_URL = Deno.env.get('SUPABASE_URL') || '';
 const ANON = Deno.env.get('SUPABASE_ANON_KEY') || '';
@@ -86,18 +86,46 @@ function lineasFactura(p: Record<string, any>, fase: string, pctSenal: number): 
   ];
 }
 
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+/* Cobros sueltos: cuota de mantenimiento «cuota-AAAA-MM» o cambio extra «extra-<id>».
+   Solo si consta pagado en el pedido (lo marca el propietario). Devuelve null si no procede. */
+function cobroSuelto(p: Record<string, any>, fase: string): (Cobro & { metodoId: string }) | null {
+  const negocio = p.respuestas?.negocio ? ` «${p.respuestas.negocio}»` : '';
+  const cu = /^cuota-(\d{4})-(\d{2})$/.exec(fase);
+  if (cu) {
+    const c = (p.mantenimiento?.cuotas || []).find((x: any) => x.periodo === `${cu[1]}-${cu[2]}`);
+    if (!c || !(Number(c.importe) > 0)) return null;
+    const mes = `${MESES[Number(cu[2]) - 1]} de ${cu[1]}`;
+    const conceptos = (p.extras || []).filter((x: any) => x.mensual).map((x: any) => x.nombre).join(', ') || 'Mantenimiento';
+    return { titulo: 'Cuota mensual pagada', concepto: `la cuota de ${mes}`, metodo: c.metodo === 'bizum' ? 'Bizum' : 'transferencia bancaria', metodoId: c.metodo,
+      lineas: [{ concepto: `${conceptos} de${negocio || ' tu web'} · ${mes}`, importe: Math.round(Number(c.importe) * 100) / 100 }],
+      pasos: p.mantenimiento?.proximo ? [`Tu próxima cuota será el ${new Date(p.mantenimiento.proximo).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', timeZone: 'Europe/Madrid' })}.`] : [] };
+  }
+  const ex = /^extra-([a-z0-9]{4,24})$/.exec(fase);
+  if (ex) {
+    const x = (p.cambiosExtra || []).find((y: any) => y.id === ex[1]);
+    if (!x || x.estado !== 'pagado' || !(Number(x.importe) > 0)) return null;
+    return { titulo: 'Cambio extra pagado', concepto: `«${x.concepto}»`, metodo: p.pagoMetodo === 'bizum' ? 'Bizum' : 'transferencia bancaria', metodoId: p.pagoMetodo,
+      lineas: [{ concepto: `${x.concepto} (cambio extra${negocio ? ` de${negocio}` : ''}, aceptado el ${x.acuerdo?.t ? new Date(x.acuerdo.t).toLocaleDateString('es-ES', { timeZone: 'Europe/Madrid' }) : 'online'})`, importe: Math.round(Number(x.importe) * 100) / 100 }],
+      pasos: ['Empezamos con el cambio y te avisamos en tu proyecto cuando esté listo.'] };
+  }
+  return null;
+}
+
 Deno.serve(async req => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return json({ error: 'Método no permitido' }, 405);
   try {
     if (!(await esEquipo(req))) return json({ error: 'Solo para el equipo' }, 403);
     const { pedidoId, fase, empresa, reenviar } = await req.json() as { pedidoId: string; fase: string; empresa?: Empresa; reenviar?: boolean };
-    if (!/^[0-9a-f-]{36}$/i.test(String(pedidoId)) || !['senal', 'resto', 'total'].includes(fase)) return json({ error: 'Petición incompleta' }, 400);
+    const suelto = /^(cuota-\d{4}-\d{2}|extra-[a-z0-9]{4,24})$/.test(String(fase));
+    if (!/^[0-9a-f-]{36}$/i.test(String(pedidoId)) || !(['senal', 'resto', 'total'].includes(fase) || suelto)) return json({ error: 'Petición incompleta' }, 400);
     const [fila] = await leer(`pedidos?id=eq.${pedidoId}&select=id,uid,datos`);
     if (!fila) return json({ error: 'No existe ese pedido' }, 404);
     const p = fila.datos || {};
     // Solo se envía si el pago de esa fase está confirmado de verdad
-    const confirmado = fase === 'senal' ? ['senal', 'pagado'].includes(p.pagoEstado) : p.pagoEstado === 'pagado';
+    const cobro = suelto ? cobroSuelto(p, fase) : null;
+    const confirmado = suelto ? !!cobro : fase === 'senal' ? ['senal', 'pagado'].includes(p.pagoEstado) : p.pagoEstado === 'pagado';
     if (!confirmado) return json({ error: 'Ese pago aún no está confirmado' }, 409);
     if (p.correos?.[fase] && !reenviar) return json({ yaEnviado: true });
     const [priv] = await leer(`privado?id=eq.${fila.uid}&select=datos`).catch(() => []);
@@ -116,7 +144,7 @@ Deno.serve(async req => {
       senal: Number(w.senal ?? empresa?.senal) || 50, iva: Number(p.iva ?? w.iva ?? empresa?.iva ?? 21) || 0, legal
     };
     // La factura: una por pago y con número correlativo (si ya existe, la misma)
-    const lineas = lineasFactura(p, fase, e.senal!);
+    const lineas = cobro ? cobro.lineas : lineasFactura(p, fase, e.senal!);
     const totalF = Math.round(lineas.reduce((s2, l) => s2 + l.importe, 0) * 100) / 100;
     const ivaF = e.iva || 0, baseF = ivaF ? Math.round(totalF / (1 + ivaF / 100) * 100) / 100 : totalF;
     const datosF: DatosFactura = {
@@ -124,18 +152,18 @@ Deno.serve(async req => {
       emisor: { titular: legal.titular || e.marca!, nif: legal.nif || '', domicilio: legal.domicilio || '', email: legal.email || e.email || '' },
       cliente: { nombre: fact.razon || p.clienteNombre || p.respuestas?.contactoNombre || '', nif: fact.nif || '', direccion: fact.direccion || '', cp: fact.cp || '', ciudad: fact.ciudad || '', email: para },
       lineas, total: totalF, base: baseF, cuota: Math.round((totalF - baseF) * 100) / 100, iva: ivaF, pedido: ref(fila.id),
-      metodo: p.pagoMetodo === 'bizum' ? 'Bizum' : 'transferencia bancaria'
+      metodo: (cobro ? cobro.metodoId : p.pagoMetodo) === 'bizum' ? 'Bizum' : 'transferencia bancaria'
     };
     const fac = await rpc('crear_factura', { p_pedido: fila.id, p_uid: fila.uid, p_fase: fase, p_datos: datosF });
     const numero = String(fac.numero);
     const logo = await fetch(`${WEB}/icons/logo-a.png`).then(r => r.ok ? r.arrayBuffer() : null).then(b => b && new Uint8Array(b)).catch(() => null);
     const pdf = await pdfFactura(numero, { ...datosF, ...(fac.datos || {}) } as DatosFactura, logo || undefined);
-    const { html, texto, asunto } = correoPago(p, fila.id, fase, e, fact, numero);
+    const { html, texto, asunto } = cobro ? correoCobro(p, fila.id, cobro, e, fact, numero) : correoPago(p, fila.id, fase, e, fact, numero);
     await enviarCorreo({
       para: [{ email: para, name: String(fact.razon || p.clienteNombre || '').slice(0, 80) || undefined }],
       cc,
       responderA: e.email ? { email: e.email, name: e.marca } : undefined,
-      asunto, html, texto, etiquetas: ['pago', fase],
+      asunto, html, texto, etiquetas: ['pago', suelto ? fase.split('-')[0] : fase],
       adjuntos: [{ name: `Factura-${numero}.pdf`, content: pdf }]
     });
     return json({ enviado: true, para, factura: numero });

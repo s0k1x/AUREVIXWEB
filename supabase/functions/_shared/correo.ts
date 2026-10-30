@@ -138,7 +138,7 @@ export const esc = (t: unknown) => String(t ?? '').replace(/[&<>"']/g, c => ({ '
    de marca discreta, lo importante grande, los detalles en tablas y un pie legal en gris.
    - Tablas y estilos en línea (Gmail, Outlook, Apple Mail…); ancho máximo 560 px.
    - Modo oscuro donde el programa lo permite (Apple Mail, iOS, Outlook.com): <style> con
-     prefers-color-scheme y el logotipo claro/oscuro intercambiado.
+     prefers-color-scheme. El nombre va como texto (no imagen) para que Gmail lo adapte solo.
    - Botón «a prueba de balas» (relleno en la celda, no en el enlace). */
 export const C = { fondo: '#f4f3ef', tarjeta: '#ffffff', borde: '#e7e5df', tinta: '#16161b', texto: '#3d3c38', gris: '#7c7a73', suave: '#f7f9f0', lima: '#c8f560', verde: '#3d6a0a' };
 
@@ -154,17 +154,17 @@ export function plantilla({ titulo, previa, etiqueta = '', cuerpo, pie = '', mot
 <style>
   body{margin:0;padding:0;-webkit-text-size-adjust:100%}
   a{color:${C.tinta}}
-  .oscuro{display:none!important}
   @media (prefers-color-scheme: dark){
     .fondo{background:#0c0c0e!important}
     .tarjeta{background:#16161b!important;border-color:#2a2a31!important}
     .t{color:#f3f1ea!important} .x{color:#d6d4cc!important} .m{color:#a19f96!important}
     .caja{background:#1d1f17!important;border-color:#33402a!important}
     .linea{border-color:#2a2a31!important}
-    .claro{display:none!important} .oscuro{display:inline-block!important}
+    .w{color:#c8f560!important} .dg{background:#26281d!important;border-color:#3a4329!important;color:#f3f1ea!important}
     a{color:#f3f1ea!important} .btn a{color:#0c0c0e!important}
   }
-  @media (max-width:600px){ .pad{padding-left:24px!important;padding-right:24px!important} .h1{font-size:24px!important} .grande{font-size:34px!important} .cod{font-size:34px!important;letter-spacing:8px!important} }
+  @media (max-width:600px){ .pad{padding-left:24px!important;padding-right:24px!important} .h1{font-size:24px!important} .grande{font-size:34px!important} .dg{font-size:26px!important} }
+  @media (max-width:360px){ .et{display:none!important} }
 </style></head>
 <body class="fondo" style="margin:0;padding:0;background:${C.fondo};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:${C.tinta}">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(previa)}${relleno}</div>
@@ -176,10 +176,9 @@ export function plantilla({ titulo, previa, etiqueta = '', cuerpo, pie = '', mot
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
             <td style="vertical-align:middle"><a href="${WEB}" style="text-decoration:none">
               <img src="${WEB}/icons/logo-a.png" width="28" height="28" alt="" style="vertical-align:middle;border:0;margin-right:10px">
-              <img class="claro" src="${WEB}/icons/nombre-oscuro.png" width="132" height="13" alt="${MARCA}" style="vertical-align:middle;border:0">
-              <img class="oscuro" src="${WEB}/icons/nombre.png" width="132" height="13" alt="${MARCA}" style="vertical-align:middle;border:0;display:none">
+              <span class="t" style="vertical-align:middle;font-size:17px;font-weight:800;letter-spacing:-.02em;color:${C.tinta}">Aurevix<span class="w" style="color:${C.verde}">Web</span></span>
             </a></td>
-            ${etiqueta ? `<td align="right" class="m" style="vertical-align:middle;font-size:12px;color:${C.gris};letter-spacing:.02em;white-space:nowrap">${etiqueta}</td>` : ''}
+            ${etiqueta ? `<td align="right" class="m et" style="vertical-align:middle;font-size:12px;color:${C.gris};letter-spacing:.02em;white-space:nowrap">${etiqueta}</td>` : ''}
           </tr></table>
         </td></tr>
         <tr><td class="linea" style="border-top:1px solid ${C.borde};font-size:0;line-height:0">&nbsp;</td></tr>

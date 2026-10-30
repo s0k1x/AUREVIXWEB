@@ -1,9 +1,0 @@
-{
-  "title": "Contact us form",
-  "category": "contact",
-  "responsive": true,
-  "canvas": {
-    "center": true,
-    "maxWidth": 1000
-  }
-}

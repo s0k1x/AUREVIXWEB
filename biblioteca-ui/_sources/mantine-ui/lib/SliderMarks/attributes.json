@@ -1,8 +1,0 @@
-{
-  "title": "Slider with marks",
-  "category": "sliders",
-  "canvas": {
-    "center": true,
-    "maxWidth": 420
-  }
-}

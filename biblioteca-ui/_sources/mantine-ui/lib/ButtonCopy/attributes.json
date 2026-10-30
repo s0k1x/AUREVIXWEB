@@ -1,8 +1,0 @@
-{
-  "title": "Copy to clipboard button",
-  "category": "buttons",
-  "canvas": {
-    "center": true,
-    "maxWidth": 240
-  }
-}

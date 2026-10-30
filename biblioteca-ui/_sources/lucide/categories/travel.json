@@ -1,6 +1,0 @@
-{
-  "$schema": "../category.schema.json",
-  "title": "Travel",
-  "description": "Icons for travel, lodging, luggage, destinations, trip planning, and tourism.",
-  "icon": "backpack"
-}

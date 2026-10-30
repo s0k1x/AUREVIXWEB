@@ -1,6 +1,6 @@
 // Vista previa de los correos y de la factura, sin enviar nada.
 // Uso: deno run -A scripts/vista-correos.ts <carpeta-salida> [url-base-para-imágenes]
-import { correoCodigo, correoPago, pdfFactura } from '../supabase/functions/_shared/plantillas.ts';
+import { correoCodigo, correoPago, correoCobro, pdfFactura } from '../supabase/functions/_shared/plantillas.ts';
 const [salida = '.', base = ''] = Deno.args;
 const local = (h: string) => base ? h.replaceAll('https://aurevixweb.es/icons/', `${base}/icons/`) : h;
 const c = correoCodigo('974910', 'Jose García', false);
@@ -10,6 +10,9 @@ const pedido = { total: 349, precioBase: 299, planNombre: 'Web de negocio', clie
 const e = { marca: 'AurevixWeb', email: 'aurevixweb@gmail.com', senal: 50, iva: 21, legal: { titular: 'Mario Señor Sevilla', nif: '12345678Z', domicilio: 'Calle Mayor 1, 28001 Madrid', email: 'aurevixweb@gmail.com' } };
 const p = correoPago(pedido, '0f1e2d3c-4b5a-6978-8a9b-c0d1e2f3a4b5', 'senal', e, { razon: 'Barbería Filo S.L.', nif: 'B12345678' }, '2026-0007');
 await Deno.writeTextFile(`${salida}/correo-pago.html`, local(p.html));
+const cu = correoCobro(pedido, '0f1e2d3c-4b5a-6978-8a9b-c0d1e2f3a4b5', { titulo: 'Cuota mensual pagada', concepto: 'la cuota de noviembre de 2026', metodo: 'Bizum',
+  lineas: [{ concepto: 'Mantenimiento de «Barbería Filo» · noviembre de 2026', importe: 19 }], pasos: ['Tu próxima cuota será el 30 de diciembre.'] }, e, { razon: 'Barbería Filo S.L.', nif: 'B12345678' }, '2026-0012');
+await Deno.writeTextFile(`${salida}/correo-cuota.html`, local(cu.html));
 const logo = base ? new Uint8Array(await (await fetch(`${base}/icons/logo-a.png`)).arrayBuffer()) : undefined;
 const pdf = await pdfFactura('2026-0007', {
   fecha: '30/10/2026', emisor: { titular: e.legal.titular, nif: e.legal.nif, domicilio: e.legal.domicilio, email: e.legal.email },

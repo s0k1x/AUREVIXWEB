@@ -1,8 +1,0 @@
-2026-10-24 ERROR clonando Meraki-UI/meraki-ui (repositorio inexistente) -> se usó merakiuilabs/merakiui
-2026-10-24 ERROR uiverse.io inaccesible: el proxy de red del entorno rechaza la conexión (CONNECT 403 / DNS ENOTFOUND)
-2026-10-24 AVISO shadcn-ui: 10 archivos citados en apps/v4/registry.json no existen en el repo original (*-form.tsx en registry/new-york-v4/examples)
-2026-10-24 OMITIDO MarsX-dev/floatui (licencia prohíbe redistribuir componentes)
-2026-10-24 OMITIDO IanLunn/Hover (uso comercial requiere licencia de pago)
-2026-10-24 OMITIDO Remix-Design/RemixIcon (licencia prohíbe distribuirlo como colección de iconos)
-2026-10-24 ELIMINADO DavidHDev/react-bits (_sources/react-bits, 2.791 archivos, y _licenses/react-bits): su licencia prohíbe redistribuir los componentes fuera de una aplicación. Ficha en _referencias/react-bits.md
-2026-10-24 AVISO tw-elements.com, loading.io y connoratherton.com inaccesibles: licencias comprobadas solo en repositorio y npm

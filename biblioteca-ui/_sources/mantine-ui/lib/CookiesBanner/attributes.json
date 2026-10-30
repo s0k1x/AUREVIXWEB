@@ -1,9 +1,0 @@
-{
-  "title": "Cookies banner",
-  "category": "banners",
-  "dimmed": true,
-  "canvas": {
-    "center": true,
-    "maxWidth": 420
-  }
-}

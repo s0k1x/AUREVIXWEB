@@ -1,8 +1,0 @@
-{
-  "title": "Input with custom validation styles",
-  "category": "inputs",
-  "canvas": {
-    "center": true,
-    "maxWidth": 420
-  }
-}

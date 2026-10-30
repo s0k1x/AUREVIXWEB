@@ -1249,3 +1249,40 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - `supabase/plantillas/codigo-acceso.html`: la misma plantilla para el correo de reserva de Supabase (Authentication → Email Templates → «Magic Link» y «Confirm signup»), con `{{ .Token }}`.
 - Vista previa sin enviar nada: `deno run -A scripts/vista-correos.ts <carpeta> http://127.0.0.1:8731` (genera los dos correos y el PDF).
 - Desplegadas: `codigo` (v3) y `correo` (v8).
+
+### v88: negocio completo en el panel, sin librería y lista para Cloudflare
+- **Mantenimiento mensual** (Panel → Mantenimiento, solo el propietario):
+  - Activar la cuota, registrar el pago de cada mes, pausar, reanudar, dar de baja y reactivar.
+  - Al registrar una cuota se envía la factura de ese mes (fase `cuota-AAAA-MM`).
+  - En el resumen aparecen avisos de cuotas vencidas o sin activar.
+  - El cliente ve su cuota, el próximo cobro y las cuotas pagadas en «Mis proyectos → Pagos», y puede pedir la baja. La petición llega a Soporte como consulta de tipo «Baja».
+- **Finanzas** (solo el propietario):
+  - Ingresos cobrados (webs, cuotas y cambios extra), gastos, comisiones pagadas y beneficio, por mes, trimestre o año.
+  - Los gastos se pueden añadir, editar y borrar (tabla `gastos`).
+  - Exportación a CSV.
+- **Cambios extra** (presupuestos aceptados online):
+  - El propietario los propone desde el detalle del pedido.
+  - El cliente los acepta o los rechaza en su proyecto; al aceptar queda guardado el texto del acuerdo, su nombre y la fecha.
+  - El propietario marca el pago y se envía la factura (fase `extra-<id>`).
+- **Comisiones antifraude:**
+  - Se pueden cobrar 14 días después del pago del cliente.
+  - Las ventas sospechosas quedan retenidas hasta que el propietario las revisa: el cliente es el propio vendedor, comparten correo, dominio o nombre, o hay muchas cancelaciones.
+  - Solo el propietario confirma pagos.
+- **Soporte:**
+  - Prioridad alta, normal o baja, ordenada por prioridad y por el tiempo que lleva sin respuesta.
+  - Asignar la consulta (el propietario) o «Me la quedo» (el trabajador).
+  - Estado «En curso».
+  - «Sugerir respuesta» con la IA.
+- **Estadísticas reales de cada web publicada:**
+  - Visitas, contactos (llamar, WhatsApp o correo), conversión, dispositivo y de dónde vienen.
+  - Sin cookies: cuenta una visita por sesión.
+  - Las ven el cliente en su proyecto y el equipo en el pedido.
+- **Revisión SEO** de cada versión: título, descripción, H1, idioma, viewport, noindex, alt, og:, enlaces y archivos rotos, peso de las imágenes y favicon. Se lanza con la lupa de cada versión.
+- **Versiones:** las anteriores a la que ve el cliente tienen el botón «Restaurar».
+- **Pruebas:** comprueban también que el sitemap no tenga enlaces rotos y que incluya todas las páginas públicas.
+- **Librería:** ya no forma parte de la web. Para pasarla a su propio repositorio privado, usa `scripts/separar-libreria.sh`. La tabla `suscripciones` sigue en Supabase.
+- **Cloudflare Pages:** `scripts/cloudflare-build.sh`, `_headers` y `_redirects`. Los pasos están en `CLOUDFLARE.md`.
+- **Pendiente de aplicar** (necesita permiso):
+  - `supabase/plataforma-v88.sql`. Es aditivo: límites al equipo, tickets, `gastos`, `estadisticas_web`, avisos de tickets, facturas de cuotas y extras, y `cambiosExtra` para el cliente.
+  - Desplegar `correo` con los cambios de `_shared`.
+  - Mientras no se aplique, el panel muestra cómo activarlo y lo demás sigue funcionando.

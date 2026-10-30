@@ -1,6 +1,0 @@
-{
-  "$schema": "../category.schema.json",
-  "title": "Accounts & access",
-  "description": "Icons for user profiles, identity, settings, memberships, and personal account actions.",
-  "icon": "user"
-}

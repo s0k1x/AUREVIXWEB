@@ -1,6 +1,0 @@
-{
-  "$schema": "../category.schema.json",
-  "title": "Accessibility",
-  "description": "Icons for accessibility, visibility, hearing, speech, and inclusive UI affordances.",
-  "icon": "accessibility"
-}

@@ -1,5 +1,0 @@
-{
-    "data" : {
-        "resize()" : "This is the method that will resize the textarea. It is called on initialization and every time the content in the textarea is updated."
-    }
-}

@@ -1,6 +1,0 @@
-{
-  "$schema": "../category.schema.json",
-  "title": "Mail",
-  "description": "Icons for mailboxes, inboxes, sending, replies, attachments, and email management.",
-  "icon": "mail"
-}
