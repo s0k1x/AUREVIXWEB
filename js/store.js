@@ -527,6 +527,26 @@ export async function crearResena({ estrellas, texto, plan, pedidoId }) {
   return creada;
 }
 
+/** Horas de llamada ya reservadas (solo las horas, nunca quién): para enseñar los huecos libres.
+    En el servidor, huecos_ocupados() (supabase/funciones-v94.sql). */
+export async function huecosOcupados() {
+  if (modoDemo) return local.get('tickets', []).filter(t => t.tipo === 'llamada' && t.estado !== 'cerrado').map(t => t.llamada);
+  try { const { data, error } = await limite(sb.rpc('huecos_ocupados'), 8000); return error ? [] : (data || []).map(x => x.llamada || x); } catch { return []; }
+}
+/** Cifras de la portada (webs entregadas, días de media, valoración y entregas por mes): solo totales, nunca datos de
+    nadie. En el servidor, la función cifras_publicas() (supabase/funciones-v94.sql). null si aún no está o falla. */
+export async function cifrasPublicas() {
+  if (modoDemo) {
+    const P = local.get('orders', []).filter(p => p.estado === 'entregado'), R = local.get('resenas', []).filter(r => r.aprobada);
+    const mes = t => { const d = new Date(t); return d.getFullYear() * 12 + d.getMonth(); }, hoy = mes(Date.now());
+    return {
+      entregadas: P.length, dias: P.length ? Math.round(P.reduce((s, p) => s + 9, 0) / P.length) : null,
+      valoracion: R.length ? R.reduce((s, r) => s + r.estrellas, 0) / R.length : null, resenas: R.length,
+      por_mes: Array.from({ length: 6 }, (_, i) => P.filter(p => mes(p.createdAt) === hoy - 5 + i).length)
+    };
+  }
+  try { const { data, error } = await limite(sb.rpc('cifras_publicas'), 8000); return error ? null : data; } catch { return null; }
+}
 export async function resenasPublicas() {
   if (modoDemo) return recientes(local.get('resenas', []).filter(r => r.aprobada));
   return leer('resenas', q => q.eq('datos->>aprobada', 'true'));
@@ -728,10 +748,10 @@ export function escucharMensajes(pedidoId, cb) {
 /* ==========================================================
    SOPORTE Y CONTACTO
    ========================================================== */
-export async function crearTicket({ tipo = 'duda', asunto, mensaje, pedido = '', nombre = '', email = '' }) {
+export async function crearTicket({ tipo = 'duda', asunto, mensaje, pedido = '', nombre = '', email = '', extra = {} }) {
   webAbierta();
   const u = usuario;
-  const t = { tipo, asunto, mensaje, pedido, nombre: u?.name || nombre, email: u?.email || email, estado: 'abierto', respuestas: [], createdAt: Date.now() };
+  const t = { tipo, asunto, mensaje, pedido, nombre: u?.name || nombre, email: u?.email || email, estado: 'abierto', respuestas: [], createdAt: Date.now(), ...extra };
   if (modoDemo) {
     const c = { ...t, id: nuevoId(), uid: u?.uid || null };
     local.set('tickets', [c, ...local.get('tickets', [])]);
@@ -739,7 +759,7 @@ export async function crearTicket({ tipo = 'duda', asunto, mensaje, pedido = '',
     return c;
   }
   const { error } = await limite(sb.from('tickets').insert({ uid: u?.uid || null, datos: t }));
-  if (error) throw new Error(traducirError(error));
+  if (error) throw new Error(/duplicate|unique|llamada_unica/i.test(error.message) ? 'Ese hueco se acaba de reservar. Elige otra hora.' : traducirError(error));
   return t;
 }
 export async function misTickets() {

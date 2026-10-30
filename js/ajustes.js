@@ -199,6 +199,7 @@ const TIPOS_AVISO = U => [
   ['revision', 'Vista previa lista para revisar', U.role === 'client'],
   ['soporte', 'Respuestas y consultas de soporte', true],
   ['pedido', 'Pedidos nuevos', U.role === 'owner'],
+  ['recordatorios', 'Recordatorios e informe mensual por correo (cuotas, contenido pendiente y visitas de tu web)', U.role === 'client'],
   ['cliente', 'Cuando un cliente actualiza su proyecto', U.role !== 'client']
 ].filter(x => x[2]);
 async function notificaciones() {
@@ -319,6 +320,11 @@ async function negocio() {
       <div class="aj-ops tres aj-estado">${[['normal', 'Normal', 'Todo funciona', 'check'], ['demo', 'Demostración', 'Se puede probar todo, pero no se guardan pedidos, pagos ni mensajes', 'flask'], ['mantenimiento', 'Mantenimiento', 'Pantalla de espera con el robot; no se puede usar la web', 'tool']]
         .map(([k, t, d, ic]) => `<label class="aj-op"><input type="radio" name="estadoWeb" value="${k}" ${(a.estadoWeb || 'normal') === k ? 'checked' : ''}><span>${icono(ic)}<b>${t}</b><small>${d}</small></span></label>`).join('')}</div>
       ${campo({ id: 'f_mensajeMant', name: 'mensajeMant', label: 'Mensaje de mantenimiento (opcional)', type: 'textarea', value: a.mensajeMant || '', attrs: 'maxlength="240" rows="2"', hint: 'Ej.: Volvemos hoy a las 18:00 con novedades.' })}`)}
+    ${bloque('Llamadas', 'Los visitantes reservan una llamada en tus huecos libres desde «Contacto» y el asistente. Llegan a Soporte con su hora.', `
+      ${interruptor({ id: 'llActivo', titulo: 'Dejar reservar llamadas', texto: 'Aparece el botón «Prefiero que me llaméis»', checked: !!a.llamadas?.activo })}
+      <div class="ll-aj-dias" role="group" aria-label="Días de llamadas">${[[1, 'L'], [2, 'M'], [3, 'X'], [4, 'J'], [5, 'V'], [6, 'S'], [0, 'D']].map(([n, t]) => `<label class="ll-aj-dia"><input type="checkbox" name="llDia" value="${n}" ${(a.llamadas?.dias || []).includes(n) ? 'checked' : ''}><span>${t}</span></label>`).join('')}</div>
+      <div class="row-2">${texto('llDesde', 'Desde (hora de Madrid)', a.llamadas?.desde || '10:00', 'type="time"')}${texto('llHasta', 'Hasta', a.llamadas?.hasta || '14:00', 'type="time"')}</div>
+      <div class="row-2">${texto('llMin', 'Minutos por llamada', a.llamadas?.minutos || 20, 'type="number" min="15" max="60" step="5"')}${texto('llAntes', 'Antelación mínima (horas)', a.llamadas?.antelacion ?? 12, 'type="number" min="0" max="168"')}</div>`)}
     ${bloque('Portada y pedidos', 'Lo que ven los visitantes al entrar.', `
       ${texto('aviso', 'Texto de la píldora de la portada', a.aviso, 'maxlength="70"', 'Ej.: Plazas abiertas para nuevos proyectos este mes')}
       ${interruptor({ id: 'anuncioActivo', titulo: 'Mostrar franja de aviso arriba del todo', texto: 'Para ofertas, vacaciones o cambios de horario', checked: a.anuncio.activo })}
@@ -433,6 +439,7 @@ async function negocio() {
     if (estadoWeb === 'mantenimiento' && CONFIG.estadoWeb !== 'mantenimiento' && !confirm('¿Poner la web en mantenimiento? Los visitantes y los clientes no podrán usarla hasta que vuelvas a «Normal». Tú y los trabajadores la seguiréis viendo.')) return;
     await guardar({
       estadoWeb, mensajeMant: v('mensajeMant'),
+      llamadas: { activo: $('#llActivo').checked, dias: $$('input[name=llDia]:checked').map(i => +i.value), desde: v('llDesde') || '10:00', hasta: v('llHasta') || '14:00', minutos: [15, 20, 30, 45, 60].includes(+v('llMin')) ? +v('llMin') : 20, antelacion: Math.min(168, Math.max(0, +v('llAntes') || 0)), verDias: CONFIG.llamadas?.verDias || 14 },
       aviso: v('aviso') || ORIGINAL.config.aviso, anuncio: { activo: $('#anuncioActivo').checked, texto: v('anuncioTexto') },
       aceptarPedidos: $('#aceptarPedidos').checked, mensajeCerrado: v('mensajeCerrado'),
       email: v('email') || CONFIG.email, horario: v('horario'), respuesta: v('respuesta'),

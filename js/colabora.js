@@ -260,6 +260,7 @@ export async function abrirRecibo(p, fase) {
       <div><span>Estado</span><span class="estado ${p.pagoEstado === 'pagado' || (fase === 'senal' && p.pagoEstado === 'senal') ? '' : 'no'}">${esc((PAGOS[p.pagoEstado || 'pendiente'] || PAGOS.pendiente).txt)}</span></div>
       ${p.pagoMetodo ? `<div><span>Forma de pago</span><span>${esc(METODOS[p.pagoMetodo] || p.pagoMetodo)}</span></div>` : ''}
     </div>
+    ${p.firma?.img && /^data:image\/png;base64,/.test(p.firma.img) ? `<div class="firma"><img src="${p.firma.img}" alt="Firma del cliente" style="max-width:220px;height:auto;display:block"><small>Pedido firmado por ${esc(p.firma.nombre || '')} el ${new Date(p.firma.t).toLocaleString('es-ES')}</small></div>` : ''}
     <footer>Este documento es un justificante del pago de tu proyecto «${esc(p.respuestas?.negocio || p.planNombre)}» y <b>no sustituye a la factura</b>, que te enviamos por cada pago. Para que salga a nombre de tu empresa, revisa tus datos en «Ajustes → Facturación». Condiciones de contratación, derecho de desistimiento (14 días) y política de privacidad: ${esc(location.origin)}/terminos-y-privacidad. Consultas: ${esc(CONFIG.legal?.email || CONFIG.email)}.<br>© ${new Date().getFullYear()} ${esc(CONFIG.marca)}. Todos los derechos reservados.</footer>
   </div></body></html>`;
   const w = window.open('', '_blank');

@@ -21,7 +21,7 @@ export const ORIGINAL = {
 /** Ajustes actuales en el formato que se guarda */
 export function ajustesActuales() {
   return {
-    estadoWeb: CONFIG.estadoWeb || 'normal', mensajeMant: CONFIG.mensajeMant || '',
+    estadoWeb: CONFIG.estadoWeb || 'normal', mensajeMant: CONFIG.mensajeMant || '', llamadas: { ...CONFIG.llamadas },
     aviso: CONFIG.aviso, anuncio: { ...CONFIG.anuncio }, aceptarPedidos: CONFIG.aceptarPedidos, mensajeCerrado: CONFIG.mensajeCerrado,
     horario: CONFIG.horario, respuesta: CONFIG.respuesta, email: CONFIG.email,
     senal: CONFIG.senal, comision: CONFIG.comision, urgente: CONFIG.urgente,
@@ -41,6 +41,15 @@ function aplicar(a) {
   // No afecta al propietario ni a los trabajadores (ver js/estado-web.js)
   CONFIG.estadoWeb = ['normal', 'demo', 'mantenimiento'].includes(a.estadoWeb) ? a.estadoWeb : 'normal';
   CONFIG.mensajeMant = txt(a.mensajeMant, '').slice(0, 240);
+  if (a.llamadas && typeof a.llamadas === 'object') {
+    const hora = v => (/^([01]\d|2[0-3]):[0-5]\d$/.test(v || '') ? v : null);
+    const l = a.llamadas, d = CONFIG.llamadas;
+    Object.assign(d, {
+      activo: !!l.activo, dias: Array.isArray(l.dias) ? l.dias.filter(n => Number.isInteger(n) && n >= 0 && n <= 6) : d.dias,
+      desde: hora(l.desde) || d.desde, hasta: hora(l.hasta) || d.hasta, minutos: [15, 20, 30, 45, 60].includes(+l.minutos) ? +l.minutos : d.minutos,
+      antelacion: Math.min(168, Math.max(0, num(l.antelacion, d.antelacion))), verDias: Math.min(60, Math.max(3, num(l.verDias, d.verDias)))
+    });
+  }
   // Los objetos se actualizan «en su sitio» (Object.assign): así los módulos que ya los tenían leídos ven los datos nuevos
   if (a.anuncio) Object.assign(CONFIG.anuncio, { activo: !!a.anuncio.activo, texto: txt(a.anuncio.texto, '') });
   if (typeof a.aceptarPedidos === 'boolean') CONFIG.aceptarPedidos = a.aceptarPedidos;

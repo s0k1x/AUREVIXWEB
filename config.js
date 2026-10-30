@@ -11,7 +11,9 @@ export const CONFIG = {
   dominio: 'aurevixweb.es',                 // reservado; aún no apunta a la web (ver LEEME.md, punto 12)
   aviso: 'Plazas abiertas para nuevos proyectos este mes', // texto de la píldora de la portada
   anuncio: { activo: false, texto: '' },    // franja de aviso arriba del todo
-  estadoWeb: 'normal',                      // normal · demo · mantenimiento (se cambia en Ajustes → Negocio; no afecta al equipo)
+  estadoWeb: 'normal',
+  // Llamadas: los visitantes reservan una llamada en los huecos libres (Ajustes → Negocio → Llamadas)
+  llamadas: { activo: false, dias: [1, 2, 3, 4, 5], desde: '10:00', hasta: '14:00', minutos: 20, antelacion: 12, verDias: 14 },                      // normal · demo · mantenimiento (se cambia en Ajustes → Negocio; no afecta al equipo)
   aceptarPedidos: true,                     // si es false, los botones de compra pasan a «Lista de espera»
   mensajeCerrado: 'Ahora mismo tenemos la agenda completa. Déjanos tus datos y te escribimos en cuanto haya hueco.',
   horario: 'Lunes a viernes, de 9:00 a 18:00',

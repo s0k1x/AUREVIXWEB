@@ -16,7 +16,7 @@ import { botonPago, abrirPago, abrirResena, animarYPagar } from './pago.js';
 import { recomendar, iniciarChat } from './asistente.js';
 import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, pedirCambios, webCliente, desistimientoHTML, puedeDesistir, finDesistimiento, estadoParaEtapa, indiceEtapa, dominioTexto, fechaEntrega, plazoTexto, plazoClase, conHistorial, lineaTiempoHTML } from './proyecto.js';
 import { importeSenal, importeResto } from './pago.js';
-import { confeti } from './efectos.js';
+import { confeti, contar } from './efectos.js';
 import { conMantenimiento, mantClienteHTML, extrasClienteHTML, textoAcuerdo, resumirVisitas, estadisticasHTML } from './negocio.js';
 import { comprobar as comprobarCampo } from './validar.js';
 import { dominioHTML, montarDominio, leerDominio, sugerirNombre, marcarError } from './dominio.js';
@@ -238,6 +238,7 @@ document.addEventListener('aurevix:abrir', async e => {
   if (d.tipo === 'proyectos') return abrirPedidos();
   if (d.tipo === 'proyecto') return abrirPedidos(d.id, d.pest || 'estado');
   if (d.tipo === 'soporte') return abrirSoporte();
+  if (d.tipo === 'llamada') return import('./llamada.js').then(m => m.abrirLlamada());
   if (d.tipo === 'comprar') return abrirCompra(d.plan, '', { urgente: !!d.urgente, extras: d.extras || [] });
   if (d.tipo === 'elegir') return $('#abrirReco')?.click();
   if (d.tipo === 'pagar') {
@@ -690,6 +691,11 @@ function abrirCompra(planId, plantillaInicial = '', { urgente = false, extras = 
 
     <div class="paso" data-paso="estilo">
       <h3 class="paso-h">Estilo y contenido</h3>
+      <div class="wz-vivo" aria-label="Vista previa de tu web">
+        <div class="wz-vivo-pc"><div class="wz-vivo-bar"><i></i><i></i><i></i><span id="wzVivoUrl"></span></div>
+          <div class="thumb wz-vivo-pant">${'<iframe tabindex="-1" aria-hidden="true" title=""></iframe>'.repeat(2)}</div></div>
+        <p class="wz-vivo-nota">${icono('eye')}<span>Así quedaría con tu nombre y tu color. El diseño lo eliges en el paso 7.</span></p>
+      </div>
       <span class="q-label">Estilo</span>
       ${opciones('estilo', ESTILOS)}
       <span class="q-label">Color principal</span>
@@ -806,6 +812,28 @@ form.addEventListener('input', e => {
   }
 });
 form.addEventListener('submit', e => { e.preventDefault(); $('#wizNext').click(); });
+/* Vista previa en vivo (paso «Estilo»): el diseño con el nombre y el color del cliente. La versión nueva se carga
+   detrás y aparece con un fundido cuando ya está lista, así nunca se ve en blanco ni da un salto */
+let vivoUrl = '', vivoT = 0, vivoCapa = 0;
+function pintarVivo() {
+  if (!W || !$('.wz-vivo', form)) return;
+  ro.observe($('.wz-vivo-pant', form));
+  const id = W.plantilla && W.plantilla !== 'cero' ? W.plantilla : W.plan.plantillas?.[0] || PLANTILLAS[0].id;
+  const nombre = $('#fNegocio', form)?.value.trim() || '';
+  const color = W.colorCustom || $('input[name=color]:checked', form)?.value || '';
+  const url = urlPlantilla(id, nombre, color, true);
+  $('#wzVivoUrl').textContent = (sugerirNombre(nombre) || plantillaPorId(id)?.dominio.split('.')[0] || 'tunegocio') + '.es';
+  if (url === vivoUrl) return;
+  vivoUrl = url;
+  clearTimeout(vivoT);
+  vivoT = setTimeout(() => {
+    const capas = $$('.wz-vivo-pant iframe', form), sig = capas[1 - vivoCapa];
+    sig.onload = () => { if (sig.src.endsWith(vivoUrl)) { sig.classList.add('on'); capas[vivoCapa].classList.remove('on'); vivoCapa = 1 - vivoCapa; } };
+    sig.src = vivoUrl;
+  }, 220);
+}
+form.addEventListener('change', e => { if (e.target.name === 'color' || e.target.name === 'plantilla') pintarVivo(); });
+form.addEventListener('input', e => { if (e.target.id === 'colorPick') pintarVivo(); });
 // Intro en un campo de texto = Continuar
 form.addEventListener('keydown', e => {
   if (e.key === 'Enter' && e.target.matches('input:not([type=checkbox]):not([type=radio]):not([type=color])')) { e.preventDefault(); $('#wizNext').click(); }
@@ -841,6 +869,7 @@ function irA(i) {
     montarDominio(form);
     inp.dispatchEvent(new Event('input'));
   }
+  if (paso.id === 'estilo') pintarVivo();
   if (paso.id === 'diseno') pintarSelectorDiseno();
   if (paso.id === 'resumen') pintarResumen();
   actualizarTotal();
@@ -1035,8 +1064,12 @@ async function confirmarPedido() {
   }
   try { await import('./verificacion.js').then(v => v.siEsInusual('pedido')); }
   catch (er) { return toast(er.message, 'err'); }
-  ocupado(btn, true);
   const d = datos();
+  // Firma del pedido (queda en el detalle y en el resumen imprimible)
+  const { pedirFirma } = await import('./firma.js');
+  const img = await pedirFirma({ titulo: 'Firma tu pedido', nombre: u.name, texto: `Acepto el pedido «${W.plan.nombre}» por ${euros(d.total)}${d.mensual ? ` y ${euros(d.mensual)}/mes` : ''}, con obligación de pago, y las condiciones de contratación.` });
+  if (!img) return;
+  ocupado(btn, true);
   try {
     const pedido = await store.crearPedido({
       plan: W.plan.id, planNombre: W.plan.nombre, precioBase: W.plan.precio,
@@ -1046,7 +1079,8 @@ async function confirmarPedido() {
       inicioAnticipado: !!$('#wizInicio')?.checked,
       iva: CONFIG.iva || 0,
       ...(W.cupon ? { cupon: W.cupon.codigo, descuento: d.descuento, precioSinDescuento: d.bruto } : {}),
-      ref: leerRef() && leerRef() !== u.uid ? leerRef() : ''
+      ref: leerRef() && leerRef() !== u.uid ? leerRef() : '',
+      firma: { img, nombre: u.name, t: Date.now() }
     });
     contarEvento('pedido-hecho');
     exito(pedido);
@@ -1302,18 +1336,19 @@ $('#pedidosList').addEventListener('click', e => {
     return animarYPagar(pg, () => abrirPago(p, pg.dataset.fase, pintarPedidos));
   }
   const xs = e.target.closest('[data-extra-si], [data-extra-no]');
-  if (xs) {
+  if (xs) return (async () => {
     const p = misPedidos.find(x => x.id === xs.dataset.p), si = 'extraSi' in xs.dataset;
     const L = (p.cambiosExtra || []).map(x => ({ ...x })), x = L.find(y => y.id === (xs.dataset.extraSi || xs.dataset.extraNo));
     if (!x || x.estado !== 'propuesto') return;
-    if (si && !confirm(`${textoAcuerdo(x, CONFIG.marca)}\n\n¿Lo aceptas?`)) return;
+    let img = '';
+    if (si) { img = await (await import('./firma.js')).pedirFirma({ titulo: 'Firma el presupuesto', texto: textoAcuerdo(x, CONFIG.marca), nombre: store.usuarioActual()?.name || p.clienteNombre }); if (!img) return; }
     if (!si && !confirm(`¿Rechazar el presupuesto «${x.concepto}»?`)) return;
     const u = store.usuarioActual();
     x.estado = si ? 'aceptado' : 'rechazado'; x.respondido = Date.now();
-    if (si) x.acuerdo = { nombre: u?.name || p.clienteNombre, texto: textoAcuerdo(x, CONFIG.marca), t: Date.now() };
+    if (si) x.acuerdo = { nombre: u?.name || p.clienteNombre, texto: textoAcuerdo(x, CONFIG.marca), t: Date.now(), firma: img };
     return guardarProyecto(p, { cambiosExtra: L }, si ? 'Presupuesto aceptado. Te indicamos cómo pagarlo en Mensajes.' : 'Presupuesto rechazado', xs, `${si ? 'Aceptado' : 'Rechazado'} el presupuesto «${x.concepto}» (${euros(x.importe)})`)
       .then(ok => ok && store.enviarMensaje(p.id, `${si ? 'He aceptado' : 'He rechazado'} el presupuesto «${x.concepto}» (${euros(x.importe)}).`).catch(() => {}));
-  }
+  })();
   const mb = e.target.closest('[data-mant-baja]');
   if (mb) {
     const p = misPedidos.find(x => x.id === mb.dataset.mantBaja);
@@ -1484,8 +1519,37 @@ $('#contactoForm').addEventListener('submit', async e => {
 });
 
 /* ---------- Casos reales (Ajustes → Negocio → Casos reales) ---------- */
+/* Cifras reales (webs entregadas, días de media, valoración): los números suben al verse y una pequeña gráfica dibuja
+   las entregas de los últimos seis meses. Solo aparece con al menos tres webs entregadas: nunca se enseñan cifras de relleno. */
+async function pintarCifras() {
+  const c = await store.cifrasPublicas();
+  if (!c || (c.entregadas || 0) < 3) return;
+  const M = (c.por_mes || []).slice(-6), max = Math.max(1, ...M);
+  const pts = M.map((v, i) => [i * (120 / Math.max(1, M.length - 1)), 34 - (v / max) * 30]);
+  const linea = pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+  const meses = M.map((_, i) => new Date(new Date().getFullYear(), new Date().getMonth() - (M.length - 1 - i), 1).toLocaleDateString('es-ES', { month: 'short' }).replace('.', ''));
+  const caja = (num, txt, extra = '') => `<div class="cifra"><b>${num}</b><span>${txt}</span>${extra}</div>`;
+  $('#cifrasGrid').innerHTML =
+    caja(`<em class="num" data-count="${c.entregadas}">${c.entregadas}</em>`, 'webs entregadas',
+      M.length > 1 ? `<svg class="cifra-graf" viewBox="-4 0 128 40" role="img" aria-label="Webs entregadas por mes: ${M.map((v, i) => `${meses[i]} ${v}`).join(', ')}"><path class="cg-area" d="${linea} L120 40 L0 40Z"/><path class="cg-linea" d="${linea}" pathLength="1"/>${pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.2"/>`).join('')}</svg>` : '')
+    + (c.dias ? caja(`<em class="num" data-count="${c.dias}">${c.dias}</em> días`, 'de media desde el pedido hasta la web publicada') : '')
+    + (c.valoracion && c.resenas ? caja(`${String(Math.round(c.valoracion * 10) / 10).replace('.', ',')}<small> / 5</small>`, `de valoración en ${c.resenas} opinion${c.resenas === 1 ? '' : 'es'}`) : '');
+  $('#cifras').hidden = false;
+  contar($('#cifras'));
+  const g = $('#cifras .cifras');
+  io?.observe?.(g);
+  new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); g.classList.add('dibuja'); } }, { threshold: .4 }).observe(g);
+}
+pintarCifras();
+document.querySelectorAll('[data-reservar-llamada]').forEach(b => { b.hidden = !CONFIG.llamadas?.activo; });
+// Antes y después: la barbería con una web anticuada y con el diseño «Filo»
+import('./antes-despues.js').then(m => m.iniciarAntesDespues(urlPlantilla('filo', 'Barbería Filo', '', true))).catch(() => {});
 if (CONFIG.casos?.length) {
+  // Cada caso, dentro de un portátil con la captura de su web que se desplaza sola al pasar por encima o al verse en el
+  // móvil (captura pública de WordPress.com «mShots»; si no llega, la tarjeta se queda solo con el texto)
+  const captura = u => `https://s0.wp.com/mshots/v1/${encodeURIComponent(u)}?w=1280&h=2200`;
   $('#casosGrid').innerHTML = CONFIG.casos.map(c => `<a class="caso reveal" href="${esc(c.url)}" target="_blank" rel="noopener">
+    <span class="caso-disp" aria-hidden="true"><span class="caso-bar"><i></i><i></i><i></i></span><span class="caso-pant"><img src="${esc(captura(c.url))}" alt="" loading="lazy" decoding="async" onerror="this.closest('.caso-disp').remove()"></span></span>
     ${c.sector ? `<small>${esc(c.sector)}</small>` : ''}<h3>${esc(c.nombre)}</h3>${c.texto ? `<p>${esc(c.texto)}</p>` : '<p></p>'}
     <span class="caso-url">${esc(c.url.replace(/^https:\/\/(www\.)?/i, '').replace(/\/$/, ''))}${icono('external')}</span></a>`).join('');
   $('#casos').hidden = false;

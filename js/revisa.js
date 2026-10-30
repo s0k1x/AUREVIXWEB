@@ -47,7 +47,21 @@ function anillo(score, nombre, desc) {
   </article>`;
 }
 
-function pintar(res, url) {
+/* Comparación honesta: a la vez que su web se mide, en vivo y en las mismas condiciones, uno de nuestros diseños publicados */
+const NUESTRA = 'https://aurevixweb.es/diseno?t=filo&m=1';
+function comparar(lh, nuestra) {
+  const filas = CATEGORIAS.filter(([k]) => lh.categories[k] && nuestra.categories?.[k]).map(([k, n]) => {
+    const a = Math.round((lh.categories[k].score ?? 0) * 100), b = Math.round((nuestra.categories[k].score ?? 0) * 100);
+    return `<div class="rv-cmp-f"><span>${esc(n)}</span>
+      <div class="rv-cmp-b"><i class="${estado(a / 100)[0]}" style="--v:${a}%"></i><b>${a}</b></div>
+      <div class="rv-cmp-b nuestra"><i class="${estado(b / 100)[0]}" style="--v:${b}%"></i><b>${b}</b></div></div>`;
+  }).join('');
+  return filas ? `<h3 class="rv-sub">Tu web frente a una web nuestra</h3>
+    <div class="rv-cmp"><div class="rv-cmp-cab"><span></span><small>Tu web</small><small>Diseño «Filo» de ${esc(CONFIG.marca)}</small></div>${filas}</div>
+    <p class="rv-nota">Las dos se han medido ahora mismo, a la vez y en las mismas condiciones (PageSpeed Insights, móvil).</p>` : '';
+}
+
+function pintar(res, url, nuestra = null) {
   const lh = res.lighthouseResult, A = lh.audits;
   const cats = CATEGORIAS.filter(([k]) => lh.categories[k]).map(([k, n, d]) => anillo(lh.categories[k].score ?? 0, n, d)).join('');
   const metricas = METRICAS.filter(([k]) => A[k]).map(([k, n]) => {
@@ -73,6 +87,7 @@ function pintar(res, url) {
         <div class="rv-cats">${cats}</div>
       </div>
     </div>
+    ${nuestra?.categories ? comparar(lh, nuestra) : ''}
     ${metricas ? `<h3 class="rv-sub">Tiempos de carga</h3><div class="rv-mets">${metricas}</div>` : ''}
     <h3 class="rv-sub">Lo que conviene mejorar</h3>
     ${mejoras.length ? `<ul class="rv-mejoras">${mejoras.map(m => `<li><span class="rv-tag">${esc(m.c)}</span><b>${esc(m.t)}</b>${m.d ? `<small>${esc(m.d)}</small>` : ''}</li>`).join('')}</ul>`
@@ -92,6 +107,8 @@ export function iniciarRevision() {
   // ?url=… para enlazar directamente un análisis
   const pedida = new URLSearchParams(location.search).get('url');
   if (pedida) input.value = pedida;
+  // Desde la portada (?url=…&auto=1) el análisis empieza solo
+  if (pedida && new URLSearchParams(location.search).get('auto')) queueMicrotask(() => form.requestSubmit());
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const url = normalizarUrl(input.value);
@@ -105,14 +122,19 @@ export function iniciarRevision() {
     res.innerHTML = `<div class="wrap rv-carga"><span class="rv-spin" aria-hidden="true"></span><div><b>Analizando ${esc(new URL(url).hostname)}…</b><p>Google abre tu web como un móvil y la mide. Suele tardar entre 20 y 40 segundos.</p></div></div>`;
     res.scrollIntoView({ behavior: 'smooth', block: 'start' });
     try {
-      const q = new URLSearchParams({ url, strategy: 'mobile', locale: 'es' });
-      CATEGORIAS.forEach(([k]) => q.append('category', k));
-      if (CONFIG.pagespeedKey) q.set('key', CONFIG.pagespeedKey);
-      const r = await fetch(`${API}?${q}`, { signal: ctl.signal });
+      const pedir = u => {
+        const q = new URLSearchParams({ url: u, strategy: 'mobile', locale: 'es' });
+        CATEGORIAS.forEach(([k]) => q.append('category', k));
+        if (CONFIG.pagespeedKey) q.set('key', CONFIG.pagespeedKey);
+        return fetch(`${API}?${q}`, { signal: ctl.signal });
+      };
+      // La nuestra va en paralelo y, si falla, la revisión sale igual (sin comparación)
+      const refNuestra = /aurevixweb\.es/i.test(url) ? Promise.resolve(null) : pedir(NUESTRA).then(x => (x.ok ? x.json() : null)).then(j => j?.lighthouseResult || null).catch(() => null);
+      const r = await pedir(url);
       const j = await r.json().catch(() => ({}));
       if (r.status === 429) throw new Error('Ahora mismo hay muchas revisiones. Prueba de nuevo en un minuto.');
       if (!r.ok || !j.lighthouseResult) throw new Error('No hemos podido analizar esa web. Comprueba que la dirección es correcta y que la web está publicada.');
-      res.innerHTML = pintar(j, url);
+      res.innerHTML = pintar(j, url, await refNuestra);
       res.querySelectorAll('i[data-i]').forEach(i => (i.outerHTML = icono(i.dataset.i)));
       res.querySelector('h2')?.focus?.();
     } catch (err) {

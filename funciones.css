@@ -1606,3 +1606,57 @@ html.en-mant,html.en-mant body{overflow:hidden}
 .mw-correo:hover{border-color:color-mix(in srgb,var(--m-halo) 50%,var(--line2));background:var(--card)}
 .mw-equipo{margin-top:28px;font-size:12px;color:var(--dim)}
 @media (prefers-reduced-motion:reduce){.mant-web{animation:none}}
+
+/* ===== Configurador: vista previa en vivo (paso «Estilo») ===== */
+.wz-vivo{margin:4px 0 18px}
+.wz-vivo-pc{border:1px solid var(--line2);border-radius:12px;overflow:hidden;background:var(--card2);box-shadow:0 18px 40px -24px rgba(0,0,0,.6)}
+.wz-vivo-bar{display:flex;align-items:center;gap:5px;padding:7px 10px;background:var(--card);border-bottom:1px solid var(--line)}
+.wz-vivo-bar i{width:7px;height:7px;border-radius:50%;background:var(--line2)}
+.wz-vivo-bar span{margin-left:8px;padding:2px 10px;border-radius:6px;background:var(--field);font-family:var(--fm);font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70%}
+.wz-vivo-pant{aspect-ratio:16/9}
+.wz-vivo-pant iframe{opacity:0;transition:opacity .35s ease}
+.wz-vivo-pant iframe.on{opacity:1}
+.wz-vivo-nota{display:flex;align-items:center;gap:8px;margin:10px 2px 0;font-size:13px;color:var(--muted)}
+.wz-vivo-nota svg{flex:none;color:var(--accent)}
+
+/* ===== Reservar una llamada (js/llamada.js) ===== */
+.ct-llamada{margin-top:18px}
+.ct-llamada svg{width:16px;height:16px}
+.dlg-llamada .dlg-box{max-width:520px}
+.ll-sub{display:flex;align-items:center;gap:8px;margin:0 0 16px}
+.ll-sub svg{flex:none;color:var(--accent)}
+.ll-dias{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.ll-dias::-webkit-scrollbar{display:none}
+.ll-dia{flex:none;display:grid;justify-items:center;gap:1px;width:62px;padding:9px 0;border-radius:12px;border:1px solid var(--line2);background:var(--card);color:var(--text);cursor:pointer;scroll-snap-align:start;font-family:var(--fb)}
+.ll-dia small{font-size:11px;color:var(--muted);text-transform:capitalize}
+.ll-dia b{font-family:var(--fd);font-size:20px;line-height:1.1}
+.ll-dia[aria-selected=true]{border-color:var(--accent);background:var(--accent-soft)}
+.ll-horas{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px;margin:12px 0 18px}
+.ll-hora{position:relative;cursor:pointer}
+.ll-hora input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.ll-hora span{display:block;padding:10px 0;text-align:center;border-radius:10px;border:1px solid var(--line2);font-variant-numeric:tabular-nums;font-weight:600;font-size:14.5px;transition:background .15s ease,border-color .15s ease}
+.ll-hora input:checked + span{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.ll-hora input:focus-visible + span{outline:2px solid var(--text);outline-offset:2px}
+.ll-form{display:grid;gap:12px}
+.ll-aj-dias{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.ll-aj-dia{position:relative;cursor:pointer}
+.ll-aj-dia input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.ll-aj-dia span{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line2);font-weight:600;font-size:14px}
+.ll-aj-dia input:checked + span{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.ll-aj-dia input:focus-visible + span{outline:2px solid var(--text);outline-offset:2px}
+
+/* ===== Firma en pantalla (js/firma.js) ===== */
+.dlg-firma .dlg-box{max-width:560px}
+.fm-texto{margin:0 0 14px;padding:12px 14px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:8px;font-size:14px;line-height:1.5}
+.fm-zona{position:relative;height:190px;border:1px dashed var(--line2);border-radius:14px;background:var(--field);color:var(--text);touch-action:none}
+.fm-zona canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+.fm-guia{position:absolute;left:18px;bottom:44px;font-size:13px;color:var(--dim);pointer-events:none;transition:opacity .2s ease}
+.fm-zona.con-firma .fm-guia{opacity:0}
+.fm-linea{position:absolute;left:18px;right:18px;bottom:38px;height:1px;background:var(--line2);pointer-events:none}
+.fm-zona.sacude{animation:shake .4s}
+.fm-pie{margin:10px 0 16px;font-size:13px;color:var(--muted)}
+.fm-btns{display:flex;gap:10px}
+.fm-btns .btn{flex:1}
+.firma-ver{margin:12px 0 0;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.firma-ver img{display:block;max-width:220px;height:auto}
+.firma-ver figcaption{font-size:11.5px;color:#5d5b55;margin-top:4px}

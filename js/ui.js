@@ -11,7 +11,7 @@ import { vigilarCampos } from './validar.js';
 import { iniciarBorradores } from './borradores.js';
 import { iniciarIdioma, botonIdioma } from './idioma.js';
 import { iniciarCookies } from './cookies.js';
-import { aplicarApariencia, guardarApariencia } from './apariencia.js';
+import { aplicarApariencia, guardarApariencia, leerApariencia } from './apariencia.js';
 import { campanaHTML, iniciarAvisos } from './avisos.js';
 import { iniciarDesplegables } from './desplegable.js';
 import { crearOtp } from './otp.js';
@@ -410,6 +410,47 @@ document.addEventListener('click', e => {
 /* ==========================================================
    CABECERA Y PIE
    ========================================================== */
+/* ---------- Tema claro u oscuro ----------
+   Un botón en la cabecera (y en el menú del móvil) cambia el tema con una transición circular que nace del propio
+   botón (View Transitions del navegador: la tarjeta gráfica funde las dos versiones de la página). Sin soporte o con
+   movimiento reducido, cambia al momento. Se guarda en Ajustes → Apariencia y viaja con la cuenta. */
+const esClaro = () => document.documentElement.dataset.tema === 'claro';
+function pintarBotonesTema() {
+  const claro = esClaro();
+  $$('.tema-btn').forEach(b => {
+    b.setAttribute('aria-label', claro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro');
+    b.title = b.getAttribute('aria-label');
+    b.innerHTML = `${icono(claro ? 'moon' : 'sun')}${b.classList.contains('largo') ? `<span>${claro ? 'Tema oscuro' : 'Tema claro'}</span>` : ''}`;
+  });
+}
+function botonTema({ largo = false } = {}) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = `tema-btn${largo ? ' largo' : ''}`;
+  b.addEventListener('click', e => cambiarTema(e));
+  queueMicrotask(pintarBotonesTema);
+  return b;
+}
+function cambiarTema(e) {
+  const tema = esClaro() ? 'oscuro' : 'claro';
+  const aplicar = () => {
+    const a = guardarApariencia({ tema });
+    pintarBotonesTema();
+    if (store.usuarioActual()) store.guardarPerfil({ datos: { apariencia: a } }).catch(() => {});
+  };
+  const r = e?.currentTarget?.getBoundingClientRect?.();
+  const x = r ? r.left + r.width / 2 : innerWidth - 40, y = r ? r.top + r.height / 2 : 30;
+  const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.movimiento === 'reducido';
+  if (!document.startViewTransition || reducido) return aplicar();
+  const radio = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  document.documentElement.classList.add('tema-vt');
+  const vt = document.startViewTransition(aplicar);
+  vt.ready.then(() => document.documentElement.animate(
+    { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radio}px at ${x}px ${y}px)`] },
+    { duration: 650, easing: 'cubic-bezier(.65,0,.35,1)', pseudoElement: '::view-transition-new(root)' }
+  )).catch(() => {});
+  vt.finished.finally(() => document.documentElement.classList.remove('tema-vt'));
+}
 export function pintarCabecera(activa = '') {
   const h = $('#header');
   const ir = ancla => (activa === 'inicio' ? ancla : './' + ancla);
@@ -430,10 +471,14 @@ export function pintarCabecera(activa = '') {
       </div>
     </div>`;
   $('.head-right', h).prepend(botonIdioma());
+  $('.head-right', h).prepend(botonTema());
   // En el móvil el idioma va dentro del menú (en la cabecera no cabe junto a la campana y la cuenta)
   const enMenu = botonIdioma({ largo: true });
   enMenu.classList.add('idioma-menu');
   $('#nav', h).append(enMenu);
+  const temaMenu = botonTema({ largo: true });
+  temaMenu.classList.add('tema-menu');
+  $('#nav', h).append(temaMenu);
   const menuBtn = $('#menuBtn');
   const cerrarMenu = () => { h.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); };
   menuBtn.addEventListener('click', () => {
@@ -553,6 +598,7 @@ function pintarSesion(u) {
 document.addEventListener('click', e => {
   if (!e.target.closest('.user-wrap')) $('.user-menu')?.classList.remove('open');
   if (e.target.closest('[data-login]')) pedirLogin();
+  if (e.target.closest('[data-reservar-llamada]')) import('./llamada.js').then(m => m.abrirLlamada()).catch(err => toast(err.message, 'err'));
   if (e.target.closest('[data-logout]')) {
     const nombre = store.usuarioActual()?.name;
     // Se cierran los menús y aparece la tarjeta de despedida mientras se cierra la sesión

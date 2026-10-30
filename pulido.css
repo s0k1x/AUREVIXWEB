@@ -551,3 +551,17 @@ html .empty .em,html .gate .em,html .estado-cand .big{box-shadow:0 10px 24px -12
 .toast.show{pointer-events:auto;touch-action:none}
 .toast.arrastra{transition:none}
 .toast.show::after{animation-duration:var(--dura,3.2s);animation-play-state:var(--estado,running)}
+/* Tema claro u oscuro: botón redondo en la cabecera (en el móvil, dentro del menú) */
+.tema-btn{display:inline-grid;place-items:center;width:40px;height:40px;flex:none;border-radius:50%;border:1px solid var(--line2);background:transparent;color:var(--text);cursor:pointer;transition:background .2s ease,transform .25s var(--e-out)}
+.tema-btn:hover{background:var(--card)}
+.tema-btn:active{transform:scale(.92)}
+.tema-btn svg{width:17px;height:17px}
+.tema-btn.largo{display:none}
+@media (max-width:760px){
+  .head-right > .tema-btn{display:none}
+  .nav .tema-btn.largo{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:min(100%,280px);height:50px;margin-top:10px;border-radius:99px;font-weight:600;font-size:14.5px}
+}
+/* Transición circular al cambiar el tema: el navegador funde las dos versiones; el círculo lo pone js/ui.js */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+html.tema-vt ::view-transition-old(root){z-index:1}
+html.tema-vt ::view-transition-new(root){z-index:2}
