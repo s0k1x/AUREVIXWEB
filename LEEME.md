@@ -1213,3 +1213,15 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - Solo en ordenador con ratón (`hover:hover` y puntero fino) y sin «menos movimiento».
   - Se monta al primer paso del ratón, así que sirve también para tarjetas que se pintan después. En reposo quita su estilo y lo deja como estaba.
   - CSS en `pulido.css`: `.inclina` (sin transición de transform, para no suavizar dos veces) e `.inclina-brillo`.
+
+### v85 — revisión final con todas las skills de diseño
+- **Auditoría automática:** 12 páginas × 4 tamaños (360, 390, 768 y 1440 px) × tema claro y oscuro. Cero errores de JS o de carga, nada se sale de la pantalla, ningún campo hace zoom en el iPhone y no falta ningún nombre accesible. Los únicos textos de 11 px están dentro de la maqueta del portátil, a propósito.
+- **mobile-native / Apple HIG:** zona de toque de ~44 px en el logotipo, las migas de pan, los enlaces de las casillas, el aviso de la demo y el cupón, con relleno invisible compensado (nada se mueve).
+- **animation-performance:** la línea de etapas de cada proyecto se llena con `scaleX` (tarjeta gráfica) en vez de animar el ancho.
+- **impeccable (detector) y el sistema de diseño:**
+  - Fuera los resplandores de color (sombras lima) de los botones principales, «Recomendado», la etiqueta % de Trabaja con nosotros, los iconos vacíos y el avatar del chat. Ahora son sombras neutras de elevación, en oscuro y en claro.
+  - La curva `--e-spring` de la interfaz ya no rebota. Tampoco las casillas, el icono de los campos ni la insignia de éxito. La mascota conserva sus rebotes.
+  - Lo demás que marca son falsos positivos (rellenos que pone un hijo, el botón con relleno solo al pasar el ratón) o decisiones de marca (Instrument Sans, el «escribiendo…» del chat).
+- **break-ui:** el chat y el formulario de contacto aguantan textos larguísimos sin espacios, emojis, árabe y chino en 360 px sin salirse.
+- **dataviz:** el gráfico de ingresos del panel ya tenía leyenda, cifras escritas y descripción accesible por mes.
+- No aplican a esta web: `animate-expo` y `write-swift` (apps nativas), `ask-sonner` y `pick-ui-library` (librerías de React) y `animation-vocabulary` (glosario).

@@ -162,7 +162,7 @@ html.zoom-ok .thumb iframe{transform:none;zoom:var(--s)}
 
 /* Éxito */
 .exito{text-align:center;padding:20px 0}
-.ok-ic{width:76px;height:76px;margin:0 auto 18px;border-radius:50%;background:var(--accent);color:var(--ink);display:grid;place-items:center;animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+.ok-ic{width:76px;height:76px;margin:0 auto 18px;border-radius:50%;background:var(--accent);color:var(--ink);display:grid;place-items:center;animation:pop .5s var(--e-out)}
 .ok-ic svg{width:38px;height:38px;stroke-width:3}
 @keyframes pop{from{transform:scale(.5);opacity:0}}
 .exito h3{font-size:30px;margin-bottom:10px}

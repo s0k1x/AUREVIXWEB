@@ -522,3 +522,26 @@ html[data-movimiento=reducido] :is(.ok-ic.logro,.ok-ic.logro::after){animation:n
 @media (hover:hover) and (pointer:fine){.inclina:hover .inclina-brillo{opacity:1}}
 html[data-tema=claro] .inclina-brillo{background:radial-gradient(circle at var(--bx,50%) var(--by,50%),rgba(255,255,255,.55),transparent 45%)}
 @media (hover:hover) and (pointer:fine){.plan-card.inclina:hover{transform:none}}
+
+/* v85 · Zonas de toque de al menos ~44 px en pantallas táctiles (guía mobile-native / Apple HIG):
+   relleno invisible compensado con margen negativo → se toca más fácil y nada se mueve */
+@media (pointer:coarse){
+  .header .logo{padding-block:8px;margin-block:-8px}
+  .pg-migas a,.gl-checkbox__label a,.demo-banner .link-btn{padding-block:12px;margin-block:-12px}
+  .bv-cod{position:relative}
+  .bv-cod::before{content:"";position:absolute;inset:-9px -4px}
+}
+
+/* v85 · Sin resplandores de color (sistema de diseño: nada de brillos neón): sombras neutras de elevación */
+html .btn-primary{box-shadow:0 1px 2px rgba(0,0,0,.35),0 6px 16px -8px rgba(0,0,0,.55)}
+html .btn-primary:hover{box-shadow:0 2px 4px rgba(0,0,0,.3),0 12px 24px -10px rgba(0,0,0,.6)}
+@media (hover:hover){html .btn-fill:hover{box-shadow:0 2px 4px rgba(0,0,0,.3),0 12px 24px -10px rgba(0,0,0,.6)}}
+html .pg-plan.pg-rec{box-shadow:var(--luz,none),0 30px 60px -32px rgba(0,0,0,.75)}
+html .pct{box-shadow:0 10px 30px -12px rgba(0,0,0,.6)}
+html .chat-av{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--accent) 45%,transparent),0 4px 10px -2px rgba(0,0,0,.45)}
+html[data-tema=claro] .btn-primary{box-shadow:0 1px 2px rgba(20,20,10,.12),0 6px 14px -8px rgba(20,20,10,.3)}
+html[data-tema=claro] .btn-primary:hover{box-shadow:0 2px 4px rgba(20,20,10,.12),0 12px 22px -10px rgba(20,20,10,.32)}
+html[data-tema=claro] .plan-card.popular{box-shadow:0 26px 54px -30px rgba(20,20,10,.35),0 2px 8px rgba(20,20,10,.06)}
+html[data-tema=claro] .pct{box-shadow:0 10px 30px -12px rgba(20,20,10,.3)}
+html[data-tema=claro] .empty .em,html[data-tema=claro] .gate .em,html[data-tema=claro] .estado-cand .big{box-shadow:0 10px 24px -12px rgba(20,20,10,.25)}
+html .empty .em,html .gate .em,html .estado-cand .big{box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
