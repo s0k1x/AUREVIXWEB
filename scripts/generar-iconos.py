@@ -40,10 +40,10 @@ guarda(icono(512, fondo=None, marca=0.6, tinte=(255, 255, 255)), 'monocromo-512.
 # Icono alternativo, verde con el logo oscuro
 guarda(icono(512, fondo=VERDE, marca=0.6, tinte=FONDO).convert('RGB'), 'icon-verde-512.png')
 # iPhone / iPad
-for t in (120, 152, 167):
+for t in (120, 152, 167, 180):
     guarda(icono(t, marca=0.64).convert('RGB'), f'apple-touch-icon-{t}.png')
 # Pestaña del navegador
-fav = {t: icono(t, marca=0.72, redondo=0.22) for t in (16, 32, 48)}
+fav = {t: icono(t, marca=0.72) for t in (16, 32, 48)}  # cuadrado sin esquinas transparentes: cada sistema lo redondea solo (con esquinas transparentes iOS las pinta en blanco)
 for t, im in fav.items(): guarda(im, f'favicon-{t}.png')
 fav[48].save(f'{RAIZ}/favicon.ico', sizes=[(16, 16), (32, 32), (48, 48)]); hechos.append('../favicon.ico')
 # Icono suelto (para compartir / avatar), con esquinas redondeadas
