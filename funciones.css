@@ -1215,6 +1215,9 @@ input,textarea{caret-color:var(--accent)}
 @media (max-width:640px){
   #chat{right:14px;bottom:calc(14px + env(safe-area-inset-bottom))}
   .chat-fab{height:52px}
+  /* Solo la cara, con un aro verde fino y redondo (2 px), no un óvalo grueso */
+  #chat:not(.abierto) .chat-fab{height:50px;width:50px;padding:0;gap:0;justify-content:center}
+  #chat .chat-fab .chat-fab-ic{width:46px;height:46px}
   .chat-fab::after{display:none}
   .arriba{left:14px;bottom:calc(16px + env(safe-area-inset-bottom));width:44px;height:44px}
   .arriba-anillo{width:40px;height:40px}
@@ -1486,7 +1489,7 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 
 /* El botón del chat y la cabecera del chat llevan la cara de la mascota */
 .chat-fab-ic{width:48px;height:48px;background:none;overflow:visible;box-shadow:none}
-.chat-fab-ic .masc{box-shadow:0 0 0 2px rgba(12,12,14,.22),0 4px 10px -2px rgba(0,0,0,.4)}
+.chat-fab-ic .masc{box-shadow:0 0 0 1px rgba(12,12,14,.25),0 3px 8px -2px rgba(0,0,0,.35)}
 .chat-av{width:46px;height:46px;border-radius:50%;background:none;font-size:0;overflow:visible;position:relative;box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 55%,transparent),0 0 18px -2px color-mix(in srgb,var(--accent) 60%,transparent)}
 @media (max-width:560px){.chat-fab-ic{width:46px;height:46px}}
 
