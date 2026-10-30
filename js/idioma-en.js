@@ -85,7 +85,7 @@ export const EN = {
   'Plazas abiertas para nuevos proyectos este mes': 'Now taking new projects this month', 'Páginas web para negocios,': 'Websites for businesses,',
   'a precio cerrado': 'at a fixed price',
   'Diseñamos y publicamos la web de tu negocio en un plazo de una semana a un mes, según el tipo de web. Eliges un diseño de partida, lo adaptamos a tu marca y sigues cada etapa desde': 'We design and publish your business website in one week to one month, depending on the type of website. You pick a starting design, we adapt it to your brand and you follow every stage from',
-  'tu cuenta': 'your account', 'Ver webs y precios': 'See websites & pricing', 'Ver diseños': 'See designs', 'Desde': 'From', 'desde': 'from',
+  'tu cuenta': 'your account', 'Ver webs y precios': 'See websites & pricing', 'Páginas web para negocios, a precio cerrado. Te la diseñamos, la publicamos y sigues cada paso desde tu cuenta.': 'Websites for businesses at a fixed price. We design it, publish it and you follow every step from your account.', 'Ver diseños': 'See designs', 'Desde': 'From', 'desde': 'from',
   'precio cerrado': 'fixed price', '1–4 semanas': '1–4 weeks', 'plazo de entrega': 'delivery time', 'al inicio, resto a la entrega': 'upfront, the rest on delivery',
   'Ver este diseño en grande': 'View this design full size', 'Diseños de ejemplo': 'Sample designs',
   'Lo que te garantizamos': 'What we guarantee', 'Precio final': 'Final price', '21 % de IVA incluido': '21 % VAT included', 'Solo transferencia': 'Bank transfer only',

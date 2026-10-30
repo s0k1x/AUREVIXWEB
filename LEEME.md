@@ -1100,3 +1100,37 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 
 **Vídeo**
 - No queda ningún vídeo en la web. Se quita también la regla del service worker que apartaba el vídeo de la intro.
+
+## 53. Versión v75 — robot del asistente animado de verdad y web más sobria
+
+**El robot del asistente, en fotogramas**
+
+Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografía fotograma a fotograma. El cuerpo respira, la cabeza acompaña con retraso, los brazos siguen el movimiento y los ojos miran y parpadean. Hay 540 fotogramas en total, y el último de cada hoja enlaza con el primero, así que el bucle no se nota.
+
+| Hoja (`icons/asistente/`) | Fotogramas | Dónde se ve |
+|---|---|---|
+| `cara-normal` | 120 (2,4 s) | Botón del chat y avatar en reposo: respira, se balancea, mira a los lados, parpadea dos veces y sonríe |
+| `cara-habla` | 60 (1 s) | Mientras llega la respuesta: cabecea y los ojos laten como una voz |
+| `cara-piensa` | 120 (2,4 s) | Mientras prepara la respuesta: cabeza ladeada y ojos que buscan arriba |
+| `cara-feliz` | 60 (1 s) | Al aterrizar y al saludar: pequeño salto con los ojos sonriendo |
+| `cuerpo-saluda` | 60 (1 s) | Al iniciar y cerrar sesión: saluda con la mano |
+| `cuerpo-feliz` | 60 (1 s) | Al iniciar sesión: coge impulso, salta con los brazos arriba y cae aplastándose |
+| `cuerpo-vuela` | 60 (1 s) | En el vuelo del botón al chat: llamas vivas, brazos que equilibran y piernas con inercia |
+
+- **Reproducción:** dos animaciones por pasos de `translate` y `transform` (`js/mascota.js` → `aplicarHoja`). Van en la tarjeta gráfica, a 60 fps aunque la página esté ocupada. Cada mascota cambia de hoja sola al cambiar de estado.
+- **Respaldo:** si una hoja aún no ha llegado, o si la acción no tiene hoja (dormido), se ve el dibujo en vector, así que nunca hay un hueco. Con «reducir movimiento» no se usan.
+- **Carga:**
+  - `cara-normal` (270 KB) se descarga cuando el navegador está libre.
+  - Las del chat y el vuelo (unos 1,3 MB) se descargan al acercar el ratón o el dedo al botón.
+  - Las de la sesión se descargan mientras se escribe el código de acceso.
+- **Vuelo con física:**
+  - Se agacha para coger impulso y despega estirándose.
+  - Recorre un arco inclinado hacia donde va, con el cuerpo en fotogramas.
+  - Se aplasta al tocar el avatar y se asienta con un muelle (`rebote`).
+  - Son 60 posiciones calculadas de antemano y solo `transform` y `opacity`.
+- **Para cambiar una animación:** edita su coreografía en `scripts/generar-mascota.js` (`COREO`) y ejecuta `node scripts/generar-mascota.js http://127.0.0.1:8731 [cara-habla …]` con la web servida en local. El script vuelve a escribir `js/mascota-hojas.js` con las medidas. Se quitan las 60 imágenes sueltas de la versión anterior (`saluda-*.webp`).
+
+**Web más sobria**
+- Fuera los adornos que restaban profesionalidad: rayas diagonales en el pie y en la pantalla de bienvenida, brillo de neón en la barra de progreso y en «Cómo trabajamos», brillo que recorría la banda del descuento y los estilos de las cintas que ya no se usaban.
+- El pie empieza con una fila limpia: marca, una frase de lo que hacemos y «Ver webs y precios», en lugar de la tarjeta del logotipo.
+- El sistema de diseño (`.claude/skills/aurevix-diseno`) recoge estas reglas.

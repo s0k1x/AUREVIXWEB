@@ -239,12 +239,12 @@ input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;bo
    ---------------------------------------------------------- */
 .bg-stripes{background:linear-gradient(135deg,#0c0c0e 25%,#121216 25%,#121216 50%,#0c0c0e 50%,#0c0c0e 75%,#121216 75%,#121216);background-size:40px 40px;animation:bg-move 4s linear infinite}
 @keyframes bg-move{0%{background-position:0 0}100%{background-position:40px 40px}}
-.bg-bands{background:repeating-linear-gradient(135deg,#0f0f12 0px,#0f0f12 60px,#0f0f1299 70px,#17171c 130px)}
+.bg-bands{background:var(--bg2)}
 
 /* ----------------------------------------------------------
    Intro de marca (pantalla de bienvenida)
    ---------------------------------------------------------- */
-.splash{position:fixed;inset:0;z-index:2000;background:repeating-linear-gradient(135deg,#0f0f12 0px,#0f0f12 60px,#141418 70px,#17171c 130px);display:grid;place-items:center;transition:opacity .5s,visibility .5s}
+.splash{position:fixed;inset:0;z-index:2000;background:var(--bg);display:grid;place-items:center;transition:opacity .5s,visibility .5s}
 .splash.out{opacity:0;visibility:hidden}
 .splash .brand-card{background:#141418;box-shadow:0 30px 80px rgba(0,0,0,.6)}
 

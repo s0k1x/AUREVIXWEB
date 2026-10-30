@@ -28,7 +28,6 @@
 html[data-tema=claro] .btn-primary,html[data-tema=claro] .btn-primary:hover{box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 6px 16px -8px rgba(20,20,26,.35)}
 
 /* --- Animaciones de adorno: una vez, no en bucle --- */
-.bv-banda::after{animation-iteration-count:1}
 .bv-ic svg{animation-iteration-count:1}
 .ayuda-ic{animation:none}
 .dot::after{animation-iteration-count:3}

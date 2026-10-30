@@ -11,7 +11,7 @@ import * as store from './store.js';
 import { esc, icono, euros, mailLink } from './ui.js';
 import { planesActivos, extrasActivos } from './sitio.js';
 import { enIngles } from './idioma.js';
-import { mascotaHTML, estadoMascota, volar, seguirPuntero, precargar } from './mascota.js';
+import { mascotaHTML, estadoMascota, volar, rebote, seguirPuntero, precargar, precargarHojas } from './mascota.js';
 
 const ajuste = CONFIG.asistente || { activo: true, nombre: 'Asistente', saludo: '' };
 
@@ -312,6 +312,11 @@ export function iniciarChat() {
   /* La mascota del botón vuela hasta la cabecera del chat al abrirlo y vuelve al cerrarlo */
   const mFab = fab.querySelector('.masc'), mAv = nodo.querySelector('.chat-av .masc');
   seguirPuntero(); precargar();
+  // Fotogramas del robot: el de reposo cuando el navegador está libre; el resto (hablar, pensar, alegría y vuelo)
+  // en cuanto se acerca el ratón o el dedo al botón, para que al abrir ya estén listos
+  (window.requestIdleCallback ? f => requestIdleCallback(f, { timeout: 4000 }) : f => setTimeout(f, 2500))(() => precargarHojas('cara-normal'));
+  const resto = () => precargarHojas('cara-feliz', 'cuerpo-vuela', 'cara-habla', 'cara-piensa');
+  ['pointerenter', 'focus', 'touchstart'].forEach(ev => fab.addEventListener(ev, resto, { once: true, passive: true }));
   setTimeout(() => estadoMascota(mFab, 'normal'), 2400); // el saludo inicial dura un momento
   const caja = el => { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width }; };
   let origen = null, vuelo = 0;
@@ -347,7 +352,7 @@ export function iniciarChat() {
         mAv.style.visibility = mFab.style.visibility = '';
         if (mio !== vuelo) return;
         const m = si ? mAv : mFab;
-        m.classList.add('aterriza'); setTimeout(() => m.classList.remove('aterriza'), 600);
+        rebote(m);
         estadoMascota(m, 'feliz', 1500);
         if (si && matchMedia('(hover:hover)').matches) input.focus({ preventScroll: true });
       });

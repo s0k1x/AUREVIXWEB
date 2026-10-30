@@ -10,6 +10,8 @@
    dormido · adios · guino · vuela.   Estilos: funciones.css («Mascota»).
    ========================================================== */
 
+import { HOJAS } from './mascota-hojas.js';
+
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const sinMovimiento = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.movimiento === 'reducido';
 
@@ -86,8 +88,8 @@ const TORSO = `
   <image href="icons/logo-a-verde.png" x="182" y="283" width="36" height="36"/>`;
 
 /** HTML de la mascota. cuerpo: robot entero · disco: círculo oscuro detrás (solo en el vuelo) */
-export function mascotaHTML(estado = 'normal', { cuerpo = false, disco = false, clase = '' } = {}) {
-  defs(); iniciar();
+export function mascotaHTML(estado = 'normal', { cuerpo = false, disco = false, clase = '', hojas: conHojas = true } = {}) {
+  defs(); iniciar(); vigilarHojas();
   const cabeza = `<span class="l-g l-cabeza"><span class="l-g l-sigue-c">
         ${capa('l-casco', CASCO)}
         <span class="l-g l-ojos">${ojo(149, 'i')}${ojo(251, 'd')}</span>
@@ -100,7 +102,7 @@ export function mascotaHTML(estado = 'normal', { cuerpo = false, disco = false, 
         ${capa('l-torso', TORSO)}
       </span>` : '';
   const brazos = cuerpo ? `<span class="l-g m-cuerpo l-brazos">${capa('l-brazo l-brazo-i', BRAZO)}${capa('l-brazo l-brazo-d', espejo(BRAZO))}</span>` : '';
-  return `<span class="masc ${cuerpo ? 'cuerpo' : 'cara'} ${clase}" data-estado="${estado}" aria-hidden="true" style="--d:${(Math.random() * 3).toFixed(2)}s">
+  return `<span class="masc ${cuerpo ? 'cuerpo' : 'cara'} ${clase}" data-estado="${estado}"${conHojas ? '' : ' data-hojas="no"'} aria-hidden="true" style="--d:${(Math.random() * 3).toFixed(2)}s">
     <span class="masc-lienzo">
       ${disco ? `<span class="l-g l-disco">${capa('', '<circle cx="200" cy="134" r="186" fill="#040a06"/>')}</span>` : ''}
       <span class="l-g m-todo">${corporal}${cabeza}${brazos}</span>
@@ -147,6 +149,7 @@ function iniciar() {
     if (document.hidden || sinMovimiento()) return;
     const ahora = performance.now();
     document.querySelectorAll('.masc').forEach(m => {
+      if (m.classList.contains('con-frames')) return; // la hoja ya parpadea y mira sola
       const e = m.dataset.estado;
       if (m._parp === undefined) { m._parp = ahora + 700 + Math.random() * 2200; m._mira = ahora + 1400 + Math.random() * 2500; m._feliz = ahora + 7000 + Math.random() * 6000; }
       if (ahora > m._parp && e !== 'dormido' && !/^(feliz|saluda|adios)$/.test(e)) {
@@ -177,10 +180,32 @@ function anillo(r, ms = 700) {
   document.body.append(a);
   setTimeout(() => a.remove(), ms + 100);
 }
+/* ---------- Física: muelle amortiguado ----------
+   Respuesta de un muelle real (masa 1): sube de 0 a 1, se pasa un poco y se asienta. Se usa para los rebotes y
+   como curva «linear()» del navegador, que la ejecuta en la tarjeta gráfica igual que cualquier otra curva. */
+function muelle(t, { rigidez = 170, amort = 14 } = {}) {
+  const w0 = Math.sqrt(rigidez), z = amort / (2 * w0);
+  if (z >= 1) return 1 - (1 + w0 * t) * Math.exp(-w0 * t);
+  const wd = w0 * Math.sqrt(1 - z * z);
+  return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t));
+}
+/** Rebote al aterrizar: escala con muelle (se pasa y se asienta), solo transform → 60 fps */
+export function rebote(el, { de = .78, ms = 620 } = {}) {
+  if (!el || sinMovimiento() || typeof el.animate !== 'function') return;
+  const N = 36, seg = ms / 1000;
+  el.animate(Array.from({ length: N + 1 }, (_, k) => {
+    const v = muelle((k / N) * seg, { rigidez: 260, amort: 15 });
+    const sc = de + (1 - de) * v;
+    return { transform: `scale(${(sc * (1 + (1 - v) * .06)).toFixed(4)},${(sc * (1 - (1 - v) * .06)).toFixed(4)})`, offset: k / N };
+  }), { duration: ms, easing: 'linear' });
+}
+
 /**
  * «de» y «a» son los rectángulos (en pantalla) de dos mascotas de tipo cara.
- * Se lanza el robot entero: al salir enseña el cuerpo, sube en arco creciendo,
- * gira un poco, y al llegar se encoge hasta quedar solo la cabeza en el disco de destino.
+ * Vuelo con física: se agacha para coger impulso, despega estirándose, recorre un arco con el cuerpo
+ * inclinado hacia donde va, se encoge al llegar, se aplasta al tocar y se asienta con un muelle.
+ * Son 60 fotogramas calculados de antemano (posición, giro, escala y estiramiento) que el navegador
+ * reproduce en la tarjeta gráfica: solo transform y opacity, sin trabajo en el hilo principal durante el vuelo.
  * Devuelve una promesa que se cumple al aterrizar (al momento con poco movimiento).
  */
 export function volar(de, a, { ms = 950 } = {}) {
@@ -188,34 +213,71 @@ export function volar(de, a, { ms = 950 } = {}) {
   const c0 = { x: de.left + de.width / 2, y: de.top + de.width / 2 }, c1 = { x: a.left + a.width / 2, y: a.top + a.width / 2 };
   const s0 = de.width / LADO, s1 = a.width / LADO;
   const dist = Math.hypot(c1.x - c0.x, c1.y - c0.y);
-  const alto = Math.min(170, dist * .34 + 30);
-  // El dibujo se crea ya al mayor tamaño que tendrá y durante el vuelo solo se reduce: así se ve nítido y
-  // se mueve en la tarjeta gráfica (solo transform y opacity), sin recalcular el vector en cada fotograma.
-  const grande = Math.max(.42, (s0 + s1) * 1.9), S = Math.max(grande, s0, s1);
+  const alto = Math.min(190, dist * .36 + 40);
+  // Se dibuja ya al mayor tamaño que tendrá y durante el vuelo solo se reduce: se ve nítido y no se recalcula el vector
+  const grande = Math.max(.42, (s0 + s1) * 1.9), S = Math.max(grande, s0, s1) * 1.08;
   const el = document.createElement('div');
   el.className = 'masc-vuelo';
   el.style.cssText = `width:${400 * S}px;height:${470 * S}px;transform-origin:${CX * S}px ${CY * S}px`;
-  el.innerHTML = mascotaHTML('vuela', { cuerpo: true, disco: true });
-  const paso = (t, s, rot, lift = 0) => `translate3d(${c0.x + (c1.x - c0.x) * t - CX * S}px,${c0.y + (c1.y - c0.y) * t - lift - CY * S}px,0) scale(${s / S}) rotate(${rot}deg)`;
+  el.innerHTML = mascotaHTML('vuela', { cuerpo: true, disco: true, hojas: false });
+  const conHoja = hojaLista('cuerpo-vuela');
+  if (conHoja) el.querySelector('.masc').insertAdjacentHTML('beforeend', hojaHTML('cuerpo-vuela'));
   document.body.append(el);
+
+  // Trayectoria: curva de Bézier cuadrática con el punto de control por encima del punto medio (arco limpio)
+  const ctrl = { x: (c0.x + c1.x) / 2 + (c1.x - c0.x) * .08, y: Math.min(c0.y, c1.y) - alto * 1.6 };
+  const bez = p => ({ x: (1 - p) ** 2 * c0.x + 2 * (1 - p) * p * ctrl.x + p * p * c1.x, y: (1 - p) ** 2 * c0.y + 2 * (1 - p) * p * ctrl.y + p * p * c1.y });
+  const vel = p => ({ x: 2 * (1 - p) * (ctrl.x - c0.x) + 2 * p * (c1.x - ctrl.x), y: 2 * (1 - p) * (ctrl.y - c0.y) + 2 * p * (c1.y - ctrl.y) });
+  const suave = v => (v < .5 ? 4 * v * v * v : 1 - (-2 * v + 2) ** 3 / 2); // cúbica entrada-salida
+  const IMPULSO = .13, LLEGA = .84, N = 60;
+  const vMax = Math.max(1, ...Array.from({ length: 21 }, (_, k) => Math.hypot(vel(k / 20).x, vel(k / 20).y)));
+  const fotogramas = [];
+  for (let k = 0; k <= N; k++) {
+    const u = k / N;
+    let p, sx = 1, sy = 1, rot = 0, baja = 0, sc;
+    if (u < IMPULSO) {
+      // Coge impulso: se agacha y se ensancha
+      const w = Math.sin(Math.PI * (u / IMPULSO));
+      p = 0; sx = 1 + .14 * w; sy = 1 - .16 * w; baja = 6 * w; rot = -4 * w; sc = s0;
+    } else if (u < LLEGA) {
+      const v = (u - IMPULSO) / (LLEGA - IMPULSO);
+      p = suave(v);
+      const d = vel(p), rapidez = Math.hypot(d.x, d.y) / vMax;
+      // Se estira con la velocidad y se inclina hacia donde va
+      sx = 1 - .07 * rapidez; sy = 1 + .11 * rapidez;
+      rot = Math.max(-22, Math.min(22, (d.x / vMax) * 20 + Math.sin(Math.PI * p) * -6));
+      sc = s0 + (s1 - s0) * p + (grande - (s0 + s1) / 2) * Math.sin(Math.PI * p);
+    } else {
+      // Toca destino: se aplasta y se asienta con un muelle
+      const w = (u - LLEGA) / (1 - LLEGA), f = Math.exp(-5 * w) * Math.sin(Math.PI * 2.4 * w);
+      p = 1; sx = 1 + .12 * f; sy = 1 - .12 * f; sc = s1 * (1 + .1 * (1 - muelle(w * .5, { rigidez: 300, amort: 16 })) * (w < .02 ? 0 : 1));
+    }
+    const c = bez(p);
+    fotogramas.push({
+      transform: `translate3d(${(c.x - CX * S).toFixed(2)}px,${(c.y + baja - CY * S).toFixed(2)}px,0) scale(${(sc / S).toFixed(5)}) rotate(${rot.toFixed(2)}deg) scale(${sx.toFixed(4)},${sy.toFixed(4)})`,
+      offset: u
+    });
+  }
   anillo({ left: de.left, top: de.top, width: de.width }, 600);
-  const vuelo = el.animate([
-    { transform: paso(0, s0, 0), offset: 0, easing: 'cubic-bezier(.3,0,.2,1)' },
-    { transform: paso(.5, grande, -14, alto), offset: .5, easing: 'cubic-bezier(.45,0,.55,1)' },
-    { transform: paso(.9, s1 * 1.5, 8, 0), offset: .84, easing: 'cubic-bezier(.2,.8,.3,1)' },
-    { transform: paso(1, s1, 0), offset: 1 }
-  ], { duration: ms, fill: 'both' });
-  // Al salir se ve el cuerpo y se pierde el disco; al llegar, al revés: queda idéntico al avatar
-  el.querySelector('.l-disco')?.animate([{ opacity: 1 }, { opacity: 0, offset: .2 }, { opacity: 0, offset: .72 }, { opacity: 1 }], { duration: ms, fill: 'both' });
-  el.querySelectorAll('.m-cuerpo').forEach(c => c.animate([{ opacity: 0 }, { opacity: 1, offset: .2 }, { opacity: 1, offset: .72 }, { opacity: 0 }], { duration: ms, fill: 'both' }));
-  // Estela: chispas que se quedan por el camino y se apagan (cada una es un punto que solo cambia transform y opacity)
-  for (let i = 0; i < 7; i++) {
-    const t = .08 + i * .12, ch = document.createElement('i');
+  const vuelo = el.animate(fotogramas, { duration: ms, fill: 'both', easing: 'linear' });
+  // Al salir enseña el cuerpo y pierde el disco; al llegar, al revés: queda idéntico al avatar
+  el.querySelector('.l-disco')?.animate([{ opacity: 1 }, { opacity: 0, offset: .22 }, { opacity: 0, offset: .74 }, { opacity: 1, offset: .86 }, { opacity: 1 }], { duration: ms, fill: 'both' });
+  el.querySelectorAll('.m-cuerpo').forEach(c => c.animate([{ opacity: 0 }, { opacity: 1, offset: .22 }, { opacity: 1, offset: .74 }, { opacity: 0, offset: .86 }, { opacity: 0 }], { duration: ms, fill: 'both' }));
+  if (conHoja) {
+    // En mitad del vuelo se ve el robot en fotogramas (llamas, brazos y piernas vivos); al salir y al llegar, el dibujo
+    const fuera = [{ opacity: 1 }, { opacity: 0, offset: .2 }, { opacity: 0, offset: .76 }, { opacity: 1, offset: .86 }, { opacity: 1 }];
+    el.querySelector('.m-todo').animate(fuera, { duration: ms, fill: 'both' });
+    el.querySelector('.masc-fr').animate(fuera.map(k => ({ ...k, opacity: 1 - k.opacity })), { duration: ms, fill: 'both' });
+  }
+  // Estela: chispas que nacen en el camino y caen apagándose (solo transform y opacity)
+  for (let i = 0; i < 9; i++) {
+    const v = .08 + i * .1, t = IMPULSO + v * (LLEGA - IMPULSO), c = bez(suave(v)), ch = document.createElement('i');
     ch.className = 'masc-chispa';
-    const x = c0.x + (c1.x - c0.x) * t + (Math.random() - .5) * 26, y = c0.y + (c1.y - c0.y) * t - Math.sin(Math.PI * t) * alto + (Math.random() - .5) * 26;
-    ch.style.cssText = `left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;width:${(4 + Math.random() * 5).toFixed(1)}px;height:${(4 + Math.random() * 5).toFixed(1)}px`;
+    const tam = (3 + Math.random() * 5).toFixed(1);
+    ch.style.cssText = `left:${(c.x + (Math.random() - .5) * 22).toFixed(1)}px;top:${(c.y + 20 * S / .5 + (Math.random() - .5) * 18).toFixed(1)}px;width:${tam}px;height:${tam}px`;
     document.body.append(ch);
-    ch.animate([{ opacity: 0, transform: 'scale(.3)' }, { opacity: .95, transform: 'scale(1)', offset: .25 }, { opacity: 0, transform: 'translateY(14px) scale(.2)' }], { duration: 560, delay: ms * t * .9, fill: 'both' }).finished.catch(() => {}).then(() => ch.remove());
+    ch.animate([{ opacity: 0, transform: 'scale(.3)' }, { opacity: .95, transform: 'scale(1)', offset: .2 }, { opacity: 0, transform: `translate(${((Math.random() - .5) * 18).toFixed(1)}px,22px) scale(.15)` }],
+      { duration: 620, delay: ms * t, fill: 'both', easing: 'cubic-bezier(.2,.8,.2,1)' }).finished.catch(() => {}).then(() => ch.remove());
   }
   return vuelo.finished.catch(() => {}).then(() => {
     anillo({ left: a.left, top: a.top, width: a.width });
@@ -223,27 +285,72 @@ export function volar(de, a, { ms = 950 } = {}) {
   });
 }
 
-/* ---------- Fotogramas: el robot saludando, 60 imágenes (bucle de 1 s a 60 fps) ----------
-   Una hoja de sprites de 10 × 6 fotogramas (icons/asistente/saluda.webp, hecha con scripts/generar-mascota.js).
-   Se mueve con dos animaciones de transform/translate por pasos, que hace la tarjeta gráfica:
-   va a 60 fps exactos aunque la página esté ocupada. */
-const HOJA = 'icons/asistente/saluda.webp';
-let hojaLista = null;
-/** Descarga y descodifica la hoja antes de necesitarla (sin bloquear nada). Devuelve una promesa que dice si se pudo. */
-export function precargarFrames() {
-  if (hojaLista) return hojaLista;
-  hojaLista = new Promise(ok => {
-    const i = new Image();
-    i.onload = () => (i.decode ? i.decode().catch(() => {}) : Promise.resolve()).then(() => ok(true));
-    i.onerror = () => ok(false);
-    i.src = HOJA;
+/* ---------- Hojas de fotogramas: el robot animado de verdad, a 60 fps ----------
+   Para cada cosa que hace hay una hoja de fotogramas hecha con una coreografía propia (scripts/generar-mascota.js):
+   reposo, hablar, pensar y alegría en la cara; saludar, saltar y volar en el cuerpo entero. Se reproducen con
+   dos animaciones por pasos de translate/transform (la tarjeta gráfica, nunca el hilo principal).
+   Mientras una hoja no ha llegado se ve el dibujo en vector, así que nunca hay un hueco. */
+const RUTA_HOJAS = 'icons/asistente/';
+const QUE_HOJA = {
+  cara: { normal: 'cara-normal', habla: 'cara-habla', piensa: 'cara-piensa', feliz: 'cara-feliz', saluda: 'cara-feliz', guino: 'cara-feliz' },
+  cuerpo: { saluda: 'cuerpo-saluda', adios: 'cuerpo-saluda', feliz: 'cuerpo-feliz', vuela: 'cuerpo-vuela' }
+};
+const hojas = new Map();
+/** Descarga y descodifica una hoja (una sola vez). Devuelve una promesa que dice si está lista. */
+export function cargarHoja(id) {
+  if (!HOJAS[id]) return Promise.resolve(false);
+  if (!hojas.has(id)) {
+    hojas.set(id, new Promise(ok => {
+      const i = new Image();
+      i.decoding = 'async';
+      i.onload = () => (i.decode ? i.decode().catch(() => {}) : Promise.resolve()).then(() => ok(true));
+      i.onerror = () => { hojas.delete(id); ok(false); };
+      i.src = RUTA_HOJAS + id + '.webp';
+    }));
+  }
+  return hojas.get(id);
+}
+const hojaLista = id => hojas.has(id) && hojas.get(id)._lista;
+/** Precarga varias hojas cuando el navegador está libre */
+export function precargarHojas(...ids) {
+  if (sinMovimiento()) return Promise.resolve([]);
+  return Promise.all(ids.map(id => cargarHoja(id).then(ok => { if (ok) hojas.get(id)._lista = true; return ok; })));
+}
+/** La hoja colocada justo encima del dibujo (mismo tamaño y posición que el robot en vector) */
+function hojaHTML(id) {
+  const h = HOJAS[id], c = h.caja;
+  return `<span class="masc-fr" data-hoja="${id}" aria-hidden="true" style="width:${(100 / c.w).toFixed(3)}%;left:${(-100 * c.x / c.w).toFixed(3)}%;top:${(-100 * c.y / c.h).toFixed(3)}%;aspect-ratio:${h.w}/${h.h};--c:${h.cols};--f:${h.filas};--ms:${h.ms}ms"><img class="fr-hoja" src="${RUTA_HOJAS + id}.webp" alt="" draggable="false"></span>`;
+}
+/** Pone la hoja que toca según el estado de la mascota (o vuelve al vector si esa acción no tiene hoja) */
+function aplicarHoja(m) {
+  if (!m || m.dataset.hojas === 'no') return;
+  const id = QUE_HOJA[m.classList.contains('cuerpo') ? 'cuerpo' : 'cara'][m.dataset.estado];
+  const actual = m.querySelector(':scope > .masc-fr');
+  if (!id || sinMovimiento()) { m.classList.remove('con-frames'); actual?.remove(); return; }
+  if (actual?.dataset.hoja === id) { m.classList.add('con-frames'); return; }
+  cargarHoja(id).then(ok => {
+    if (!ok || !m.isConnected || QUE_HOJA[m.classList.contains('cuerpo') ? 'cuerpo' : 'cara'][m.dataset.estado] !== id) return;
+    hojas.get(id)._lista = true;
+    m.querySelector(':scope > .masc-fr')?.remove();
+    m.insertAdjacentHTML('beforeend', hojaHTML(id));
+    m.classList.add('con-frames');
   });
-  return hojaLista;
 }
-/** El robot saludando en fotogramas. Empieza oculto: se muestra (clase «lista») cuando la hoja ya está descodificada. */
-export function framesHTML(clase = '') {
-  return `<span class="masc-fr ${clase}" aria-hidden="true"><img class="fr-hoja" src="${HOJA}" alt="" decoding="async" draggable="false"></span>`;
+// Cada vez que una mascota cambia de estado (o aparece una nueva) se le pone su hoja
+let vigilando = false;
+function vigilarHojas() {
+  if (vigilando || typeof MutationObserver === 'undefined') return;
+  vigilando = true;
+  new MutationObserver(lista => {
+    for (const r of lista) {
+      if (r.type === 'attributes') { if (r.target.classList?.contains('masc')) aplicarHoja(r.target); continue; }
+      r.addedNodes.forEach(n => { if (n.nodeType !== 1) return; if (n.classList.contains('masc')) aplicarHoja(n); n.querySelectorAll?.('.masc').forEach(aplicarHoja); });
+    }
+  }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-estado'] });
+  document.querySelectorAll('.masc').forEach(aplicarHoja);
 }
+/** El robot de la sesión (iniciar y cerrar): se descarga mientras se escribe el código */
+export const precargarFrames = () => precargarHojas('cuerpo-feliz', 'cuerpo-saluda');
 
 /* ---------- Animación al iniciar y cerrar sesión ---------- */
 let activa = null;
@@ -262,7 +369,7 @@ export function transicionSesion(tipo, nombre = '') {
   capa.setAttribute('role', 'status');
   capa.setAttribute('aria-live', 'polite');
   capa.innerHTML = `<div class="ses-caja">
-      <div class="ses-masc">${mascotaHTML(entra ? 'feliz' : 'adios', { cuerpo: true })}${framesHTML()}
+      <div class="ses-masc">${mascotaHTML(entra ? 'feliz' : 'adios', { cuerpo: true })}
         ${entra ? `<span class="ses-chispas" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<i style="--a:${i * 30}deg;--r:${i % 2 ? 90 : 118}px;--t:${(i % 3) * 45}ms"></i>`).join('')}</span>`
                 : '<span class="ses-zz" aria-hidden="true"><i>z</i><i>z</i><i>Z</i></span>'}
       </div>
@@ -273,8 +380,6 @@ export function transicionSesion(tipo, nombre = '') {
   document.body.append(capa);
   document.documentElement.classList.add('ses-activa');
   const masc = capa.querySelector('.masc');
-  // Con la hoja lista, el robot en fotogramas sustituye al dibujo en vector (si no se puede cargar, queda el dibujo)
-  precargarFrames().then(ok => { if (ok && capa.isConnected) capa.classList.add('ses-frames'); });
   requestAnimationFrame(() => capa.classList.add('on'));
   if (entra) setTimeout(() => estadoMascota(masc, 'saluda'), 900);
   else setTimeout(() => estadoMascota(masc, 'dormido'), 1050);

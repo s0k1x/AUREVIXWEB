@@ -519,8 +519,6 @@ html.intro body>*:not(.splash){visibility:hidden}
    Descuento de bienvenida
    ========================================================== */
 .bv-banda{display:flex;align-items:center;gap:16px;padding:16px 20px;margin:0 0 22px;border-radius:18px;background:linear-gradient(100deg,var(--accent-soft),transparent 70%);border:1px solid color-mix(in srgb,var(--accent) 28%,transparent);position:relative;overflow:hidden}
-.bv-banda::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.07) 50%,transparent 70%);transform:translateX(-100%);animation:bv-brillo 4.5s var(--e-out) 1.2s infinite;pointer-events:none}
-@keyframes bv-brillo{0%{transform:translateX(-100%)}35%,100%{transform:translateX(100%)}}
 .bv-ic{width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;background:var(--accent);color:var(--ink)}
 .bv-ic svg{width:22px;height:22px;animation:bv-salto 2.6s var(--e-spring) infinite}
 @keyframes bv-salto{0%,70%,100%{transform:none}78%{transform:translateY(-4px) rotate(-8deg)}86%{transform:translateY(0) rotate(6deg)}}
@@ -1472,12 +1470,15 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 .masc.cuerpo[data-estado=vuela] .l-llama{opacity:1;animation:masc-llama .14s ease-in-out infinite alternate}
 .masc.cuerpo[data-estado=vuela] .l-cabeza{animation:masc-cola .5s ease-in-out infinite}
 .masc.aterriza{animation:masc-pop .5s cubic-bezier(.3,1.5,.5,1)}
-.masc-fr{position:absolute;left:0;top:0;width:100%;aspect-ratio:200/235;overflow:hidden;display:none;pointer-events:none}
-.ses-frames .masc-fr{display:block}
-.ses-frames .ses-masc .masc{visibility:hidden}
-.fr-hoja{position:absolute;left:0;top:0;width:1000%;height:600%;max-width:none;display:block;will-change:transform,translate;animation:fr-x .16666667s steps(10) infinite,fr-y 1s steps(6) infinite}
+/* Hoja de fotogramas encima del dibujo (js/mascota.js → aplicarHoja). La caja mide un fotograma; la imagen,
+   la hoja entera, y dos animaciones por pasos la mueven: columnas (translate) y filas (transform). */
+.masc-fr{position:absolute;display:block;overflow:hidden;pointer-events:none;contain:strict}
+.fr-hoja{position:absolute;left:0;top:0;width:calc(var(--c) * 100%);height:calc(var(--f) * 100%);max-width:none;display:block;will-change:transform,translate;
+  animation:fr-x calc(var(--ms) / var(--f)) steps(var(--c)) infinite,fr-y var(--ms) steps(var(--f)) infinite}
 @keyframes fr-x{to{translate:-100% 0}}
 @keyframes fr-y{to{transform:translateY(-100%)}}
+.masc.con-frames > .masc-lienzo{visibility:hidden}
+.masc.cara.con-frames{background:none}
 .masc-chispa{position:fixed;z-index:9490;pointer-events:none;border-radius:50%;background:var(--accent);margin:-3px 0 0 -3px;will-change:transform,opacity;opacity:0}
 
 /* El botón del chat y la cabecera del chat llevan la cara de la mascota */

@@ -208,7 +208,12 @@ dialog.dlg::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit
 
 /* ---------- Pie ---------- */
 .footer{padding:0 0 calc(40px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
-.footer-brand{padding:56px 0;border-bottom:1px solid var(--line);margin-bottom:30px}
+.footer-brand{padding:44px 0;border-bottom:1px solid var(--line);margin-bottom:30px;background:var(--bg2)}
+.fb-fila{display:flex;align-items:center;justify-content:space-between;gap:24px 40px;flex-wrap:wrap}
+.fb-marca .wordmark{height:22px}
+.fb-marca p{margin-top:12px;color:var(--muted);max-width:52ch;font-size:15px}
+.footer .fb-fila .btn-primary{color:var(--ink);font-size:inherit}
+.footer .fb-fila .btn-primary:hover{color:var(--ink)}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .footer p,.footer a{color:var(--muted);font-size:14px}
 .footer-links{display:flex;gap:20px;flex-wrap:wrap;align-items:center}

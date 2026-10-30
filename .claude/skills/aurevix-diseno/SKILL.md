@@ -18,7 +18,8 @@ fondos de colores por sección, degradados llamativos ni varios acentos a la vez
 - `tema-claro.css` — el mismo diseño en claro (`html[data-tema=claro]`).
 - `temporadas.css` + `js/temporada.js` — el acento cambia por temporada (Halloween,
   Navidad…). **Usa siempre `var(--accent)`**, nunca el verde escrito a mano.
-- `mundo.css` + `js/mundo.js` — intro en vídeo con scroll (solo ordenador).
+- `js/mascota.js` + `js/mascota-hojas.js` + `icons/asistente/` — el robot del asistente: dibujo por capas y hojas
+  de fotogramas por acción (las genera `scripts/generar-mascota.js`).
 
 ## Tokens (oscuro, por defecto)
 
@@ -56,10 +57,15 @@ se oscurece para que el texto blanco se lea.
 ## Movimiento
 
 - Curvas: `--e-out cubic-bezier(.2,.8,.2,1)`, `--e-spring cubic-bezier(.23,1,.32,1)`.
-- Duraciones cortas: 150–300 ms en interfaz, nunca más de 500 ms salvo la intro.
+- Duraciones cortas: 150–300 ms en interfaz, nunca más de 500 ms salvo el vuelo del robot del asistente.
 - Solo `transform` y `opacity`. Respeta `prefers-reduced-motion` y
   `html[data-movimiento=reducido]` (ajuste del usuario en Apariencia).
 - Hover solo con `@media (hover:hover) and (pointer:fine)` (en el móvil no se queda pegado).
+
+## Sin adornos
+
+Nada de rayas diagonales de fondo, brillos de neón alrededor de botones o barras, cintas que corren
+ni brillos que recorren tarjetas: superficies lisas (`--bg`, `--bg2`, `--card`) y sombras suaves.
 
 ## Reglas
 
