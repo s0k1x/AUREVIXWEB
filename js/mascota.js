@@ -215,23 +215,6 @@ export function rebote(el, { de = .78, ms = 620 } = {}) {
 
 const ss = t => { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t); };
 /**
- * Postura en el aire según hacia dónde va (tx, ty: dirección; rap: rapidez 0–1; u: momento del vuelo 0–1).
- * - Subiendo o de lado: va derecho, inclinado hacia donde avanza, con un vaivén suave.
- * - Bajando: se da la vuelta poco a poco y cae de cabeza, como un clavado (la cabeza apunta hacia donde va).
- * - Antes de tocar («llega»): se endereza con un golpe de propulsores para aterrizar de pie.
- * Devuelve el giro en grados y cuánto está «de cabeza» (0–1) y frenando (0–1).
- */
-function posturaVuelo(tx, ty, rap, u, llega) {
-  const endereza = ss((u - (llega - .17)) / .15);
-  const cae = ss((ty - .2) / .55) * Math.min(1, rap * 1.6) * (1 - endereza);
-  const inclina = Math.max(-22, Math.min(22, tx * 20 * rap)) + 5 * Math.sin(u * Math.PI * 5) * rap * (1 - cae);
-  let clavado = Math.atan2(tx, -ty) * 180 / Math.PI;
-  if (Math.abs(tx) < .04) clavado = 170 * (tx < 0 ? -1 : 1);
-  clavado = Math.max(-170, Math.min(170, clavado));
-  return { rot: inclina + (clavado - inclina) * cae, cae, frena: campana(u, llega - .2, llega + .02) };
-}
-
-/**
  * «de» y «a» son los rectángulos (en pantalla) de dos mascotas de tipo cara.
  * Vuelo con física: se agacha para coger impulso, despega estirándose, recorre un arco con el cuerpo
  * inclinado hacia donde va, se encoge al llegar, se aplasta al tocar y se asienta con un muelle.
@@ -243,22 +226,25 @@ export function volar(de, a, { ms = 950 } = {}) {
   if (sinMovimiento() || !de?.width || !a?.width || typeof Element.prototype.animate !== 'function') return Promise.resolve();
   const c0 = { x: de.left + de.width / 2, y: de.top + de.width / 2 }, c1 = { x: a.left + a.width / 2, y: a.top + a.width / 2 };
   const s0 = de.width / LADO, s1 = a.width / LADO;
-  const dist = Math.hypot(c1.x - c0.x, c1.y - c0.y);
-  const alto = Math.min(190, dist * .36 + 40);
-  // Se dibuja ya al mayor tamaño que tendrá y durante el vuelo solo se reduce: se ve nítido y no se recalcula el vector
-  const grande = Math.max(.42, (s0 + s1) * 1.9), S = Math.max(grande, s0, s1) * 1.08;
+  const dx = c1.x - c0.x, dy = c1.y - c0.y, dist = Math.hypot(dx, dy) || 1;
+  // Tamaño: el de los extremos y, a mitad de camino, solo un poco más grande (se acerca a la pantalla sin taparla)
+  const grande = Math.max(s0, s1) * 1.3, S = grande * 1.05; // se dibuja ya al mayor tamaño: nítido, sin recalcular el vector
   const el = document.createElement('div');
   el.className = 'masc-vuelo';
   el.style.cssText = `width:${400 * S}px;height:${470 * S}px;transform-origin:${CX * S}px ${CY * S}px`;
   el.innerHTML = mascotaHTML('vuela', { cuerpo: true, disco: true, vivo: false });
   document.body.append(el);
 
-  // Trayectoria: curva de Bézier cuadrática con el punto de control por encima del punto medio (arco limpio)
-  const ctrl = { x: (c0.x + c1.x) / 2 + (c1.x - c0.x) * .08, y: Math.min(c0.y, c1.y) - alto * 1.6 };
+  // Trayectoria: una curva suave que se abre hacia el centro de la pantalla (donde hay sitio) y nunca se sale de ella
+  const W = innerWidth, H = innerHeight, mid = { x: (c0.x + c1.x) / 2, y: (c0.y + c1.y) / 2 };
+  let nx = -dy / dist, ny = dx / dist;
+  if ((W / 2 - mid.x) * nx + (H / 2 - mid.y) * ny < 0) { nx = -nx; ny = -ny; }
+  const curva = Math.min(150, dist * .26), borde = 470 * grande * .5 + 8;
+  const ctrl = { x: Math.min(W - borde, Math.max(borde, mid.x + nx * curva)), y: Math.min(H - borde, Math.max(borde, mid.y + ny * curva)) };
   const bez = p => ({ x: (1 - p) ** 2 * c0.x + 2 * (1 - p) * p * ctrl.x + p * p * c1.x, y: (1 - p) ** 2 * c0.y + 2 * (1 - p) * p * ctrl.y + p * p * c1.y });
   const vel = p => ({ x: 2 * (1 - p) * (ctrl.x - c0.x) + 2 * p * (c1.x - ctrl.x), y: 2 * (1 - p) * (ctrl.y - c0.y) + 2 * p * (c1.y - ctrl.y) });
   const suave = v => (v < .5 ? 4 * v * v * v : 1 - (-2 * v + 2) ** 3 / 2); // cúbica entrada-salida
-  const IMPULSO = .13, LLEGA = .84, N = 60;
+  const IMPULSO = .13, LLEGA = .84, N = 90;
   const vMax = Math.max(1, ...Array.from({ length: 21 }, (_, k) => Math.hypot(vel(k / 20).x, vel(k / 20).y)));
   const fotogramas = [], M = [];
   for (let k = 0; k <= N; k++) {
@@ -267,20 +253,22 @@ export function volar(de, a, { ms = 950 } = {}) {
     if (u < IMPULSO) {
       // Coge impulso: se agacha y se ensancha
       const w = Math.sin(Math.PI * (u / IMPULSO));
-      p = 0; sx = 1 + .14 * w; sy = 1 - .16 * w; baja = 6 * w; rot = -4 * w; sc = s0;
+      p = 0; sx = 1 + .08 * w; sy = 1 - .1 * w; baja = 4 * w; rot = -3 * w; sc = s0;
     } else if (u < LLEGA) {
       const v = (u - IMPULSO) / (LLEGA - IMPULSO);
       p = suave(v);
       const d = vel(p), rapidez = Math.hypot(d.x, d.y) / vMax;
       tx = d.x / (Math.hypot(d.x, d.y) || 1); ty = d.y / (Math.hypot(d.x, d.y) || 1); rap = rapidez * Math.sin(Math.PI * v) ** .5;
       // Se estira con la velocidad y se inclina hacia donde va
-      sx = 1 - .07 * rapidez; sy = 1 + .11 * rapidez;
-      ({ rot, cae, frena } = posturaVuelo(tx, ty, rapidez, u, LLEGA));
+      sx = 1 - .04 * rapidez; sy = 1 + .06 * rapidez;
+      // Se inclina con suavidad hacia donde va (sin dar vueltas: es un salto corto) y frena con los propulsores al llegar
+      rot = Math.max(-18, Math.min(18, tx * 16 * rapidez)) + 2.5 * Math.sin(v * Math.PI * 3) * rapidez;
+      frena = campana(u, LLEGA - .2, LLEGA + .02);
       sc = s0 + (s1 - s0) * p + (grande - (s0 + s1) / 2) * Math.sin(Math.PI * p);
     } else {
       // Toca destino: se aplasta y se asienta con un muelle
       const w = (u - LLEGA) / (1 - LLEGA), f = Math.exp(-5 * w) * Math.sin(Math.PI * 2.4 * w);
-      p = 1; sx = 1 + .12 * f; sy = 1 - .12 * f; sc = s1 * (1 + .1 * (1 - muelle(w * .5, { rigidez: 300, amort: 16 })) * (w < .02 ? 0 : 1));
+      p = 1; sx = 1 + .07 * f; sy = 1 - .07 * f; sc = s1 * (1 + .06 * (1 - muelle(w * .5, { rigidez: 300, amort: 16 })) * (w < .02 ? 0 : 1));
     }
     const c = bez(p);
     M.push({ u, tx, ty, rap, rot, cae, frena, fin: 0 });
@@ -567,6 +555,8 @@ function hornear(estado, forma, ms) {
     if (i >= ultima && (i - ultima) * dt >= siguiente * T / F - 1e-9 && sal.length < F) {
       const q = { ...p };
       for (const k in extra) if (k in q) q[k] += extra[k];
+      // En la cara (solo la cabeza dentro de su círculo) el bote y el estirar y aplastar son mucho más sutiles
+      if (forma === 'cara') { q.y *= .5; q.sx = 1 + (q.sx - 1) * .3; q.sy = 1 + (q.sy - 1) * .3; q.r *= .5; }
       sal.push(q); siguiente++;
     }
   }

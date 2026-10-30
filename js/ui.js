@@ -302,6 +302,60 @@ function crearAviso() {
   t.addEventListener('pointerup', soltar); t.addEventListener('pointercancel', soltar);
   return t;
 }
+/* El aviso nunca tapa un botón, un enlace ni un campo (el total y «Siguiente» del configurador, el campo del chat,
+   el botón del asistente, los botones de un diálogo…), esté donde esté. Antes de enseñarse mira qué hay debajo del sitio
+   donde iría; si hay algo que se pueda tocar, sube justo por encima; si abajo no queda hueco, prueba arriba. */
+const TOCABLE = 'button,a[href],input,textarea,select,summary,label,[role=button],[tabindex]:not([tabindex="-1"])';
+function obstaculos(t, top, alto, ancho) {
+  const izq = (innerWidth - ancho) / 2, hay = new Set();
+  for (let y = top + 3; y < top + alto; y += 9)
+    for (let x = izq + 3; x < izq + ancho; x += 11)
+      for (const el of document.elementsFromPoint(x, y)) {
+        if (el === t || t.contains(el)) continue;
+        const c = el.closest(TOCABLE);
+        if (c && !t.contains(c)) hay.add(c);
+        break; // solo lo que se ve en ese punto
+      }
+  return [...hay];
+}
+/** Encima de las barras fijas de abajo (dentro de un diálogo, del chat, del aviso de cookies…): el último recurso */
+function sobreBarras(t) {
+  const H = innerHeight;
+  let arriba = H;
+  for (const x of [innerWidth * .15, innerWidth * .5, innerWidth * .85]) {
+    for (const el of document.elementsFromPoint(x, H - 10)) {
+      if (el === t || t.contains(el)) continue;
+      let barra = null;
+      for (let n = el; n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
+        const r = n.getBoundingClientRect(), cs = getComputedStyle(n);
+        if (r.bottom >= H - 6 && r.height > 0 && r.height < H * .4) barra = r;
+        if (cs.position === 'fixed' || cs.position === 'sticky' || n.tagName === 'DIALOG') { if (barra) arriba = Math.min(arriba, barra.top); break; }
+      }
+      break;
+    }
+  }
+  return arriba < H ? `${Math.round(H - arriba + 12)}px` : '';
+}
+function colocarAviso(t) {
+  t.style.top = ''; t.style.bottom = ''; t.classList.remove('arriba');
+  const H = innerHeight, r = t.getBoundingClientRect(), alto = r.height || 50, ancho = r.width || 300;
+  const base = parseFloat(getComputedStyle(t).bottom) || 24; // los 24 px y la zona segura del móvil, ya calculados por el navegador
+  // 1) Abajo: si hay algo que se pueda tocar, justo encima del obstáculo (sin pasar del tercio de arriba de la pantalla)
+  let abajo = base;
+  for (let i = 0; i < 5; i++) {
+    const top = H - abajo - alto;
+    if (top < H * .35) break;
+    const hay = obstaculos(t, top, alto, ancho);
+    if (!hay.length) { t.style.bottom = `${Math.round(abajo)}px`; return; }
+    abajo = H - Math.min(...hay.map(e => e.getBoundingClientRect().top)) + 10;
+  }
+  // 2) Arriba, por debajo de la cabecera si hay hueco
+  for (const top of [72, 16]) {
+    if (!obstaculos(t, top, alto, ancho).length) { t.style.bottom = 'auto'; t.style.top = `calc(${top}px + env(safe-area-inset-top))`; t.classList.add('arriba'); return; }
+  }
+  // 3) Pantalla llena de botones: abajo, al menos por encima de las barras fijas (solo tapa contenido unos segundos)
+  t.style.bottom = sobreBarras(t);
+}
 export function toast(texto, tipo = '') {
   const t = $('#toast') || crearAviso();
   const ic = icono({ ok: 'check', err: 'alert' }[tipo] || 'bulb');
@@ -313,6 +367,14 @@ export function toast(texto, tipo = '') {
   else { const dlg = [...document.querySelectorAll('dialog[open]')].pop(); (dlg || document.body).appendChild(t); }
   t.className = 'toast';
   t.style.transform = '';
+  colocarAviso(t);
+  // Si algo se estaba moviendo (un diálogo que entra, un paso que cambia), se vuelve a mirar cuando ya está quieto
+  clearTimeout(t._recoloca);
+  t._recoloca = setTimeout(() => {
+    if (!t.classList.contains('show') || t.classList.contains('arrastra')) return;
+    const r = t.getBoundingClientRect();
+    if (obstaculos(t, r.top, r.height, r.width).length) { t.style.transition = 'none'; colocarAviso(t); void t.offsetWidth; t.style.transition = ''; }
+  }, 380);
   void t.offsetWidth;
   t.className = `toast show ${tipo}`;
   if (tipo === 'err') vibrar('error'); // con el aviso visible, nunca sola
