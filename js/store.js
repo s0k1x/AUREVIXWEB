@@ -752,8 +752,10 @@ export async function borrarTicket(id) {
 }
 export async function responderTicket(t, texto) {
   const u = necesitaUsuario();
-  const respuestas = [...(t.respuestas || []), { autor: u.name, rol: u.role, texto, t: Date.now() }];
-  const cambios = { respuestas, estado: esEquipo() ? 'respondido' : 'abierto', actualizado: Date.now() };
+  const nueva = { autor: u.name, rol: u.role, texto, t: Date.now() };
+  // Se añade sobre lo que hay en el servidor (si el otro lado acaba de contestar, no se pierde su mensaje)
+  const previas = modoDemo ? t.respuestas : (comprobar(await limite(sb.from('tickets').select('datos').eq('id', t.id).single())).datos?.respuestas);
+  const cambios = { respuestas: [...(previas || []), nueva], estado: esEquipo() ? 'respondido' : 'abierto', actualizado: Date.now() };
   await actualizarTicket(t.id, cambios);
   if (modoDemo && esEquipo() && t.uid) avisoDemo(t.uid, `Hemos respondido a tu consulta «${t.asunto}»`, '', 'soporte');
   return cambios;
