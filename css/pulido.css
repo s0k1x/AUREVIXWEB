@@ -292,7 +292,7 @@ html[data-tema=claro] .isw-pastilla{background:var(--accent)}
 .nav .idioma-menu{display:none}
 @media (max-width:760px){
   .head-right > .idioma-sw{display:none}
-  .nav .idioma-sw.idioma-menu{display:inline-grid;width:min(100%,280px);height:50px;margin-top:14px}
+  .nav .idioma-sw.idioma-menu{display:grid;order:2;flex:1 1 0;min-width:0;width:auto;height:50px;margin-top:18px}
   .nav .idioma-sw.idioma-menu button{font-size:14.5px;letter-spacing:0;font-weight:600}
 }
 /* Cortina */
@@ -559,7 +559,10 @@ html .empty .em,html .gate .em,html .estado-cand .big{box-shadow:0 10px 24px -12
 .tema-btn.largo{display:none}
 @media (max-width:760px){
   .head-right > .tema-btn{display:none}
-  .nav .tema-btn.largo{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:min(100%,280px);height:50px;margin-top:10px;border-radius:99px;font-weight:600;font-size:14.5px}
+  .nav .tema-btn.largo{display:inline-flex;order:2;flex:1 1 0;min-width:0;align-items:center;justify-content:center;gap:8px;width:auto;height:50px;margin-top:18px;border-radius:99px;font-weight:600;font-size:14.5px;white-space:nowrap}
+  /* Idioma y tema en una sola fila, del ancho del menú; los enlaces ocupan cada uno su línea */
+  .header .nav{flex-direction:row;flex-wrap:wrap;column-gap:10px}
+  .header .nav > a{flex:0 0 100%}
 }
 /* Transición circular al cambiar el tema: el navegador funde las dos versiones; el círculo lo pone js/ui.js */
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
