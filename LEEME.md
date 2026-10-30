@@ -1080,3 +1080,23 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 - **Más expresivo:** el salto de alegría se estira al subir y se aplasta al caer, la cabeza acompaña el movimiento, y al dormir respira con todo el cuerpo.
 - **60 imágenes del robot saludando** (`icons/asistente/saluda-00.webp` … `saluda-59.webp`, un bucle perfecto de 1 segundo) y la hoja con todas juntas (`saluda.webp`, 10 × 6 fotogramas). Las genera `node scripts/generar-mascota.js http://127.0.0.1:8731` desde el propio dibujo del robot. La web usa la hoja, no las 60 por separado.
 - **Dónde se usa:** al iniciar y al cerrar sesión. Se reproduce con dos animaciones de `translate` y `transform` por pasos (`steps(10)` y `steps(6)`), que corren en la tarjeta gráfica: 60 fps exactos aunque la página esté ocupada. La hoja se descarga mientras se escribe el código de acceso, o con la página ya en reposo si hay sesión iniciada, así que no pesa para quien solo mira. Si no llega a cargarse, se ve el robot en vector como antes.
+
+## 52. Versión v73–v74 — carga más rápida, ambiente de temporada discreto y sin restos del vídeo
+
+**Carga más rápida** (medido en un móvil lento simulado: CPU ×4, 200 KB/s, con compresión como GitHub Pages)
+
+| | Antes | Ahora |
+|---|---|---|
+| Primera visita: descarga | 397 KB | 359 KB |
+| Segunda visita: texto visible | 1,1 s | **0,5 s** |
+| Segunda visita: página cargada | 3,1 s | **1,0 s** |
+| Segunda visita: descarga | 388 KB | **0 KB** |
+
+- **Service worker (v74):** las páginas, el CSS y el JS salen al instante de la copia guardada de la misma versión, así que la web abre sin esperar a internet y nunca se mezclan piezas de dos versiones. Por detrás, como mucho una vez por minuto, se comprueba si la página ha cambiado en internet. Si ha cambiado (por ejemplo, alguien publicó sin subir `VERSION`), se vuelve a descargar todo y la página se recarga sola una vez, nunca mientras se escribe o hay un diálogo abierto. Sigue siendo necesario subir `VERSION` en cada cambio.
+- **Fuente de los títulos (Bricolage Grotesque):** se queda con los grosores que usa la web (600–800) y un tamaño óptico fijo. Pasa de 75 KB a 36 KB (latín) y de 30 KB a 16 KB (latín extendido). Se ve prácticamente igual.
+
+**Temporada más discreta**
+- El ambiente animado (murciélagos, nieve…) tiene la mitad de piezas y solo se ve arriba del todo. Al bajar a leer se desvanece y deja de dibujarse: no tapa el contenido ni gasta batería.
+
+**Vídeo**
+- No queda ningún vídeo en la web. Se quita también la regla del service worker que apartaba el vídeo de la intro.
