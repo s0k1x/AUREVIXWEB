@@ -1170,3 +1170,19 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - Botones más rápidos al reaccionar (0,2 s) y escala 0,97 al pulsar. En pantallas táctiles ya no saltan al tocarlos como si se pasara el ratón.
   - Lo que aparecía desde la nada (`scale(0)`) ahora aparece desde la mitad y con fundido.
   - Títulos equilibrados (`text-wrap: balance`), párrafos sin palabras sueltas al final y cifras que no bailan.
+
+### v80 — correos rehechos desde cero
+- **`supabase/functions/_shared/correo.ts` (nuevo):** el único sitio desde el que salen los correos (códigos y facturas), por la API de Brevo.
+  - Reintenta dos veces si Brevo falla un momento y se corta a los 15 s.
+  - Traduce cada «no» de Brevo a un motivo: `clave`, `cuenta`, `remitente`, `creditos`, `destinatario`, `brevo-caido`.
+  - `estadoBrevo()` consulta la cuenta y el remitente sin enviar nada.
+  - Todos los correos usan el mismo diseño (`plantilla`).
+- **Función `codigo` (reescrita):** Supabase Auth crea el código y la función lo envía con el módulo común.
+  - Cuando la función arranca, deja en sus registros el estado de la cuenta de Brevo: plan, envíos que quedan y si el remitente está verificado. Así se ve en Supabase → Edge Functions → codigo → Logs por qué no llegaría un correo, sin tener que entrar en Brevo.
+  - Límites: un código por correo cada 40 s y 10 por IP cada 10 min.
+- **Función `correo` (facturas):** envía con el mismo módulo, así que también gana los reintentos y el motivo.
+- **Web (`js/store.js`):** pedir y comprobar el código, reescritos.
+  - Primero la función `codigo`; si no responde o Brevo falla, el envío de Supabase Auth como respaldo.
+  - Si los dos fallan, se explica el motivo y se propone entrar con Google.
+  - Al comprobar el código, prueba `email` y, si no vale, `magiclink`.
+- Las dos funciones están desplegadas en Supabase.

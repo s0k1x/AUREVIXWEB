@@ -14,14 +14,15 @@
 //    supabase/facturas-v61.sql). Al reenviar se usa la misma factura.
 //  - Los datos fiscales (titular, NIF, domicilio) e IVA se leen de
 //    Ajustes en la base de datos, no del navegador.
+//  El envío lo hace el módulo común _shared/correo.ts (API de Brevo, con
+//  reintentos y el motivo exacto si Brevo lo rechaza).
 //  Secretos: BREVO_API_KEY y BREVO_REMITENTE (correo
 //  verificado en Brevo). Nunca van en la web.
 // ==========================================================
 
 import { PDFDocument, StandardFonts, rgb } from 'npm:pdf-lib@1.17.1';
+import { enviarCorreo, FalloCorreo } from '../_shared/correo.ts';
 
-const BREVO = Deno.env.get('BREVO_API_KEY') || '';
-const REMITENTE = Deno.env.get('BREVO_REMITENTE') || '';
 const SB_URL = Deno.env.get('SUPABASE_URL') || '';
 const ANON = Deno.env.get('SUPABASE_ANON_KEY') || '';
 const SERVICIO = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
@@ -255,7 +256,6 @@ function correoHTML(p: Record<string, any>, id: string, fase: string, e: Empresa
 Deno.serve(async req => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return json({ error: 'Método no permitido' }, 405);
-  if (!BREVO || !REMITENTE) return json({ error: 'Falta configurar Brevo (BREVO_API_KEY y BREVO_REMITENTE)' }, 503);
   try {
     if (!(await esEquipo(req))) return json({ error: 'Solo para el equipo' }, 403);
     const { pedidoId, fase, empresa, reenviar } = await req.json() as { pedidoId: string; fase: string; empresa?: Empresa; reenviar?: boolean };
@@ -297,24 +297,16 @@ Deno.serve(async req => {
     const numero = String(fac.numero);
     const pdf = await pdfFactura(numero, { ...datosF, ...(fac.datos || {}) } as DatosFactura);
     const { html, texto, asunto } = correoHTML(p, fila.id, fase, e, fact, numero);
-    const r = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: { 'api-key': BREVO, 'Content-Type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify({
-        sender: { name: e.marca, email: REMITENTE },
-        to: [{ email: para, name: String(fact.razon || p.clienteNombre || '').slice(0, 80) || undefined }],
-        ...(cc.length ? { cc } : {}),
-        ...(e.email ? { replyTo: { email: e.email, name: e.marca } } : {}),
-        subject: asunto, htmlContent: html, textContent: texto, tags: ['pago', fase],
-        attachment: [{ name: `Factura-${numero}.pdf`, content: pdf }]
-      })
+    await enviarCorreo({
+      para: [{ email: para, name: String(fact.razon || p.clienteNombre || '').slice(0, 80) || undefined }],
+      cc,
+      responderA: e.email ? { email: e.email, name: e.marca } : undefined,
+      asunto, html, texto, etiquetas: ['pago', fase],
+      adjuntos: [{ name: `Factura-${numero}.pdf`, content: pdf }]
     });
-    if (!r.ok) {
-      console.error('Brevo', r.status, (await r.text()).slice(0, 300));
-      return json({ error: r.status === 401 ? 'La clave de Brevo no es válida' : 'Brevo no ha podido enviar el correo' }, 502);
-    }
     return json({ enviado: true, para, factura: numero });
   } catch (err) {
+    if (err instanceof FalloCorreo) return json({ error: err.message, motivo: err.motivo }, err.motivo === 'sin-configurar' ? 503 : 502);
     console.error(err);
     return json({ error: 'No se ha podido enviar el correo' }, 500);
   }

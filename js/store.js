@@ -241,30 +241,40 @@ export async function entrarConGithub() {
 }
 
 /* ---------- Entrar o crear la cuenta con un código por correo ----------
-   No hay contraseñas: Supabase genera un código de un solo uso, la función «codigo»
-   lo envía por la API de Brevo (o Supabase por SMTP si falla) y Supabase lo comprueba; la web nunca lo ve antes de que lo
-   escribas. Al crear la cuenta, el mismo código verifica el correo.
-   Para crearla hace falta el nombre (y aceptar las condiciones en el formulario). */
-export async function enviarCodigo(email, { nombre = '', captchaToken = '' } = {}) {
-  if (modoDemo) { nombreDemo = nombre; return; }
-  if (nombre) nombrePendiente = nombre;
-  const opciones = nombre ? { shouldCreateUser: true, data: { name: nombre, full_name: nombre }, emailRedirectTo: volverA() } : { shouldCreateUser: false };
-  if (captchaToken) opciones.captchaToken = captchaToken; // lo comprueba Supabase si tiene el captcha activado
-  // 1.º por la API de Brevo (función «codigo»): llega mejor y, si Brevo lo rechaza, queda el motivo en los registros.
-  //    Si responde con un error claro (sin cuenta, demasiados intentos…), se enseña tal cual.
-  // 2.º si la función no está o falla, por el SMTP de Supabase Auth, como antes.
+   No hay contraseñas. Supabase Auth crea un código de un solo uso y lo comprueba él;
+   la web nunca lo ve antes de que llegue al correo.
+   Envío (en este orden):
+   1. Función «codigo» (supabase/functions/codigo): lo manda por la API de Brevo y, si Brevo
+      dice que no, contesta con el motivo (y queda en sus registros).
+   2. Si la función no está o falla, el envío propio de Supabase Auth (SMTP), como antes.
+   Para crear la cuenta hace falta el nombre (y aceptar las condiciones en el formulario). */
+const RESPUESTA_CLARA = [400, 404, 429]; // errores que hay que enseñar tal cual (no se arreglan con el otro camino)
+async function codigoPorBrevo(email, nombre, captchaToken) {
   try {
     const r = await limite(fetch(`${CONFIG.supabase.url}/functions/v1/codigo`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', apikey: CONFIG.supabase.anonKey, Authorization: `Bearer ${CONFIG.supabase.anonKey}` },
       body: JSON.stringify({ email, nombre, captchaToken })
-    }), 20000);
+    }), 25000);
     const j = await r.json().catch(() => ({}));
-    if (r.ok && j.ok) return;
-    if ([400, 404, 429].includes(r.status) && j.error) throw Object.assign(new Error(j.error), { claro: true });
-  } catch (e) { if (e.claro) throw e; console.warn('Código por Brevo no disponible, se usa Supabase Auth', e); }
+    if (r.ok && j.ok) return { ok: true };
+    return { ok: false, claro: RESPUESTA_CLARA.includes(r.status), error: j.error || '', motivo: j.motivo || `http-${r.status}` };
+  } catch (e) {
+    return { ok: false, claro: false, error: '', motivo: e?.message || 'sin-conexion' };
+  }
+}
+export async function enviarCodigo(email, { nombre = '', captchaToken = '' } = {}) {
+  if (modoDemo) { nombreDemo = nombre; return; }
+  email = String(email).trim().toLowerCase();
+  if (nombre) nombrePendiente = nombre;
+  const brevo = await codigoPorBrevo(email, nombre, captchaToken);
+  if (brevo.ok) return;
+  if (brevo.claro) throw new Error(brevo.error || 'No se ha podido enviar el código.');
+  console.warn('Código por Brevo no enviado, se usa Supabase Auth:', brevo.motivo, brevo.error);
+  const opciones = nombre ? { shouldCreateUser: true, data: { name: nombre, full_name: nombre }, emailRedirectTo: volverA() } : { shouldCreateUser: false };
+  if (captchaToken) opciones.captchaToken = captchaToken; // lo comprueba Supabase si tiene el captcha activado
   const { error } = await sb.auth.signInWithOtp({ email, options: opciones });
-  if (error) throw new Error(traducirError(error));
+  if (error) throw new Error(brevo.error ? `${brevo.error} Prueba a entrar con Google.` : traducirError(error));
 }
 let nombreDemo = '';
 export async function verificarCodigo(email, codigo) {
@@ -273,7 +283,11 @@ export async function verificarCodigo(email, codigo) {
     if (codigo === '000000') throw new Error('El código no es correcto o ha caducado. Pide otro.');
     return entrarLocal({ name: nombreDemo || email.split('@')[0], email });
   }
-  const { error } = await sb.auth.verifyOtp({ email, token: codigo, type: 'email' });
+  email = String(email).trim().toLowerCase();
+  const token = String(codigo).replace(/\D/g, '');
+  // «email» vale para los dos envíos; «magiclink» por si el código salió como enlace mágico
+  let { error } = await sb.auth.verifyOtp({ email, token, type: 'email' });
+  if (error && /expired|invalid|otp/i.test(error.message || '')) ({ error } = await sb.auth.verifyOtp({ email, token, type: 'magiclink' }));
   if (error) throw new Error(traducirError(error));
 }
 
