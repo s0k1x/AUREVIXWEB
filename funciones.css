@@ -937,7 +937,8 @@ section[id],[id].ancla{scroll-margin-top:84px}
 }
 
 /* v28 · Safari: tapa el hueco que queda sobre la cabecera (por detrás de la hora) */
-.header::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:var(--hueco,0px);background:var(--bg);pointer-events:none}
+/* v81 · siempre se tapa de sobra: en el iPhone (iOS 26) Safari pinta la web por detrás de la hora aunque la cabecera esté en top:0 */
+.header::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:max(var(--hueco,0px),calc(env(safe-area-inset-top) + 160px));background:var(--bg);pointer-events:none}
 
 /* v29 · móvil: la cabecera va fija arriba del todo.
    Safari del iPhone tiñe la zona de la hora con el color de lo que está fijo arriba; con la cabecera
@@ -1479,12 +1480,12 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 /* Hoja de fotogramas encima del dibujo (js/mascota.js → aplicarHoja). La caja mide un fotograma; la imagen,
    la hoja entera, y dos animaciones por pasos la mueven: columnas (translate) y filas (transform). */
 .masc-fr{position:absolute;display:block;overflow:hidden;pointer-events:none;contain:strict}
-.fr-hoja{position:absolute;left:0;top:0;width:calc(var(--c) * 100%);height:calc(var(--f) * 100%);max-width:none;display:block;will-change:transform,translate;
+.fr-hoja{position:absolute;left:0;top:0;width:calc(var(--c) * 100%);height:auto;aspect-ratio:auto;max-width:none;display:block;will-change:transform,translate;
   animation:fr-x calc(var(--ms) / var(--f)) steps(var(--c)) infinite,fr-y var(--ms) steps(var(--f)) infinite}
 @keyframes fr-x{to{translate:-100% 0}}
 @keyframes fr-y{to{transform:translateY(-100%)}}
 .masc.con-frames > .masc-lienzo{visibility:hidden}
-.masc.cara.con-frames{background:none}
+.masc.cara.con-frames{background:#040a06}
 .masc-chispa{position:fixed;z-index:9490;pointer-events:none;border-radius:50%;background:var(--accent);margin:-3px 0 0 -3px;will-change:transform,opacity;opacity:0}
 
 /* El botón del chat y la cabecera del chat llevan la cara de la mascota */

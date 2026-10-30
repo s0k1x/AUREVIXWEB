@@ -452,7 +452,7 @@ export function precargarHojas(...ids) {
 /** La hoja colocada justo encima del dibujo (mismo tamaño y posición que el robot en vector) */
 function hojaHTML(id) {
   const h = HOJAS[id], c = h.caja;
-  return `<span class="masc-fr" data-hoja="${id}" aria-hidden="true" style="width:${(100 / c.w).toFixed(3)}%;left:${(-100 * c.x / c.w).toFixed(3)}%;top:${(-100 * c.y / c.h).toFixed(3)}%;aspect-ratio:${h.w}/${h.h};--c:${h.cols};--f:${h.filas};--ms:${h.ms}ms"><img class="fr-hoja" src="${RUTA_HOJAS + id}.webp" alt="" draggable="false"></span>`;
+  return `<span class="masc-fr" data-hoja="${id}" aria-hidden="true" style="width:${(100 / c.w).toFixed(3)}%;left:${(-100 * c.x / c.w).toFixed(3)}%;top:${(-100 * c.y / c.h).toFixed(3)}%;aspect-ratio:${h.w}/${h.h};--c:${h.cols};--f:${h.filas};--ms:${h.ms}ms"><img class="fr-hoja" src="${RUTA_HOJAS + id}.webp" alt="" draggable="false" style="animation:fr-x ${(h.ms / h.filas).toFixed(2)}ms steps(${h.cols}) infinite,fr-y ${h.ms}ms steps(${h.filas}) infinite"></span>`;
 }
 /** Pone la hoja que toca según el estado de la mascota (o vuelve al vector si esa acción no tiene hoja) */
 function aplicarHoja(m) {
