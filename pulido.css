@@ -513,3 +513,12 @@ p,li,dd{text-wrap:pretty}
 @keyframes logro-aro{from{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}to{box-shadow:0 0 0 22px transparent}}
 @media (prefers-reduced-motion:reduce){.ok-ic.logro,.ok-ic.logro::after{animation:none}}
 html[data-movimiento=reducido] :is(.ok-ic.logro,.ok-ic.logro::after){animation:none}
+
+/* v84 · Inclinación 3D de la maqueta y las tarjetas de precios (js/inclinar.js): el transform lo lleva el muelle,
+   así que aquí sin transición de transform (si no, se suavizaría dos veces) */
+.inclina{transform-style:preserve-3d;will-change:transform;transition-property:border-color,box-shadow,background-color,opacity}
+.inclina-brillo{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:5;opacity:0;transition:opacity .3s ease;
+  background:radial-gradient(circle at var(--bx,50%) var(--by,50%),rgba(255,255,255,.12),transparent 45%)}
+@media (hover:hover) and (pointer:fine){.inclina:hover .inclina-brillo{opacity:1}}
+html[data-tema=claro] .inclina-brillo{background:radial-gradient(circle at var(--bx,50%) var(--by,50%),rgba(255,255,255,.55),transparent 45%)}
+@media (hover:hover) and (pointer:fine){.plan-card.inclina:hover{transform:none}}

@@ -1206,3 +1206,10 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - Textos en trozos cortos (13 palabras en total), un solo acento (el lima, que significa «hecho»), sin rebotes y sin partículas.
   - Se graba fotograma a fotograma a 60 fps con Playwright y ffmpeg, en horizontal (1920×1080) y en vertical (1080×1920): `node scripts/grabar-promo.cjs http://127.0.0.1:8731 salida 1920 1080`. Los vídeos no van en la web (pesan); se suben a redes.
   - No lleva sonido: se le pone la música en la app de cada red.
+
+### v84 — inclinación 3D en la portada
+- **`js/inclinar.js` (nuevo):** la maqueta del portátil (`#vitrina`, hasta 7°) y las tarjetas de precios (`.plan-card`, hasta 5°) se inclinan hacia el puntero como un objeto real y crecen un poco. Las tarjetas llevan además una luz suave que sigue al ratón.
+  - Muelle amortiguado (se acerca un 12 % por fotograma): llega y se para, sin rebotar. Solo `transform`.
+  - Solo en ordenador con ratón (`hover:hover` y puntero fino) y sin «menos movimiento».
+  - Se monta al primer paso del ratón, así que sirve también para tarjetas que se pintan después. En reposo quita su estilo y lo deja como estaba.
+  - CSS en `pulido.css`: `.inclina` (sin transición de transform, para no suavizar dos veces) e `.inclina-brillo`.
