@@ -18,15 +18,17 @@ export const ref = (id: string) => '#' + String(id).slice(-6).toUpperCase(); // 
 export function correoCodigo(codigo: string, nombre: string, nueva: boolean, cuando = Date.now()) {
   const n = String(nombre || '').trim().split(/\s+/)[0];
   const que = nueva ? 'crear tu cuenta' : 'entrar en tu cuenta';
-  const digitos = codigo.split('').join('&#8202;');
   const cuerpo = `
   <tr><td class="pad" style="padding:36px 36px 8px">
     <h1 class="t h1" style="margin:0 0 12px;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:-.02em;color:${C.tinta}">Tu código para ${nueva ? 'crear tu cuenta' : 'entrar'}</h1>
     <p class="x" style="margin:0 0 26px;font-size:16px;line-height:1.6;color:${C.texto}">${n ? `Hola ${esc(n)}, escribe` : 'Escribe'} este código en ${MARCA} para ${que}.</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-      <td class="caja" align="center" style="background:${C.suave};border:1px solid #e3ecc8;border-radius:16px;padding:26px 12px 22px">
-        <div class="t cod" style="font-family:'SF Mono','SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace;font-size:42px;line-height:1;font-weight:700;letter-spacing:12px;color:${C.tinta};padding-left:12px">${digitos}</div>
-        <div class="m" style="margin-top:14px;font-size:13px;color:${C.gris}">Caduca en 10 minutos · Solo sirve una vez</div>
+      <td class="caja" align="center" style="background:${C.suave};border:1px solid #e3ecc8;border-radius:16px;padding:22px 10px 18px">
+        <!-- Una casilla por cifra: nunca se parte en dos líneas, ni en pantallas estrechas ni en Gmail -->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="5" style="table-layout:fixed;max-width:400px;margin:0 auto"><tr>
+          ${codigo.split('').map(d => `<td class="dg" align="center" style="background:#ffffff;border:1px solid #dfe6c8;border-radius:10px;height:58px;font-family:'SF Mono','SFMono-Regular',Menlo,Consolas,'Liberation Mono',monospace;font-size:30px;line-height:58px;font-weight:700;color:${C.tinta}">${d}</td>`).join('')}
+        </tr></table>
+        <div class="m" style="margin-top:14px;font-size:13px;line-height:1.5;color:${C.gris}">Caduca en 10 minutos<br>Solo sirve una vez</div>
       </td>
     </tr></table>
   </td></tr>
@@ -139,6 +141,59 @@ export function correoPago(p: Record<string, any>, id: string, fase: string, e: 
 
 /* ---------- 3. Factura en PDF ---------- */
 type Linea = { concepto: string; importe: number };
+/** Correo de un cobro suelto: cuota de mantenimiento o cambio extra aceptado (lleva su factura) */
+export type Cobro = { titulo: string; concepto: string; lineas: { concepto: string; importe: number }[]; pasos: string[]; metodo: string };
+export function correoCobro(p: Record<string, any>, id: string, c: Cobro, e: Empresa, fact: Record<string, string>, numero = '') {
+  const total = Math.round(c.lineas.reduce((s, l) => s + l.importe, 0) * 100) / 100;
+  const negocio = p.respuestas?.negocio || p.planNombre || 'tu web';
+  const nombre = String(p.clienteNombre || p.respuestas?.contactoNombre || '').trim().split(/\s+/)[0];
+  const iva = Number(p.iva ?? e.iva) || 0;
+  const base = iva ? Math.round(total / (1 + iva / 100) * 100) / 100 : total;
+  const L = e.legal || {};
+  const marca = e.marca || MARCA;
+  const enlace = `${WEB}/#proyecto-${id}/pagos`;
+  const fila = (k: string, v: string, o: { fuerte?: boolean; gris?: boolean } = {}) => `<tr>
+      <td class="${o.gris ? 'm' : 'x'} linea" style="padding:11px 0;border-bottom:1px solid ${C.borde};font-size:14px;color:${o.gris ? C.gris : C.texto}">${o.fuerte ? `<b class="t" style="color:${C.tinta}">${k}</b>` : k}</td>
+      <td class="${o.gris ? 'm' : 't'} linea" align="right" style="padding:11px 0;border-bottom:1px solid ${C.borde};font-size:14px;white-space:nowrap;color:${o.gris ? C.gris : C.tinta};font-variant-numeric:tabular-nums">${o.fuerte ? `<b>${v}</b>` : v}</td></tr>`;
+  const cuerpo = `
+  <tr><td class="pad" style="padding:34px 36px 6px">
+    <table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="background:#e9f6cf;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;color:${C.verde}">✓&nbsp; Pagado</td></tr></table>
+    <h1 class="t h1" style="margin:16px 0 8px;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:-.02em;color:${C.tinta}">${esc(c.titulo)}</h1>
+    <p class="x" style="margin:0 0 22px;font-size:16px;line-height:1.6;color:${C.texto}">Hola${nombre ? ` ${esc(nombre)}` : ''}, hemos recibido el pago de ${esc(c.concepto)} de <b>«${esc(negocio)}»</b>. Gracias.</p>
+    <div class="t grande" style="font-size:44px;line-height:1;font-weight:700;letter-spacing:-.03em;color:${C.tinta};font-variant-numeric:tabular-nums">${eur(total)}</div>
+    <div class="m" style="margin:8px 0 6px;font-size:13px;color:${C.gris}">Recibido el ${fechaLarga()} por ${esc(c.metodo)}${iva ? ' · IVA incluido' : ''} · Pedido ${ref(id)}${numero ? ` · Factura ${esc(numero)}` : ''}</div>
+  </td></tr>
+  <tr><td class="pad" style="padding:20px 36px 4px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${c.lineas.map(l => fila(esc(l.concepto), eur(l.importe))).join('')}
+      ${iva ? fila('Base imponible', eur(base), { gris: true }) + fila(`IVA (${iva} %)`, eur(total - base), { gris: true }) : ''}
+      ${fila(`Total${iva ? ' (IVA incluido)' : ''}`, eur(total), { fuerte: true })}
+    </table>
+  </td></tr>
+  ${c.pasos.length ? `<tr><td class="pad" style="padding:22px 36px 8px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td class="caja" style="background:${C.suave};border:1px solid #e3ecc8;border-radius:14px;padding:16px 20px">
+      ${c.pasos.map(t => `<p class="x" style="margin:0 0 6px;font-size:14px;line-height:1.5;color:${C.texto}">${esc(t)}</p>`).join('')}
+    </td></tr></table>
+  </td></tr>` : ''}
+  <tr><td class="pad" style="padding:20px 36px 34px">
+    ${boton('Ver mi proyecto', enlace)}
+    ${numero ? `<p class="m" style="margin:16px 0 0;font-size:13px;line-height:1.5;color:${C.gris}">📎 La factura <b>${esc(numero)}</b> va adjunta en PDF.</p>` : ''}
+  </td></tr>`;
+  const pie = [
+    `${esc(L.titular || marca)}${L.nif ? ` · NIF ${esc(L.nif)}` : ''}${L.domicilio ? ` · ${esc(L.domicilio)}` : ''}`,
+    `Datos de facturación: ${esc([fact.razon, fact.nif].filter(Boolean).join(' · ') || 'los de tu cuenta')}`,
+    `¿Dudas? Responde a este correo${L.email || e.email ? ` o escríbenos a ${esc(L.email || e.email || '')}` : ''}.`
+  ].join('<br>');
+  const html = plantilla({ titulo: c.titulo, previa: `Hemos recibido ${c.concepto}: ${eur(total)}.`, etiqueta: numero ? `Factura ${esc(numero)}` : `Pedido ${ref(id)}`, cuerpo, pie, motivo: 'Recibes este correo porque tienes un proyecto con AurevixWeb.' });
+  const texto = [
+    `${c.titulo} · Pedido ${ref(id)}${numero ? ` · Factura ${numero}` : ''}`, '',
+    `Hola${nombre ? ` ${nombre}` : ''}, hemos recibido el pago de ${c.concepto} de «${negocio}»: ${eur(total)}.`, '',
+    ...c.lineas.map(l => `${l.concepto}: ${eur(l.importe)}`), `Total${iva ? ' (IVA incluido)' : ''}: ${eur(total)}`, '',
+    ...c.pasos, '', `Ver mi proyecto: ${enlace}`, '', numero ? `La factura ${numero} va adjunta en PDF.` : ''
+  ].join('\n');
+  return { html, texto, asunto: `${numero ? `Factura ${numero} · ` : ''}${c.titulo} · «${negocio}» (${ref(id)})` };
+}
+
 export type DatosFactura = {
   fecha: string; emisor: Record<string, string>; cliente: Record<string, string>;
   lineas: Linea[]; total: number; base: number; cuota: number; iva: number; pedido: string; metodo: string;

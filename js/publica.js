@@ -20,6 +20,16 @@ async function arrancarWeb() {
   try { w = await store.webPublica(slug); } catch { w = null; }
   if (!w || !w.archivos?.length) return noEncontrada();
   const v = { id: w.version, entrada: w.entrada, archivos: w.archivos };
+  /* Estadísticas reales para el cliente (sin cookies): una visita por sesión y cada intento de contacto
+     (llamar, WhatsApp, correo). Se ven en «Mis proyectos» y en el panel. */
+  const dispositivo = matchMedia('(max-width:640px)').matches ? 'movil' : matchMedia('(max-width:1024px)').matches ? 'tablet' : 'ordenador';
+  let origen = '';
+  try { const r = document.referrer && new URL(document.referrer).hostname; if (r && r !== location.hostname) origen = r.replace(/^www\./, ''); } catch { /* sin origen */ }
+  const medir = tipo => {
+    if (/bot|crawl|spider|slurp|lighthouse|headless/i.test(navigator.userAgent)) return;
+    if (tipo === 'visita') { try { const k = 'tm_vw_' + slug; if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, '1'); } catch { /* sin almacenamiento */ } }
+    store.contarEnWebCliente(slug, tipo, dispositivo, origen);
+  };
   const paginas = new Set(w.archivos.map(a => a.ruta).filter(r => /\.html?$/i.test(r)));
   document.title = w.negocio || slug;
   // Un iframe nuevo por página: cambiar el srcdoc del mismo añadiría pasos al historial y «Atrás» no iría bien
@@ -59,6 +69,7 @@ async function arrancarWeb() {
       history.pushState(null, '', urlDe(e.data.ruta));
       cargar(e.data.ruta, e.data.hash || '');
     } else if (e.data.aw === 'aviso') {
+      if (e.data.tipo === 'contacto') medir('contacto');
       aviso(e.data.tipo === 'form' ? 'Los formularios aún no envían nada: es una vista previa.' : e.data.tipo === 'contacto' ? 'En la web definitiva este botón abrirá el teléfono, el correo o WhatsApp.' : 'Esa página todavía no está en esta versión.');
     }
   });
@@ -67,6 +78,7 @@ async function arrancarWeb() {
   if (location.pathname !== urlDe(inicial)) history.replaceState(null, '', urlDe(inicial));
   document.documentElement.classList.add('es-web');
   await cargar(inicial);
+  medir('visita');
 }
 
 let tAviso;

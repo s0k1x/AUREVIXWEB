@@ -12,6 +12,8 @@ import {
 } from './ui.js';
 import { montarHilo, montarArchivos, abrirRecibo, descargarArchivosCliente } from './colabora.js';
 import { prefsPermitidas } from './cookies.js';
+import { catalogo } from './asistente.js';
+import { conMantenimiento, estadoMant, cuotaMensual, conceptosMensuales, activarMant, registrarCuota, cuotasPagadas, nombrePeriodo, periodo, nuevoExtra, ESTADO_EXTRA, resumirVisitas, estadisticasHTML } from './negocio.js';
 import { prepararArchivos, crearVersion, abrirVisor, enlaceVista } from './vistaweb.js';
 
 await arrancar('panel');
@@ -32,8 +34,40 @@ const activo = p => !['entregado', 'cancelado'].includes(p.estado);
 const PCT = CONFIG.comision ?? 30;
 const comision = p => Math.round((p.total || 0) * PCT) / 100;
 const ventasDe = uid => datos.pedidos.filter(p => p.ref === uid && p.estado !== 'cancelado');
-const estadoComision = p => p.comisionPagada ? ['Cobrada', 'p-done'] : p.pagoEstado === 'pagado' ? ['Lista para cobrar', 'p-new'] : ['Cliente aún no ha pagado', 'p-pend'];
-const porPagar = uid => ventasDe(uid).filter(p => p.pagoEstado === 'pagado' && !p.comisionPagada);
+/* ---------- Comisiones con control antifraude ----------
+   - Solo cuentan los pagos que confirma el propietario (el servidor no deja al vendedor tocar el pago: supabase/plataforma-v88.sql).
+   - La comisión espera los 14 días de desistimiento desde que el cliente paga del todo: si cancela, no se ha pagado nada de más.
+   - Ventas sospechosas (el cliente es el propio vendedor, comparte su correo o su dominio, o muchas cancelaciones) quedan retenidas
+     hasta que el propietario las revisa. */
+const ESPERA_COMISION = 14;
+const dia = 864e5;
+const pagadoEn = p => p.pagadoEn || (p.historial || []).filter(h => /Pago: Pagado/.test(h.texto)).map(h => h.t).pop() || (p.pagoEstado === 'pagado' ? p.createdAt : 0);
+const diasParaCobrar = p => Math.max(0, Math.ceil(ESPERA_COMISION - (Date.now() - pagadoEn(p)) / dia));
+const dominioDe = e => String(e || '').toLowerCase().split('@')[1] || '';
+const GENERICOS = new Set(['gmail.com', 'hotmail.com', 'outlook.com', 'outlook.es', 'yahoo.com', 'yahoo.es', 'icloud.com', 'live.com', 'protonmail.com', 'proton.me', 'hotmail.es', 'msn.com', 'me.com']);
+function sospechas(p) {
+  if (!p.ref) return [];
+  const v = datos.usuarios.find(u => u.uid === p.ref);
+  const m = [];
+  if (p.uid === p.ref) m.push('el cliente es el propio vendedor');
+  if (v?.email && p.clienteEmail && v.email.toLowerCase() === String(p.clienteEmail).toLowerCase()) m.push('mismo correo que el vendedor');
+  const d = dominioDe(p.clienteEmail);
+  if (v?.email && d && !GENERICOS.has(d) && d === dominioDe(v.email)) m.push('mismo dominio de correo que el vendedor');
+  if (v?.name && p.clienteNombre && v.name.trim().toLowerCase() === String(p.clienteNombre).trim().toLowerCase()) m.push('mismo nombre que el vendedor');
+  const suyas = ventasDe(p.ref).length + datos.pedidos.filter(x => x.ref === p.ref && x.estado === 'cancelado').length;
+  const canceladas = datos.pedidos.filter(x => x.ref === p.ref && x.estado === 'cancelado').length;
+  if (suyas >= 4 && canceladas / suyas >= .5) m.push(`el vendedor tiene ${canceladas} de ${suyas} ventas canceladas`);
+  return m;
+}
+const retenida = p => sospechas(p).length > 0 && !p.fraudeRevisado;
+const comisionLista = p => p.pagoEstado === 'pagado' && !p.comisionPagada && p.estado !== 'cancelado' && diasParaCobrar(p) === 0 && !retenida(p);
+const estadoComision = p => p.comisionPagada ? ['Cobrada', 'p-done']
+  : p.estado === 'cancelado' ? ['Venta cancelada', 'p-off']
+  : p.pagoEstado !== 'pagado' ? ['Cliente aún no ha pagado', 'p-pend']
+  : retenida(p) ? ['En revisión', 'p-pend']
+  : diasParaCobrar(p) ? [`Cobrable en ${diasParaCobrar(p)} día${diasParaCobrar(p) === 1 ? '' : 's'}`, 'p-pend']
+  : ['Lista para cobrar', 'p-new'];
+const porPagar = uid => ventasDe(uid).filter(comisionLista);
 /* Recomienda a un amigo: quién recomendó este pedido (por su código AMIGO-…) */
 const recomendadoPor = p => /^AMIGO-[0-9A-F]{8}$/.test(p.cupon || '') ? datos.usuarios.find(u => store.codigoAmigo(u.uid) === p.cupon) || { name: 'Un cliente', email: '' } : null;
 const premioPendiente = p => !!recomendadoPor(p) && ['senal', 'pagado'].includes(p.pagoEstado) && !p.premioAmigo && p.estado !== 'cancelado';
@@ -49,7 +83,7 @@ store.alCambiarUsuario(async u => {
   $('#pnHello').innerHTML = `Hola, <span class="nw">${esc(u.name.split(' ')[0])}&nbsp;<span class="saludo">${icono('hand')}</span></span>`;
   $('#pnRefresh').hidden = false;
   const tabs = u.role === 'owner'
-    ? [['resumen', 'Resumen', 'chart'], ['pedidos', 'Pedidos', 'bag'], ['clientes', 'Clientes', 'users'], ['soporte', 'Soporte', 'help'], ['agenda', 'Agenda', 'calendar'], ['actividad', 'Actividad', 'history'], ['candidaturas', 'Candidatos', 'briefcase'], ['videos', 'Vídeos', 'video'], ['resenas', 'Reseñas', 'star'], ['equipo', 'Equipo', 'award']]
+    ? [['resumen', 'Resumen', 'chart'], ['pedidos', 'Pedidos', 'bag'], ['clientes', 'Clientes', 'users'], ['soporte', 'Soporte', 'help'], ['mantenimiento', 'Mantenimiento', 'refresh'], ['finanzas', 'Finanzas', 'euro'], ['agenda', 'Agenda', 'calendar'], ['actividad', 'Actividad', 'history'], ['candidaturas', 'Candidatos', 'briefcase'], ['videos', 'Vídeos', 'video'], ['resenas', 'Reseñas', 'star'], ['equipo', 'Equipo', 'award']]
     : [['mios', 'Mis encargos', 'laptop'], ['agenda', 'Agenda', 'calendar'], ['disponibles', 'Disponibles', 'inbox'], ['soporte', 'Soporte', 'help'], ['ventas', 'Mis ventas', 'euro'], ['videos', 'Mis vídeos', 'video'], ['ranking', 'Ranking', 'trophy'], ['historial', 'Historial', 'folder']];
   const pedida = location.hash.slice(1);
   const pedidoHash = pedida.startsWith('pedido-') ? pedida.slice(7) : '';
@@ -141,7 +175,8 @@ function badges() {
     candidaturas: datos.cands.filter(c => c.estado === 'pendiente').length,
     resenas: datos.resenas.filter(r => !r.aprobada).length,
     mios: datos.pedidos.filter(p => p.asignado === U.uid && activo(p) && siguientePaso(p)?.quien === 'equipo').length,
-    soporte: datos.tickets.filter(t => t.estado === 'abierto').length,
+    soporte: datos.tickets.filter(t => ['abierto', 'en_curso'].includes(t.estado)).length,
+    mantenimiento: U.role === 'owner' ? datos.pedidos.filter(p => conMantenimiento(p) && ['sin', 'vencido'].includes(estadoMant(p).id)).length + datos.tickets.filter(t => t.tipo === 'baja' && t.pedido && t.estado !== 'cerrado').length : 0,
     clientes: 0,
     agenda: datos.pedidos.filter(p => (U.role === 'owner' || p.asignado === U.uid) && (diasRestantes(p) ?? 1) < 0).length,
     ventas: U.role === 'worker' ? porPagar(U.uid).length : 0,
@@ -155,7 +190,7 @@ function badges() {
 
 function pintar() {
   badges();
-  const vistas = { resumen, pedidos: vistaPedidos, candidaturas, resenas, equipo, ventas, mios, disponibles, historial, clientes, soporte, agenda, actividad, ranking, videos: U.role === 'owner' ? videosOwner : misVideos };
+  const vistas = { resumen, mantenimiento: vistaMantenimiento, finanzas, pedidos: vistaPedidos, candidaturas, resenas, equipo, ventas, mios, disponibles, historial, clientes, soporte, agenda, actividad, ranking, videos: U.role === 'owner' ? videosOwner : misVideos };
   (vistas[tab] || resumen)();
   etiquetas(body);
   contar(body);
@@ -238,7 +273,11 @@ function resumen() {
   const maxMes = Math.max(1, ...meses.map(m => m.total));
   const pendientes = [
     ...P.filter(p => p.pagoEstado === 'verificando').map(p => ({ ic: 'euro', t: `Verificar pago de ${neg(p)}`, id: p.id })),
+    ...P.filter(p => p.estado !== 'cancelado' && retenida(p)).slice(0, 5).map(p => ({ ic: 'alert', t: `Revisar venta de ${nombreDe(p.ref)}: ${sospechas(p)[0]}`, id: p.id })),
     ...cancelar.map(p => ({ ic: 'alert', t: `${neg(p)} pide cancelar`, id: p.id })),
+    ...P.filter(p => conMantenimiento(p) && estadoMant(p).id === 'vencido').slice(0, 5).map(p => ({ ic: 'euro', t: `${neg(p)}: cuota de mantenimiento vencida`, go: 'mantenimiento' })),
+    ...P.filter(p => conMantenimiento(p) && estadoMant(p).id === 'sin').slice(0, 3).map(p => ({ ic: 'refresh', t: `Activar el mantenimiento de ${neg(p)}`, go: 'mantenimiento' })),
+    ...P.filter(p => (p.cambiosExtra || []).some(x => x.estado === 'aceptado')).slice(0, 5).map(p => ({ ic: 'receipt', t: `${neg(p)} aceptó un cambio extra: cobrar y empezar`, id: p.id })),
     ...P.filter(p => activo(p) && p.revision?.estado === 'cambios' && (p.revision.comentarios || []).some(c => !c.hecho)).slice(0, 5).map(p => ({ ic: 'pen', t: `${neg(p)}: el cliente pide cambios`, id: p.id })),
     ...tarde.slice(0, 5).map(p => ({ ic: 'clock', t: `${neg(p)}: ${plazoTexto(p).toLowerCase()}`, id: p.id })),
     ...P.filter(p => p.estado === 'nuevo' && !p.asignado).slice(0, 5).map(p => ({ ic: 'inbox', t: `Asignar ${neg(p)}`, id: p.id })),
@@ -769,7 +808,8 @@ function ventas() {
   const V = ventasDe(U.uid);
   const enlace = new URL(`./?ref=${encodeURIComponent(U.uid)}`, location.href).href;
   const generado = V.reduce((a, p) => a + (p.total || 0), 0);
-  const listas = V.filter(p => p.pagoEstado === 'pagado' && !p.comisionPagada).reduce((a, p) => a + comision(p), 0);
+  const listas = V.filter(comisionLista).reduce((a, p) => a + comision(p), 0);
+  const enEspera = V.filter(p => p.pagoEstado === 'pagado' && !p.comisionPagada && p.estado !== 'cancelado' && !comisionLista(p)).reduce((a, p) => a + comision(p), 0);
   const cobradas = V.filter(p => p.comisionPagada).reduce((a, p) => a + comision(p), 0);
   const pendientes = V.filter(p => p.pagoEstado !== 'pagado').reduce((a, p) => a + comision(p), 0);
   const msg = `¡Hola! Hago páginas web para negocios con ${CONFIG.marca}. Mira los diseños y pide la tuya aquí 👉 ${enlace}`;
@@ -786,7 +826,8 @@ function ventas() {
     <div class="kpis">
       <div class="kpi"><small>Ventas</small><b><em class="num" data-count="${V.length}">${V.length}</em></b><span>pedidos con tu enlace</span></div>
       <div class="kpi"><small>Has generado</small><b>${euros(generado)}</b><span>en webs vendidas</span></div>
-      <div class="kpi"><small>Lista para cobrar</small><b>${euros(listas)}</b><span>el cliente ya ha pagado</span></div>
+      <div class="kpi"><small>Lista para cobrar</small><b>${euros(listas)}</b><span>pagada y fuera del plazo de desistimiento</span></div>
+      <div class="kpi"><small>En espera</small><b>${euros(enEspera)}</b><span>${ESPERA_COMISION} días de desistimiento del cliente</span></div>
       <div class="kpi"><small>Pendiente</small><b>${euros(pendientes)}</b><span>esperando el pago del cliente</span></div>
       <div class="kpi"><small>Ya cobrado</small><b>${euros(cobradas)}</b><span>pagado por nosotros</span></div>
       <div class="kpi"><small>Tu comisión</small><b>${PCT} %</b><span>de cada web</span></div>
@@ -929,39 +970,254 @@ function clientes() {
 
 /* ---------- Soporte y contacto ---------- */
 let fSoporte = 'abierto';
-const TIPOS_T = { duda: 'Duda', cambio: 'Cambio en su web', incidencia: 'Incidencia', factura: 'Facturación', presupuesto: 'Presupuesto', espera: 'Lista de espera', trabajo: 'Quiere trabajar', contacto: 'Contacto', otro: 'Otro' };
-const EST_T = { abierto: ['Sin responder', 'p-pend'], respondido: ['Respondido', 'p-new'], cerrado: ['Resuelto', 'p-done'] };
+const TIPOS_T = { duda: 'Duda', cambio: 'Cambio en su web', incidencia: 'Incidencia', factura: 'Facturación', presupuesto: 'Presupuesto', espera: 'Lista de espera', trabajo: 'Quiere trabajar', contacto: 'Contacto', baja: 'Baja', otro: 'Otro' };
+const EST_T = { abierto: ['Sin responder', 'p-pend'], en_curso: ['En curso', 'p-new'], respondido: ['Esperando al cliente', 'p-new'], cerrado: ['Resuelto', 'p-done'] };
+const PRIO_T = { alta: ['Alta', 'p-off'], normal: ['Normal', ''], baja: ['Baja', 'p-done'] };
+/* Prioridad: la que ponga el equipo; si no, según el tipo (incidencias, pagos y bajas primero) */
+const prioridad = t => t.prioridad || (['incidencia', 'factura', 'baja'].includes(t.tipo) ? 'alta' : ['espera', 'trabajo', 'contacto'].includes(t.tipo) ? 'baja' : 'normal');
+const PESO_P = { alta: 0, normal: 1, baja: 2 };
+/* Horas desde el último mensaje del cliente sin respuesta del equipo */
+const sinResponder = t => {
+  if (t.estado === 'cerrado' || t.estado === 'respondido') return 0;
+  const ult = [...(t.respuestas || [])].reverse().find(r => r.rol !== 'client');
+  const ultCli = [...(t.respuestas || [])].reverse().find(r => r.rol === 'client');
+  const desde = ult && (!ultCli || ult.t > ultCli.t) ? 0 : (ultCli?.t || t.createdAt);
+  return desde ? (Date.now() - desde) / 36e5 : 0;
+};
+let fPrio = 'todas', fMias = false;
 function soporte() {
   const T = datos.tickets;
-  const L = T.filter(t => fSoporte === 'todos' || t.estado === fSoporte);
+  const L = T.filter(t => (fSoporte === 'todos' || t.estado === fSoporte || (fSoporte === 'abierto' && t.estado === 'en_curso'))
+      && (fPrio === 'todas' || prioridad(t) === fPrio) && (!fMias || t.asignado === U.uid))
+    .sort((a, b) => (a.estado === 'cerrado') - (b.estado === 'cerrado') || PESO_P[prioridad(a)] - PESO_P[prioridad(b)] || sinResponder(b) - sinResponder(a) || b.createdAt - a.createdAt);
+  const equipo = [...trabajadores(), ...datos.usuarios.filter(u => u.role === 'owner')];
+  const cuenta = k => k === 'todos' ? T.length : k === 'abierto' ? T.filter(x => ['abierto', 'en_curso'].includes(x.estado)).length : T.filter(x => x.estado === k).length;
   body.innerHTML = `
-    <div class="opts filters">${[['abierto', 'Sin responder'], ['respondido', 'Respondidos'], ['cerrado', 'Resueltos'], ['todos', 'Todos']].map(([k, t]) => `<label class="opt"><input type="radio" name="fsop" value="${k}" ${fSoporte === k ? 'checked' : ''}><span><i>${t} · ${k === 'todos' ? T.length : T.filter(x => x.estado === k).length}</i></span></label>`).join('')}</div>
+    <div class="opts filters">${[['abierto', 'Pendientes'], ['respondido', 'Esperando al cliente'], ['cerrado', 'Resueltos'], ['todos', 'Todos']].map(([k, t]) => `<label class="opt"><input type="radio" name="fsop" value="${k}" ${fSoporte === k ? 'checked' : ''}><span><i>${t} · ${cuenta(k)}</i></span></label>`).join('')}</div>
+    <div class="tk-filtros">
+      <label class="fc-select"><span>Prioridad</span><select id="tkPrio">${[['todas', 'Todas'], ['alta', 'Alta'], ['normal', 'Normal'], ['baja', 'Baja']].map(([k, t]) => `<option value="${k}" ${fPrio === k ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+      <label class="switch-inline"><input type="checkbox" id="tkMias" ${fMias ? 'checked' : ''}> Solo las mías</label>
+    </div>
     <div class="tks">${L.map(t => {
       const [txt, cls] = EST_T[t.estado] || EST_T.abierto;
+      const [ptxt, pcls] = PRIO_T[prioridad(t)];
+      const h = sinResponder(t);
       const p = t.pedido ? datos.pedidos.find(x => x.id === t.pedido) : null;
-      return `<article class="card tkc" data-tk="${t.id}">
-        <div class="cand-h">${avatar({ name: t.nombre || '?' })}<div><b>${esc(t.asunto)}</b><small>${esc(t.nombre || 'Sin nombre')} · ${esc(t.email || '')} · ${TIPOS_T[t.tipo] || 'Consulta'} · ${haceCuanto(t.createdAt)}</small></div><span class="pill ${cls}">${txt}</span></div>
-        ${p ? `<button type="button" class="link-btn tk-ped" data-open="${p.id}">${icono('bag')} ${esc(neg(p))} · ${refPedido(p.id)}</button>` : ''}
+      return `<article class="card tkc ${h > 24 ? 'tk-tarde' : ''}" data-tk="${t.id}">
+        <div class="cand-h">${avatar({ name: t.nombre || '?' })}<div><b>${esc(t.asunto)}</b><small>${esc(t.nombre || 'Sin nombre')} · ${esc(t.email || '')} · ${TIPOS_T[t.tipo] || 'Consulta'} · ${haceCuanto(t.createdAt)}</small></div>
+          <span class="tk-pills"><span class="pill ${pcls}">${ptxt}</span><span class="pill ${cls}">${txt}</span></span></div>
+        ${h > 24 ? `<p class="tk-aviso">${icono('clock')} Sin respuesta desde hace ${h > 48 ? Math.floor(h / 24) + ' días' : Math.floor(h) + ' h'}</p>` : ''}
+        <div class="tk-meta">
+          ${p ? `<button type="button" class="link-btn tk-ped" data-open="${p.id}">${icono('bag')} ${esc(neg(p))} · ${refPedido(p.id)}</button>` : ''}
+          <label class="fc-select sm"><span>Prioridad</span><select data-tk-prio="${t.id}">${Object.entries(PRIO_T).map(([k, [v]]) => `<option value="${k}" ${prioridad(t) === k ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
+          ${U.role === 'owner'
+            ? `<label class="fc-select sm"><span>Asignada a</span><select data-tk-asig="${t.id}"><option value="">Nadie</option>${equipo.map(w => `<option value="${w.uid}" ${t.asignado === w.uid ? 'selected' : ''}>${esc(w.name)}</option>`).join('')}</select></label>`
+            : t.asignado ? `<span class="muted tk-asig">${icono('user')} ${esc(t.asignadoNombre || nombreDe(t.asignado))}</span>` : `<button type="button" class="btn btn-sm btn-ghost" data-tk-mia="${t.id}"><span>Me la quedo</span></button>`}
+        </div>
         <div class="tk-hilo">
           <div class="tk-m el"><small>${esc(t.nombre || 'Cliente')} · ${fecha(t.createdAt)}</small><p>${esc(t.mensaje)}</p></div>
           ${(t.respuestas || []).map(r => `<div class="tk-m ${r.rol === 'client' ? 'el' : 'yo'}"><small>${esc(r.autor)} · ${haceCuanto(r.t)}</small><p>${esc(r.texto)}</p></div>`).join('')}
         </div>
-        ${t.estado !== 'cerrado' ? `<form class="tk-resp" data-resp="${t.id}"><textarea name="texto" rows="2" placeholder="${t.uid ? 'Respuesta (el cliente la verá en su cuenta)…' : 'Nota de respuesta (este contacto no tiene cuenta: contéstale por correo)'}" maxlength="3000"></textarea><button class="btn btn-sm btn-primary">${icono('send')}<span>${t.uid ? 'Responder' : 'Guardar'}</span></button></form>` : ''}
+        ${t.estado !== 'cerrado' ? `<form class="tk-resp" data-resp="${t.id}"><textarea name="texto" rows="3" placeholder="${t.uid ? 'Respuesta (el cliente la verá en su cuenta)…' : 'Nota de respuesta (este contacto no tiene cuenta: contéstale por correo)'}" maxlength="3000"></textarea>
+          <div class="tk-resp-b">${store.iaDisponible() ? `<button type="button" class="btn btn-sm btn-ghost" data-tk-ia="${t.id}">${icono('sparkle')}<span>Sugerir respuesta</span></button>` : ''}<button class="btn btn-sm btn-primary">${icono('send')}<span>${t.uid ? 'Responder' : 'Guardar'}</span></button></div></form>` : ''}
         <div class="cand-btns">
           <a class="btn btn-sm btn-ghost" href="${mailLink(`Re: ${t.asunto}`, `Hola ${(t.nombre || '').split(' ')[0]},\n\n`, t.email)}">${icono('mail')}<span>Responder por correo</span></a>
+          ${t.estado === 'abierto' ? `<button class="btn btn-sm btn-ghost" data-tk-curso="${t.id}"><span>Marcar en curso</span></button>` : ''}
           ${t.estado !== 'cerrado' ? `<button class="btn btn-sm btn-ghost" data-tk-cerrar="${t.id}">${icono('check')}<span>Marcar resuelto</span></button>` : `<button class="btn btn-sm btn-ghost" data-tk-abrir="${t.id}"><span>Reabrir</span></button>`}
           ${U.role === 'owner' ? `<button class="btn btn-sm btn-danger" data-tk-borrar="${t.id}"><span>Borrar</span></button>` : ''}
         </div>
       </article>`;
-    }).join('') || vacio('help', fSoporte === 'abierto' ? 'No hay consultas sin responder' : 'No hay consultas aquí', 'Las consultas del formulario de contacto y de «Ayuda y soporte» aparecen aquí.')}</div>`;
+    }).join('') || vacio('help', fSoporte === 'abierto' ? 'No hay consultas pendientes' : 'No hay consultas aquí', 'Las consultas del formulario de contacto y de «Ayuda y soporte» aparecen aquí.')}</div>`;
   $$('input[name=fsop]').forEach(r => r.addEventListener('change', () => { fSoporte = r.value; soporte(); }));
+  $('#tkPrio')?.addEventListener('change', e => { fPrio = e.target.value; soporte(); });
+  $('#tkMias')?.addEventListener('change', e => { fMias = e.target.checked; soporte(); });
+  const cambiarT = (id, cambios, msg) => store.actualizarTicket(id, { ...cambios, actualizado: Date.now() }).then(() => { Object.assign(datos.tickets.find(x => x.id === id) || {}, cambios); toast(msg, 'ok'); soporte(); }, err => toast(err.message, 'err'));
+  $$('[data-tk-prio]').forEach(sel => sel.addEventListener('change', () => cambiarT(sel.dataset.tkPrio, { prioridad: sel.value }, `Prioridad: ${PRIO_T[sel.value][0]}`)));
+  $$('[data-tk-asig]').forEach(sel => sel.addEventListener('change', () => {
+    const w = equipo.find(x => x.uid === sel.value);
+    cambiarT(sel.dataset.tkAsig, { asignado: sel.value, asignadoNombre: w?.name || '' }, w ? `Asignada a ${w.name}` : 'Sin asignar');
+  }));
+  $$('[data-tk-mia]').forEach(b => b.addEventListener('click', () => cambiarT(b.dataset.tkMia, { asignado: U.uid, asignadoNombre: U.name, estado: 'en_curso' }, 'Consulta asignada a ti')));
+  $$('[data-tk-curso]').forEach(b => b.addEventListener('click', () => cambiarT(b.dataset.tkCurso, { estado: 'en_curso' }, 'Consulta en curso')));
+  // Respuesta sugerida por la IA (con el hilo y el catálogo); el equipo la revisa antes de enviarla
+  $$('[data-tk-ia]').forEach(b => b.addEventListener('click', async () => {
+    const t = datos.tickets.find(x => x.id === b.dataset.tkIa);
+    const area = b.closest('form').texto;
+    ocupado(b, true);
+    try {
+      const hilo = [`Consulta de ${t.nombre || 'un cliente'} (${TIPOS_T[t.tipo] || 'consulta'}): «${t.asunto}». ${t.mensaje}`,
+        ...(t.respuestas || []).map(r => `${r.rol === 'client' ? 'Cliente' : 'Equipo'}: ${r.texto}`)].join('\n');
+      const r = await store.preguntarIA({ modo: 'chat', catalogo: catalogo(), mensajes: [{ rol: 'user', texto: `Eres del equipo de soporte. Redacta la siguiente respuesta del equipo a este cliente: breve, amable, en español, sin inventar datos que no estén en el catálogo ni prometer fechas. Solo el texto de la respuesta.\n\n${hilo}` }] });
+      if (!r?.respuesta) throw new Error('La IA no ha respondido. Prueba otra vez.');
+      area.value = r.respuesta.trim();
+      area.focus();
+      toast('Respuesta sugerida: revísala antes de enviarla', 'ok');
+    } catch (err) { toast(err.message, 'err'); }
+    ocupado(b, false);
+  }));
   $$('[data-resp]').forEach(f => f.addEventListener('submit', async e => {
     e.preventDefault();
     const texto = f.texto.value.trim();
     if (!texto) return;
     const t = datos.tickets.find(x => x.id === f.dataset.resp);
-    await accion(f.querySelector('button'), () => store.responderTicket(t, texto), t.uid ? 'Respuesta enviada. El cliente recibe un aviso.' : 'Respuesta guardada');
+    await accion(f.querySelector('button[type=submit],button:not([type])'), () => store.responderTicket(t, texto), t.uid ? 'Respuesta enviada. El cliente recibe un aviso.' : 'Respuesta guardada');
   }));
+}
+
+/* ---------- PROPIETARIO: Mantenimiento mensual (cuotas, renovaciones y bajas) ---------- */
+let fMant = 'todos';
+function vistaMantenimiento() {
+  const L = datos.pedidos.filter(conMantenimiento);
+  const bajas = datos.tickets.filter(t => t.tipo === 'baja' && t.pedido && t.estado !== 'cerrado');
+  const est = p => estadoMant(p).id;
+  const activos = L.filter(p => ['activo', 'vencido'].includes(est(p)));
+  const mrr = activos.reduce((s, p) => s + cuotaMensual(p), 0);
+  const ini = new Date(); ini.setDate(1); ini.setHours(0, 0, 0, 0);
+  const cobradoMes = cuotasPagadas(datos.pedidos, ini.getTime(), Date.now() + 1).reduce((s, c) => s + c.importe, 0);
+  const V = L.filter(p => fMant === 'todos' || est(p) === fMant || (fMant === 'baja-pedida' && bajas.some(t => t.pedido === p.id)))
+    .sort((a, b) => (est(b) === 'vencido') - (est(a) === 'vencido') || (a.mantenimiento?.proximo || 0) - (b.mantenimiento?.proximo || 0));
+  body.innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><small>Ingresos recurrentes</small><b>${euros(mrr)}<small>/mes</small></b><span>${activos.length} cliente${activos.length === 1 ? '' : 's'} activo${activos.length === 1 ? '' : 's'}</span></div>
+      <div class="kpi"><small>Cobrado este mes</small><b>${euros(cobradoMes)}</b><span>cuotas registradas</span></div>
+      <div class="kpi"><small>Cuotas vencidas</small><b>${L.filter(p => est(p) === 'vencido').length}</b><span>más de 3 días sin pagar</span></div>
+      <div class="kpi"><small>Sin activar</small><b>${L.filter(p => est(p) === 'sin').length}</b><span>webs entregadas con cuota</span></div>
+    </div>
+    <div class="opts filters">${[['todos', 'Todos'], ['vencido', 'Vencidas'], ['sin', 'Sin activar'], ['activo', 'Al día'], ['pausado', 'Pausados'], ['baja', 'De baja'], ['baja-pedida', `Piden la baja · ${bajas.length}`]].map(([k, t]) => `<label class="opt"><input type="radio" name="fmant" value="${k}" ${fMant === k ? 'checked' : ''}><span><i>${t}</i></span></label>`).join('')}</div>
+    <div class="card flush rows">${V.map(p => {
+      const e = estadoMant(p), m = p.mantenimiento, pide = bajas.find(t => t.pedido === p.id);
+      return `<article class="row mant-row">
+        <div class="row-main" data-open="${p.id}" role="button" tabindex="0"><div class="row-t"><b>${esc(neg(p))}</b><span class="pill ${e.cls}">${e.txt}</span>${pide ? '<span class="pill p-off">Pide la baja</span>' : ''}</div>
+          <small>${esc(p.clienteNombre || '')} · ${esc(conceptosMensuales(p).join(' · '))} · ${euros(cuotaMensual(p))}/mes${m?.proximo && m.estado === 'activo' ? ` · próximo cobro ${fecha(m.proximo)}` : ''}${m?.cuotas?.length ? ` · ${m.cuotas.length} cuota${m.cuotas.length === 1 ? '' : 's'} pagada${m.cuotas.length === 1 ? '' : 's'}` : ''}</small></div>
+        <div class="mant-acc">
+          ${!m ? `<button class="btn btn-sm btn-primary" data-mant="activar" data-id="${p.id}"><span>Activar</span></button>` : ''}
+          ${m && m.estado !== 'baja' ? `<button class="btn btn-sm btn-primary" data-mant="cuota" data-id="${p.id}"><span>Registrar cuota de ${esc(nombrePeriodo(periodo(m.proximo || Date.now())))}</span></button>` : ''}
+          ${m?.estado === 'activo' ? `<button class="btn btn-sm btn-ghost" data-mant="pausar" data-id="${p.id}"><span>Pausar</span></button>` : ''}
+          ${m?.estado === 'pausado' ? `<button class="btn btn-sm btn-ghost" data-mant="reanudar" data-id="${p.id}"><span>Reanudar</span></button>` : ''}
+          ${m && m.estado !== 'baja' ? `<button class="btn btn-sm btn-ghost" data-mant="baja" data-id="${p.id}"><span>Dar de baja</span></button>` : ''}
+          ${m?.estado === 'baja' ? `<button class="btn btn-sm btn-ghost" data-mant="reactivar" data-id="${p.id}"><span>Reactivar</span></button>` : ''}
+        </div>
+      </article>`;
+    }).join('') || vacio('refresh', 'No hay mantenimientos aquí', 'Aparecen las webs entregadas que llevan algún extra mensual (mantenimiento, correo…).')}</div>
+    <p class="muted hint">${icono('bulb')} Al registrar una cuota se le envía al cliente su factura por correo y el próximo cobro pasa al mes siguiente. Las bajas que piden los clientes llegan también a Soporte.</p>`;
+  $$('input[name=fmant]').forEach(r => r.addEventListener('change', () => { fMant = r.value; vistaMantenimiento(); }));
+  $$('[data-mant]').forEach(b => b.addEventListener('click', async () => {
+    const p = datos.pedidos.find(x => x.id === b.dataset.id), m = p.mantenimiento;
+    let cambios, msg, hito;
+    try {
+      if (b.dataset.mant === 'activar') { cambios = activarMant(p); msg = 'Mantenimiento activado'; hito = `Mantenimiento activado (${euros(cuotaMensual(p))}/mes)`; }
+      if (b.dataset.mant === 'cuota') {
+        const metodo = prompt('¿Cómo ha pagado? Escribe «bizum» o «transferencia»', p.pagoMetodo || 'transferencia');
+        if (metodo === null) return;
+        cambios = registrarCuota(p, /biz/i.test(metodo) ? 'bizum' : 'transferencia');
+        const c = cambios.cuotas.at(-1); msg = `Cuota de ${nombrePeriodo(c.periodo)} registrada`; hito = `Cuota de mantenimiento de ${nombrePeriodo(c.periodo)} pagada (${euros(c.importe)})`;
+      }
+      if (b.dataset.mant === 'pausar') { cambios = { ...m, estado: 'pausado' }; msg = hito = 'Mantenimiento pausado'; }
+      if (b.dataset.mant === 'reanudar') { cambios = { ...m, estado: 'activo', proximo: Math.max(m.proximo || 0, Date.now()) }; msg = hito = 'Mantenimiento reanudado'; }
+      if (b.dataset.mant === 'reactivar') { cambios = { ...activarMant(p), cuotas: m.cuotas || [] }; msg = hito = 'Mantenimiento reactivado'; }
+      if (b.dataset.mant === 'baja') {
+        const motivo = prompt(`¿Dar de baja el mantenimiento de ${neg(p)}? Escribe el motivo (opcional).`, '');
+        if (motivo === null) return;
+        cambios = { ...m, estado: 'baja', baja: Date.now(), motivoBaja: motivo.slice(0, 200) }; msg = 'Mantenimiento dado de baja'; hito = `Mantenimiento dado de baja${motivo ? `: ${motivo.slice(0, 200)}` : ''}`;
+      }
+    } catch (err) { return toast(err.message, 'err'); }
+    await accion(b, async () => {
+      await store.actualizarPedido(p.id, conHistorial(p, { mantenimiento: cambios }, hito, U.name));
+      if (b.dataset.mant === 'baja') for (const t of bajas.filter(t => t.pedido === p.id)) await store.responderTicket(t, 'Hemos tramitado tu baja del mantenimiento. Tu web sigue publicada. Gracias por confiar en nosotros.').then(() => store.actualizarTicket(t.id, { estado: 'cerrado', cerrado: Date.now() })).catch(() => {});
+      if (b.dataset.mant === 'cuota') store.enviarCorreoPago(p.id, `cuota-${cambios.cuotas.at(-1).periodo}`).catch(err => toast(`Cuota guardada, pero la factura no se ha enviado: ${err.message}`, 'err'));
+    }, msg);
+  }));
+}
+
+/* ---------- PROPIETARIO: Finanzas (ingresos, gastos, comisiones y beneficio) ---------- */
+const CATS_G = { herramientas: 'Herramientas y software', dominios: 'Dominios y alojamiento', publicidad: 'Publicidad', comisiones: 'Comisiones', impuestos: 'Impuestos y tasas', material: 'Material', formacion: 'Formación', otros: 'Otros' };
+let fFin = 'mes', gastosCache;
+async function finanzas() {
+  body.innerHTML = cargandoHTML('Cargando finanzas…');
+  try { gastosCache = await store.listarGastos(); } catch (err) { gastosCache = []; toast(err.message, 'err'); }
+  pintarFinanzas();
+}
+function pintarFinanzas() {
+  const ahora = new Date();
+  const desde = fFin === 'mes' ? new Date(ahora.getFullYear(), ahora.getMonth(), 1) : fFin === 'trimestre' ? new Date(ahora.getFullYear(), Math.floor(ahora.getMonth() / 3) * 3, 1) : new Date(ahora.getFullYear(), 0, 1);
+  const d0 = desde.getTime(), d1 = Date.now() + 1;
+  const P = datos.pedidos.filter(p => p.estado !== 'cancelado');
+  // Ingresos cobrados en el periodo: señal / total (por la fecha del historial de pagos), cuotas y cambios extra pagados
+  const senal = p => Math.round((p.total || 0) * (CONFIG.senal ?? 50)) / 100;
+  const huboSenal = (p, t) => (p.historial || []).some(x => /^Pago: Señal pagada/.test(x.texto) && x.t < t);
+  const pagosPedido = P.flatMap(p => (p.historial || []).filter(h => /^Pago: (Pagado|Señal pagada)/.test(h.texto) && h.t >= d0 && h.t < d1)
+    .map(h => ({ t: h.t, p, importe: /Señal/.test(h.texto) ? senal(p) : (p.total || 0) - (huboSenal(p, h.t) ? senal(p) : 0), concepto: 'Web' })))
+    // Pedidos antiguos sin el pago en el historial: cuenta el total en la fecha de pago
+    .concat(P.filter(p => p.pagoEstado === 'pagado' && !(p.historial || []).some(h => /^Pago: /.test(h.texto)) && pagadoEn(p) >= d0 && pagadoEn(p) < d1).map(p => ({ t: pagadoEn(p), p, importe: p.total || 0, concepto: 'Web' })));
+  const cuotas = cuotasPagadas(P, d0, d1).map(c => ({ t: c.pagado, p: c.p, importe: c.importe, concepto: 'Mantenimiento' }));
+  const extras = P.flatMap(p => (p.cambiosExtra || []).filter(x => x.estado === 'pagado' && x.pagado >= d0 && x.pagado < d1).map(x => ({ t: x.pagado, p, importe: x.importe, concepto: 'Cambio extra' })));
+  const ingresos = [...pagosPedido, ...cuotas, ...extras];
+  const totalIng = ingresos.reduce((s, x) => s + x.importe, 0);
+  const comis = datos.pedidos.filter(p => p.comisionPagada >= d0 && p.comisionPagada < d1).reduce((s, p) => s + comision(p), 0);
+  const G = (gastosCache || []).filter(g => { const t = Date.parse(g.fecha); return t >= d0 && t < d1; });
+  const totalG = G.reduce((s, g) => s + g.importe, 0);
+  const benef = totalIng - totalG - comis;
+  const porCat = Object.entries(G.reduce((a, g) => { a[g.categoria] = (a[g.categoria] || 0) + g.importe; return a; }, {})).sort((a, b) => b[1] - a[1]);
+  body.innerHTML = `
+    <div class="opts filters">${[['mes', 'Este mes'], ['trimestre', 'Este trimestre'], ['anio', 'Este año']].map(([k, t]) => `<label class="opt"><input type="radio" name="ffin" value="${k}" ${fFin === k ? 'checked' : ''}><span><i>${t}</i></span></label>`).join('')}</div>
+    <div class="kpis">
+      <div class="kpi"><small>Ingresos cobrados</small><b>${euros(totalIng)}</b><span>webs, cuotas y cambios extra</span></div>
+      <div class="kpi"><small>Gastos</small><b>${euros(totalG)}</b><span>${G.length} gasto${G.length === 1 ? '' : 's'}</span></div>
+      <div class="kpi"><small>Comisiones pagadas</small><b>${euros(comis)}</b><span>a vendedores</span></div>
+      <div class="kpi ${benef < 0 ? 'neg' : ''}"><small>Beneficio</small><b>${euros(benef)}</b><span>ingresos − gastos − comisiones</span></div>
+    </div>
+    <div class="cols">
+      <div class="card">
+        <div class="card-h"><h3>Gastos</h3>${gastosCache ? '<button class="btn btn-sm btn-primary" id="gNuevo">' + icono('plus') + '<span>Añadir gasto</span></button>' : ''}</div>
+        ${gastosCache === null ? `<div class="empty"><div class="em">${icono('lock')}</div><b>Falta activar los gastos</b><p>Ejecuta <code>supabase/plataforma-v88.sql</code> en Supabase → SQL Editor una sola vez y recarga.</p></div>`
+        : `<form class="g-form card" id="gForm" hidden novalidate>
+            <input type="hidden" name="id">
+            <div class="g-grid">
+              ${campo({ id: 'gConcepto', name: 'concepto', label: 'Concepto', required: true, attrs: 'maxlength="200"' })}
+              ${campo({ id: 'gImporte', name: 'importe', label: 'Importe (€, IVA incluido)', type: 'number', required: true, attrs: 'min="0" step="0.01" inputmode="decimal"' })}
+              ${campo({ id: 'gFecha', name: 'fecha', label: 'Fecha', type: 'date', required: true, value: new Date().toISOString().slice(0, 10) })}
+              <label class="fc-select"><span>Categoría</span><select name="categoria">${Object.entries(CATS_G).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></label>
+              ${campo({ id: 'gIva', name: 'iva', label: 'IVA incluido (%)', type: 'number', value: '21', attrs: 'min="0" max="30" step="1" inputmode="numeric"' })}
+              <label class="switch-inline"><input type="checkbox" name="recurrente"> Se repite cada mes</label>
+            </div>
+            ${campo({ id: 'gNota', name: 'nota', label: 'Nota (opcional)', type: 'textarea', attrs: 'maxlength="500" rows="2"' })}
+            <div class="cand-btns"><button class="btn btn-sm btn-primary" type="submit"><span>Guardar gasto</span></button><button class="btn btn-sm btn-ghost" type="button" id="gCancelar"><span>Cancelar</span></button></div>
+          </form>
+          <div class="rows">${G.map(g => `<article class="row g-row"><div class="row-main"><div class="row-t"><b>${esc(g.concepto)}</b>${g.recurrente ? '<span class="pill">Mensual</span>' : ''}</div><small>${fecha(Date.parse(g.fecha))} · ${CATS_G[g.categoria] || g.categoria}${g.iva ? ` · IVA ${g.iva} % (${euros(g.importe - g.importe / (1 + g.iva / 100))})` : ''}${g.nota ? ` · ${esc(g.nota)}` : ''}</small></div>
+            <div class="row-side"><b class="row-price">−${euros(g.importe)}</b><button class="icon-btn sm" data-g-edit="${g.id}" aria-label="Editar">${icono('pen')}</button><button class="icon-btn sm" data-g-del="${g.id}" aria-label="Borrar">${icono('trash')}</button></div></article>`).join('') || vacio('receipt', 'Sin gastos en este periodo')}</div>`}
+      </div>
+      <div class="card">
+        <div class="card-h"><h3>Ingresos del periodo</h3><button class="btn btn-sm btn-ghost" id="finCsv">${icono('download')}<span>CSV</span></button></div>
+        <div class="rows">${ingresos.sort((a, b) => b.t - a.t).slice(0, 40).map(x => `<article class="row" data-open="${x.p.id}" role="button" tabindex="0"><div class="row-main"><b>${esc(neg(x.p))}</b><small>${x.concepto} · ${fecha(x.t)}</small></div><div class="row-side"><b class="row-price">+${euros(x.importe)}</b></div></article>`).join('') || vacio('euro', 'Sin cobros en este periodo')}</div>
+        ${porCat.length ? `<div class="card-h" style="margin-top:22px"><h3>Gastos por categoría</h3></div>${porCat.map(([k, v]) => `<div class="kv"><span>${CATS_G[k] || k}</span><b>${euros(v)}</b></div>`).join('')}` : ''}
+      </div>
+    </div>`;
+  $$('input[name=ffin]').forEach(r => r.addEventListener('change', () => { fFin = r.value; pintarFinanzas(); }));
+  const form = $('#gForm');
+  const abrirForm = g => { form.hidden = false; form.reset(); form.id.value = g?.id || ''; if (g) { form.concepto.value = g.concepto; form.importe.value = g.importe; form.fecha.value = g.fecha; form.categoria.value = g.categoria; form.iva.value = g.iva; form.recurrente.checked = g.recurrente; form.nota.value = g.nota; } form.concepto.focus(); };
+  $('#gNuevo')?.addEventListener('click', () => abrirForm());
+  $('#gCancelar')?.addEventListener('click', () => { form.hidden = true; });
+  $$('[data-g-edit]').forEach(b => b.addEventListener('click', () => abrirForm(gastosCache.find(g => g.id === b.dataset.gEdit))));
+  $$('[data-g-del]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('¿Borrar este gasto?')) return;
+    ocupado(b, true);
+    try { await store.borrarGasto(b.dataset.gDel); toast('Gasto borrado', 'ok'); await finanzas(); } catch (err) { toast(err.message, 'err'); ocupado(b, false); }
+  }));
+  form?.addEventListener('submit', async e => {
+    e.preventDefault();
+    const f = new FormData(form), btn = form.querySelector('[type=submit]');
+    ocupado(btn, true);
+    try {
+      await store.guardarGasto({ id: f.get('id') || '', concepto: f.get('concepto'), importe: f.get('importe'), fecha: f.get('fecha'), categoria: f.get('categoria'), iva: f.get('iva'), recurrente: f.get('recurrente') === 'on', nota: f.get('nota') });
+      toast('Gasto guardado', 'ok'); await finanzas();
+    } catch (err) { toast(err.message, 'err'); ocupado(btn, false); }
+  });
+  $('#finCsv')?.addEventListener('click', () => {
+    const filas = [['Tipo', 'Fecha', 'Concepto', 'Cliente / categoría', 'Importe'],
+      ...ingresos.map(x => ['Ingreso', new Date(x.t).toLocaleDateString('es-ES'), x.concepto, neg(x.p), String(x.importe).replace('.', ',')]),
+      ...G.map(g => ['Gasto', new Date(g.fecha).toLocaleDateString('es-ES'), g.concepto, CATS_G[g.categoria] || g.categoria, String(-g.importe).replace('.', ',')])];
+    descargar(`finanzas-${fFin}-${new Date().toISOString().slice(0, 10)}.csv`, '﻿' + filas.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(';')).join('\n'), 'text/csv');
+  });
 }
 
 /* ---------- Agenda de entregas ---------- */
@@ -1134,7 +1390,7 @@ function abrirPedido(id) {
         </div>
         <div class="od-pay ${pago === 'verificando' ? 'alert' : ''}">
           <label class="fc-select"><span>Pago</span>
-            <select id="odPago" ${puedeEditar ? '' : 'disabled'}>${Object.entries(PAGOS).map(([k, v]) => `<option value="${k}" ${pago === k ? 'selected' : ''}>${v.txt}</option>`).join('')}</select></label>
+            <select id="odPago" ${esOwner ? '' : 'disabled'} ${esOwner ? '' : 'title="Solo el propietario confirma los pagos"'}>${Object.entries(PAGOS).map(([k, v]) => `<option value="${k}" ${pago === k ? 'selected' : ''}>${v.txt}</option>`).join('')}</select></label>
           <p class="od-pay-info">${pago === 'verificando'
             ? `${icono('euro')}<span>El cliente indica que ha pagado ${p.pagoFase === 'resto' ? 'el resto' : 'la señal'} (<b class="nw">${euros(p.pagoFase === 'resto' ? p.total - senal : senal)}</b>) por <b>${METODOS[p.pagoMetodo] || p.pagoMetodo}</b> ${p.pagoAviso ? haceCuanto(p.pagoAviso) : ''}. Compruébalo en tu banco y márcalo como <b>Pagado</b> (o «Señal pagada»).</span>`
             : p.pagoMetodo ? `Último pago por ${METODOS[p.pagoMetodo] || p.pagoMetodo}.` : `Señal: ${euros(senal)} · Resto: ${euros((p.total || 0) - senal)}`}</p>
@@ -1168,7 +1424,8 @@ function abrirPedido(id) {
         </div>
         <h4 class="od-h">Pedido</h4>
         <div class="kvs">
-          ${p.ref ? `<div class="kv"><span>Vendido por</span><b>${esc(nombreDe(p.ref))} · ${PCT} % = ${euros(comision(p))} ${p.comisionPagada ? '(pagada)' : ''}</b></div>` : ''}
+          ${p.ref ? `<div class="kv"><span>Vendido por</span><b>${esc(nombreDe(p.ref))} · ${PCT} % = ${euros(comision(p))} · ${estadoComision(p)[0].toLowerCase()}</b></div>` : ''}
+          ${esOwner && sospechas(p).length ? `<div class="od-alerta ${p.fraudeRevisado ? 'ok' : ''}">${icono('alert')}<span><b>${p.fraudeRevisado ? 'Venta revisada' : 'Comisión retenida para revisar'}</b> ${esc(sospechas(p).join(' · '))}.</span>${p.fraudeRevisado ? '' : '<button type="button" class="btn btn-sm btn-ghost" id="odRevisada"><span>La he revisado: es válida</span></button>'}</div>` : ''}
           ${fila('Tipo de web', p.planNombre)}
           <div class="kv"><span>Empezar</span><b>${p.inicioAnticipado ? 'Ya (lo pidió el cliente)' : p.aceptaTerminos && Date.now() < (p.createdAt || 0) + 14 * 864e5 ? `A partir del ${fecha((p.createdAt || 0) + 14 * 864e5)}` : 'Ya'}</b></div>
           <div class="kv"><span>Diseño</span><b>${pl ? `${esc(pl.nombre)} <a class="link-btn" href="${prevURL}" target="_blank" rel="noopener">ver ${icono('external')}</a>` : 'Desde cero'}</b></div>
@@ -1180,6 +1437,21 @@ function abrirPedido(id) {
           <div class="kv total"><span>Total</span><b>${euros(p.total || 0)}${p.mensual ? ` + ${euros(p.mensual)}/mes` : ''}</b></div>
           ${fila(`Señal (${CONFIG.senal} %)`, euros(senal))}
         </div>
+        ${esOwner || (p.cambiosExtra || []).length ? `<h4 class="od-h">Cambios extra</h4>
+        <div class="od-extras">
+          ${(p.cambiosExtra || []).map(x => `<div class="od-extra"><div><b>${esc(x.concepto)}</b><small>${euros(x.importe)} · <span class="pill ${(ESTADO_EXTRA[x.estado] || [])[1] || ''}">${x.estado === 'propuesto' ? 'Esperando al cliente' : ESTADO_EXTRA[x.estado]?.[0] || x.estado}</span>${x.acuerdo ? ` · aceptado por ${esc(x.acuerdo.nombre)} el ${fecha(x.acuerdo.t)}` : ''}</small></div>
+            ${esOwner && x.estado === 'aceptado' ? `<button type="button" class="btn btn-sm btn-primary" data-extra-pagado="${esc(x.id)}"><span>Marcar pagado y enviar factura</span></button>` : ''}
+            ${esOwner && x.estado === 'pagado' ? `<button type="button" class="btn btn-sm btn-ghost" data-extra-factura="${esc(x.id)}">${icono('mail')}<span>Reenviar factura</span></button>` : ''}
+            ${esOwner && x.estado === 'propuesto' ? `<button type="button" class="icon-btn sm" data-extra-quitar="${esc(x.id)}" aria-label="Retirar presupuesto">${icono('trash')}</button>` : ''}</div>`).join('')}
+          ${esOwner ? `<form class="od-extra-form" id="odExtraForm" novalidate>
+            ${campo({ id: 'odExConcepto', name: 'concepto', label: 'Qué cambio (p. ej. «Página de reservas»)', required: true, attrs: 'maxlength="120"' })}
+            ${campo({ id: 'odExDetalle', name: 'detalle', label: 'Detalle para el cliente (opcional)', type: 'textarea', attrs: 'maxlength="1000" rows="2"' })}
+            ${campo({ id: 'odExImporte', name: 'importe', label: 'Precio (€, IVA incluido)', type: 'number', required: true, attrs: 'min="1" max="20000" step="0.01" inputmode="decimal"' })}
+            <button class="btn btn-sm btn-ghost" type="submit">${icono('send')}<span>Enviar presupuesto al cliente</span></button>
+            <small class="muted">El cliente lo acepta o lo rechaza en «Mis proyectos». Queda guardado el acuerdo con su nombre y la fecha.</small>
+          </form>` : ''}
+        </div>` : ''}
+        ${puedeEditar && (p.publica?.slug || p.urlWeb) ? `<h4 class="od-h">Estadísticas de la web</h4><div id="odEst" class="od-est"><p class="muted">Cargando visitas…</p></div>` : ''}
         ${puedeEditar ? `<h4 class="od-h">Acceso al correo del cliente</h4>
         <div class="od-acceso">
           <p class="muted">Cuando hayas creado su correo (Gmail o con su dominio), pon aquí el usuario y una contraseña temporal: el cliente los ve en su proyecto y se le pide que la cambie.</p>
@@ -1265,7 +1537,8 @@ function abrirPedido(id) {
   $('#odEstado', box)?.addEventListener('change', e => guardar({ estado: e.target.value, ...(e.target.value === 'entregado' ? { etapa: 'publicada' } : {}) }, `Estado: ${ESTADOS[e.target.value].txt}`, `Estado: ${ESTADOS[e.target.value].txt}`));
   $('#odPago', box)?.addEventListener('change', async e => {
     const nuevo = e.target.value, antes = pago;
-    if (!(await guardar({ pagoEstado: nuevo }, `Pago: ${PAGOS[nuevo].txt}`, `Pago: ${PAGOS[nuevo].txt}`))) return;
+    if (U.role !== 'owner') return toast('Solo el propietario confirma los pagos', 'err');
+    if (!(await guardar({ pagoEstado: nuevo, ...(nuevo === 'pagado' ? { pagadoEn: Date.now() } : {}) }, `Pago: ${PAGOS[nuevo].txt}`, `Pago: ${PAGOS[nuevo].txt}`))) return;
     // Pago confirmado: el cliente recibe por correo el resumen del pedido y del pago
     if (nuevo === 'senal') correoPago(p, 'senal');
     else if (nuevo === 'pagado') correoPago(p, antes === 'senal' || p.pagoFase === 'resto' || p.correos?.senal ? 'resto' : 'total');
@@ -1286,6 +1559,33 @@ function abrirPedido(id) {
     if (clave.length < 8) return toast('La contraseña temporal debe tener al menos 8 caracteres', 'err');
     guardar({ accesos: { ...(p.accesos || {}), correo: { usuario, clave, fecha: Date.now() } } }, 'Acceso guardado: el cliente ya lo ve en su proyecto', `Acceso al correo entregado (${usuario})`);
   });
+  // Cambios extra: el propietario propone, el cliente acepta online y aquí se confirma el pago
+  const extras = () => (p.cambiosExtra || []).map(x => ({ ...x }));
+  $('#odExtraForm', box)?.addEventListener('submit', e => {
+    e.preventDefault();
+    const f = new FormData(e.target), imp = Number(String(f.get('importe')).replace(',', '.'));
+    if (!String(f.get('concepto')).trim()) return toast('Escribe qué cambio es', 'err');
+    if (!(imp >= 1 && imp <= 20000)) return toast('Pon un precio entre 1 y 20 000 €', 'err');
+    const x = nuevoExtra(f.get('concepto'), f.get('detalle'), imp);
+    guardar({ cambiosExtra: [...extras(), x] }, 'Presupuesto enviado: el cliente lo verá en su proyecto', `Presupuesto de cambio extra: ${x.concepto} (${euros(x.importe)})`)
+      .then(ok => ok && store.enviarMensaje(p.id, `Te hemos preparado un presupuesto: «${x.concepto}» por ${euros(x.importe)}. Puedes aceptarlo o rechazarlo en tu proyecto.`).catch(() => {}));
+  });
+  $$('[data-extra-quitar]', box).forEach(b => b.addEventListener('click', () => {
+    if (!confirm('¿Retirar este presupuesto? El cliente dejará de verlo.')) return;
+    const x = extras().find(y => y.id === b.dataset.extraQuitar);
+    guardar({ cambiosExtra: extras().filter(y => y.id !== x.id) }, 'Presupuesto retirado', `Presupuesto retirado: ${x.concepto}`);
+  }));
+  $$('[data-extra-pagado]', box).forEach(b => b.addEventListener('click', async () => {
+    const L = extras(), x = L.find(y => y.id === b.dataset.extraPagado);
+    if (!confirm(`¿Has recibido ${euros(x.importe)} por «${x.concepto}»? Se le enviará la factura al cliente.`)) return;
+    x.estado = 'pagado'; x.pagado = Date.now();
+    if (await guardar({ cambiosExtra: L }, 'Cambio extra marcado como pagado', `Cambio extra pagado: ${x.concepto} (${euros(x.importe)})`))
+      store.enviarCorreoPago(p.id, `extra-${x.id}`).then(() => toast('Factura enviada al cliente', 'ok')).catch(err => toast(`La factura no se ha enviado: ${err.message}`, 'err'));
+  }));
+  $$('[data-extra-factura]', box).forEach(b => b.addEventListener('click', () => accion(b, () => store.enviarCorreoPago(p.id, `extra-${b.dataset.extraFactura}`, { reenviar: true }), 'Factura reenviada')));
+  if ($('#odEst', box)) store.estadisticasWeb(p.id, 30).then(f => { const el = $('#odEst', box); if (el) el.innerHTML = estadisticasHTML(resumirVisitas(f, 30), 30); })
+    .catch(err => { const el = $('#odEst', box); if (el) el.innerHTML = `<p class="muted">${esc(err.message)}</p>`; });
+  $('#odRevisada', box)?.addEventListener('click', () => guardar({ fraudeRevisado: Date.now() }, 'Venta marcada como revisada', 'Venta revisada: comisión liberada'));
   $('#odPremio', box)?.addEventListener('click', () => guardar({ premioAmigo: Date.now() }, 'Premio marcado como dado', `Premio por recomendación dado a ${recomendadoPor(p)?.name || 'quien recomendó'}`));
   $('#odCancelSi', box)?.addEventListener('click', () => {
     if (!confirm('¿Cancelar este pedido? El cliente lo verá como cancelado.')) return;
@@ -1375,7 +1675,7 @@ function bloqueWeb(p, puedeEditar) {
     </div>
     <div class="od-prep" id="odPrep" hidden></div>` : ''}
     ${vs.length ? `<ul class="od-vers">${vs.map(v => {
-      const cli = p.webCliente === v.id;
+      const cli = p.webCliente === v.id, nCli = vs.find(w => w.id === p.webCliente)?.n || 0;
       return `<li class="${cli ? 'cli' : ''}">
         <button type="button" class="od-ver" data-ver-v="${esc(v.id)}" title="Ver la versión ${v.n}">
           <span class="od-ver-n">v${v.n}</span>
@@ -1383,11 +1683,12 @@ function bloqueWeb(p, puedeEditar) {
           ${icono('eye')}
         </button>
         ${puedeEditar ? `<span class="od-ver-acc">
-          ${cli ? '' : `<button type="button" class="btn btn-sm btn-ghost" data-enviar-v="${esc(v.id)}">${icono('send')}<span>Enviar</span></button>`}
+          ${cli ? '' : v.n < nCli ? `<button type="button" class="btn btn-sm btn-ghost" data-enviar-v="${esc(v.id)}" title="Vuelve a enviar esta versión anterior al cliente: no se borra ninguna">${icono('refresh')}<span>Restaurar</span></button>` : `<button type="button" class="btn btn-sm btn-ghost" data-enviar-v="${esc(v.id)}">${icono('send')}<span>Enviar</span></button>`}
+          <button type="button" class="icon-btn sm" data-seo-v="${esc(v.id)}" aria-label="Revisar el SEO de la versión ${v.n}" title="Revisar SEO">${icono('search')}</button>
           <button type="button" class="icon-btn sm" data-borrar-v="${esc(v.id)}" aria-label="Borrar la versión ${v.n}" title="Borrar">${icono('trash')}</button>
         </span>` : ''}
       </li>`;
-    }).join('')}</ul>${puedeEditar ? bloquePublica(p, vs) : p.publica?.slug ? `<p class="od-pub-ok">${icono('globe')} <a href="${esc(urlPublica(p.publica.slug))}" target="_blank" rel="noopener">${esc(urlPublica(p.publica.slug).replace(/^https?:\/\//, ''))}</a></p>` : ''}` : `<p class="od-web-vacio">${puedeEditar ? 'Todavía no hay ninguna versión. Cuando subas la primera, podrás verla en móvil, tableta y ordenador y enviársela al cliente para que la apruebe.' : 'Todavía no hay ninguna versión subida.'}</p>`}
+    }).join('')}</ul><div id="odSeo" aria-live="polite"></div>${puedeEditar ? bloquePublica(p, vs) : p.publica?.slug ? `<p class="od-pub-ok">${icono('globe')} <a href="${esc(urlPublica(p.publica.slug))}" target="_blank" rel="noopener">${esc(urlPublica(p.publica.slug).replace(/^https?:\/\//, ''))}</a></p>` : ''}` : `<p class="od-web-vacio">${puedeEditar ? 'Todavía no hay ninguna versión. Cuando subas la primera, podrás verla en móvil, tableta y ordenador y enviársela al cliente para que la apruebe.' : 'Todavía no hay ninguna versión subida.'}</p>`}
   </section>`;
 }
 
@@ -1469,6 +1770,16 @@ function montarWeb(p, puedeEditar, guardar) {
       if (!v) return;
       ocupado(env, true);
       try { await enviarVersion(p, v, guardar); } catch (err) { toast(err.message, 'err'); ocupado(env, false); }
+      return;
+    }
+    const seo = e.target.closest('[data-seo-v]');
+    if (seo) {
+      const v = (p.webs || []).find(w => w.id === seo.dataset.seoV), caja = $('#odSeo', zona);
+      if (!v || !caja) return;
+      ocupado(seo, true); caja.innerHTML = `<p class="muted">${icono('search')} Revisando la versión ${v.n}…</p>`;
+      try { const m = await import('./seo.js'); caja.innerHTML = m.seoHTML(await m.revisarVersion(v), v); caja.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+      catch (err) { caja.innerHTML = ''; toast(err.message, 'err'); }
+      ocupado(seo, false);
       return;
     }
     const bo = e.target.closest('[data-borrar-v]');
