@@ -1052,3 +1052,13 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 - **Animación al iniciar y cerrar sesión** (`transicionSesion` en js/mascota.js, usada desde js/ui.js): al entrar, el robot salta, saluda y suelta chispas con «¡Hola, Nombre!»; al salir, se despide con la mano, se duerme y pone «Hasta pronto». Dura lo justo (unos 2 segundos) y nunca se queda pegada (se quita sola a los 9 s).
 - **Pruebas:** `tests/pruebas.mjs` ahora comprueba (ordenador y móvil) que el asistente se abre y la mascota aterriza, que vuelve al botón, que iniciar y cerrar sesión funcionan con la animación y que no queda nada borroso. 58 comprobaciones.
 - `sw.js` sube a v70 y guarda `js/mascota.js` y `icons/logo-a-verde.png`.
+
+## 50. Vuelta atrás: el código vuelve a servirse desde este mismo repositorio
+
+- Se probó publicar una copia minificada desde un segundo repositorio (`aurevixweb-web`) para que el código fuente no fuera público. Se decide **no seguirlo**: el repositorio `aurevixweb` vuelve a ser **público** y GitHub Pages lo sirve directamente, como antes.
+- Cambios en el código: se quita el proceso `.github/workflows/publicar.yml` y `scripts/publicar.mjs`, y se recupera el archivo `CNAME` (con `aurevixweb.es`) en la raíz. `pruebas.yml` sigue probando cada cambio.
+- Pasos de GitHub (orden importante, porque un dominio solo puede estar en un repositorio a la vez):
+  1. `aurevixweb-web` → *Settings* → *Pages*: **Remove** del dominio personalizado.
+  2. `aurevixweb` → *Settings* → *General* → *Danger Zone* → *Change visibility* → **Public**.
+  3. `aurevixweb` → *Settings* → *Pages*: *Deploy from a branch* → `main` / `(root)`; en *Custom domain* `aurevixweb.es` → *Save*; cuando salga el tic verde, marca *Enforce HTTPS*.
+  4. Opcional: borrar el secreto `PUBLICAR_TOKEN` (*Settings* → *Secrets and variables* → *Actions*), revocar el token «publicar-aurevix» (*Settings* de la cuenta → *Developer settings* → *Fine-grained tokens*) y borrar o archivar `aurevixweb-web`.
