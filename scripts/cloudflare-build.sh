@@ -5,8 +5,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 rm -rf dist && mkdir dist
-cp *.html *.css config.js sw.js manifest.json robots.txt sitemap.xml favicon.ico _headers _redirects dist/
-cp -R js icons fuentes promo dist/
+cp *.html config.js sw.js manifest.json robots.txt sitemap.xml favicon.ico _headers _redirects dist/
+cp -R css js icons fuentes promo dist/
 # Comprobación: las páginas no deben enlazar a nada que se haya quedado fuera
 faltan=0
 for f in dist/*.html; do

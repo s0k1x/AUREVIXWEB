@@ -8,10 +8,12 @@ export const CONFIG = {
   marca: 'AurevixWeb',
   eslogan: 'Webs profesionales para tu negocio',
   email: 'aurevixweb@gmail.com',           // único canal de contacto (no hay WhatsApp)
-  dominio: 'aurevixweb.es',                 // reservado; aún no apunta a la web (ver LEEME.md, punto 12)
+  dominio: 'aurevixweb.es',                 // reservado; aún no apunta a la web (ver docs/LEEME.md, punto 12)
   aviso: 'Plazas abiertas para nuevos proyectos este mes', // texto de la píldora de la portada
   anuncio: { activo: false, texto: '' },    // franja de aviso arriba del todo
-  estadoWeb: 'normal',                      // normal · demo · mantenimiento (se cambia en Ajustes → Negocio; no afecta al equipo)
+  estadoWeb: 'normal',
+  // Llamadas: los visitantes reservan una llamada en los huecos libres (Ajustes → Negocio → Llamadas)
+  llamadas: { activo: false, dias: [1, 2, 3, 4, 5], desde: '10:00', hasta: '14:00', minutos: 20, antelacion: 12, verDias: 14 },                      // normal · demo · mantenimiento (se cambia en Ajustes → Negocio; no afecta al equipo)
   aceptarPedidos: true,                     // si es false, los botones de compra pasan a «Lista de espera»
   mensajeCerrado: 'Ahora mismo tenemos la agenda completa. Déjanos tus datos y te escribimos en cuanto haya hueco.',
   horario: 'Lunes a viernes, de 9:00 a 18:00',
@@ -24,7 +26,7 @@ export const CONFIG = {
   bienvenida: { activo: true, codigo: 'BIENVENIDA10', pct: 10 },
 
   // Recomienda a un amigo: cada cliente tiene su código AMIGO-XXXXXXXX. Su amigo tiene «pct» % en su
-  // primera web y el cliente recibe «premio» (lo das tú desde el panel). Necesita supabase/referidos-v66.sql
+  // primera web y el cliente recibe «premio» (lo das tú desde el panel). Necesita supabase/migraciones/referidos-v66.sql
   referidos: { activo: false, pct: 10, premio: 'un mes de mantenimiento gratis' },
 
   // Webs de clientes reales que quieres enseñar en la portada (Ajustes → Negocio → Casos reales)

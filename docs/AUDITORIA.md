@@ -32,7 +32,7 @@ Gravedad: **A** alta · **M** media · **B** baja · **I** informativo. Estado: 
 - **Secretos en el árbol de trabajo**: búsqueda por patrones (claves `sb_secret_`, JWT, Gemini `AIza`, Brevo `xkeysib-`, OpenWA, GitHub, AWS, claves privadas…) sobre **todos** los archivos, incluido `biblioteca-ui`: **0 secretos reales**. Solo aparece la clave *publishable* de Supabase en `config.js` (pública por diseño) y 3 falsos positivos (fuentes en base64).
 - **Secretos en el historial** (106 commits, todas las ramas, sin `biblioteca-ui` ni SVG): **0 coincidencias**; ningún archivo `.env`, `.pem`, `.key` ni de credenciales fue añadido jamás.
 - **RLS**: las 14 tablas de `public` tienen RLS activado y políticas de lectura/escritura coherentes (revisadas una a una).
-- **Propietarios reales** (consultado en la base): un único propietario (`aurevixweb@gmail.com`), 2 trabajadores; las 6 cuentas tienen el correo verificado. El correo `senorsevillamario@gmail.com` que aparece en `supabase/esquema.sql` **no** tiene acceso (solo es un resto del archivo).
+- **Propietarios reales** (consultado en la base): un único propietario (`aurevixweb@gmail.com`), 2 trabajadores; las 6 cuentas tienen el correo verificado. El correo `senorsevillamario@gmail.com` que aparece en `supabase/migraciones/esquema.sql` **no** tiene acceso (solo es un resto del archivo).
 - **Storage**: un bucket `archivos`, privado, límite 25 MB; políticas por pedido correctas; la lectura pública solo cubre el prefijo `pedido/web/versión/` de las webs publicadas (el prefijo se genera a partir de un UUID, no puede quedar vacío).
 - **Funciones SECURITY DEFINER**: todas con `search_path` fijo. Las 4 que el asesor de Supabase marca como ejecutables por `anon` (`es_equipo`, `es_propietario`, `es_mi_pedido`, `cupon`) **deben** serlo (las políticas RLS las invocan con el rol del usuario) y no filtran nada.
 
@@ -49,5 +49,5 @@ Gravedad: **A** alta · **M** media · **B** baja · **I** informativo. Estado: 
 | S-08 | B | `correo` | El recibo se enviaba a `clienteEmail` (dato del pedido, controlado por el cliente) o `emailFact`; debe ir al correo verificado de la cuenta. | 🔶 |
 | S-09 | B | `cupon()` | Ejecutable sin sesión: permite adivinar códigos de cupón por fuerza bruta (no hay límite de intentos). | 🔶 informativo |
 | S-10 | I | `ajustes` clave `web` | Lectura pública por diseño: expone IBAN/titular, NIF y domicilio (ya son públicos en los textos legales y al pagar). | aceptado |
-| S-11 | I | `supabase/esquema.sql` | El esquema del repositorio está desactualizado respecto a la base real (faltan 8 tablas y varias funciones) y nombra a otro propietario. | 🔶 |
+| S-11 | I | `supabase/migraciones/esquema.sql` | El esquema del repositorio está desactualizado respecto a la base real (faltan 8 tablas y varias funciones) y nombra a otro propietario. | 🔶 |
 | S-12 | 👤 | Supabase Auth | No verificable desde aquí: «Confirm email» activado, «Leaked password protection» (el asesor lo marca desactivado), «Secure email change», límite de correos por hora. | 👤 |

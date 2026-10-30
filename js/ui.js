@@ -337,7 +337,7 @@ function sobreBarras(t) {
   return arriba < H ? `${Math.round(H - arriba + 12)}px` : '';
 }
 function colocarAviso(t) {
-  t.style.top = ''; t.style.bottom = ''; t.classList.remove('arriba');
+  t.style.top = ''; t.style.bottom = ''; t.classList.remove('en-alto');
   const H = innerHeight, r = t.getBoundingClientRect(), alto = r.height || 50, ancho = r.width || 300;
   const base = parseFloat(getComputedStyle(t).bottom) || 24; // los 24 px y la zona segura del móvil, ya calculados por el navegador
   // 1) Abajo: si hay algo que se pueda tocar, justo encima del obstáculo (sin pasar del tercio de arriba de la pantalla)
@@ -351,7 +351,7 @@ function colocarAviso(t) {
   }
   // 2) Arriba, por debajo de la cabecera si hay hueco
   for (const top of [72, 16]) {
-    if (!obstaculos(t, top, alto, ancho).length) { t.style.bottom = 'auto'; t.style.top = `calc(${top}px + env(safe-area-inset-top))`; t.classList.add('arriba'); return; }
+    if (!obstaculos(t, top, alto, ancho).length) { t.style.bottom = 'auto'; t.style.top = `calc(${top}px + env(safe-area-inset-top))`; t.classList.add('en-alto'); return; }
   }
   // 3) Pantalla llena de botones: abajo, al menos por encima de las barras fijas (solo tapa contenido unos segundos)
   t.style.bottom = sobreBarras(t);
@@ -410,6 +410,47 @@ document.addEventListener('click', e => {
 /* ==========================================================
    CABECERA Y PIE
    ========================================================== */
+/* ---------- Tema claro u oscuro ----------
+   Un botón en la cabecera (y en el menú del móvil) cambia el tema con una transición circular que nace del propio
+   botón (View Transitions del navegador: la tarjeta gráfica funde las dos versiones de la página). Sin soporte o con
+   movimiento reducido, cambia al momento. Se guarda en Ajustes → Apariencia y viaja con la cuenta. */
+const esClaro = () => document.documentElement.dataset.tema === 'claro';
+function pintarBotonesTema() {
+  const claro = esClaro();
+  $$('.tema-btn').forEach(b => {
+    b.setAttribute('aria-label', claro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro');
+    b.title = b.getAttribute('aria-label');
+    b.innerHTML = `${icono(claro ? 'moon' : 'sun')}${b.classList.contains('largo') ? `<span>${claro ? 'Tema oscuro' : 'Tema claro'}</span>` : ''}`;
+  });
+}
+function botonTema({ largo = false } = {}) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = `tema-btn${largo ? ' largo' : ''}`;
+  b.addEventListener('click', e => cambiarTema(e));
+  queueMicrotask(pintarBotonesTema);
+  return b;
+}
+function cambiarTema(e) {
+  const tema = esClaro() ? 'oscuro' : 'claro';
+  const aplicar = () => {
+    const a = guardarApariencia({ tema });
+    pintarBotonesTema();
+    if (store.usuarioActual()) store.guardarPerfil({ datos: { apariencia: a } }).catch(() => {});
+  };
+  const r = e?.currentTarget?.getBoundingClientRect?.();
+  const x = r ? r.left + r.width / 2 : innerWidth - 40, y = r ? r.top + r.height / 2 : 30;
+  const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.movimiento === 'reducido';
+  if (!document.startViewTransition || reducido) return aplicar();
+  const radio = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  document.documentElement.classList.add('tema-vt');
+  const vt = document.startViewTransition(aplicar);
+  vt.ready.then(() => document.documentElement.animate(
+    { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radio}px at ${x}px ${y}px)`] },
+    { duration: 650, easing: 'cubic-bezier(.65,0,.35,1)', pseudoElement: '::view-transition-new(root)' }
+  )).catch(() => {});
+  vt.finished.finally(() => document.documentElement.classList.remove('tema-vt'));
+}
 export function pintarCabecera(activa = '') {
   const h = $('#header');
   const ir = ancla => (activa === 'inicio' ? ancla : './' + ancla);
@@ -418,9 +459,9 @@ export function pintarCabecera(activa = '') {
     <div class="wrap">
       <a href="./" class="logo"><img class="logo-img" src="icons/logo-a.png" alt="" width="34" height="34"><span data-marca>${marcaHTML()}</span></a>
       <nav class="nav" id="nav" aria-label="Principal">
-        <a href="${ir('#webs')}">Webs y precios</a>
         <a href="${ir('#disenos')}">Diseños</a>
-        <a href="${ir('#opiniones')}">Opiniones</a>
+        <a href="${ir('#webs')}">Webs y precios</a>
+        <a href="${ir('#como')}">Cómo trabajamos</a>
         <a href="${ir('#contacto')}">Contacto</a>
         <a href="trabaja-con-nosotros" class="${activa === 'trabaja' ? 'act' : ''}">Trabaja con nosotros</a>
       </nav>
@@ -430,10 +471,14 @@ export function pintarCabecera(activa = '') {
       </div>
     </div>`;
   $('.head-right', h).prepend(botonIdioma());
+  $('.head-right', h).prepend(botonTema());
   // En el móvil el idioma va dentro del menú (en la cabecera no cabe junto a la campana y la cuenta)
   const enMenu = botonIdioma({ largo: true });
   enMenu.classList.add('idioma-menu');
   $('#nav', h).append(enMenu);
+  const temaMenu = botonTema({ largo: true });
+  temaMenu.classList.add('tema-menu');
+  $('#nav', h).append(temaMenu);
   const menuBtn = $('#menuBtn');
   const cerrarMenu = () => { h.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); };
   menuBtn.addEventListener('click', () => {
@@ -553,6 +598,7 @@ function pintarSesion(u) {
 document.addEventListener('click', e => {
   if (!e.target.closest('.user-wrap')) $('.user-menu')?.classList.remove('open');
   if (e.target.closest('[data-login]')) pedirLogin();
+  if (e.target.closest('[data-reservar-llamada]')) import('./llamada.js').then(m => m.abrirLlamada()).catch(err => toast(err.message, 'err'));
   if (e.target.closest('[data-logout]')) {
     const nombre = store.usuarioActual()?.name;
     // Se cierran los menús y aparece la tarjeta de despedida mientras se cierra la sesión
@@ -881,6 +927,10 @@ export async function arrancar(pagina) {
   });
   aplicarApariencia();
   aplicarCache();
+  // Verificación anti-robots: lo primero de todo, con la copia guardada de los ajustes (sin esperar a la base de datos)
+  const publica = !['panel', 'ajustes', 'vista'].includes(pagina);
+  const verifica = () => import('./verificacion.js').then(m => { m.preconectar(); return m.puertaDeEntrada(); }).catch(() => {});
+  let puerta = publica && CONFIG.turnstile?.activo ? verifica() : null;
   estadoWeb(); // mantenimiento o demostración: al instante con la copia guardada (sin enseñar antes la web)
   aplicarTemporada(CONFIG.temporada); // colores al instante (el ambiente, cuando estén los ajustes)
   intro();
@@ -914,7 +964,8 @@ export async function arrancar(pagina) {
   aplicarTemporada(CONFIG.temporada, { animar: ['inicio', 'trabaja'].includes(pagina) });
   contarVisita(pagina);
   // Verificación anti-robots en las páginas públicas (primera visita o algo inusual)
-  if (!['panel', 'ajustes', 'vista'].includes(pagina) && CONFIG.turnstile?.activo) import('./verificacion.js').then(m => m.puertaDeEntrada()).catch(() => {});
+  // Primera visita de este navegador (aún sin copia de los ajustes): ahora que se sabe si está activa
+  if (!puerta && publica && CONFIG.turnstile?.activo) puerta = verifica();
   pintarAnuncio();
   pintarPie();
   vigilarMarcas();

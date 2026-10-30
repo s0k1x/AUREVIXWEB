@@ -3,16 +3,14 @@
    ========================================================== */
 import { CONFIG, PLANES } from '../config.js';
 import { plantillaPorId, activarPlantilla } from './plantillas.js';
-import { ETAPAS, etapaDe, barraEtapas, estadoParaEtapa, entregasCliente, urlVistaPrevia, fechaEntrega, diasRestantes, plazoTexto, plazoClase, conHistorial, lineaTiempo, lineaTiempoHTML, siguientePaso, RECORDATORIOS, fichaTexto, dominioTexto } from './proyecto.js';
+import { ETAPAS, etapaDe, barraEtapas, estadoParaEtapa, entregasCliente, urlVistaPrevia, fechaEntrega, diasRestantes, plazoTexto, plazoClase, conHistorial, lineaTiempo, lineaTiempoHTML, siguientePaso, RECORDATORIOS, fichaTexto } from './proyecto.js';
 import { contar } from './efectos.js';
 import * as store from './store.js';
-import {
-  $, $$, esc, euros, fecha, fechaCorta, haceCuanto, icono, avatar, toast, abrir, cerrar, arrancar, pedirLogin, mailLink, refPedido,
-  ESTADOS, PAGOS, METODOS, cargandoHTML, errorCargaHTML, metaHTML, ocupado, campo, estrellas, etiquetas, TAREAS, progreso, copiar, descargar, tamano, datosLegalesPendientes
-} from './ui.js';
+import { $, $$, esc, euros, fecha, fechaCorta, haceCuanto, icono, avatar, toast, abrir, cerrar, arrancar, pedirLogin, mailLink, refPedido, ESTADOS, PAGOS, METODOS, cargandoHTML, errorCargaHTML, metaHTML, ocupado, campo, estrellas, etiquetas, TAREAS, progreso, copiar, descargar, tamano, datosLegalesPendientes } from './ui.js';
 import { montarHilo, montarArchivos, abrirRecibo, descargarArchivosCliente } from './colabora.js';
 import { prefsPermitidas } from './cookies.js';
 import { catalogo } from './asistente.js';
+import { firmaHTML } from './firma.js';
 import { conMantenimiento, estadoMant, cuotaMensual, conceptosMensuales, activarMant, registrarCuota, cuotasPagadas, nombrePeriodo, periodo, nuevoExtra, ESTADO_EXTRA, resumirVisitas, estadisticasHTML } from './negocio.js';
 import { prepararArchivos, crearVersion, abrirVisor, enlaceVista } from './vistaweb.js';
 
@@ -35,7 +33,7 @@ const PCT = CONFIG.comision ?? 30;
 const comision = p => Math.round((p.total || 0) * PCT) / 100;
 const ventasDe = uid => datos.pedidos.filter(p => p.ref === uid && p.estado !== 'cancelado');
 /* ---------- Comisiones con control antifraude ----------
-   - Solo cuentan los pagos que confirma el propietario (el servidor no deja al vendedor tocar el pago: supabase/plataforma-v88.sql).
+   - Solo cuentan los pagos que confirma el propietario (el servidor no deja al vendedor tocar el pago: supabase/migraciones/plataforma-v88.sql).
    - La comisión espera los 14 días de desistimiento desde que el cliente paga del todo: si cancela, no se ha pagado nada de más.
    - Ventas sospechosas (el cliente es el propio vendedor, comparte su correo o su dominio, o muchas cancelaciones) quedan retenidas
      hasta que el propietario las revisa. */
@@ -281,6 +279,9 @@ function resumen() {
     ...P.filter(p => activo(p) && p.revision?.estado === 'cambios' && (p.revision.comentarios || []).some(c => !c.hecho)).slice(0, 5).map(p => ({ ic: 'pen', t: `${neg(p)}: el cliente pide cambios`, id: p.id })),
     ...tarde.slice(0, 5).map(p => ({ ic: 'clock', t: `${neg(p)}: ${plazoTexto(p).toLowerCase()}`, id: p.id })),
     ...P.filter(p => p.estado === 'nuevo' && !p.asignado).slice(0, 5).map(p => ({ ic: 'inbox', t: `Asignar ${neg(p)}`, id: p.id })),
+    // Llamadas reservadas de hoy y mañana (la hora en la del navegador)
+    ...datos.tickets.filter(t => t.tipo === 'llamada' && t.estado !== 'cerrado' && t.llamada && Date.parse(t.llamada) > Date.now() - 36e5 && Date.parse(t.llamada) < Date.now() + 2 * 864e5)
+      .sort((a, b) => Date.parse(a.llamada) - Date.parse(b.llamada)).map(t => ({ ic: 'phone', t: `Llamar a ${t.nombre} · ${new Date(t.llamada).toLocaleString('es-ES', { weekday: 'short', hour: '2-digit', minute: '2-digit' })}${t.telefono ? ` · ${t.telefono}` : ''}`, go: 'soporte' })),
     ...abiertas.slice(0, 5).map(t => ({ ic: 'help', t: `Responder: ${t.asunto}`, go: 'soporte' })),
     ...P.filter(premioPendiente).slice(0, 5).map(p => ({ ic: 'gift', t: `Premio para ${recomendadoPor(p).name}: recomendó a ${neg(p)}`, id: p.id }))
   ];
@@ -422,7 +423,7 @@ async function pintarVisitas() {
   if (!caja.isConnected) return;
   caja.removeAttribute('aria-busy');
   const cab = '<div class="card-h"><h3>Visitas a la web</h3><span class="muted" style="font-size:13px">últimos 30 días · sin cookies</span></div>';
-  if (!filas) { caja.innerHTML = cab + vacio('chart', 'Aún no se pueden ver las visitas. Ejecuta supabase/visitas-v65.sql en Supabase.'); return; }
+  if (!filas) { caja.innerHTML = cab + vacio('chart', 'Aún no se pueden ver las visitas. Ejecuta supabase/migraciones/visitas-v65.sql en Supabase.'); return; }
   // Los pasos del embudo («ev-…») se cuentan aparte de las visitas
   const eventos = filas.filter(f => f.pagina.startsWith('ev-'));
   filas = filas.filter(f => !f.pagina.startsWith('ev-'));
@@ -970,11 +971,11 @@ function clientes() {
 
 /* ---------- Soporte y contacto ---------- */
 let fSoporte = 'abierto';
-const TIPOS_T = { duda: 'Duda', cambio: 'Cambio en su web', incidencia: 'Incidencia', factura: 'Facturación', presupuesto: 'Presupuesto', espera: 'Lista de espera', trabajo: 'Quiere trabajar', contacto: 'Contacto', baja: 'Baja', otro: 'Otro' };
+const TIPOS_T = { duda: 'Duda', cambio: 'Cambio en su web', incidencia: 'Incidencia', factura: 'Facturación', presupuesto: 'Presupuesto', espera: 'Lista de espera', trabajo: 'Quiere trabajar', contacto: 'Contacto', baja: 'Baja', llamada: 'Llamada', otro: 'Otro' };
 const EST_T = { abierto: ['Sin responder', 'p-pend'], en_curso: ['En curso', 'p-new'], respondido: ['Esperando al cliente', 'p-new'], cerrado: ['Resuelto', 'p-done'] };
 const PRIO_T = { alta: ['Alta', 'p-off'], normal: ['Normal', ''], baja: ['Baja', 'p-done'] };
 /* Prioridad: la que ponga el equipo; si no, según el tipo (incidencias, pagos y bajas primero) */
-const prioridad = t => t.prioridad || (['incidencia', 'factura', 'baja'].includes(t.tipo) ? 'alta' : ['espera', 'trabajo', 'contacto'].includes(t.tipo) ? 'baja' : 'normal');
+const prioridad = t => t.prioridad || (['incidencia', 'factura', 'baja', 'llamada'].includes(t.tipo) ? 'alta' : ['espera', 'trabajo', 'contacto'].includes(t.tipo) ? 'baja' : 'normal');
 const PESO_P = { alta: 0, normal: 1, baja: 2 };
 /* Horas desde el último mensaje del cliente sin respuesta del equipo */
 const sinResponder = t => {
@@ -1169,7 +1170,7 @@ function pintarFinanzas() {
     <div class="cols">
       <div class="card">
         <div class="card-h"><h3>Gastos</h3>${gastosCache ? '<button class="btn btn-sm btn-primary" id="gNuevo">' + icono('plus') + '<span>Añadir gasto</span></button>' : ''}</div>
-        ${gastosCache === null ? `<div class="empty"><div class="em">${icono('lock')}</div><b>Falta activar los gastos</b><p>Ejecuta <code>supabase/plataforma-v88.sql</code> en Supabase → SQL Editor una sola vez y recarga.</p></div>`
+        ${gastosCache === null ? `<div class="empty"><div class="em">${icono('lock')}</div><b>Falta activar los gastos</b><p>Ejecuta <code>supabase/migraciones/plataforma-v88.sql</code> en Supabase → SQL Editor una sola vez y recarga.</p></div>`
         : `<form class="g-form card" id="gForm" hidden novalidate>
             <input type="hidden" name="id">
             <div class="g-grid">
@@ -1437,9 +1438,10 @@ function abrirPedido(id) {
           <div class="kv total"><span>Total</span><b>${euros(p.total || 0)}${p.mensual ? ` + ${euros(p.mensual)}/mes` : ''}</b></div>
           ${fila(`Señal (${CONFIG.senal} %)`, euros(senal))}
         </div>
+        ${firmaHTML(p.firma, 'Firma del pedido')}
         ${esOwner || (p.cambiosExtra || []).length ? `<h4 class="od-h">Cambios extra</h4>
         <div class="od-extras">
-          ${(p.cambiosExtra || []).map(x => `<div class="od-extra"><div><b>${esc(x.concepto)}</b><small>${euros(x.importe)} · <span class="pill ${(ESTADO_EXTRA[x.estado] || [])[1] || ''}">${x.estado === 'propuesto' ? 'Esperando al cliente' : ESTADO_EXTRA[x.estado]?.[0] || x.estado}</span>${x.acuerdo ? ` · aceptado por ${esc(x.acuerdo.nombre)} el ${fecha(x.acuerdo.t)}` : ''}</small></div>
+          ${(p.cambiosExtra || []).map(x => `<div class="od-extra"><div><b>${esc(x.concepto)}</b><small>${euros(x.importe)} · <span class="pill ${(ESTADO_EXTRA[x.estado] || [])[1] || ''}">${x.estado === 'propuesto' ? 'Esperando al cliente' : ESTADO_EXTRA[x.estado]?.[0] || x.estado}</span>${x.acuerdo ? ` · aceptado por ${esc(x.acuerdo.nombre)} el ${fecha(x.acuerdo.t)}` : ''}</small>${x.acuerdo?.firma ? firmaHTML({ img: x.acuerdo.firma, nombre: x.acuerdo.nombre, t: x.acuerdo.t }, 'Firma') : ''}</div>
             ${esOwner && x.estado === 'aceptado' ? `<button type="button" class="btn btn-sm btn-primary" data-extra-pagado="${esc(x.id)}"><span>Marcar pagado y enviar factura</span></button>` : ''}
             ${esOwner && x.estado === 'pagado' ? `<button type="button" class="btn btn-sm btn-ghost" data-extra-factura="${esc(x.id)}">${icono('mail')}<span>Reenviar factura</span></button>` : ''}
             ${esOwner && x.estado === 'propuesto' ? `<button type="button" class="icon-btn sm" data-extra-quitar="${esc(x.id)}" aria-label="Retirar presupuesto">${icono('trash')}</button>` : ''}</div>`).join('')}

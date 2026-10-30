@@ -20,7 +20,7 @@
 | `js/asistente.js` | Chat de dudas y «Te ayudo a elegir» |
 | `js/plantillas.js` | Textos, colores y fotos de los 6 diseños (puedes añadir más) |
 | `js/store.js` | Login y base de datos (Supabase o modo demo) |
-| `supabase/esquema.sql` | Tablas y permisos de la base de datos |
+| `supabase/migraciones/esquema.sql` | Tablas y permisos de la base de datos |
 | `supabase/functions/asistente/index.ts` | Función que habla con Gemini para el chat y «Te ayudo a elegir» (la clave nunca va en la web) |
 | `js/vistaweb.js` | Web del cliente (v43): subir versiones (.zip, carpeta o archivos) y el visor en móvil, tableta y ordenador |
 | `vista-previa.html`, `js/vista.js` | La vista previa en su propia página (`/vista-previa?p=…&v=…`) |
@@ -52,7 +52,7 @@ respuestas automáticas (sin IA). En «Entrar» tienes botones para probar como 
 Todo se puede hacer desde el móvil en **supabase.com**:
 
 1. **New project** → nombre → contraseña de la base de datos (guárdala) → región **Europe (Frankfurt o Irlanda)**.
-2. **SQL Editor → New query**. Abre `supabase/esquema.sql`, pega todo y pulsa **Run**.
+2. **SQL Editor → New query**. Abre `supabase/migraciones/esquema.sql`, pega todo y pulsa **Run**.
    Crea las tablas, los permisos, los avisos automáticos, el tiempo real y la carpeta de archivos.
    **Se puede volver a ejecutar** cuando subas una versión nueva: no borra datos.
    El propietario es `aurevixweb@gmail.com` (el SQL deja solo ese correo como propietario).
@@ -202,7 +202,7 @@ Si quieres más protección, puedes hacer el repositorio **privado** (GitHub Pag
 
 ## 15. Versión 21: descuento de bienvenida y pago por vídeo
 
-**Antes de subir esta versión**, en Supabase → SQL Editor pega el archivo `supabase/actualizacion-v21.sql` entero y pulsa **Run** (se puede repetir sin problema). Crea la tabla de vídeos y actualiza la comprobación de cupones.
+**Antes de subir esta versión**, en Supabase → SQL Editor pega el archivo `supabase/migraciones/actualizacion-v21.sql` entero y pulsa **Run** (se puede repetir sin problema). Crea la tabla de vídeos y actualiza la comprobación de cupones.
 
 - **Descuento de bienvenida**: −10 % con el código `BIENVENIDA10`, solo en la primera web de cada cliente. Se anuncia en «Webs y precios», en cada tarjeta y en el resumen del pedido. Se cambia o se apaga en Ajustes → Negocio → «Descuento de bienvenida».
 - **Pago por vídeo** («Trabaja con nosotros»): 15 € por vídeo aprobado, +25 € si pasa de 10.000 visualizaciones en 14 días, hasta 12 vídeos pagados al mes, y además la comisión si alguien compra desde su enlace. Se cambia en Ajustes → Negocio → «Creadores de vídeo».
@@ -269,7 +269,7 @@ No hace falta ejecutar ningún SQL nuevo.
 
 ### Qué tienes que hacer
 1. Sube todo el contenido del zip a GitHub y recarga con caché limpia (el service worker pasa a v26).
-2. Supabase → **SQL Editor** → pega `supabase/actualizacion-v26.sql` → **Run** (crea la tabla de versiones).
+2. Supabase → **SQL Editor** → pega `supabase/migraciones/actualizacion-v26.sql` → **Run** (crea la tabla de versiones).
 3. Supabase → **Edge Functions → asistente** → pega el nuevo `supabase/functions/asistente/index.ts` → **Deploy**.
    No hace falta ninguna clave nueva: usa tu `GEMINI_API_KEY`.
 
@@ -686,7 +686,7 @@ aprobación (pasa a «Pago final»); la página `/vista-previa`; y versiones a l
 - **Supabase (aplicado el 28/10/2026)**: las funciones internas (`avisar`, `avisos_*`, `limitar_cliente`, `nuevo_usuario`,
   `proteger_rol`, `rls_auto_enable`, `uids_propietarios`) ya no se pueden llamar desde fuera. Antes, cualquiera, sin iniciar
   sesión, podía usar `avisar` para mandar avisos falsos a la campana de otro usuario. Los disparadores funcionan igual.
-  Índices nuevos en `mensajes(uid)` y `resenas(uid)`. El SQL está en `supabase/seguridad-v44.sql`.
+  Índices nuevos en `mensajes(uid)` y `resenas(uid)`. El SQL está en `supabase/migraciones/seguridad-v44.sql`.
 - **Pendiente en Supabase** (se hace en el panel, no por SQL): *Authentication → Providers → Email → Leaked password
   protection* (no deja usar contraseñas filtradas).
 - El generador de códigos QR va dentro de la web (`js/vendor/qrcode.js`, MIT) en lugar de cargarse de un CDN.
@@ -790,7 +790,7 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 - **Pedido en el móvil arreglado**: la clase `.paso` del «siguiente paso» del panel pisaba la de los pasos del pedido y los enseñaba todos a la vez. Ahora el del panel se llama `.sig-paso`.
 - **Webs de clientes en `aurevixweb.es/<nombre>`**: en el panel, dentro del pedido → «Web del cliente» → «Enlace público», se elige el nombre (sale del negocio) y la versión, y se pulsa «Publicar». Al publicar por primera vez le llega un mensaje al cliente con el enlace. Cualquiera puede ver esa versión sin cuenta; el resto de versiones y archivos siguen siendo privados. «Despublicar» lo quita (y borrar la versión publicada también).
   - Cómo funciona: GitHub Pages sirve `404.html` para las direcciones que no existen; esa página (`js/publica.js`) busca el nombre en la tabla `webs_publicas` y monta la web aislada en un iframe. Las páginas internas tienen dirección limpia (`/nombre/contacto`).
-  - **Hace falta** ejecutar una vez `supabase/webs-publicas-v48.sql` en el SQL Editor de Supabase (crea la tabla y el permiso de lectura de solo esas versiones). Sin él, «Publicar» da error y los enlaces enseñan «Esta página no existe».
+  - **Hace falta** ejecutar una vez `supabase/migraciones/webs-publicas-v48.sql` en el SQL Editor de Supabase (crea la tabla y el permiso de lectura de solo esas versiones). Sin él, «Publicar» da error y los enlaces enseñan «Esta página no existe».
 
 ## 36. Versión v49 — asistente útil de verdad y pulido de toda la web
 
@@ -867,14 +867,14 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 - Todo lo que sale en la campana (pedido nuevo, cambio de etapa, vista previa lista, pago por revisar, mensajes, soporte, vídeos) llega también **por correo**, con el diseño de la web y un botón que lleva directo al proyecto o al pedido.
 - No satura: como mucho un correo cada 30 minutos por persona, proyecto y tipo de aviso (el resto se ve en la campana). Al cliente no le llega el aviso de «pago» porque ya recibe el recibo.
 - Cada persona lo apaga o elige qué tipos quiere en **Ajustes → Avisos** («Avisos por correo»).
-- Lo hace la función **`notificar`** de Supabase con Brevo (mismos secretos que los recibos). Para activarlo hay que pegar **una vez** `supabase/avisos-correo-v58.sql` en Supabase → SQL Editor → Run: crea el disparador que llama a la función con cada aviso nuevo.
+- Lo hace la función **`notificar`** de Supabase con Brevo (mismos secretos que los recibos). Para activarlo hay que pegar **una vez** `supabase/migraciones/avisos-correo-v58.sql` en Supabase → SQL Editor → Run: crea el disparador que llama a la función con cada aviso nuevo.
 
 **Panel**
 - La ficha de cada pedido se abre a pantalla completa.
 
 ## 45. Versión v65 — Lista de lanzamiento, estadísticas, WhatsApp, iconos vivos y herramientas
 **Lo que tienes que hacer tú (una vez)**
-1. **Estadísticas de visitas**: pega `supabase/visitas-v65.sql` en Supabase → SQL Editor → Run. Hasta entonces, el panel dice que aún no hay visitas.
+1. **Estadísticas de visitas**: pega `supabase/migraciones/visitas-v65.sql` en Supabase → SQL Editor → Run. Hasta entonces, el panel dice que aún no hay visitas.
 2. **WhatsApp** (opcional): Ajustes → Negocio → Redes → «WhatsApp (número)», con el prefijo 34 y sin espacios. Sale un botón en Contacto y en el pie. Vacío = no se ofrece.
 3. **HTTPS**: en GitHub → Settings → Pages, marca «Enforce HTTPS».
 4. **Google**: da de alta la web en Google Search Console y envía `https://aurevixweb.es/sitemap.xml`. Crea la **ficha de Google (Perfil de Empresa)** de AurevixWeb.
@@ -921,8 +921,8 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 ## 46. Versión v66 — Páginas por sector, guías, revisión gratis, mantenimiento, casos y recomendaciones
 **Lo que tienes que hacer tú (una vez)**
 1. En Supabase → SQL Editor, pega y ejecuta:
-   - `supabase/visitas-v65.sql`, para las estadísticas de visitas;
-   - `supabase/referidos-v66.sql`, para que valgan los códigos de amigo.
+   - `supabase/migraciones/visitas-v65.sql`, para las estadísticas de visitas;
+   - `supabase/migraciones/referidos-v66.sql`, para que valgan los códigos de amigo.
 2. Después, activa **Ajustes → Negocio → «Recomienda a un amigo»** y elige el descuento y el premio.
 3. Cuando tengas clientes que te den permiso, añade sus webs en **Ajustes → Negocio → «Casos reales»**. Salen en la portada, en la sección «Webs publicadas». Si no hay ninguno, la sección no aparece.
 4. En Google Search Console, vuelve a enviar `sitemap.xml`: ahora tiene 16 páginas.
@@ -1281,9 +1281,9 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **Versiones:** las anteriores a la que ve el cliente tienen el botón «Restaurar».
 - **Pruebas:** comprueban también que el sitemap no tenga enlaces rotos y que incluya todas las páginas públicas.
 - **Librería:** ya no forma parte de la web. Para pasarla a su propio repositorio privado, usa `scripts/separar-libreria.sh`. La tabla `suscripciones` sigue en Supabase.
-- **Cloudflare Pages:** `scripts/cloudflare-build.sh`, `_headers` y `_redirects`. Los pasos están en `CLOUDFLARE.md`.
+- **Cloudflare Pages:** `scripts/cloudflare-build.sh`, `_headers` y `_redirects`. Los pasos están en `docs/CLOUDFLARE.md`.
 - **Pendiente de aplicar** (necesita permiso):
-  - `supabase/plataforma-v88.sql`. Es aditivo: límites al equipo, tickets, `gastos`, `estadisticas_web`, avisos de tickets, facturas de cuotas y extras, y `cambiosExtra` para el cliente.
+  - `supabase/migraciones/plataforma-v88.sql`. Es aditivo: límites al equipo, tickets, `gastos`, `estadisticas_web`, avisos de tickets, facturas de cuotas y extras, y `cambiosExtra` para el cliente.
   - Desplegar `correo` con los cambios de `_shared`.
   - Mientras no se aplique, el panel muestra cómo activarlo y lo demás sigue funcionando.
 
@@ -1332,7 +1332,7 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
     - Pantalla completa con el robot dando volteretas. Al tocarlo se asombra, bota y suelta chispas; de vez en cuando saluda.
     - Se puede escribir un mensaje opcional. Hay un enlace discreto de «Acceso del equipo»: al entrar el propietario o un trabajador, la pantalla desaparece.
     - El freno de `store.js` también actúa aunque alguien quite la pantalla desde el navegador.
-    - Cierre también en el servidor: `supabase/estado-web-v91.sql` (disparador `web_cerrada`) rechaza escribir en pedidos, consultas, mensajes, candidaturas, reseñas y vídeos mientras la web esté en demostración o mantenimiento, salvo al equipo y a las funciones del servidor.
+    - Cierre también en el servidor: `supabase/migraciones/estado-web-v91.sql` (disparador `web_cerrada`) rechaza escribir en pedidos, consultas, mensajes, candidaturas, reseñas y vídeos mientras la web esté en demostración o mantenimiento, salvo al equipo y a las funciones del servidor.
 
 ### v92: el robot, sutil y elegante fuera del chat
 - **El chat no cambia** (botón, cabecera y vuelo del botón a la cabecera).
@@ -1365,3 +1365,42 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **Cara del robot** (botón y cabecera del chat):
   - Escala y gira desde el centro de la cabeza (antes lo hacía desde los pies, fuera del círculo, y se deformaba).
   - El bote y el estirar y aplastar son mucho más suaves.
+
+### v94–v96: funciones nuevas, diseños más profesionales, web organizada
+- **Portada:**
+  - Antes y después deslizable: web anticuada frente al diseño Filo.
+  - Cifras reales con gráfica de entregas. Solo aparecen con 3 o más webs entregadas, nunca con cifras de relleno.
+  - Casos con la captura de su web que se desplaza (mShots de WordPress.com).
+  - Bloque «¿Cómo está tu web actual?», que lleva al análisis ya en marcha.
+- **Configurador:** vista previa en vivo en el paso «Estilo», con el nombre y el color del cliente.
+- **Tema claro u oscuro:** botón en la cabecera (en el móvil, en el menú) con transición circular (View Transitions).
+- **Reservar una llamada** (`js/llamada.js`):
+  - Horario en Ajustes → Negocio → Llamadas.
+  - Huecos libres reales y confirmación con botón para añadirla a Google Calendar o archivo `.ics`.
+  - Llega a Soporte y al resumen del panel.
+  - El servidor impide reservar dos veces la misma hora.
+- **Firma en pantalla** (`js/firma.js`):
+  - Al confirmar el pedido y al aceptar un cambio extra.
+  - Se ve en el detalle del pedido y en el resumen imprimible.
+- **Revisa tu web:** mide a la vez, en vivo, la web del visitante y un diseño nuestro, y las compara.
+- **Recordatorios automáticos e informe mensual** (función `recordatorios` + tarea diaria):
+  - Cuota que vence o vencida, contenido pendiente, web lista para revisar.
+  - Informe mensual en PDF el día 1.
+  - Respeta el aviso «Recordatorios» de Ajustes → Avisos y nunca repite un aviso.
+- **SQL:** `supabase/migraciones/funciones-v94.sql`.
+- **Diseños predeterminados** (skill design-taste-frontend):
+  - Sin etiquetas pequeñas encima de los títulos, ni sombras, ni emoji, ni cinta que corre, ni números decorativos.
+  - Ventajas como lista limpia; títulos en dos líneas.
+  - Lienzo con paleta propia.
+- **Organización:**
+  - Hojas de estilo en `css/`, documentación en `docs/`, SQL en `supabase/migraciones/`, README con la estructura.
+  - Portada en orden lógico, con franjas alternas automáticas.
+  - Botón «volver arriba» encima del asistente, sin tapar el pie.
+- **Pantalla de carga nueva:** logotipo y nombre sobre el fondo con una línea fina que se completa (fuera la tarjeta).
+- **Verificación de Cloudflare primero:**
+  - Se lanza al arrancar, con la copia guardada de los ajustes.
+  - La web no se enseña hasta comprobarlo y la conexión con Cloudflare se abre antes.
+- **Revisión:**
+  - Importaciones sin uso eliminadas.
+  - Traducciones al inglés de todos los textos nuevos.
+  - Arreglado el choque de clases entre el aviso y el botón «volver arriba».

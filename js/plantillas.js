@@ -54,7 +54,7 @@ export const PLANTILLAS = [
     c: { bg: '#f6f6f3', surface: '#ffffff', text: '#111111', muted: '#6b6b6b', accent: '#2f5bff' },
     estilo: { radio: '16px', mayus: false, peso: 700 },
     tel: '600 555 777', redes: true, carrito: true,
-    hero: { tipo: 'split', img: 4940756, kicker: 'Nueva colección · Otoño', titulo: 'Diseño que se usa todos los días.', texto: 'Productos hechos en pequeñas tiradas. Envío en 24/48 h y devoluciones gratis.', cta: 'Ver productos', cta2: 'Novedades', badges: [['truck', 'Envío gratis', 'desde 40 €'], ['star', '4,9', '+1.200 pedidos']] },
+    hero: { tipo: 'split', img: 4940756, kicker: 'Nueva colección · Otoño', titulo: 'Diseño para cada día.', texto: 'Productos hechos en pequeñas tiradas. Envío en 24/48 h y devoluciones gratis.', cta: 'Ver productos', cta2: 'Novedades', badges: [['truck', 'Envío gratis', 'desde 40 €'], ['star', '4,9', '+1.200 pedidos']] },
     cinta: ['Envío 24/48 h', 'Devoluciones gratis', 'Hecho en pequeñas tiradas', 'Pago seguro', 'Nueva colección'],
     secciones: [
       { tipo: 'productos', id: 'tienda', kicker: 'Tienda', titulo: 'Lo más vendido', items: [['Sudadera Básica', '39 €', 'Nuevo', 9594679], ['Gorra Logo', '22 €', '', 1510509], ['Taza Cerámica', '14 €', '', 11075707], ['Tote Bag', '18 €', '-20%', 4068314], ['Camiseta Oversize', '25 €', '', 12039633], ['Pack Pegatinas', '6 €', '', 17567386]] },
@@ -67,10 +67,10 @@ export const PLANTILLAS = [
     id: 'lienzo', dominio: 'estudiolienzo.com', nombre: 'Lienzo', sector: 'Portfolio · Profesional',
     desc: 'Diseño editorial y minimalista para mostrar proyectos a gran tamaño.', marca: 'Estudio Lienzo',
     fuentes: { d: 'Instrument Serif', b: 'Inter', url: 'family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600' },
-    c: { bg: '#f1efe9', surface: '#e7e3da', text: '#161616', muted: '#6e6a62', accent: '#e4572e' },
+    c: { bg: '#f3f3f1', surface: '#e8e8e4', text: '#141414', muted: '#5f5f5a', accent: '#1f5c4a' },
     estilo: { radio: '0px', mayus: false, peso: 400 },
     tel: '611 222 333', redes: true,
-    hero: { tipo: 'big', img: 9604191, kicker: 'Fotografía · Dirección de arte', titulo: 'Imágenes que cuentan <em>historias.</em>', texto: 'Trabajo con marcas y personas que quieren mostrar lo que hacen con calma y cuidado.', cta: 'Ver proyectos', cta2: 'Contactar' },
+    hero: { tipo: 'big', img: 9604191, kicker: 'Fotografía · Dirección de arte', titulo: 'Imágenes que cuentan historias.', texto: 'Trabajo con marcas y personas que quieren mostrar lo que hacen con calma y cuidado.', cta: 'Ver proyectos', cta2: 'Contactar' },
     cinta: ['Moda', 'Interiorismo', 'Retrato', 'Gastronomía', 'Producto'],
     secciones: [
       { tipo: 'proyectos', id: 'proyectos', kicker: 'Selección', titulo: 'Proyectos recientes', items: [['Campaña Otoño', 'Moda · 2026', 20617022], ['Casa Lumbre', 'Interiorismo · 2026', 12285892], ['Retratos de oficio', 'Personal · 2025', 20446138], ['Sabores del sur', 'Gastronomía · 2025', 7474372]] },
@@ -86,7 +86,7 @@ export const PLANTILLAS = [
     c: { bg: '#f3f5f0', surface: '#ffffff', text: '#23302a', muted: '#6b7a71', accent: '#6f8f72' },
     estilo: { radio: '28px', mayus: false, peso: 500 },
     tel: '622 444 555', redes: true,
-    hero: { tipo: 'split', img: 3985329, kicker: 'Centro de estética y bienestar', titulo: 'Un rato solo <em>para ti.</em>', texto: 'Tratamientos faciales y corporales en un espacio tranquilo. Reserva tu cita online cuando quieras.', cta: 'Reservar cita', cta2: 'Tratamientos', badges: [['star', '5,0', '180 opiniones'], ['calendar', 'Cita online', 'en 1 minuto']] },
+    hero: { tipo: 'split', img: 3985329, kicker: 'Centro de estética y bienestar', titulo: 'Un rato para ti.', texto: 'Tratamientos faciales y corporales en un espacio tranquilo. Reserva tu cita online cuando quieras.', cta: 'Reservar cita', cta2: 'Tratamientos', badges: [['star', '5,0', '180 opiniones'], ['calendar', 'Cita online', 'en 1 minuto']] },
     cinta: ['Limpieza facial', 'Masaje relajante', 'Manicura', 'Láser', 'Pestañas'],
     secciones: [
       { tipo: 'lista', id: 'tratamientos', kicker: 'Tratamientos', titulo: 'Cuídate como mereces', img: 6628587, etiqueta: 'Productos naturales', grupos: [{ items: [['Limpieza facial profunda', '45 €', '60 min'], ['Masaje relajante', '50 €', '60 min'], ['Manicura semipermanente', '22 €', '45 min'], ['Depilación láser (zona)', 'desde 35 €', '20 min'], ['Lifting de pestañas', '38 €', '50 min']] }] },
@@ -139,7 +139,8 @@ function foto(id, { ancho = '100vw', alt = '', cls = '', primero = false } = {})
     : `src="${F(id, 800)}" srcset="${ANCHOS.map(w => `${F(id, w)} ${w}w`).join(', ')}" sizes="${ancho}"`;
   return `<div class="ph ${cls}"><img ${src} alt="${esc(alt)}" ${carga} decoding="async" onload="this.classList.add('ok')" onerror="this.remove()"></div>`;
 }
-const cab = (s, cls = '') => `<div class="sh ${cls}">${s.kicker ? `<span class="kick rv">${esc(s.kicker)}</span>` : ''}<h2 class="h2 parte">${s.titulo || ''}</h2></div>`;
+const cab = (s, cls = '') => `<div class="sh ${cls}"><h2 class="h2 parte">${s.titulo || ''}</h2></div>`;
+const ESTRELLAS = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg>'.repeat(5);
 const iniciales = n => n.split(' ').map(p => p[0]).slice(0, 2).join('');
 const num = t => { const m = String(t).match(/^([\d.]+)(.*)$/); return m ? `<b data-n="${m[1].replace('.', '')}" data-suf="${esc(m[2])}">${esc(t)}</b>` : `<b>${esc(t)}</b>`; };
 
@@ -159,11 +160,11 @@ const S = {
   opiniones: s => `
     <section class="sec alt"><div class="w">
       <div class="op-h">${cab(s)}
-        <div class="op-sum rv"><b>${esc(s.nota)}</b><div><span class="stars">★★★★★</span><small>${s.total} reseñas en Google</small></div></div>
+        <div class="op-sum rv"><b>${esc(s.nota)}</b><div><span class="stars" role="img" aria-label="5 estrellas">${ESTRELLAS}</span><small>${s.total} reseñas en Google</small></div></div>
       </div>
       <div class="ops">${s.items.map(([n, t], i) => `
         <figure class="op rv"><span class="q">${icono('quote')}</span><blockquote>${esc(t)}</blockquote>
-          <figcaption><span class="av av${i}">${esc(iniciales(n))}</span><span><b>${esc(n)}</b><small><span class="stars sm">★★★★★</span> hace ${[2, 5, 9][i]} días</small></span></figcaption></figure>`).join('')}</div>
+          <figcaption><span class="av av${i}">${esc(iniciales(n))}</span><span><b>${esc(n)}</b><small><span class="stars sm" role="img" aria-label="5 estrellas">${ESTRELLAS}</span> hace ${[2, 5, 9][i]} días</small></span></figcaption></figure>`).join('')}</div>
     </div></section>`,
 
   info: (s, p) => `
@@ -185,7 +186,7 @@ const S = {
 
   ventajas: s => `
     <section class="sec tight"><div class="w ventajas">
-      ${s.items.map(([ic, t, d], i) => `<div class="v rv"><span class="ve">${icono(ic)}</span><div><small>0${i + 1}</small><b>${esc(t)}</b><p>${esc(d)}</p></div></div>`).join('')}
+      ${s.items.map(([ic, t, d], i) => `<div class="v rv"><span class="ve">${icono(ic)}</span><div><b>${esc(t)}</b><p>${esc(d)}</p></div></div>`).join('')}
     </div></section>`,
 
   productos: s => `
@@ -199,7 +200,7 @@ const S = {
 
   proyectos: s => `
     <section class="sec sin-pie" id="${s.id || ''}"><div class="w">${cab(s, 'fila')}</div>
-      <div class="proys">${s.items.map(([n, d, img], i) => `<a class="proy rvi ${i % 3 === 0 ? 'ancho' : ''}" href="#">${foto(img, { ancho: i % 3 === 0 ? '100vw' : '50vw', alt: n })}<div class="proy-i"><small>0${i + 1}</small><b>${esc(n)}</b><em>${esc(d)}</em><span>${icono('arrow')}</span></div></a>`).join('')}</div>
+      <div class="proys">${s.items.map(([n, d, img], i) => `<a class="proy rvi ${i % 3 === 0 ? 'ancho' : ''}" href="#">${foto(img, { ancho: i % 3 === 0 ? '100vw' : '50vw', alt: n })}<div class="proy-i"><b>${esc(n)}</b><em>${esc(d)}</em><span>${icono('arrow')}</span></div></a>`).join('')}</div>
     </section>`,
 
   sobre: s => `
@@ -248,20 +249,20 @@ function hero(p) {
   if (h.tipo === 'imagen') return `
     <header class="hero img">
       <div class="hbg">${foto(h.img, { cls: 'kb', primero: true })}</div>
-      <div class="w hc"><span class="kick">${esc(h.kicker)}</span><h1 class="parte">${h.titulo}</h1><p>${esc(h.texto)}</p>${btns}</div>
+      <div class="w hc"><h1 class="parte">${h.titulo}</h1><p>${esc(h.texto)}</p>${h.kicker ? `<p class="hdato">${esc(h.kicker)}</p>` : ''}${btns}</div>
       ${h.meta ? `<div class="hstats">${h.meta.map(([i, t]) => `<span>${icono(i)} ${esc(t)}</span>`).join('')}<a class="hscroll" href="#s1" aria-label="Bajar">${icono('down')}</a></div>` : ''}
     </header>`;
   if (h.tipo === 'split') return `
     <header class="hero split">
-      <div class="hc"><span class="kick">${esc(h.kicker)}</span><h1 class="parte">${h.titulo}</h1><p>${esc(h.texto)}</p>${btns}</div>
+      <div class="hc"><h1 class="parte">${h.titulo}</h1><p>${esc(h.texto)}</p>${h.kicker ? `<p class="hdato">${esc(h.kicker)}</p>` : ''}${btns}</div>
       <div class="hv">${foto(h.img, { cls: 'kb', primero: true, ancho: '(max-width:980px) 100vw, 50vw' })}
         ${(h.badges || []).map(([i, b, t], k) => `<div class="badge bd${k}">${icono(i)}<div><b>${esc(b)}</b><span>${esc(t)}</span></div></div>`).join('')}
       </div>
     </header>`;
   return `
     <header class="hero big"><div class="w">
-      <span class="kick">${esc(h.kicker)}</span><h1 class="parte">${h.titulo}</h1>
-      <div class="hb"><p>${esc(h.texto)}</p>${btns}</div>
+      <h1 class="parte">${h.titulo}</h1>
+      <div class="hb"><p>${esc(h.texto)}</p>${h.kicker ? `<p class="hdato">${esc(h.kicker)}</p>` : ''}${btns}</div>
     </div><div class="hv wide">${foto(h.img, { cls: 'par', primero: true })}</div></header>`;
 }
 
@@ -301,7 +302,7 @@ export function pintarPlantilla(raiz, id, opciones = {}) {
     </div></nav>
     <div class="mnav" id="mnav">${links}<a class="b b1" href="#">${esc(p.hero.cta)}</a></div>
     ${hero(p)}
-    ${p.cinta ? `<div class="cinta" id="s1"><div class="ct">${[...p.cinta, ...p.cinta, ...p.cinta].map(w => `<span>${esc(w)}</span>`).join('')}</div></div>` : ''}
+    ${p.cinta ? `<div class="cinta" id="s1"><div class="ct">${p.cinta.map(w => `<span>${esc(w)}</span>`).join('')}</div></div>` : ''}
     ${p.secciones.map(s => S[s.tipo] ? S[s.tipo](s, { ...p, marca }) : '').join('')}
     <footer class="ft" id="${horario ? '' : 'contacto'}"><div class="w ft-g">
       <div><p class="ft-lema">${esc(p.hero.texto)}</p>
@@ -392,13 +393,13 @@ export function activarPlantilla(IC) {
             if (!w) return;
             if (/^\s+$/.test(w)) { frag.appendChild(d.createTextNode(' ')); return; }
             const o = d.createElement('span'); o.className = 'pw';
-            const t = d.createElement('span'); t.textContent = w; t.style.transitionDelay = `${i++ * 60}ms`;
+            const t = d.createElement('span'); t.textContent = w; t.style.transitionDelay = `${i++ * 35}ms`;
             o.appendChild(t); frag.appendChild(o);
           });
           ch.replaceWith(frag);
         } else if (ch.nodeType === 1 && ch.tagName !== 'BR') {
           const o = d.createElement('span'); o.className = 'pw';
-          ch.style.transitionDelay = `${i++ * 60}ms`;
+          ch.style.transitionDelay = `${i++ * 35}ms`;
           ch.replaceWith(o); o.appendChild(ch);
         }
       });

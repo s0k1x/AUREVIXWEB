@@ -54,7 +54,7 @@ html[data-tema=claro] .brand-card{--bg:#ffffff}
 html[data-tema=claro] .bg-stripes{background:linear-gradient(135deg,#f6f5f0 25%,#ebe9e2 25%,#ebe9e2 50%,#f6f5f0 50%,#f6f5f0 75%,#ebe9e2 75%,#ebe9e2)}
 html[data-tema=claro] .bg-bands{background:var(--bg2)}
 html[data-tema=claro] .splash{background:var(--bg)}
-html[data-tema=claro] .splash .brand-card{background:#ffffff;box-shadow:0 30px 80px rgba(0,0,0,.14)}
+html[data-tema=claro] .sp-nombre{content:url(../icons/nombre-oscuro.png)}
 html[data-tema=claro] .mp-dato{background:rgba(20,20,26,0.027)}
 html[data-tema=claro] .chat-fab{box-shadow:0 12px 26px -10px rgba(20,20,26,.35),0 3px 8px rgba(20,20,26,.15)}
 html[data-tema=claro] .chat-fab-ic,html[data-tema=claro] .chat-fab-x{background:rgba(246,245,240,.12)}
@@ -141,7 +141,7 @@ html[data-tema=claro] .btn-primary,html[data-tema=claro] .msg.yo,html[data-tema=
 html[data-tema=claro] .btn-dark{background:#16161b;color:var(--accent-oscuro,#c8f560)}
 html[data-tema=claro] .kpis .kpi:first-child{color:#fff}
 html[data-tema=claro] .kpis .kpi:first-child small,html[data-tema=claro] .kpis .kpi:first-child span{color:rgba(255,255,255,.78)}
-html[data-tema=claro] .wordmark,html[data-tema=claro] .brand-card .logo2 img,html[data-tema=claro] .splash-nombre{content:url(icons/nombre-oscuro.png)}
+html[data-tema=claro] .wordmark,html[data-tema=claro] .brand-card .logo2 img,html[data-tema=claro] .splash-nombre{content:url(../icons/nombre-oscuro.png)}
 html[data-tema=claro] .toast{background:#16161b;color:#fff}
 html[data-tema=claro] .header.scrolled,html[data-tema=claro] .header.open{border-color:var(--line)}
 html[data-tema=claro] .user-menu,html[data-tema=claro] .av-menu,html[data-tema=claro] .cookies,html[data-tema=claro] .chat-panel{box-shadow:0 24px 60px rgba(20,20,26,.16)}

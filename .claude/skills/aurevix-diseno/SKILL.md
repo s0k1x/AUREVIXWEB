@@ -12,14 +12,14 @@ fondos de colores por sección, degradados llamativos ni varios acentos a la vez
 
 ## Archivos
 
-- `style.css` — tokens y piezas base (botones, tarjetas, cabecera, formularios).
+- `css/style.css` — tokens y piezas base (botones, tarjetas, cabecera, formularios). Todas las hojas están en `css/`.
 - `componentes.css`, `funciones.css`, `widgets.css`, `inicio.css` — piezas por zona.
 - `pulido.css` — ajustes finos de movimiento y tipografía.
 - `tema-claro.css` — el mismo diseño en claro (`html[data-tema=claro]`).
-- `temporadas.css` + `js/temporada.js` — el acento cambia por temporada (Halloween,
+- `css/temporadas.css` + `js/temporada.js` — el acento cambia por temporada (Halloween,
   Navidad…). **Usa siempre `var(--accent)`**, nunca el verde escrito a mano.
-- `js/mascota.js` + `js/mascota-hojas.js` + `icons/asistente/` — el robot del asistente: dibujo por capas y hojas
-  de fotogramas por acción (las genera `scripts/generar-mascota.js`).
+- `js/mascota.js` — el robot del asistente: dibujo vectorial por capas animado en código (coreografías calculadas
+  fotograma a fotograma con física de muelles). Su color sale de `--m-luz`, `--m-halo` y `--m-logo` (Ajustes → Apariencia).
 
 ## Tokens (oscuro, por defecto)
 
@@ -88,7 +88,8 @@ Cada movimiento de la web con su nombre técnico. Antes de añadir uno nuevo, mi
 | Maqueta y tarjetas de precios | **3D tilt** + **Perspective** 1100 px | Muelle amortiguado sin bounce, solo con ratón |
 | Insignia de éxito | **Flip** (rotateY) + **Reveal** de brillo | Sin overshoot; con partículas que frenan (follow-through) |
 | Robot del asistente volando | **Shared element transition** | Sale del botón y se convierte en el avatar del chat; anticipation al despegar, squash & stretch al aterrizar |
-| Robot en reposo | **Idle animation** / **Float** | Hojas de fotogramas en **stepped animation** (`steps(n)` con números fijos) |
+| Robot en reposo | **Idle animation** / **Float** | Coreografía en código (`COREO` en `js/mascota.js`): respiración, cabeza con retraso, parpadeo al azar |
+| Pantalla de carga | **Fade in / Draw** | Logotipo y nombre suben y aparecen, una línea fina se completa; sin tarjeta |
 | «Escribiendo…» del chat | **Pulse** | Solo mientras la IA responde de verdad |
 | Precios y cifras | **Tabular numbers** | `font-variant-numeric: tabular-nums` |
 | Preguntas frecuentes | **Accordion / Collapse** | Única animación de altura permitida |

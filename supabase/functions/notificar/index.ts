@@ -2,9 +2,9 @@
 //  AVISOS COMO NOTIFICACIONES PUSH · función de Supabase
 //  Cada aviso nuevo de la campana (tabla «avisos») llama aquí
 //  desde la base de datos (disparador «aviso_por_correo», ver
-//  supabase/avisos-correo-v58.sql) y se manda como notificación a
+//  supabase/migraciones/avisos-correo-v58.sql) y se manda como notificación a
 //  los dispositivos en los que la persona las ha activado
-//  (tabla «push_subs», supabase/push-v68.sql), igual que un WhatsApp.
+//  (tabla «push_subs», supabase/migraciones/push-v68.sql), igual que un WhatsApp.
 //  - Desde v68 ya NO se mandan correos por avisos: el correo queda
 //    solo para facturas, recibos y códigos de acceso (función «correo»).
 //  - Solo si la persona tiene las notificaciones y ese tipo de aviso

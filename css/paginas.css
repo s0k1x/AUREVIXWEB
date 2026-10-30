@@ -250,3 +250,33 @@ html[data-tema=claro] .rv-cat.mal .rv-anillo,html[data-tema=claro] .rv-cat.mal .
   .guia-tabla td,.guia-tabla th{padding:12px 8px}
   .pg-otros{justify-content:flex-start}
 }
+/* Casos: captura de la web dentro de un portátil, que se desplaza despacio al pasar por encima (o al verse en el móvil) */
+.caso{padding:16px 16px 26px}
+.caso small,.caso h3,.caso p,.caso-url{margin-left:12px;margin-right:12px}
+.caso-disp{display:block;margin-bottom:14px;border:1px solid var(--line2);border-radius:12px;overflow:hidden;background:var(--card2)}
+.caso-bar{display:flex;gap:5px;padding:7px 10px;border-bottom:1px solid var(--line)}
+.caso-bar i{width:7px;height:7px;border-radius:50%;background:var(--line2)}
+.caso-pant{display:block;aspect-ratio:16/10;overflow:hidden}
+.caso-pant img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 0;transition:object-position 7s cubic-bezier(.45,0,.25,1)}
+.caso:hover .caso-pant img,.caso:focus-visible .caso-pant img{object-position:50% 100%;transition-duration:9s}
+@media (hover:none){.caso.in .caso-pant img{object-position:50% 100%;transition-delay:.6s;transition-duration:10s}}
+@media (prefers-reduced-motion:reduce){.caso-pant img{transition:none}}
+/* Revisa tu web: comparación con una web nuestra medida a la vez */
+.rv-cmp{display:grid;gap:10px;padding:18px;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.rv-cmp-cab,.rv-cmp-f{display:grid;grid-template-columns:minmax(110px,1fr) 2fr 2fr;gap:14px;align-items:center}
+.rv-cmp-cab small{font:500 11.5px var(--fm);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rv-cmp-f > span{font-size:14px;font-weight:600}
+.rv-cmp-b{position:relative;display:flex;align-items:center;gap:10px;height:28px}
+.rv-cmp-b i{flex:1;height:8px;border-radius:99px;background:var(--line);position:relative;overflow:hidden}
+.rv-cmp-b i::after{content:'';position:absolute;inset:0 auto 0 0;width:var(--v);border-radius:inherit;background:var(--c,var(--muted))}
+.rv-cmp-b i.bien{--c:var(--ok)}.rv-cmp-b i.medio{--c:var(--warn)}.rv-cmp-b i.mal{--c:var(--danger)}
+.rv-cmp-b b{width:30px;text-align:right;font-family:var(--fd);font-variant-numeric:tabular-nums}
+@media (max-width:560px){.rv-cmp-cab,.rv-cmp-f{grid-template-columns:1fr 1fr;row-gap:4px}.rv-cmp-cab span,.rv-cmp-f > span{grid-column:1/-1}}
+/* Portada: «¿Cómo está tu web actual?» */
+.rv-portada{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center;padding:clamp(22px,4vw,36px);border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.rv-portada h2{font-size:clamp(24px,3.4vw,32px);letter-spacing:-.02em;margin:0 0 8px}
+.rv-portada p{margin:0;color:var(--muted)}
+.rv-portada form{display:flex;gap:10px}
+.rv-portada input{flex:1;min-width:0;height:50px;padding:0 16px;border-radius:12px;border:1px solid var(--line2);background:var(--field);color:var(--text);font:inherit;font-size:16px}
+.rv-portada input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+@media (max-width:760px){.rv-portada{grid-template-columns:1fr}.rv-portada form{flex-direction:column}.rv-portada .btn{width:100%}}
