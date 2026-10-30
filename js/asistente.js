@@ -11,6 +11,7 @@ import * as store from './store.js';
 import { esc, icono, euros, mailLink } from './ui.js';
 import { planesActivos, extrasActivos } from './sitio.js';
 import { enIngles } from './idioma.js';
+import { mascotaHTML, estadoMascota, volar, seguirPuntero, precargar } from './mascota.js';
 
 const ajuste = CONFIG.asistente || { activo: true, nombre: 'Asistente', saludo: '' };
 
@@ -256,12 +257,12 @@ export function iniciarChat() {
   nodo.id = 'chat';
   nodo.innerHTML = `
     <button class="chat-fab" id="chatFab" aria-expanded="false" aria-controls="chatPanel">
-      <span class="chat-fab-ic">${icono('message')}</span><span class="chat-fab-x">${icono('x')}</span>
+      <span class="chat-fab-ic">${mascotaHTML('feliz')}</span><span class="chat-fab-x">${icono('x')}</span>
       <span class="chat-fab-t">¿Dudas? Pregúntanos</span>
     </button>
     <section class="chat-panel" id="chatPanel" role="dialog" aria-label="${esc(ajuste.nombre)}" aria-hidden="true">
       <header class="chat-h">
-        <span class="chat-av">${icono('sparkle')}</span>
+        <span class="chat-av">${mascotaHTML('normal')}</span>
         <div><b>${esc(ajuste.nombre)}</b><small><i></i><span id="chatEstado">${ia ? 'Responde al momento' : 'Respuestas automáticas'}</span></small></div>
         <button class="icon-btn" id="chatBorrar" aria-label="Empezar de nuevo" title="Empezar de nuevo" hidden>${icono('refresh')}</button>
         <button class="icon-btn" id="chatCerrar" aria-label="Cerrar">${icono('x')}</button>
@@ -308,13 +309,49 @@ export function iniciarChat() {
     borrar.hidden = !hilo.length;
     msgs.scrollTop = msgs.scrollHeight;
   };
+  /* La mascota del botón vuela hasta la cabecera del chat al abrirlo y vuelve al cerrarlo */
+  const mFab = fab.querySelector('.masc'), mAv = nodo.querySelector('.chat-av .masc');
+  seguirPuntero(); precargar();
+  setTimeout(() => estadoMascota(mFab, 'normal'), 2400); // el saludo inicial dura un momento
+  const caja = el => { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width }; };
+  let origen = null, vuelo = 0;
   const abrirChat = si => {
+    if (si === nodo.classList.contains('abierto')) return;
+    const mio = ++vuelo;
+    let desde = null, hasta = null;
+    if (si) {
+      // Dónde está el botón (si está oculto o fuera de pantalla, la esquina de abajo a la derecha)
+      const r = caja(mFab);
+      origen = { left: Math.min(Math.max(r.left, 0), innerWidth - r.width - 8), top: Math.min(r.top, innerHeight - r.width - 12), width: r.width };
+      desde = origen;
+    } else if (origen) { desde = caja(mAv); hasta = origen; }
     nodo.classList.toggle('abierto', si);
     // En el móvil el chat ocupa toda la pantalla: la página de debajo no se mueve
     document.documentElement.classList.toggle('chat-abierto', si);
     fab.setAttribute('aria-expanded', si);
     panel.setAttribute('aria-hidden', !si);
-    if (si) { pintar(); if (matchMedia('(hover:hover)').matches) setTimeout(() => input.focus({ preventScroll: true }), 250); }
+    if (si) {
+      pintar();
+      // Dónde quedará el avatar cuando el panel termine de abrirse (se mide sin su animación y se vuelve a empezar)
+      panel.style.transition = 'none'; panel.style.transform = 'none';
+      hasta = caja(mAv);
+      panel.style.opacity = '0'; panel.style.transform = 'translateY(16px) scale(.97)';
+      void panel.offsetWidth;
+      panel.style.transition = panel.style.opacity = panel.style.transform = '';
+    }
+    const [salta, aterriza] = si ? [mAv, mAv] : [mAv, mFab];
+    if (desde && hasta) {
+      salta.style.visibility = 'hidden'; aterriza.style.visibility = 'hidden';
+      estadoMascota(si ? mAv : mFab, 'feliz');
+      volar(desde, hasta, { ms: si ? 950 : 750 }).then(() => {
+        mAv.style.visibility = mFab.style.visibility = '';
+        if (mio !== vuelo) return;
+        const m = si ? mAv : mFab;
+        m.classList.add('aterriza'); setTimeout(() => m.classList.remove('aterriza'), 600);
+        estadoMascota(m, 'feliz', 1500);
+        if (si && matchMedia('(hover:hover)').matches) input.focus({ preventScroll: true });
+      });
+    } else if (si && matchMedia('(hover:hover)').matches) setTimeout(() => input.focus({ preventScroll: true }), 250);
   };
   fab.addEventListener('click', () => abrirChat(!nodo.classList.contains('abierto')));
   nodo.querySelector('#chatCerrar').addEventListener('click', () => abrirChat(false));
@@ -348,6 +385,7 @@ export function iniciarChat() {
     guardar(hilo);
     pintar();
     msgs.insertAdjacentHTML('beforeend', '<div class="msg el escribiendo" aria-label="Escribiendo"><i></i><i></i><i></i></div>');
+    estadoMascota(mAv, 'piensa');
     msgs.scrollTop = msgs.scrollHeight;
     let r = null;
     try { r = await respuestaRapida(texto); } catch (e) { console.warn(e); }
@@ -371,6 +409,7 @@ export function iniciarChat() {
     guardar(hilo);
     pintar();
     msgs.querySelectorAll('.msg.el').forEach((m, i, todos) => i === todos.length - 1 && m.classList.add('nuevo'));
+    estadoMascota(mAv, 'habla', Math.min(2600, 500 + r.texto.length * 14));
     ocupado = false;
   }
   nodo.querySelector('#chatForm').addEventListener('submit', e => { e.preventDefault(); const t = input.value; input.value = ''; enviar(t); });

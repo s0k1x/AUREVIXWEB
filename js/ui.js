@@ -14,6 +14,7 @@ import { aplicarApariencia, guardarApariencia } from './apariencia.js';
 import { campanaHTML, iniciarAvisos } from './avisos.js';
 import { iniciarDesplegables } from './desplegable.js';
 import { crearOtp } from './otp.js';
+import { transicionSesion } from './mascota.js';
 
 // Direcciones limpias: si alguien entra con «.html» (enlaces antiguos), la barra muestra la dirección bonita
 try {
@@ -448,9 +449,16 @@ document.addEventListener('click', e => {
   if (!e.target.closest('.user-wrap')) $('.user-menu')?.classList.remove('open');
   if (e.target.closest('[data-login]')) pedirLogin();
   if (e.target.closest('[data-logout]')) {
-    store.cerrarSesion().then(() => {
+    const nombre = store.usuarioActual()?.name;
+    // Se cierran los menús y la mascota se despide mientras se cierra la sesión
+    $$('.av-menu.open, .user-menu.open').forEach(m => m.classList.remove('open'));
+    $('#userBtn')?.classList.remove('open');
+    const fx = transicionSesion('sale', nombre);
+    store.cerrarSesion().catch(err => console.warn(err)).then(async () => {
+      await fx.minimo();
+      if (location.pathname.endsWith('panel')) { location.href = './'; return; }
+      fx.quitar();
       toast('Has cerrado sesión');
-      if (location.pathname.endsWith('panel')) location.href = './';
     });
   }
 });
@@ -633,7 +641,12 @@ function crearLogin() {
   store.alCambiarUsuario(u => {
     if (!u || !d.open) return;
     // Tras un código correcto se deja ver la ola verde antes de cerrar
-    setTimeout(() => { if (d.open) { cerrar(d); toast(`Sesión iniciada como ${u.name.split(' ')[0]}`, 'ok'); } }, d.dataset.exito ? 750 : 0);
+    setTimeout(() => {
+      if (!d.open) return;
+      cerrar(d);
+      // La mascota da la bienvenida (el diálogo ya está cerrado: si no, quedaría por encima)
+      setTimeout(() => { transicionSesion('entra', u.name).fin(); toast(`Sesión iniciada como ${u.name.split(' ')[0]}`, 'ok'); }, 120);
+    }, d.dataset.exito ? 750 : 0);
   });
   return d;
 }
@@ -728,7 +741,8 @@ function iniciarVelo() {
   document.body.appendChild(velo);
   const raiz = document.documentElement;
   const revisar = () => raiz.classList.toggle('menu-abierto', !!document.querySelector('.av-menu.open, .user-menu.open, #header.open'));
-  new MutationObserver(revisar).observe(document.getElementById('header') || document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  // También cuando un menú desaparece de la cabecera (al cerrar sesión se repinta): si no, el velo se quedaba pegado y la web borrosa
+  new MutationObserver(revisar).observe(document.getElementById('header') || document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
   velo.addEventListener('click', () => {
     document.querySelectorAll('.av-menu.open, .user-menu.open').forEach(m => m.classList.remove('open'));
     document.getElementById('userBtn')?.classList.remove('open');

@@ -1037,3 +1037,18 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
    - Los DNS no se tocan.
 6. **Comprobar:** abre https://aurevixweb.es y mira que todo va.
 7. **Solo entonces:** `aurevixweb` → *Settings* → *General* → *Danger Zone* → *Change visibility* → **Private**.
+
+## 49. Versión v70 — Mascota del asistente, animación de sesión y arreglo de la pantalla borrosa
+
+- **Arreglo:** al cerrar sesión desde el menú de la cuenta, la web se quedaba oscura y borrosa. El menú desaparecía al repintar la cabecera y el fondo oscurecido (`.menu-velo`) no se enteraba. Ahora `iniciarVelo()` (js/ui.js) también vigila cuándo desaparece un menú, y al cerrar sesión se cierran los menús antes.
+- **La mascota** (`js/mascota.js`, estilos al final de `funciones.css`):
+  - Es un robot blanco con casco, auriculares y luces verdes, **dibujado en SVG** (no es una foto), con cuerpo entero para poder animarlo: cabeza, brazos, piernas, ojos y llamas bajo los pies.
+  - Dos formas: **cara** (solo la cabeza en un disco: botón y cabecera del chat) y **cuerpo** (entero: vuelo y animación de sesión).
+  - Estados: normal, feliz (salta con los brazos arriba), saluda, habla, piensa (puntos sobre la cabeza), dormido, adiós, guiño y vuela.
+  - Vive sola: parpadea (a veces doble), mira a su aire, la cabeza y los ojos siguen el ratón o el dedo, y de vez en cuando sonríe. Va con temporizadores y transiciones CSS (sin animaciones infinitas ni filtros SVG) para que la página no se repinte sin parar y no gaste batería.
+  - En el chat: **piensa** mientras prepara la respuesta y **habla** mientras llega.
+  - Respeta «Reducir animaciones» y el ajuste del sistema.
+- **Vuelo al abrir y cerrar el asistente:** al pulsar el botón, el robot sale de él con el cuerpo entero, cruza la pantalla en arco, gira, se encoge y aterriza como avatar en la cabecera del chat. Al cerrar, hace el camino de vuelta. Se dibuja ya al tamaño máximo y solo se reduce, moviéndose únicamente con `transform` (tarjeta gráfica), así va fluido.
+- **Animación al iniciar y cerrar sesión** (`transicionSesion` en js/mascota.js, usada desde js/ui.js): al entrar, el robot salta, saluda y suelta chispas con «¡Hola, Nombre!»; al salir, se despide con la mano, se duerme y pone «Hasta pronto». Dura lo justo (unos 2 segundos) y nunca se queda pegada (se quita sola a los 9 s).
+- **Pruebas:** `tests/pruebas.mjs` ahora comprueba (ordenador y móvil) que el asistente se abre y la mascota aterriza, que vuelve al botón, que iniciar y cerrar sesión funcionan con la animación y que no queda nada borroso. 58 comprobaciones.
+- `sw.js` sube a v70 y guarda `js/mascota.js` y `icons/logo-a-verde.png`.
