@@ -11,7 +11,8 @@ import * as store from './store.js';
 import { esc, icono, euros, mailLink } from './ui.js';
 import { planesActivos, extrasActivos } from './sitio.js';
 import { enIngles } from './idioma.js';
-import { mascotaHTML, estadoMascota, volar, rebote, seguirPuntero, precargar } from './mascota.js';
+import { mascotaHTML, estadoMascota, volar, rebote, seguirPuntero, precargar, paletaAsistente, colorAsistente } from './mascota.js';
+import { leerApariencia } from './apariencia.js';
 
 const ajuste = CONFIG.asistente || { activo: true, nombre: 'Asistente', saludo: '' };
 
@@ -264,9 +265,11 @@ export function iniciarChat() {
       <header class="chat-h">
         <span class="chat-av">${mascotaHTML('normal')}</span>
         <div><b>${esc(ajuste.nombre)}</b><small><i></i><span id="chatEstado">${ia ? 'Responde al momento' : 'Respuestas automáticas'}</span></small></div>
+        <button class="icon-btn" id="chatColor" aria-label="Cambiar el color del asistente" title="Color del asistente" aria-expanded="false" aria-controls="chatPaleta">${icono('palette')}</button>
         <button class="icon-btn" id="chatBorrar" aria-label="Empezar de nuevo" title="Empezar de nuevo" hidden>${icono('refresh')}</button>
         <button class="icon-btn" id="chatCerrar" aria-label="Cerrar">${icono('x')}</button>
       </header>
+      <div class="chat-paleta" id="chatPaleta" hidden><p>Elige mi color</p>${paletaAsistente()}</div>
       <div class="chat-msgs" id="chatMsgs" aria-live="polite"></div>
       <div class="chat-rapidas" id="chatRapidas"></div>
       <form class="chat-form" id="chatForm" autocomplete="off">
@@ -356,6 +359,15 @@ export function iniciarChat() {
   fab.addEventListener('click', () => abrirChat(!nodo.classList.contains('abierto')));
   nodo.querySelector('#chatCerrar').addEventListener('click', () => abrirChat(false));
   borrar.addEventListener('click', () => { hilo = []; guardar(hilo); pintar(); });
+  // Color del asistente: se cambia al momento en todas sus apariciones (y en Ajustes → Apariencia)
+  const bColor = nodo.querySelector('#chatColor'), paleta = nodo.querySelector('#chatPaleta');
+  bColor.addEventListener('click', () => { paleta.hidden = !paleta.hidden; bColor.setAttribute('aria-expanded', !paleta.hidden); });
+  paleta.addEventListener('change', e => {
+    if (e.target.name !== 'asistente') return;
+    colorAsistente(e.target.value);
+    estadoMascota(mAv, 'asombro', 1300);
+    if (store.usuarioActual()) store.guardarPerfil({ datos: { apariencia: { ...leerApariencia(), asistente: e.target.value } } }).catch(() => {});
+  });
   nodo.querySelector('#chatPersona').addEventListener('click', () => enviar('Quiero hablar con una persona'));
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && nodo.classList.contains('abierto')) abrirChat(false); });
   document.addEventListener('click', e => { if (e.target.closest('[data-abrir-chat]')) { e.preventDefault(); abrirChat(true); } });

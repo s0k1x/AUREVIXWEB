@@ -10,6 +10,7 @@ import { CONFIG, PLANES, EXTRAS } from '../config.js';
 import * as store from './store.js';
 import { $, $$, esc, euros, icono, toast, arrancar, pedirLogin, ocupado, campo, interruptor, etiquetas, avatar, descargar, ROLES } from './ui.js';
 import { leerApariencia, guardarApariencia } from './apariencia.js';
+import { paletaAsistente, mascotaHTML, estadoMascota } from './mascota.js';
 import { abrirCookies, consentimiento } from './cookies.js';
 import { ORIGINAL, ajustesActuales, guardarAjustesWeb } from './sitio.js';
 import { TEMPORADAS, temporadaPorFecha, aplicarTemporada } from './temporada.js';
@@ -244,6 +245,8 @@ async function apariencia() {
       <div class="aj-ops tres">${opc('tema', 'oscuro', 'Oscuro', 'moon', a.tema === 'oscuro')}${opc('tema', 'claro', 'Claro', 'sun', a.tema === 'claro')}${opc('tema', 'sistema', 'Automático', 'smartphone', a.tema === 'sistema')}</div>`)
     + bloque('Tamaño de la letra', '', `
       <div class="aj-ops cuatro">${[['pequeno', 'Pequeña'], ['normal', 'Normal'], ['grande', 'Grande'], ['muygrande', 'Muy grande']].map(([v, t], i) => `<label class="aj-op"><input type="radio" name="texto" value="${v}" ${a.texto === v ? 'checked' : ''}><span><b style="font-size:${13 + i * 3}px">Aa</b><small>${t}</small></span></label>`).join('')}</div>`)
+    + bloque('Color del asistente', 'El robot de ayuda se ilumina del color que elijas: ojos, luces y propulsores.', `
+      <div class="aj-masc"><div class="aj-masc-ver">${mascotaHTML('normal')}</div>${paletaAsistente(a.asistente)}</div>`)
     + bloque('Accesibilidad', '', `
       ${interruptor({ id: 'movimiento', titulo: 'Reducir animaciones', texto: 'Quita movimientos y transiciones de la web', checked: a.movimiento === 'reducido' })}
       ${interruptor({ id: 'contraste', titulo: 'Más contraste', texto: 'Textos y bordes más marcados', checked: !!a.contraste })}
@@ -251,8 +254,10 @@ async function apariencia() {
   const guardar = async () => {
     const nueva = guardarApariencia({
       tema: $('input[name=tema]:checked').value, texto: $('input[name=texto]:checked').value,
-      movimiento: $('#movimiento').checked ? 'reducido' : 'normal', contraste: $('#contraste').checked
+      movimiento: $('#movimiento').checked ? 'reducido' : 'normal', contraste: $('#contraste').checked,
+      asistente: $('input[name=asistente]:checked')?.value || 'lima'
     });
+    estadoMascota($('.aj-masc .masc'), 'feliz', 1100);
     if (U) store.guardarPerfil({ datos: { apariencia: nueva } }).catch(() => {});
     toast('Apariencia actualizada', 'ok');
   };
@@ -310,6 +315,10 @@ async function negocio() {
     ${bloque('Temporada', 'Colores y ambiente de la web para cada época del año. «Automática» cambia sola según la fecha. Al pulsar una la ves aquí mismo; se aplica a todos al guardar.', `
       <div class="tp-grid" role="radiogroup" aria-label="Temporada">${[['', 'Ninguna', 'Los colores de siempre', ['#c8f560', '#16161b']], ['auto', 'Automática', `Ahora: ${TEMPORADAS[temporadaPorFecha()]?.nombre || 'ninguna'}`, ['#c8f560', '#ff8a1f']], ...Object.entries(TEMPORADAS).map(([k, t]) => [k, t.nombre, t.desc, t.muestra])]
         .map(([k, n, d, m]) => `<label class="tp-op"><input type="radio" name="temporada" value="${k}" ${(a.temporada || '') === k ? 'checked' : ''}><span class="tp-in"><i class="tp-muestra" style="--a:${m[0]};--b:${m[1]}"></i><b>${esc(n)}</b><small>${esc(d)}</small></span></label>`).join('')}</div>`)}
+    ${bloque('Estado de la web', 'Para los visitantes y los clientes. Tú y los trabajadores veis siempre la web normal.', `
+      <div class="aj-ops tres aj-estado">${[['normal', 'Normal', 'Todo funciona', 'check'], ['demo', 'Demostración', 'Se puede probar todo, pero no se guardan pedidos, pagos ni mensajes', 'flask'], ['mantenimiento', 'Mantenimiento', 'Pantalla de espera con el robot; no se puede usar la web', 'tool']]
+        .map(([k, t, d, ic]) => `<label class="aj-op"><input type="radio" name="estadoWeb" value="${k}" ${(a.estadoWeb || 'normal') === k ? 'checked' : ''}><span>${icono(ic)}<b>${t}</b><small>${d}</small></span></label>`).join('')}</div>
+      ${campo({ id: 'f_mensajeMant', name: 'mensajeMant', label: 'Mensaje de mantenimiento (opcional)', type: 'textarea', value: a.mensajeMant || '', attrs: 'maxlength="240" rows="2"', hint: 'Ej.: Volvemos hoy a las 18:00 con novedades.' })}`)}
     ${bloque('Portada y pedidos', 'Lo que ven los visitantes al entrar.', `
       ${texto('aviso', 'Texto de la píldora de la portada', a.aviso, 'maxlength="70"', 'Ej.: Plazas abiertas para nuevos proyectos este mes')}
       ${interruptor({ id: 'anuncioActivo', titulo: 'Mostrar franja de aviso arriba del todo', texto: 'Para ofertas, vacaciones o cambios de horario', checked: a.anuncio.activo })}
@@ -392,7 +401,7 @@ async function negocio() {
     if (!confirm('¿Volver a los precios, plazos y textos originales de config.js?')) return;
     const o = ORIGINAL.config;
     await guardar({
-      aviso: o.aviso, anuncio: o.anuncio, aceptarPedidos: o.aceptarPedidos, mensajeCerrado: o.mensajeCerrado, horario: o.horario, respuesta: o.respuesta, email: o.email,
+      estadoWeb: 'normal', mensajeMant: '', aviso: o.aviso, anuncio: o.anuncio, aceptarPedidos: o.aceptarPedidos, mensajeCerrado: o.mensajeCerrado, horario: o.horario, respuesta: o.respuesta, email: o.email,
       senal: o.senal, comision: o.comision, urgente: o.urgente, temporada: o.temporada, pagos: o.pagos, trustpilot: o.trustpilot, referidos: o.referidos, casos: CONFIG.casos || [], turnstile: { ...CONFIG.turnstile }, bienvenida: o.bienvenida, videos: o.videos, redes: o.redes, asistente: { activo: o.asistente.activo, saludo: o.asistente.saludo },
       planes: Object.fromEntries(ORIGINAL.planes.map(p => [p.id, { precio: p.precio, entrega: p.entrega, dias: p.dias, activo: true, popular: !!p.popular }])),
       extras: Object.fromEntries(ORIGINAL.extras.map(x => [x.id, { precio: x.precio, activo: true }]))
@@ -420,7 +429,10 @@ async function negocio() {
     const casoMal = casos.find(c => !c.nombre || !/^https:\/\/\S+\.\S+$/i.test(c.url));
     if (casoMal) return toast('Cada caso necesita nombre y una dirección que empiece por https://', 'err');
     if (v('tpCco') && !/^\S+@\S+\.\S+$/.test(v('tpCco'))) return toast('Revisa la dirección de invitaciones de Trustpilot', 'err');
+    const estadoWeb = v('estadoWeb') || 'normal';
+    if (estadoWeb === 'mantenimiento' && CONFIG.estadoWeb !== 'mantenimiento' && !confirm('¿Poner la web en mantenimiento? Los visitantes y los clientes no podrán usarla hasta que vuelvas a «Normal». Tú y los trabajadores la seguiréis viendo.')) return;
     await guardar({
+      estadoWeb, mensajeMant: v('mensajeMant'),
       aviso: v('aviso') || ORIGINAL.config.aviso, anuncio: { activo: $('#anuncioActivo').checked, texto: v('anuncioTexto') },
       aceptarPedidos: $('#aceptarPedidos').checked, mensajeCerrado: v('mensajeCerrado'),
       email: v('email') || CONFIG.email, horario: v('horario'), respuesta: v('respuesta'),

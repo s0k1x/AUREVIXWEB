@@ -1,6 +1,7 @@
 /* ==========================================================
    Pagos y reseñas del cliente
    ========================================================== */
+import { fiesta } from './mascota.js';
 import { CONFIG } from '../config.js';
 import * as store from './store.js';
 import { etapaDe } from './proyecto.js';
@@ -123,6 +124,7 @@ export function abrirPago(p, fase = faseDePago(p), alTerminar = () => {}) {
           <button class="btn btn-ghost w100" data-close type="button">Cerrar</button>
         </div>`;
       celebrar(body.querySelector('.ok-ic'));
+      fiesta('¡Aviso de pago enviado!', `Lo confirmamos en cuanto llegue ${que}`);
       alTerminar(p);
     } catch (err) {
       toast(err.message || 'No se pudo avisar del pago', 'err');

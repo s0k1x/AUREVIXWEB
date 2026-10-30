@@ -12,7 +12,7 @@
    - Fotos de los diseños: se guardan la primera vez y después
      salen al instante.
    ========================================================== */
-const VERSION = 'v89';
+const VERSION = 'v91';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
@@ -23,7 +23,7 @@ const ARCHIVOS = [
   'js/vendor/supabase.js', 'js/sinzoom.js', 'js/iconos.js', 'js/asistente.js', 'js/proyecto.js', 'js/negocio.js', 'js/seo.js', 'js/sitio.js', 'js/cookies.js', 'js/apariencia.js', 'js/avisos.js', 'js/colabora.js', 'js/ajustes.js', 'js/otp.js', 'js/calculadora.js', 'js/validar.js', 'js/dominio.js', 'js/idioma.js', 'js/idioma-en.js', 'js/publica.js', 'js/vistaweb.js', 'js/vista.js', 'js/desplegable.js', 'js/zip.js', 'js/brief.js', 'js/temporada.js', 'js/push.js', 'js/verificacion.js', 'js/presupuesto.js',
   'ajustes', 'funciones.css', 'widgets.css', 'tema-claro.css', 'pulido.css', 'temporadas.css', 'iconos-vivos.css', 'paginas.css', 'js/pagina.js', 'icons/nombre-oscuro.png',
   'fuentes/fuentes.css', 'fuentes/instrument-sans-latin-046090.woff2', 'fuentes/instrument-sans-latin-ext-284bb9.woff2', 'fuentes/bricolage-grotesque-latin-a97232.woff2', 'fuentes/bricolage-grotesque-latin-ext-a4fe79.woff2', 'fuentes/jetbrains-mono-latin-f70309.woff2', 'fuentes/jetbrains-mono-latin-ext-a83f17.woff2',
-  'manifest.json', 'icons/logo-a.png', 'icons/logo-a-verde.png', 'js/mascota.js', 'js/borradores.js', 'js/inclinar.js', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
+  'manifest.json', 'icons/logo-a.png', 'icons/logo-a-verde.png', 'js/mascota.js', 'js/estado-web.js', 'js/borradores.js', 'js/inclinar.js', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', e => {

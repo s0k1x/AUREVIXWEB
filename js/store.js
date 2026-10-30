@@ -353,6 +353,7 @@ const borrar = async (tabla, id) => comprobar(await limite(sb.from(tabla).delete
 
 /* ---------- Pedidos ---------- */
 export async function crearPedido(datos) {
+  webAbierta();
   const u = necesitaUsuario();
   const p = {
     ...datos, uid: u.uid, clienteNombre: u.name, clienteEmail: u.email,
@@ -410,6 +411,7 @@ export async function borrarPedido(id) {
 
 /* ---------- Candidaturas (Trabaja con nosotros) ---------- */
 export async function enviarCandidatura(datos) {
+  webAbierta();
   const u = necesitaUsuario();
   const c = { ...datos, uid: u.uid, email: u.email, estado: 'pendiente', createdAt: Date.now() };
   if (modoDemo) {
@@ -503,6 +505,7 @@ export async function cambiarRol(uid, role) {
    El cliente solo puede avisar de que ha pagado (pagoEstado → 'verificando').
    El propietario o un trabajador lo confirma desde el panel. */
 export async function avisarPago(id, { metodo, fase }) {
+  webAbierta();
   const cambios = { pagoEstado: 'verificando', pagoMetodo: metodo, pagoFase: fase, pagoAviso: Date.now() };
   await actualizarPedido(id, cambios);
   return cambios;
@@ -510,6 +513,7 @@ export async function avisarPago(id, { metodo, fase }) {
 
 /* ---------- Reseñas ---------- */
 export async function crearResena({ estrellas, texto, plan, pedidoId }) {
+  webAbierta();
   const u = necesitaUsuario();
   const r = { uid: u.uid, nombre: u.name, estrellas, texto, plan, pedidoId, aprobada: false, createdAt: Date.now() };
   let creada;
@@ -576,6 +580,12 @@ export async function preguntarIA(cuerpo) {
    PERFIL, CUENTA Y PRIVACIDAD
    ========================================================== */
 const esEquipo = () => usuario && (usuario.role === 'owner' || usuario.role === 'worker');
+/** Web en demostración o en mantenimiento (Ajustes → Negocio): los visitantes y los clientes no guardan nada. El equipo, sí. */
+function webAbierta() {
+  const e = CONFIG.estadoWeb || 'normal';
+  if (e === 'normal' || esEquipo()) return;
+  throw new Error(e === 'demo' ? 'La web está en modo demostración: puedes probarlo todo, pero no se ha guardado nada.' : 'La web está en mantenimiento. Vuelve en un rato.');
+}
 
 /** Cambia nombre, foto y datos no sensibles del perfil (disponibilidad, objetivo, preferencias…) */
 export async function guardarPerfil({ name, photo, datos } = {}) {
@@ -690,6 +700,7 @@ export async function mensajesDe(pedidoId) {
   return filas.map(mensajeDe);
 }
 export async function enviarMensaje(pedidoId, texto, extra = {}) {
+  webAbierta();
   const u = necesitaUsuario();
   const datos = { autor: u.name, rol: u.role, texto, createdAt: Date.now(), ...extra };
   if (modoDemo) {
@@ -718,6 +729,7 @@ export function escucharMensajes(pedidoId, cb) {
    SOPORTE Y CONTACTO
    ========================================================== */
 export async function crearTicket({ tipo = 'duda', asunto, mensaje, pedido = '', nombre = '', email = '' }) {
+  webAbierta();
   const u = usuario;
   const t = { tipo, asunto, mensaje, pedido, nombre: u?.name || nombre, email: u?.email || email, estado: 'abierto', respuestas: [], createdAt: Date.now() };
   if (modoDemo) {

@@ -21,6 +21,7 @@ export const ORIGINAL = {
 /** Ajustes actuales en el formato que se guarda */
 export function ajustesActuales() {
   return {
+    estadoWeb: CONFIG.estadoWeb || 'normal', mensajeMant: CONFIG.mensajeMant || '',
     aviso: CONFIG.aviso, anuncio: { ...CONFIG.anuncio }, aceptarPedidos: CONFIG.aceptarPedidos, mensajeCerrado: CONFIG.mensajeCerrado,
     horario: CONFIG.horario, respuesta: CONFIG.respuesta, email: CONFIG.email,
     senal: CONFIG.senal, comision: CONFIG.comision, urgente: CONFIG.urgente,
@@ -36,6 +37,10 @@ function aplicar(a) {
   const num = (v, def) => (Number.isFinite(+v) && v !== '' && v !== null ? +v : def);
   const txt = (v, def) => (typeof v === 'string' ? v : def);
   CONFIG.aviso = txt(a.aviso, CONFIG.aviso);
+  // Estado de la web: normal · demo (se puede probar todo pero no se guarda nada) · mantenimiento (pantalla de espera).
+  // No afecta al propietario ni a los trabajadores (ver js/estado-web.js)
+  CONFIG.estadoWeb = ['normal', 'demo', 'mantenimiento'].includes(a.estadoWeb) ? a.estadoWeb : 'normal';
+  CONFIG.mensajeMant = txt(a.mensajeMant, '').slice(0, 240);
   // Los objetos se actualizan «en su sitio» (Object.assign): así los módulos que ya los tenían leídos ven los datos nuevos
   if (a.anuncio) Object.assign(CONFIG.anuncio, { activo: !!a.anuncio.activo, texto: txt(a.anuncio.texto, '') });
   if (typeof a.aceptarPedidos === 'boolean') CONFIG.aceptarPedidos = a.aceptarPedidos;

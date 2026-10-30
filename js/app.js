@@ -1,6 +1,7 @@
 /* ==========================================================
    Página de inicio: planes, diseños, opiniones, compra y mis pedidos
    ========================================================== */
+import { fiesta } from './mascota.js';
 import { CONFIG, PLANES, EXTRAS, COMPARATIVA } from '../config.js';
 import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from './store.js';
@@ -1076,6 +1077,7 @@ function exito(p) {
       <p class="muted exito-nota">En «Mis proyectos» puedes elegir el dominio, subir tus fotos y hablar con el equipo.</p>
     </div>`;
   requestAnimationFrame(() => confeti(form.querySelector('.ok-ic')));
+  setTimeout(() => fiesta('¡Pedido recibido!', 'Ya estamos con tu web'), 450);
   $('#verPedidos').addEventListener('click', () => { cerrar(dlg); abrirPedidos(p.id); });
   $('[data-pagar]', form)?.addEventListener('click', e =>
     animarYPagar(e.currentTarget, () => abrirPago(p, 'senal', () => {
@@ -1566,6 +1568,7 @@ async function verPropuesta(p) {
       if (!await guardarProyecto(p, aprobarWeb(p), 'Web aprobada. Solo falta el pago final para publicarla.', null, `Versión ${v.n} aprobada`)) throw new Error(''); // el aviso del fallo ya lo enseña guardarProyecto
       cerrarVisor();
       confeti();
+      fiesta('¡Web aprobada!', 'Solo falta el pago final para publicarla');
     },
     alCambios: async (_w, texto, pagina) => {
       if (!await guardarProyecto(p, pedirCambios(p, texto, { pagina }), 'Cambios enviados. Te avisaremos cuando estén hechos.')) throw new Error('');

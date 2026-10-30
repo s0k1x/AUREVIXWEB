@@ -1310,3 +1310,26 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - Al bajar se da la vuelta y cae de cabeza, con los brazos por delante como en un clavado.
   - Antes de llegar se endereza con un golpe de propulsores y aterriza de pie.
 - Las mascotas que no se ven se pausan para no gastar batería. Con «reducir movimiento» se quedan en su pose fija.
+
+### v90–v91: color del asistente, celebraciones y estado de la web
+- **Color del asistente:**
+  - 9 colores: lima, cian, azul, violeta, rosa, rojo, naranja, oro y blanco.
+  - Se elige en Ajustes → Apariencia o con el botón de la paleta de la cabecera del chat.
+  - Cambian los ojos, los neones, el logotipo, los propulsores y la estela. El color viaja con la cuenta.
+  - Técnica: variables `--m-luz`, `--m-halo` y `--m-logo` (`js/apariencia.js` → `COLORES_ASISTENTE`). El logotipo es el PNG usado como máscara, y el color lo ponen las variables.
+- **Celebración** (`fiesta()` en `js/mascota.js`), solo en tres momentos: aviso de pago enviado, pedido recibido y web aprobada.
+  - El robot sale volando del botón con una estela arcoíris.
+  - Se pone en grande con los ojos enormes en arcoíris (estado «asombro»), suelta una explosión de chispas y enseña un bocadillo con el mensaje.
+  - Vuelve en picado a su botón.
+  - Va por encima de los diálogos (capa popover) y no bloquea nada.
+- **Más fluidez:**
+  - Parpadeo con curva realista.
+  - Mirada con un pequeño rebote al llegar; la cabeza sigue al ratón con inercia.
+  - Vuelos a 140 fotogramas.
+- **Estado de la web** (Ajustes → Negocio → «Estado de la web»): normal, demostración o mantenimiento. Nunca afecta al propietario ni a los trabajadores, ni a las webs publicadas de los clientes.
+  - **Demostración:** aparece una franja de aviso. Se puede probar todo, pero `js/store.js` no guarda pedidos, pagos, mensajes, consultas, candidaturas ni reseñas.
+  - **Mantenimiento** (`js/estado-web.js`):
+    - Pantalla completa con el robot dando volteretas. Al tocarlo se asombra, bota y suelta chispas; de vez en cuando saluda.
+    - Se puede escribir un mensaje opcional. Hay un enlace discreto de «Acceso del equipo»: al entrar el propietario o un trabajador, la pantalla desaparece.
+    - El freno de `store.js` también actúa aunque alguien quite la pantalla desde el navegador.
+    - Límite: es una web estática, así que una persona experta podría escribir directamente en la base de datos con su sesión. Para un cierre total habría que añadir la comprobación en SQL.
