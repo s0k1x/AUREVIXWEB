@@ -424,6 +424,7 @@ export function trayecto(de, a, { ms = 1100, deCara = false, aCara = false } = {
    dos animaciones por pasos de translate/transform (la tarjeta gráfica, nunca el hilo principal).
    Mientras una hoja no ha llegado se ve el dibujo en vector, así que nunca hay un hueco. */
 const RUTA_HOJAS = 'icons/asistente/';
+const V_HOJAS = '?v=2'; // súbelo al regenerar las hojas (v2: fondo transparente de verdad, sin el velo de grano)
 const QUE_HOJA = {
   cara: { normal: 'cara-normal', habla: 'cara-habla', piensa: 'cara-piensa', feliz: 'cara-feliz', saluda: 'cara-feliz', guino: 'cara-feliz' },
   cuerpo: { saluda: 'cuerpo-saluda', adios: 'cuerpo-saluda', feliz: 'cuerpo-feliz', vuela: 'cuerpo-vuela' }
@@ -438,7 +439,7 @@ export function cargarHoja(id) {
       i.decoding = 'async';
       i.onload = () => (i.decode ? i.decode().catch(() => {}) : Promise.resolve()).then(() => ok(true));
       i.onerror = () => { hojas.delete(id); ok(false); };
-      i.src = RUTA_HOJAS + id + '.webp';
+      i.src = RUTA_HOJAS + id + '.webp' + V_HOJAS;
     }));
   }
   return hojas.get(id);
@@ -452,7 +453,7 @@ export function precargarHojas(...ids) {
 /** La hoja colocada justo encima del dibujo (mismo tamaño y posición que el robot en vector) */
 function hojaHTML(id) {
   const h = HOJAS[id], c = h.caja;
-  return `<span class="masc-fr" data-hoja="${id}" aria-hidden="true" style="width:${(100 / c.w).toFixed(3)}%;left:${(-100 * c.x / c.w).toFixed(3)}%;top:${(-100 * c.y / c.h).toFixed(3)}%;aspect-ratio:${h.w}/${h.h};--c:${h.cols};--f:${h.filas};--ms:${h.ms}ms"><img class="fr-hoja" src="${RUTA_HOJAS + id}.webp" alt="" draggable="false" style="animation:fr-x ${(h.ms / h.filas).toFixed(2)}ms steps(${h.cols}) infinite,fr-y ${h.ms}ms steps(${h.filas}) infinite"></span>`;
+  return `<span class="masc-fr" data-hoja="${id}" aria-hidden="true" style="width:${(100 / c.w).toFixed(3)}%;left:${(-100 * c.x / c.w).toFixed(3)}%;top:${(-100 * c.y / c.h).toFixed(3)}%;aspect-ratio:${h.w}/${h.h};--c:${h.cols};--f:${h.filas};--ms:${h.ms}ms"><img class="fr-hoja" src="${RUTA_HOJAS + id}.webp${V_HOJAS}" alt="" draggable="false" style="animation:fr-x ${(h.ms / h.filas).toFixed(2)}ms steps(${h.cols}) infinite,fr-y ${h.ms}ms steps(${h.filas}) infinite"></span>`;
 }
 /** Pone la hoja que toca según el estado de la mascota (o vuelve al vector si esa acción no tiene hoja) */
 function aplicarHoja(m) {

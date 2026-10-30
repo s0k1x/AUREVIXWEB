@@ -109,7 +109,7 @@ const HOJAS = [
   // Página mínima con los estilos de la web: dibuja rápido
   await p.goto(BASE + '/404.html').catch(() => {});
   await p.setContent(`<!doctype html><html><head><base href="${BASE}/"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="funciones.css">
-    <style>html,body{background:transparent!important;margin:0}.masc,.masc *{animation:none!important;transition:none!important}#lab{position:fixed;left:0;top:0}</style></head><body><div id="lab"></div></body></html>`);
+    <style>html,body{background:transparent!important;margin:0}body::before,body::after{display:none!important;content:none!important}.masc,.masc *{animation:none!important;transition:none!important}#lab{position:fixed;left:0;top:0}</style></head><body><div id="lab"></div></body></html>`);
   await p.waitForTimeout(400);
   const indice = fs.existsSync(path.join(SALIDA, 'indice.json')) ? JSON.parse(fs.readFileSync(path.join(SALIDA, 'indice.json'), 'utf8')) : {};
   for (const H of HOJAS) {
