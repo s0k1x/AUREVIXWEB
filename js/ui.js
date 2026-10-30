@@ -493,7 +493,7 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-login]')) pedirLogin();
   if (e.target.closest('[data-logout]')) {
     const nombre = store.usuarioActual()?.name;
-    // Se cierran los menús y la mascota se despide mientras se cierra la sesión
+    // Se cierran los menús y aparece la tarjeta de despedida mientras se cierra la sesión
     $$('.av-menu.open, .user-menu.open').forEach(m => m.classList.remove('open'));
     $('#userBtn')?.classList.remove('open');
     const fx = transicionSesion('sale', nombre);
@@ -501,7 +501,6 @@ document.addEventListener('click', e => {
       await fx.minimo();
       if (location.pathname.endsWith('panel')) { location.href = './'; return; }
       fx.quitar();
-      toast('Has cerrado sesión');
     });
   }
 });
@@ -690,8 +689,8 @@ function crearLogin() {
     setTimeout(() => {
       if (!d.open) return;
       cerrar(d);
-      // La mascota da la bienvenida (el diálogo ya está cerrado: si no, quedaría por encima)
-      setTimeout(() => { transicionSesion('entra', u.name).fin(); toast(`Sesión iniciada como ${u.name.split(' ')[0]}`, 'ok'); }, 120);
+      // Tarjeta de bienvenida (el diálogo ya está cerrado: si no, quedaría por encima)
+      setTimeout(() => transicionSesion('entra', u.name).fin(), 120); // la tarjeta ya lo anuncia (también al lector de pantalla)
     }, d.dataset.exito ? 750 : 0);
   });
   return d;

@@ -1333,3 +1333,18 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
     - Se puede escribir un mensaje opcional. Hay un enlace discreto de «Acceso del equipo»: al entrar el propietario o un trabajador, la pantalla desaparece.
     - El freno de `store.js` también actúa aunque alguien quite la pantalla desde el navegador.
     - Cierre también en el servidor: `supabase/estado-web-v91.sql` (disparador `web_cerrada`) rechaza escribir en pedidos, consultas, mensajes, candidaturas, reseñas y vídeos mientras la web esté en demostración o mantenimiento, salvo al equipo y a las funciones del servidor.
+
+### v92: el robot, sutil y elegante fuera del chat
+- **El chat no cambia** (botón, cabecera y vuelo del botón a la cabecera).
+- **Iniciar y cerrar sesión:**
+  - Sale una tarjeta pequeña en el centro, sobre un velo suave, con la cara del robot en un anillo fino del color del asistente, el saludo y una línea de progreso.
+  - Al entrar sonríe. Al salir sonríe y cierra los ojos.
+  - Ya no hay pantalla completa, ni vuelo, ni chispas, ni el aviso duplicado de «Sesión iniciada».
+- **Momentos importantes** (pago enviado, pedido recibido, web aprobada):
+  - `fiesta()` muestra una notificación discreta arriba, con la cara del robot sonriendo, el mensaje y una línea que se completa.
+  - Se va sola y va por encima de los diálogos.
+  - Fuera el arcoíris, la estela y la pantalla oscura.
+- **Mantenimiento:**
+  - Página limpia: el robot más pequeño flotando, una etiqueta «Mantenimiento», el título, el mensaje y el correo.
+  - Cada 7 segundos da una voltereta suave o saluda. Al tocarlo sonríe con un pequeño bote. Sin confeti.
+- Se ha quitado el código que ya no se usa: el vuelo `trayecto()`, los ojos arcoíris y los estilos antiguos.

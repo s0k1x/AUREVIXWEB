@@ -95,15 +95,12 @@ const TORSO = `
   ${trazo('M166 260Q200 275 234 260', 3.5)}${trazo('M156 322Q152 344 161 363', 3)}${trazo('M244 322Q248 344 239 363', 3)}
   ${LOGO(182, 283, 36)}`;
 
-/* Arcoíris (celebraciones): seis copias de los ojos, una por color, que se funden una en otra (solo opacidad) */
-const ARCO = [['#ffd0d6', '#ff3b5c'], ['#ffe0b8', '#ff9a1f'], ['#fff6b0', '#ffd21a'], ['#d6ff9a', '#4cff2a'], ['#b8f2ff', '#1fb8ff'], ['#e2c8ff', '#9a4dff']];
-const ARCO_C = ARCO.map(c => c[1]);
 /** HTML de la mascota. cuerpo: robot entero · disco: círculo oscuro detrás (solo en el vuelo) */
-export function mascotaHTML(estado = 'normal', { cuerpo = false, disco = false, clase = '', vivo = true, arcoiris = false } = {}) {
+export function mascotaHTML(estado = 'normal', { cuerpo = false, disco = false, clase = '', vivo = true } = {}) {
   defs(); iniciar(); vigilar();
   const cabeza = `<span class="l-g l-cabeza"><span class="l-g l-sigue-c">
         ${capa('l-casco', CASCO)}
-        <span class="l-g l-ojos">${arcoiris ? ARCO.map(([luz, halo], i) => `<span class="l-g ojos-arco" style="--m-luz:${luz};--m-halo:${halo};--i:${i}">${ojo(149, 'i')}${ojo(251, 'd')}</span>`).join('') : `${ojo(149, 'i')}${ojo(251, 'd')}`}</span>
+        <span class="l-g l-ojos">${ojo(149, 'i')}${ojo(251, 'd')}</span>
         ${cuerpo ? capa('l-puntos', PUNTOS) : ''}
       </span></span>`;
   const corporal = cuerpo ? `<span class="l-g m-cuerpo l-corporal">
@@ -368,97 +365,6 @@ export function puntoMascota(m) {
   return { x: r.left + CX * s, y: r.top + CY * s, s };
 }
 
-/**
- * Trayecto: el robot entero vuela de un punto a otro por una curva amplia (sube, se inclina en el giro y baja),
- * moviendo brazos, piernas, cabeza, ojos y llamas todo el camino (vidaEnVuelo). Sirve para entrar y salir de
- * la cuenta: sale del botón del asistente hasta el centro de la pantalla, y al cerrar sesión vuelve a él.
- * «de» y «a» son puntos de puntoMascota(). «deCara»/«aCara»: si sale o llega en forma de cara (con su disco).
- * La curva pasa por cuatro puntos (Catmull-Rom centrípeta) y se recorre por distancia, con salida y llegada
- * suaves; al principio coge impulso (se agacha) y al final se aplasta y se asienta.
- * Son 96 fotogramas calculados de antemano: solo transform y opacity, en la tarjeta gráfica.
- */
-export function trayecto(de, a, { ms = 1100, deCara = false, aCara = false, capa = document.body, arcoiris = false } = {}) {
-  if (sinMovimiento() || !de || !a || typeof Element.prototype.animate !== 'function') return Promise.resolve(false);
-  const dx = a.x - de.x, dy = a.y - de.y, dist = Math.hypot(dx, dy) || 1;
-  // El arco se abre hacia el lado con más sitio (prefiriendo subir) y nunca se sale de la pantalla
-  const curva = Math.min(240, dist * .32), W = innerWidth, H = innerHeight, m = Math.min(70, W * .12);
-  const sitio = (nx, ny) => { const x = (de.x + a.x) / 2 + nx * curva, y = (de.y + a.y) / 2 + ny * curva; return Math.min(x - m, W - m - x, y - m, H - m - y) - ny * 30; };
-  let nx = -dy / dist, ny = dx / dist;
-  if (sitio(-nx, -ny) > sitio(nx, ny)) { nx = -nx; ny = -ny; }
-  const dentro = q => ({ x: Math.min(W - m, Math.max(m, q.x)), y: Math.min(H - m, Math.max(m, q.y)) });
-  const lerp = (t, k) => ({ x: de.x + dx * t + nx * curva * k, y: de.y + dy * t + ny * curva * k });
-  const P = [lerp(-.15, -.2), { x: de.x, y: de.y }, dentro(lerp(.3, 1)), dentro(lerp(.72, .75)), { x: a.x, y: a.y }, lerp(1.15, -.2)];
-  const cr = (p0, p1, p2, p3, t) => {
-    const d = (u, v) => Math.max(1e-3, Math.hypot(v.x - u.x, v.y - u.y) ** .5);
-    const t1 = d(p0, p1), t2 = t1 + d(p1, p2), t3 = t2 + d(p2, p3), u = t1 + (t2 - t1) * t;
-    const L = (q, w, ta, tb) => ({ x: ((tb - u) * q.x + (u - ta) * w.x) / (tb - ta), y: ((tb - u) * q.y + (u - ta) * w.y) / (tb - ta) });
-    const A1 = L(p0, p1, 0, t1), A2 = L(p1, p2, t1, t2), A3 = L(p2, p3, t2, t3);
-    return L(L(A1, A2, 0, t2), L(A2, A3, t1, t3), t1, t2);
-  };
-  const pts = [];
-  for (let i = 1; i < P.length - 2; i++) for (let k = 0; k < 80; k++) pts.push(cr(P[i - 1], P[i], P[i + 1], P[i + 2], k / 80));
-  pts.push({ x: a.x, y: a.y });
-  const largo = [0];
-  for (let i = 1; i < pts.length; i++) largo.push(largo[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y));
-  const total = largo[largo.length - 1];
-  const en = f => {
-    const obj = f * total; let i = 1;
-    while (i < largo.length - 1 && largo[i] < obj) i++;
-    const r = (obj - largo[i - 1]) / Math.max(1e-6, largo[i] - largo[i - 1]);
-    return { x: pts[i - 1].x + (pts[i].x - pts[i - 1].x) * r, y: pts[i - 1].y + (pts[i].y - pts[i - 1].y) * r };
-  };
-  // Velocidad: entrada y salida suaves (cúbica), y su derivada para saber lo rápido que va en cada momento
-  const avance = v => (v < .5 ? 4 * v ** 3 : 1 - (-2 * v + 2) ** 3 / 2);
-  const rapidez = v => (v < .5 ? 12 * v * v : 6 * (-2 * v + 2) ** 2 / 2) / 3;
-  const IMPULSO = .12, LLEGA = .86, N = 140;
-  const S = Math.max(de.s, a.s) * 1.08;
-  const el = document.createElement('div');
-  el.className = 'masc-vuelo';
-  el.style.cssText = `width:${400 * S}px;height:${470 * S}px;transform-origin:${CX * S}px ${CY * S}px`;
-  el.innerHTML = mascotaHTML('vuela', { cuerpo: true, disco: deCara || aCara, vivo: false, arcoiris });
-  capa.append(el);
-
-  const F = [];
-  for (let k = 0; k <= N; k++) {
-    const u = k / N, v = Math.min(1, Math.max(0, (u - IMPULSO) / (LLEGA - IMPULSO))), f = avance(v), c = en(f);
-    const d = en(Math.min(1, f + .012)), b = en(Math.max(0, f - .012)), paso = Math.hypot(d.x - b.x, d.y - b.y) || 1;
-    F.push({ u, f, c, tx: (d.x - b.x) / paso, ty: (d.y - b.y) / paso, rap: u > IMPULSO && u < LLEGA ? Math.min(1, rapidez(v)) : 0 });
-  }
-  const PO = F.map(q => posturaVuelo(q.tx, q.ty, q.rap, q.u, LLEGA));
-  let rot = PO.map(q => q.rot);
-  for (let pasada = 0; pasada < 4; pasada++) rot = rot.map((r, i) => (rot[Math.max(0, i - 1)] + 2 * r + rot[Math.min(N, i + 1)]) / 4);
-  const fotogramas = F.map((q, k) => {
-    const { u, f, c, rap } = q;
-    // Crece a mitad de camino (se acerca a la pantalla) y acaba a su tamaño
-    const sc = de.s + (a.s - de.s) * ss(f) + Math.max(de.s, a.s) * .12 * Math.sin(Math.PI * f);
-    let sx = 1 - .06 * rap, sy = 1 + .1 * rap, baja = 0;
-    if (u < IMPULSO) { const w = Math.sin(Math.PI * u / IMPULSO); sx = 1 + .12 * w; sy = 1 - .14 * w; baja = 8 * w * de.s / .4; }
-    if (u >= LLEGA) { const w = (u - LLEGA) / (1 - LLEGA), g = Math.exp(-5 * w) * Math.sin(Math.PI * 2.4 * w); sx = 1 + .12 * g; sy = 1 - .12 * g; }
-    const vaiven = Math.sin(f * Math.PI * 3) * 5 * Math.sin(Math.PI * f);
-    return { transform: `translate3d(${(c.x - CX * S).toFixed(2)}px,${(c.y + baja + vaiven - CY * S).toFixed(2)}px,0) scale(${(sc / S).toFixed(5)}) rotate(${rot[k].toFixed(2)}deg) scale(${sx.toFixed(4)},${sy.toFixed(4)})`, offset: u };
-  });
-  const vuelo = el.animate(fotogramas, { duration: ms, fill: 'both', easing: 'linear' });
-  vidaEnVuelo(el, F.map((q, k) => ({ u: q.u, tx: q.tx, ty: q.ty, rap: q.rap, rot: rot[k], cae: PO[k].cae, frena: PO[k].frena, fin: aCara ? ss((q.u - .66) / .2) : 0 })), ms);
-  // Forma de cara en un extremo: el disco y el cuerpo se cruzan al salir o al llegar
-  const disco = el.querySelector('.l-disco'), cuerpos = el.querySelectorAll('.m-cuerpo');
-  if (deCara || aCara) {
-    disco?.animate(deCara ? [{ opacity: 1 }, { opacity: 0, offset: .2 }, { opacity: 0 }] : [{ opacity: 0 }, { opacity: 0, offset: .76 }, { opacity: 1, offset: .87 }, { opacity: 1 }], { duration: ms, fill: 'both' });
-    cuerpos.forEach(c => c.animate(deCara ? [{ opacity: 0 }, { opacity: 1, offset: .2 }, { opacity: 1 }] : [{ opacity: 1 }, { opacity: 1, offset: .76 }, { opacity: 0, offset: .87 }, { opacity: 0 }], { duration: ms, fill: 'both' }));
-  }
-  // Estela de chispas (en arcoíris: más, más grandes y de todos los colores, dibujando el camino)
-  const nCh = arcoiris ? 30 : 10;
-  for (let i = 0; i < nCh; i++) {
-    const u = IMPULSO + .04 + i * (.7 / nCh), c = en(avance((u - IMPULSO) / (LLEGA - IMPULSO)));
-    const ch = document.createElement('i'), tam = ((arcoiris ? 5 : 3) + Math.random() * (arcoiris ? 6 : 4)).toFixed(1);
-    ch.className = 'masc-chispa';
-    ch.style.cssText = `left:${(c.x + (Math.random() - .5) * 20).toFixed(1)}px;top:${(c.y + 300 * (de.s + a.s) / 2 + (Math.random() - .5) * 16).toFixed(1)}px;width:${tam}px;height:${tam}px${arcoiris ? `;--c:${ARCO_C[i % ARCO_C.length]}` : ''}`;
-    capa.append(ch);
-    ch.animate([{ opacity: 0, transform: 'scale(.3)' }, { opacity: .95, transform: 'scale(1)', offset: .18 }, { opacity: 0, transform: `translate(${((Math.random() - .5) * 22).toFixed(1)}px,${arcoiris ? 34 : 24}px) scale(.15)` }],
-      { duration: arcoiris ? 900 : 650, delay: ms * u, fill: 'both', easing: 'cubic-bezier(.23,1,.32,1)' }).finished.catch(() => {}).then(() => ch.remove());
-  }
-  return vuelo.finished.catch(() => {}).then(() => { el.remove(); return true; });
-}
-
 /* ---------- Coreografías en vivo: el robot animado en código, sin imágenes ----------
    Cada estado es una función del tiempo t ∈ [0, 1) que devuelve la pose de cada pieza. Con ella se calculan
    los fotogramas clave del bucle y el navegador los reproduce en la tarjeta gráfica (solo transform y opacity),
@@ -584,7 +490,7 @@ const COREO = {
       if (t < A) { const c = ss(t / A); y = 2 * c; sx = 1 + .1 * c; sy = 1 - .14 * c; brazos = -.3 * c; }
       else if (t < B) {
         const p = (t - A) / (B - A), v = 1 - 2 * p;
-        y = -18 * 4 * p * (1 - p); aire = Math.sin(Math.PI * p);
+        y = -14 * 4 * p * (1 - p); aire = Math.sin(Math.PI * p);
         vr = 360 * (p < .5 ? 4 * p ** 3 : 1 - (-2 * p + 2) ** 3 / 2); // gira despacio al salir y al acabar, deprisa arriba
         recoge = Math.sin(Math.PI * Math.min(1, p * 1.15)); sx = 1 - .05 * Math.abs(v); sy = 1 + .08 * Math.abs(v); brazos = 1 - recoge * .6;
       } else if (t < C) {
@@ -755,13 +661,13 @@ function vigilar() {
   document.querySelectorAll('.masc').forEach(nueva);
 }
 
-/* ---------- Animación al iniciar y cerrar sesión ---------- */
+/* ---------- Al iniciar y cerrar sesión ----------
+   Discreto y elegante: una tarjeta pequeña en el centro con la cara del robot en un anillo fino, el saludo y una
+   línea de progreso. Entra y sale con un fundido corto (sin vuelos, sin chispas, sin tapar de golpe la página). */
 let activa = null;
 /**
- * tipo «entra»: el robot salta, saluda y suelta chispas.
- * tipo «sale»: se despide con la mano, se le cierran los ojos y se duerme.
- * Devuelve { minimo(), fin() }: minimo() espera lo justo para que se vea;
- * fin() la quita con un fundido.
+ * tipo «entra»: sonríe y da la bienvenida. tipo «sale»: se despide y cierra los ojos despacio.
+ * Devuelve { minimo(), fin(), quitar() }: minimo() espera lo justo para que se lea; fin() la quita con un fundido.
  */
 export function transicionSesion(tipo, nombre = '') {
   activa?.quitar(true);
@@ -772,48 +678,19 @@ export function transicionSesion(tipo, nombre = '') {
   capa.setAttribute('role', 'status');
   capa.setAttribute('aria-live', 'polite');
   capa.innerHTML = `<div class="ses-caja">
-      <div class="ses-masc">${mascotaHTML(entra ? 'feliz' : 'adios', { cuerpo: true })}
-        ${entra ? `<span class="ses-chispas" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<i style="--a:${i * 30}deg;--r:${i % 2 ? 90 : 118}px;--t:${(i % 3) * 45}ms"></i>`).join('')}</span>`
-                : sinMovimiento() ? '<span class="ses-zz" aria-hidden="true"><i>z</i><i>z</i><i>Z</i></span>' : ''}
-      </div>
-      <b>${entra ? (primero ? `¡Hola, ${esc(primero)}!` : '¡Hola!') : 'Hasta pronto'}</b>
-      <small>${entra ? 'Entrando en tu cuenta…' : 'Cerrando tu sesión…'}</small>
+      <span class="ses-cara">${mascotaHTML('normal')}</span>
+      <div class="ses-txt"><b>${entra ? (primero ? `Hola, ${esc(primero)}` : 'Hola') : 'Hasta pronto'}</b>
+        <small>${entra ? 'Entrando en tu cuenta' : 'Cerrando tu sesión'}</small></div>
       <span class="ses-barra" aria-hidden="true"><i></i></span>
     </div>`;
   document.body.append(capa);
   document.documentElement.classList.add('ses-activa');
-  const masc = capa.querySelector('.masc');
-  // El robot del botón del asistente (si se ve) es el que vuela: al entrar sale de él y al salir vuelve a él
-  const boton = [...document.querySelectorAll('#chat .chat-fab .masc')].find(m => { const r = m.getBoundingClientRect(); return r.width && r.bottom > 0 && r.top < innerHeight; });
-  const rincon = boton ? puntoMascota(boton) : { x: innerWidth - 44, y: innerHeight - 44, s: 46 / LADO };
-  // Dónde queda el robot del centro con la tarjeta ya colocada (se mide sin su animación de entrada)
-  const caja = capa.querySelector('.ses-caja');
-  capa.classList.add('con-vuelo');
-  caja.style.transition = 'none'; caja.style.transform = 'none';
-  const centro = puntoMascota(masc);
-  caja.style.transform = ''; void caja.offsetWidth; caja.style.transition = '';
+  const cara = capa.querySelector('.masc');
   requestAnimationFrame(() => capa.classList.add('on'));
-  const vuela = !sinMovimiento() && centro;
-  let quitarBoton = () => {};
-  if (vuela && boton) { boton.style.visibility = 'hidden'; quitarBoton = () => { boton.style.visibility = ''; }; }
-  if (entra) {
-    if (vuela) {
-      masc.style.visibility = 'hidden';
-      trayecto(rincon, centro, { ms: 1050, deCara: true }).then(() => {
-        masc.style.visibility = '';
-        rebote(masc, { de: .86 });
-        estadoMascota(masc, 'saluda');
-      });
-    } else setTimeout(() => estadoMascota(masc, 'saluda'), 900);
-  } else if (vuela) {
-    // Se despide con la mano y se va volando a su sitio
-    setTimeout(() => {
-      if (!masc.isConnected) return;
-      masc.style.visibility = 'hidden';
-      trayecto(centro, rincon, { ms: 1000, aCara: true }).then(() => { if (boton) { quitarBoton(); quitarBoton = () => {}; rebote(boton); estadoMascota(boton, 'feliz', 1400); } });
-    }, 850);
-  } else setTimeout(() => estadoMascota(masc, 'dormido'), 1050);
-  const t0 = Date.now(), MIN = entra ? (vuela ? 2000 : 1700) : (vuela ? 2050 : 1900);
+  // Un gesto pequeño y a tiempo: sonríe al darte la bienvenida; al despedirse sonríe y luego cierra los ojos
+  setTimeout(() => estadoMascota(cara, 'feliz'), entra ? 260 : 200);
+  if (!entra) setTimeout(() => cara.isConnected && estadoMascota(cara, 'dormido'), 900);
+  const t0 = Date.now(), MIN = entra ? 1150 : 1300;
   const o = {
     minimo: () => new Promise(ok => setTimeout(ok, Math.max(0, MIN - (Date.now() - t0)))),
     fin: async () => { await o.minimo(); o.quitar(); },
@@ -821,10 +698,9 @@ export function transicionSesion(tipo, nombre = '') {
       if (activa !== o) return;
       activa = null;
       clearTimeout(seguro);
-      quitarBoton();
       document.documentElement.classList.remove('ses-activa');
       capa.classList.remove('on');
-      ya || sinMovimiento() ? capa.remove() : setTimeout(() => capa.remove(), 380);
+      ya || sinMovimiento() ? capa.remove() : setTimeout(() => capa.remove(), 320);
     }
   };
   const seguro = setTimeout(() => o.quitar(), 9000); // nunca se queda pegada
@@ -845,50 +721,34 @@ export function colorAsistente(id) {
   document.querySelectorAll('.masc[data-estado=normal]').forEach(m => estadoMascota(m, 'feliz', 1000));
 }
 
-/* ---------- Celebración (solo en momentos importantes: pago, pedido nuevo, web aprobada) ----------
-   El robot sale volando del botón del asistente dejando una estela de colores, se pone en grande con los ojos
-   enormes en arcoíris, celebra con una explosión de chispas y un bocadillo, y vuelve en picado a su sitio.
-   No bloquea nada (no recoge toques) y va por encima de los diálogos abiertos (capa «popover» del navegador). */
-let enFiesta = false;
-export function fiesta(titulo = '¡Hecho!', texto = '') {
-  if (enFiesta || document.hidden) return Promise.resolve();
-  enFiesta = true;
+/* ---------- Aviso de un momento importante (pago enviado, pedido recibido, web aprobada) ----------
+   Sutil: una notificación arriba con la cara del robot sonriendo, el mensaje y una línea del color del asistente
+   que se completa; después se va sola. No tapa nada ni recoge toques, y va por encima de los diálogos (popover). */
+let enFiesta = null;
+export function fiesta(titulo = 'Hecho', texto = '') {
+  enFiesta?.();
   defs(); iniciar(); vigilar();
-  const capa = document.createElement('div');
-  capa.className = 'masc-fiesta';
-  capa.setAttribute('aria-hidden', 'true'); // el mensaje ya está en la página; esto es solo la celebración
-  capa.innerHTML = `<div class="mf-masc">${mascotaHTML('asombro', { cuerpo: true, arcoiris: true })}
-      <span class="mf-chispas">${Array.from({ length: 16 }, (_, i) => `<i style="--a:${i * 22.5}deg;--r:${i % 2 ? 96 : 128}px;--t:${(i % 4) * 40}ms;--c:${ARCO_C[i % ARCO_C.length]}"></i>`).join('')}</span></div>
-    <div class="mf-bocadillo"><b>${esc(titulo)}</b>${texto ? `<small>${esc(texto)}</small>` : ''}</div>`;
-  try { capa.popover = 'manual'; } catch { /* sin popover: va en el documento */ }
-  document.body.append(capa);
-  try { capa.showPopover?.(); } catch { /* ya visible */ }
-  const masc = capa.querySelector('.masc');
-  const centro = puntoMascota(masc);
-  const boton = [...document.querySelectorAll('#chat .chat-fab .masc')].find(m => { const r = m.getBoundingClientRect(); return r.width && r.bottom > 0 && r.top < innerHeight; });
-  const rincon = boton ? puntoMascota(boton) : { x: innerWidth - 44, y: innerHeight - 44, s: 46 / LADO };
-  const quitar = () => { try { capa.hidePopover?.(); } catch {} capa.remove(); if (boton) boton.style.visibility = ''; enFiesta = false; };
-  if (sinMovimiento() || !centro) {
-    capa.classList.add('llega');
-    return new Promise(ok => setTimeout(() => { quitar(); ok(); }, 2200));
-  }
-  masc.style.visibility = 'hidden';
-  if (boton) boton.style.visibility = 'hidden';
-  return trayecto(rincon, centro, { ms: 1000, deCara: !!boton, capa, arcoiris: true })
-    .then(() => {
-      masc.style.visibility = '';
-      rebote(masc, { de: .78, ms: 700 });
-      capa.classList.add('llega');
-      return new Promise(ok => setTimeout(ok, 1900));
-    })
-    .then(() => {
-      capa.classList.add('se-va');
-      masc.style.visibility = 'hidden';
-      return trayecto(centro, rincon, { ms: 950, aCara: !!boton, capa, arcoiris: true });
-    })
-    .then(() => {
-      quitar();
-      if (boton) { rebote(boton); estadoMascota(boton, 'feliz', 1400); }
-    })
-    .catch(quitar);
+  const el = document.createElement('div');
+  el.className = 'masc-aviso';
+  el.setAttribute('role', 'status');
+  el.setAttribute('aria-live', 'polite');
+  el.innerHTML = `<span class="ma-cara">${mascotaHTML('normal')}</span>
+    <div class="ma-txt"><b>${esc(titulo)}</b>${texto ? `<small>${esc(texto)}</small>` : ''}</div>
+    <span class="ma-linea" aria-hidden="true"><i></i></span>`;
+  try { el.popover = 'manual'; } catch { /* sin popover: va en el documento */ }
+  document.body.append(el);
+  try { el.showPopover?.(); } catch { /* ya visible */ }
+  const cara = el.querySelector('.masc');
+  requestAnimationFrame(() => el.classList.add('on'));
+  setTimeout(() => cara.isConnected && estadoMascota(cara, 'feliz'), 280);
+  const DURA = sinMovimiento() ? 3200 : 3400;
+  let fuera = 0;
+  const quitar = () => {
+    clearTimeout(fuera);
+    if (enFiesta === quitar) enFiesta = null;
+    el.classList.remove('on');
+    setTimeout(() => { try { el.hidePopover?.(); } catch {} el.remove(); }, sinMovimiento() ? 0 : 360);
+  };
+  enFiesta = quitar;
+  return new Promise(ok => { fuera = setTimeout(() => { quitar(); ok(); }, DURA); });
 }
