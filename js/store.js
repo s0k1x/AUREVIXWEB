@@ -241,8 +241,8 @@ export async function entrarConGithub() {
 }
 
 /* ---------- Entrar o crear la cuenta con un código por correo ----------
-   No hay contraseñas: Supabase envía un código de un solo uso (por SMTP con
-   Brevo, ver LEEME) y lo comprueba él; la web nunca lo ve antes de que lo
+   No hay contraseñas: Supabase genera un código de un solo uso, la función «codigo»
+   lo envía por la API de Brevo (o Supabase por SMTP si falla) y Supabase lo comprueba; la web nunca lo ve antes de que lo
    escribas. Al crear la cuenta, el mismo código verifica el correo.
    Para crearla hace falta el nombre (y aceptar las condiciones en el formulario). */
 export async function enviarCodigo(email, { nombre = '', captchaToken = '' } = {}) {
@@ -250,6 +250,19 @@ export async function enviarCodigo(email, { nombre = '', captchaToken = '' } = {
   if (nombre) nombrePendiente = nombre;
   const opciones = nombre ? { shouldCreateUser: true, data: { name: nombre, full_name: nombre }, emailRedirectTo: volverA() } : { shouldCreateUser: false };
   if (captchaToken) opciones.captchaToken = captchaToken; // lo comprueba Supabase si tiene el captcha activado
+  // 1.º por la API de Brevo (función «codigo»): llega mejor y, si Brevo lo rechaza, queda el motivo en los registros.
+  //    Si responde con un error claro (sin cuenta, demasiados intentos…), se enseña tal cual.
+  // 2.º si la función no está o falla, por el SMTP de Supabase Auth, como antes.
+  try {
+    const r = await limite(fetch(`${CONFIG.supabase.url}/functions/v1/codigo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: CONFIG.supabase.anonKey, Authorization: `Bearer ${CONFIG.supabase.anonKey}` },
+      body: JSON.stringify({ email, nombre, captchaToken })
+    }), 20000);
+    const j = await r.json().catch(() => ({}));
+    if (r.ok && j.ok) return;
+    if ([400, 404, 429].includes(r.status) && j.error) throw Object.assign(new Error(j.error), { claro: true });
+  } catch (e) { if (e.claro) throw e; console.warn('Código por Brevo no disponible, se usa Supabase Auth', e); }
   const { error } = await sb.auth.signInWithOtp({ email, options: opciones });
   if (error) throw new Error(traducirError(error));
 }

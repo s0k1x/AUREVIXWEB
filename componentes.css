@@ -331,11 +331,11 @@ input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;bo
    Asistente: chat de dudas
    ========================================================== */
 #chat{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;pointer-events:none}
-.chat-fab{appearance:none;border:0;cursor:pointer;font-family:inherit;pointer-events:auto;position:relative;display:flex;align-items:center;gap:10px;height:58px;padding:0 20px 0 8px;border-radius:99px;background:var(--accent);color:var(--ink);font-weight:700;font-size:14.5px;
+.chat-fab{appearance:none;border:0;cursor:pointer;font-family:inherit;pointer-events:auto;position:relative;display:flex;align-items:center;gap:10px;height:56px;padding:0 20px 0 4px;border-radius:99px;background:var(--accent);color:var(--ink);font-weight:700;font-size:14.5px;
   box-shadow:0 12px 28px -10px rgba(0,0,0,.6),0 3px 8px rgba(0,0,0,.3);opacity:0;transform:translateY(20px) scale(.9);transition:opacity .5s var(--e-out),transform .5s var(--e-spring),padding .4s var(--e-out)}
 #chat.visible .chat-fab{opacity:1;transform:none}
 .chat-fab-ic,.chat-fab-x{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(12,12,14,.12);font-size:20px;transition:transform .45s var(--e-spring),opacity .3s}
-.chat-fab-x{position:absolute;left:8px;opacity:0;transform:rotate(-90deg) scale(.6)}
+.chat-fab-x{position:absolute;left:7px;opacity:0;transform:rotate(-90deg) scale(.6)}
 .chat-fab:hover{transform:translateY(-2px)}
 #chat.abierto .chat-fab{padding-right:8px}
 #chat.abierto .chat-fab-t{max-width:0;opacity:0}

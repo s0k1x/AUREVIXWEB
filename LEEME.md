@@ -1155,3 +1155,18 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **El robot vuela con vida:** al abrir el asistente y al entrar o salir de la cuenta ya no viaja rígido. Bate los brazos como alas (más deprisa cuanto más rápido va, el de dentro de la curva más alto), patalea, adelanta la cabeza hacia donde va, mira el camino, parpadea y alarga las llamas al acelerar (`vidaEnVuelo` en `js/mascota.js`).
 - **Entrar y salir de la cuenta:** el robot sale volando del botón del asistente, cruza la pantalla en una curva amplia hasta el centro y saluda; al cerrar sesión se despide con la mano y vuelve volando a su botón (`trayecto`). La curva nunca se sale de la pantalla, también en el móvil. Con «menos movimiento» se queda como antes.
 - En reposo, la cabeza del dibujo respira y se balancea un poco.
+
+### v79 — el código de entrada por la API de Brevo, aro del asistente fino y refinado de diseño
+- **El código para entrar ahora lo envía la función `codigo` (Supabase → Edge Functions) por la API de Brevo**, la misma que ya manda las facturas, en vez del SMTP de Supabase Auth. Supabase daba cada envío por bueno (200) pero los correos no llegaban, y por SMTP no queda rastro del motivo.
+  - El código lo sigue generando y comprobando Supabase Auth (`admin/generate_link` + `verifyOtp`): la web nunca lo ve antes que tú.
+  - Asunto con el código («123456 es tu código de AurevixWeb»), para verlo en el aviso del móvil sin abrir el correo.
+  - Límites: un código por correo cada 45 s y 8 por IP cada 10 min. Sin nombre solo entra si la cuenta ya existe. Si hay `TURNSTILE_SECRET`, exige el anti-robots.
+  - Si Brevo rechaza un correo, el motivo exacto queda en Edge Functions → codigo → Logs («Brevo rechaza el código…»).
+  - Si la función falla o no está, la web vuelve sola al SMTP de Supabase, como antes.
+  - Usa los secretos que ya existían (`BREVO_API_KEY`, `BREVO_REMITENTE`); no se ha añadido ninguno.
+- **Botón del asistente:** en el móvil, solo la cara con un aro verde fino de 2 px y redondo (antes era un óvalo de 8 px a los lados). En el ordenador, el aro de la píldora es igual por todos los lados.
+- **Refinado de diseño** (guías de Emil Kowalski y Apple):
+  - Curvas de animación más firmes (`--e-out`) y nuevas `--e-io` y `--e-drawer`. El rebote es más corto, sin bailar.
+  - Botones más rápidos al reaccionar (0,2 s) y escala 0,97 al pulsar. En pantallas táctiles ya no saltan al tocarlos como si se pasara el ratón.
+  - Lo que aparecía desde la nada (`scale(0)`) ahora aparece desde la mitad y con fundido.
+  - Títulos equilibrados (`text-wrap: balance`), párrafos sin palabras sueltas al final y cifras que no bailan.

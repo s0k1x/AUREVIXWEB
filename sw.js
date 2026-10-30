@@ -14,7 +14,7 @@
    - Librería (/library/ y /biblioteca-ui/): NO se guarda (son miles de
      archivos); va siempre por internet con la caché normal del navegador.
    ========================================================== */
-const VERSION = 'v78';
+const VERSION = 'v79';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 

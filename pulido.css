@@ -480,3 +480,26 @@ dialog.dlg-ficha{padding:0}
 .pay-met input:checked + span svg{color:var(--accent)}
 .pay-met input:focus-visible + span{outline:2px solid var(--accent);outline-offset:3px}
 @media (hover:hover) and (pointer:fine){.pay-met:hover span{box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}.pay-met input:checked + span{box-shadow:inset 0 0 0 2px var(--accent)}}
+
+/* ==========================================================
+   v79 · Refinado de sistema (guías de diseño: Emil Kowalski / Apple HIG)
+   ========================================================== */
+/* Botones: respuesta inmediata y sin rebote exagerado. Pulsar se nota (escala .97) y soltar es rápido */
+.btn{transition:transform .2s var(--e-out),background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .25s var(--e-out),background-size .35s var(--e-out)}
+.btn:active{transform:scale(.97);transition-duration:.1s}
+.icon-btn,.dlg-x,.user-btn,.chat-fab,.arriba{transition-timing-function:var(--e-out)}
+.icon-btn:active,.dlg-x:active,.user-btn:active,.arriba:active{transform:scale(.94)}
+/* En pantallas táctiles no hay «pasar el ratón»: sin saltos fantasma al tocar (el toque sí se nota) */
+@media (hover:none){
+  .btn:hover,.btn-primary:hover,.plan-card:hover,.op-card:hover,.puesto:hover,.dz:hover,.kcard:hover,.vp:hover,.arriba:hover,
+  .chat-fab:hover,.icon-btn:hover,.dlg-x:hover,.user-btn:hover,.plan:hover,.tarjeta:hover,.brand-card:hover,.pay-cta:hover,.vitrina:hover .sello{transform:none}
+  .btn:active{transform:scale(.97)}
+  .plan-card:active,.dz:active,.kcard:active{transform:scale(.985)}
+}
+/* Tipografía: títulos equilibrados (sin una palabra sola en la última línea) y párrafos sin viudas */
+h1,h2,h3,.sec-head p{text-wrap:balance}
+p,li,dd{text-wrap:pretty}
+/* Cifras que no bailan al cambiar (precios, contadores, plazos) */
+.precio,.price,.pc-precio,.plan-precio,.pago-total,.stat b,.cifra,[data-contar]{font-variant-numeric:tabular-nums}
+/* Casilla de condiciones: solo lo que cambia (no «all») */
+.ck-mark::after{transition:transform .25s var(--e-out),border-color .18s ease,border-width .1s ease,width .25s var(--e-out),height .25s var(--e-out),left .25s var(--e-out),top .25s var(--e-out),border-radius .25s var(--e-out)}
