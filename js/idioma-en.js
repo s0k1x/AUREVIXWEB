@@ -276,7 +276,7 @@ export const EN = {
   '¿Para cuándo la necesitas?': 'When do you need it?', 'Lo antes posible': 'As soon as possible', 'Sin prisa': 'No rush',
 
   // Inicio de sesión y cuenta
-  'Acceso al panel': 'Dashboard access', 'Entrar con Google': 'Sign in with Google', 'o entra con': 'or sign in with', 'Contraseña': 'Password', '¿Has olvidado la contraseña?': 'Forgot your password?',
+  'Acceso al panel': 'Dashboard access', 'o entra con': 'or sign in with', 'Contraseña': 'Password', '¿Has olvidado la contraseña?': 'Forgot your password?',
   '¿No tienes cuenta?': "Don't have an account?", 'Regístrate': 'Sign up', 'Mostrar la contraseña': 'Show password', 'Ocultar la contraseña': 'Hide password', 'Seguridad de la contraseña': 'Password strength',
   'Al menos 8 caracteres': 'At least 8 characters', 'Letras': 'Letters', 'Números': 'Numbers', 'No aparece en filtraciones de datos': 'Not found in data breaches',
   'Muy débil': 'Very weak', 'Débil': 'Weak', 'Aceptable': 'Fair', 'Segura': 'Strong', 'Muy segura': 'Very strong',

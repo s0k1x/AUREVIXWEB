@@ -132,7 +132,7 @@ html[data-tema=claro]{
   --bg:#f6f5f0; --bg2:#efede6; --card:#ffffff; --card2:#ffffff; --field:#f2f1eb;
   --line:rgba(20,20,26,.1); --line2:rgba(20,20,26,.18);
   --text:#16161b; --muted:#5d5b55; --dim:#6b6862;
-  --accent:#4f850c; --accent-soft:color-mix(in srgb,var(--accent) 11%,transparent); --ink:#0c0c0e;
+  --accent:#367d00; --accent-soft:color-mix(in srgb,var(--accent) 11%,transparent); --ink:#0c0c0e;
   --ok:#15803d; --warn:#b45309; --info:#1d4ed8; --danger:#c62828; --violet:#6d28d9;
   color-scheme:light;
 }
@@ -162,3 +162,23 @@ html[data-tema=claro] .chat-h small i{box-shadow:0 0 0 3px rgba(21,128,61,.2)}
 html[data-tema=claro] .compara thead small{color:var(--muted)}
 html[data-tema=claro] .bg-stripes{opacity:.5}
 html[data-tema=claro] .hero-bg{opacity:.45}
+
+/* ---------- v77 · Claro más sobrio ----------
+   La tarjeta «El más pedido» ya no va rellena de color (en claro pesaba demasiado): blanca, con borde del
+   acento y su sombra suave. La franja de aviso pasa a un tono suave del acento con el texto oscuro. */
+html[data-tema=claro] .plan-card.popular{background:var(--card);color:var(--text);border:2px solid var(--accent);box-shadow:0 26px 54px -30px color-mix(in srgb,var(--accent) 60%,transparent),0 2px 8px rgba(20,20,26,.05)}
+html[data-tema=claro] .popular .pc-time,html[data-tema=claro] .popular .pc-desc,html[data-tema=claro] .popular .pc-price small,html[data-tema=claro] .popular .pc-bv{color:var(--muted)}
+html[data-tema=claro] .popular .pc-ic{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
+html[data-tema=claro] .popular li svg{color:var(--accent)}
+html[data-tema=claro] .popular .btn-dark{background:var(--accent);border-color:var(--accent);color:#fff}
+html[data-tema=claro] .plan-card.popular.foco::before{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--accent) 9%,transparent),transparent 50%)}
+html[data-tema=claro] .anuncio{background:color-mix(in srgb,var(--accent) 11%,var(--bg));color:color-mix(in srgb,var(--accent) 62%,#0b0d08);border-bottom:1px solid color-mix(in srgb,var(--accent) 22%,transparent)}
+html[data-tema=claro] .anuncio-x{background:color-mix(in srgb,var(--accent) 14%,transparent);color:inherit}
+
+/* v77 · Claro con más vida: los botones principales usan la lima de la marca (la misma del tema oscuro)
+   con el texto oscuro, en vez del verde oliva con texto blanco, que se veía apagado.
+   El verde del texto, los iconos y los bordes es más vivo (#367d00) y sigue pasando AA (4,7:1). */
+html[data-tema=claro]:not([data-temporada]) :is(.btn-primary,.chat-fab,.chat-send){background:#b6f23f;border-color:#b6f23f;color:#0c0c0e}
+html[data-tema=claro]:not([data-temporada]) :is(.btn-primary,.chat-send):hover{background:#a8e62e;border-color:#a8e62e;color:#0c0c0e}
+html[data-tema=claro]:not([data-temporada]) .popular .btn-dark{background:#b6f23f;border-color:#b6f23f;color:#0c0c0e}
+html[data-tema=claro]:not([data-temporada]) .scribble path{stroke:#7cc61f}

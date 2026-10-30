@@ -1139,3 +1139,9 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - Fuera las etiquetas de mayúsculas sobre los títulos de las 16 páginas de sectores y guías (`scripts/paginas.py`): el título ya lo dice todo.
 - Ningún texto de la web baja de 12 px (antes había 20 estilos de 9,5 a 11,5 px). Se mantienen como estaban las pestañas del panel en el móvil y las miniaturas de las ventanas de ejemplo.
 - Comprobado en 360, 390, 768 y 1440 px, en oscuro y claro, sobre nueve páginas: sin desbordes ni errores. `tests/pruebas.mjs`: 59 de 59.
+
+### v77 — tema claro con más vida y salida con Google si el código no llega
+- **Tema claro:** los botones principales (y el del chat) usan la lima de la marca con texto oscuro, igual que en el tema oscuro, en lugar del verde oliva con texto blanco, que se veía apagado. El verde de textos, iconos y bordes pasa a `#367d00`, más vivo y con 4,7:1 de contraste.
+- **«El más pedido» en claro:** tarjeta blanca con borde verde, en vez de rellena de color. La franja de aviso pasa a un tono suave del verde.
+- Con una temporada activa (Halloween, Navidad…) se mantienen sus colores.
+- **Pantalla del código:** botón «Entrar con Google» debajo de «pide otro», para poder entrar aunque el correo con el código no llegue.
