@@ -47,33 +47,26 @@ const BRAZO = `<rect x="116" y="284" width="40" height="60" rx="19" fill="url(#m
   <path d="M115 340Q136 351 157 340L157 346Q136 357 115 346Z" fill="url(#mg-osc)"/>
   <circle cx="136" cy="281" r="25" fill="url(#mg-osc)"/>
   ${trazo('M118 272Q136 258 154 272', 3.5)}`;
-const LLAMA = x => `<path class="m-llama" d="M${x - 10} 448Q${x} 498 ${x + 10} 448Z" fill="url(#mg-llama)"/>`;
+const LLAMA = x => `<path d="M${x - 10} 448Q${x} 498 ${x + 10} 448Z" fill="url(#mg-llama)"/>`;
 
-const BASE = `<g class="m-cuerpo">
-  <ellipse class="m-sombra" cx="200" cy="454" rx="100" ry="9" fill="rgba(0,0,0,.55)"/>
-  <ellipse class="m-sombra" cx="200" cy="454" rx="108" ry="11" fill="none" stroke="${HALO}" stroke-opacity=".28" stroke-width="2"/>
-  <g class="m-llamas">${LLAMA(176)}${LLAMA(224)}</g>
-  <g class="m-pierna-i">${PIERNA}</g><g class="m-pierna-d">${espejo(PIERNA)}</g>
-  <rect x="178" y="232" width="44" height="30" rx="12" fill="url(#mg-osc)"/>
-  <path d="M146 266Q146 257 158 257L242 257Q254 257 254 266L256 330Q256 376 200 380Q144 376 144 330Z" fill="url(#mg-bco)"/>
-  <path d="M145 348Q200 366 255 348L256 361Q200 380 144 361Z" fill="url(#mg-osc)"/>
-  ${trazo('M166 260Q200 275 234 260', 3.5)}${trazo('M156 322Q152 344 161 363', 3)}${trazo('M244 322Q248 344 239 363', 3)}
-  <image href="icons/logo-a-verde.png" x="182" y="283" width="36" height="36"/>
-</g>`;
-// Los brazos se pintan después de la cabeza: así, al levantarlos para saludar, se ven por delante
-const BRAZOS = `<g class="m-cuerpo"><g class="m-brazo-i">${BRAZO}</g><g class="m-brazo-d">${espejo(BRAZO)}</g></g>`;
+/* ---------- Capas ----------
+   Para ir a 60 fps aunque la página esté ocupada, el robot NO es un solo SVG con piezas que se mueven por dentro
+   (eso obliga a repintar el dibujo en cada fotograma, en el hilo principal). Cada pieza es su propio SVG
+   a tamaño completo, colocado encima de los demás: se dibuja una sola vez y después solo se mueve con
+   transform y opacity, que hace la tarjeta gráfica sin tocar el hilo principal.
+   Todas las capas usan el mismo sistema de coordenadas (400 × 470), así que los ejes de giro son porcentajes fijos. */
+const capa = (cls, dentro) => `<svg class="l ${cls}" viewBox="0 0 400 470" focusable="false" aria-hidden="true">${dentro}</svg>`;
 
 const ojo = (cx, lado) => {
   const rect = (extra) => `<rect x="${cx - 10.5}" y="131" width="21" height="36" rx="10.5" ${extra}/>`;
-  return `<g class="m-ojo m-${lado}">
+  return capa(`ojo ojo-${lado} m-${lado}`, `
         <g class="o-arco">${trazo(`M${cx - 23} 161Q${cx} 119 ${cx + 23} 161`, 12)}</g>
         <g class="o-pill">${[[40, .05], [30, .08], [21, .13], [12, .22]].map(([w, o]) => rect(`fill="none" stroke="${HALO}" stroke-opacity="${o}" stroke-width="${w}"`)).join('')}${rect(`fill="${LIMA}"`)}</g>
-        <g class="o-sue">${trazo(`M${cx - 21} 144Q${cx} 166 ${cx + 21} 144`, 9)}</g>
-      </g>`;
+        <g class="o-sue">${trazo(`M${cx - 21} 144Q${cx} 166 ${cx + 21} 144`, 9)}</g>`);
 };
 const OREJA = `<ellipse cx="46" cy="150" rx="25" ry="58" fill="url(#mg-osc)"/>${aro(45, 150, 15.5, 43, 5)}`;
 const RANURA = `<path d="M66 106C76 76 96 56 120 44" fill="none" stroke="#18211d" stroke-width="12" stroke-linecap="round"/>${trazo('M66 106C76 76 96 56 120 44', 3)}`;
-const CABEZA = `<g class="m-cabeza"><g class="m-sigue-c">
+const CASCO = `
     <path d="M52 150C52 70 112 22 200 22C288 22 348 70 348 150C348 208 300 240 200 240C100 240 52 208 52 150Z" fill="url(#mg-cab)"/>
     <path d="M72 108C86 58 138 32 200 30" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="3" stroke-linecap="round"/>
     <path d="M160 26C152 46 148 60 140 76M240 26C248 46 252 60 260 76" fill="none" stroke="#b9c4c0" stroke-width="1.6" stroke-linecap="round"/>
@@ -83,19 +76,35 @@ const CABEZA = `<g class="m-cabeza"><g class="m-sigue-c">
     <rect x="85" y="79" width="230" height="132" rx="60" fill="#aab6b2"/>
     <rect x="88" y="82" width="224" height="126" rx="57" fill="url(#mg-visor)"/>
     <path d="M246 92Q292 92 306 122Q270 106 232 100Z" fill="#fff" fill-opacity=".13"/>
-    <circle cx="112" cy="188" r="3" fill="#fff" fill-opacity=".18"/>
-    <g class="m-sigue"><g class="m-mira">${ojo(149, 'i')}${ojo(251, 'd')}</g></g>
-    <g class="m-puntos" fill="${LIMA}"><circle cx="292" cy="30" r="5"/><circle cx="312" cy="18" r="6.5"/><circle cx="336" cy="8" r="8"/></g>
-  </g></g>`;
+    <circle cx="112" cy="188" r="3" fill="#fff" fill-opacity=".18"/>`;
+const PUNTOS = `<g fill="${LIMA}"><circle cx="292" cy="30" r="5"/><circle cx="312" cy="18" r="6.5"/><circle cx="336" cy="8" r="8"/></g>`;
+const TORSO = `
+  <rect x="178" y="232" width="44" height="30" rx="12" fill="url(#mg-osc)"/>
+  <path d="M146 266Q146 257 158 257L242 257Q254 257 254 266L256 330Q256 376 200 380Q144 376 144 330Z" fill="url(#mg-bco)"/>
+  <path d="M145 348Q200 366 255 348L256 361Q200 380 144 361Z" fill="url(#mg-osc)"/>
+  ${trazo('M166 260Q200 275 234 260', 3.5)}${trazo('M156 322Q152 344 161 363', 3)}${trazo('M244 322Q248 344 239 363', 3)}
+  <image href="icons/logo-a-verde.png" x="182" y="283" width="36" height="36"/>`;
 
-/** HTML de la mascota. cuerpo: robot entero · disco: círculo oscuro detrás de la cabeza (solo en el vuelo) */
+/** HTML de la mascota. cuerpo: robot entero · disco: círculo oscuro detrás (solo en el vuelo) */
 export function mascotaHTML(estado = 'normal', { cuerpo = false, disco = false, clase = '' } = {}) {
   defs(); iniciar();
+  const cabeza = `<span class="l-g l-cabeza"><span class="l-g l-sigue-c">
+        ${capa('l-casco', CASCO)}
+        <span class="l-g l-ojos">${ojo(149, 'i')}${ojo(251, 'd')}</span>
+        ${cuerpo ? capa('l-puntos', PUNTOS) : ''}
+      </span></span>`;
+  const corporal = cuerpo ? `<span class="l-g m-cuerpo l-corporal">
+        ${capa('l-sombra', `<ellipse cx="200" cy="454" rx="100" ry="9" fill="rgba(0,0,0,.55)"/><ellipse cx="200" cy="454" rx="108" ry="11" fill="none" stroke="${HALO}" stroke-opacity=".28" stroke-width="2"/>`)}
+        ${capa('l-llama l-llama-i', LLAMA(176))}${capa('l-llama l-llama-d', LLAMA(224))}
+        ${capa('l-pierna l-pierna-i', PIERNA)}${capa('l-pierna l-pierna-d', espejo(PIERNA))}
+        ${capa('l-torso', TORSO)}
+      </span>` : '';
+  const brazos = cuerpo ? `<span class="l-g m-cuerpo l-brazos">${capa('l-brazo l-brazo-i', BRAZO)}${capa('l-brazo l-brazo-d', espejo(BRAZO))}</span>` : '';
   return `<span class="masc ${cuerpo ? 'cuerpo' : 'cara'} ${clase}" data-estado="${estado}" aria-hidden="true" style="--d:${(Math.random() * 3).toFixed(2)}s">
-    <svg class="masc-svg" viewBox="${cuerpo ? '0 0 400 470' : '14 -52 372 372'}" focusable="false">
-      ${disco ? '<circle class="v-disco" cx="200" cy="134" r="186" fill="#040a06"/>' : ''}
-      <g class="m-todo">${cuerpo ? BASE : ''}${CABEZA}${cuerpo ? BRAZOS : ''}</g>
-    </svg>
+    <span class="masc-lienzo">
+      ${disco ? `<span class="l-g l-disco">${capa('', '<circle cx="200" cy="134" r="186" fill="#040a06"/>')}</span>` : ''}
+      <span class="l-g m-todo">${corporal}${cabeza}${brazos}</span>
+    </span>
   </span>`;
 }
 
@@ -197,12 +206,43 @@ export function volar(de, a, { ms = 950 } = {}) {
     { transform: paso(1, s1, 0), offset: 1 }
   ], { duration: ms, fill: 'both' });
   // Al salir se ve el cuerpo y se pierde el disco; al llegar, al revés: queda idéntico al avatar
-  el.querySelector('.v-disco')?.animate([{ opacity: 1 }, { opacity: 0, offset: .2 }, { opacity: 0, offset: .72 }, { opacity: 1 }], { duration: ms, fill: 'both' });
+  el.querySelector('.l-disco')?.animate([{ opacity: 1 }, { opacity: 0, offset: .2 }, { opacity: 0, offset: .72 }, { opacity: 1 }], { duration: ms, fill: 'both' });
   el.querySelectorAll('.m-cuerpo').forEach(c => c.animate([{ opacity: 0 }, { opacity: 1, offset: .2 }, { opacity: 1, offset: .72 }, { opacity: 0 }], { duration: ms, fill: 'both' }));
+  // Estela: chispas que se quedan por el camino y se apagan (cada una es un punto que solo cambia transform y opacity)
+  for (let i = 0; i < 7; i++) {
+    const t = .08 + i * .12, ch = document.createElement('i');
+    ch.className = 'masc-chispa';
+    const x = c0.x + (c1.x - c0.x) * t + (Math.random() - .5) * 26, y = c0.y + (c1.y - c0.y) * t - Math.sin(Math.PI * t) * alto + (Math.random() - .5) * 26;
+    ch.style.cssText = `left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;width:${(4 + Math.random() * 5).toFixed(1)}px;height:${(4 + Math.random() * 5).toFixed(1)}px`;
+    document.body.append(ch);
+    ch.animate([{ opacity: 0, transform: 'scale(.3)' }, { opacity: .95, transform: 'scale(1)', offset: .25 }, { opacity: 0, transform: 'translateY(14px) scale(.2)' }], { duration: 560, delay: ms * t * .9, fill: 'both' }).finished.catch(() => {}).then(() => ch.remove());
+  }
   return vuelo.finished.catch(() => {}).then(() => {
     anillo({ left: a.left, top: a.top, width: a.width });
     el.remove();
   });
+}
+
+/* ---------- Fotogramas: el robot saludando, 60 imágenes (bucle de 1 s a 60 fps) ----------
+   Una hoja de sprites de 10 × 6 fotogramas (icons/asistente/saluda.webp, hecha con scripts/generar-mascota.js).
+   Se mueve con dos animaciones de transform/translate por pasos, que hace la tarjeta gráfica:
+   va a 60 fps exactos aunque la página esté ocupada. */
+const HOJA = 'icons/asistente/saluda.webp';
+let hojaLista = null;
+/** Descarga y descodifica la hoja antes de necesitarla (sin bloquear nada). Devuelve una promesa que dice si se pudo. */
+export function precargarFrames() {
+  if (hojaLista) return hojaLista;
+  hojaLista = new Promise(ok => {
+    const i = new Image();
+    i.onload = () => (i.decode ? i.decode().catch(() => {}) : Promise.resolve()).then(() => ok(true));
+    i.onerror = () => ok(false);
+    i.src = HOJA;
+  });
+  return hojaLista;
+}
+/** El robot saludando en fotogramas. Empieza oculto: se muestra (clase «lista») cuando la hoja ya está descodificada. */
+export function framesHTML(clase = '') {
+  return `<span class="masc-fr ${clase}" aria-hidden="true"><img class="fr-hoja" src="${HOJA}" alt="" decoding="async" draggable="false"></span>`;
 }
 
 /* ---------- Animación al iniciar y cerrar sesión ---------- */
@@ -222,7 +262,7 @@ export function transicionSesion(tipo, nombre = '') {
   capa.setAttribute('role', 'status');
   capa.setAttribute('aria-live', 'polite');
   capa.innerHTML = `<div class="ses-caja">
-      <div class="ses-masc">${mascotaHTML(entra ? 'feliz' : 'adios', { cuerpo: true })}
+      <div class="ses-masc">${mascotaHTML(entra ? 'feliz' : 'adios', { cuerpo: true })}${framesHTML()}
         ${entra ? `<span class="ses-chispas" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<i style="--a:${i * 30}deg;--r:${i % 2 ? 90 : 118}px;--t:${(i % 3) * 45}ms"></i>`).join('')}</span>`
                 : '<span class="ses-zz" aria-hidden="true"><i>z</i><i>z</i><i>Z</i></span>'}
       </div>
@@ -233,6 +273,8 @@ export function transicionSesion(tipo, nombre = '') {
   document.body.append(capa);
   document.documentElement.classList.add('ses-activa');
   const masc = capa.querySelector('.masc');
+  // Con la hoja lista, el robot en fotogramas sustituye al dibujo en vector (si no se puede cargar, queda el dibujo)
+  precargarFrames().then(ok => { if (ok && capa.isConnected) capa.classList.add('ses-frames'); });
   requestAnimationFrame(() => capa.classList.add('on'));
   if (entra) setTimeout(() => estadoMascota(masc, 'saluda'), 900);
   else setTimeout(() => estadoMascota(masc, 'dormido'), 1050);
