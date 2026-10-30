@@ -1057,7 +1057,6 @@ function exito(p) {
   const r = p.respuestas;
   borrarBorrador();
   $('.medias')?.remove();
-  setTimeout(confeti, 250);
   clearTimeout(tGuardar);
   $('#wizDots').innerHTML = '';
   $('#wizFoot').hidden = true;
@@ -1073,6 +1072,7 @@ function exito(p) {
       <button type="button" class="btn btn-ghost w100" id="verPedidos">${icono('bag')} Ir a mi proyecto</button>
       <p class="muted exito-nota">En «Mis proyectos» puedes elegir el dominio, subir tus fotos y hablar con el equipo.</p>
     </div>`;
+  requestAnimationFrame(() => confeti(form.querySelector('.ok-ic')));
   $('#verPedidos').addEventListener('click', () => { cerrar(dlg); abrirPedidos(p.id); });
   $('[data-pagar]', form)?.addEventListener('click', e =>
     animarYPagar(e.currentTarget, () => abrirPago(p, 'senal', () => {
