@@ -1,8 +1,0 @@
-{
-  "title": "Card with image as background",
-  "category": "article-cards",
-  "canvas": {
-    "center": true,
-    "maxWidth": 320
-  }
-}

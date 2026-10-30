@@ -1,0 +1,5 @@
+# Redirecciones de Cloudflare Pages (en GitHub Pages este archivo no hace nada)
+# Las direcciones antiguas de la Librería (ya no está en esta web) van a la portada
+/library/*        /  301
+/biblioteca-ui/*  /  301
+# www → sin www: en Cloudflare se hace con una regla de redirección del dominio (ver CLOUDFLARE.md)

@@ -1,5 +1,0 @@
-*.md
-.gitignore
-build/
-dist/
-lib/

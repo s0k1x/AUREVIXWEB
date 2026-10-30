@@ -1,8 +1,0 @@
-El repositorio mdbootstrap/TW-Elements incluye un LICENSE MIT (copiado aquí como LICENSE).
-Su package.json declara "SEE LICENSE IN <License.txt>", archivo que no está en el repositorio
-pero sí en el paquete oficial de npm tw-elements@2.0.0
-(https://registry.npmjs.org/tw-elements/-/tw-elements-2.0.0.tgz): copiado aquí sin cambios como
-License-npm-2.0.0.txt ("MIT license for TW Elements Free").
-Los archivos js/*.min.js y css/tw-elements.min.css de _sources/tw-elements son idénticos
-(SHA-256) a los de ese paquete. Su cabecera remite a https://tw-elements.com/license/, página que
-no se pudo consultar (dominio inaccesible desde el entorno de descarga). Comprobado el 2026-10-24.

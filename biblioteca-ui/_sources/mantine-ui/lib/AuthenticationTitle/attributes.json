@@ -1,8 +1,0 @@
-{
-  "title": "Authentication form with title",
-  "category": "authentication",
-  "dimmed": true,
-  "canvas": {
-    "center": false
-  }
-}

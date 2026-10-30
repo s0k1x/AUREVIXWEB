@@ -1,5 +1,0 @@
-# Estadisticas de lenguajes de GitHub (Linguist): el codigo de terceros y el catalogo generado
-# no cuentan como codigo del proyecto. Solo atributos linguist-*: no cambia el contenido de ningun archivo.
-_sources/** linguist-vendored
-_licenses/** linguist-vendored
-_catalogo/** linguist-generated

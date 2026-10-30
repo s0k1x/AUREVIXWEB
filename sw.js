@@ -11,8 +11,6 @@
      descarga todo al instalarse y borra la copia anterior.
    - Fotos de los diseños: se guardan la primera vez y después
      salen al instante.
-   - Librería (/library/ y /biblioteca-ui/): NO se guarda (son miles de
-     archivos); va siempre por internet con la caché normal del navegador.
    ========================================================== */
 const VERSION = 'v88';
 const CACHE = `tumarca-${VERSION}`;
@@ -151,7 +149,6 @@ self.addEventListener('fetch', e => {
 
   if (url.hostname === 'images.pexels.com') { e.respondWith(fotoRapida(req)); return; }
   if (url.origin !== self.location.origin) return; // Supabase, Gemini, CDN: siempre en vivo
-  if (/\/(library|biblioteca-ui)\//.test(url.pathname)) return; // la librería no se guarda en el móvil
 
   const codigo = req.mode === 'navigate' || ['document', 'script', 'style', 'manifest'].includes(req.destination) || /\.(m?js|css|json)$/.test(url.pathname);
   e.respondWith(codigo ? deLaVersion(req, e) : guardadoYActualiza(req, e));

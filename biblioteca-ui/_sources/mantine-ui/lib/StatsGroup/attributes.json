@@ -1,9 +1,0 @@
-{
-  "title": "Grouped stats",
-  "category": "stats",
-  "responsive": true,
-  "canvas": {
-    "center": true,
-    "maxWidth": 920
-  }
-}

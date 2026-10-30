@@ -1542,12 +1542,6 @@ if (hash === '#mis-pedidos' || hash.startsWith('#proyecto-')) {
   history.replaceState(null, '', location.pathname);
   abrirSoporte();
 }
-// Desde la Librería: entrar y volver a ella
-if (hash === '#entrar-libreria') {
-  history.replaceState(null, '', location.pathname);
-  (store.usuarioActual() ? Promise.resolve(store.usuarioActual()) : pedirLogin('Entra para suscribirte a la Librería.'))
-    .then(u => { if (u) location.href = 'library/'; });
-}
 addEventListener('hashchange', () => {
   if (location.hash === '#mis-pedidos') { history.replaceState(null, '', location.pathname); abrirPedidos(); }
   if (location.hash.startsWith('#proyecto-')) { const [id, pest] = location.hash.slice(10).split('/'); history.replaceState(null, '', location.pathname); abrirPedidos(id, pestanaValida(pest)); }

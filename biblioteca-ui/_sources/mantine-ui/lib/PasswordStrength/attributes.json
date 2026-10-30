@@ -1,8 +1,0 @@
-{
-  "title": "Password with strength meter",
-  "category": "inputs",
-  "canvas": {
-    "center": true,
-    "maxWidth": 320
-  }
-}

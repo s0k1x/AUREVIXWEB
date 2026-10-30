@@ -487,39 +487,7 @@ export async function listarUsuarios() {
   return filas.map(u => ({ uid: u.id, name: u.name, email: u.email, photo: u.photo, datos: u.datos || {}, createdAt: Date.parse(u.created_at), role: rolDe(u.email, u.role) }));
 }
 
-/* ---------- Suscripción a la Librería ----------
-   Cada fila dice hasta cuándo tiene acceso una persona. El equipo entra siempre. */
 const DIA = 864e5;
-export async function accesoLibreria() {
-  const u = usuario;
-  if (!u) return { acceso: false, sesion: false };
-  if (esEquipo()) return { acceso: true, sesion: true, equipo: true };
-  if (modoDemo) {
-    const hasta = local.get('suscripciones', {})[u.uid] || 0;
-    return { acceso: hasta > Date.now(), sesion: true, hasta };
-  }
-  const { data } = await limite(sb.from('suscripciones').select('hasta').eq('uid', u.uid).maybeSingle(), 12000);
-  const hasta = data ? Date.parse(data.hasta) : 0;
-  return { acceso: hasta > Date.now(), sesion: true, hasta };
-}
-export async function listarSuscripciones() {
-  necesitaUsuario();
-  if (modoDemo) return Object.entries(local.get('suscripciones', {})).map(([uid, hasta]) => ({ uid, hasta }));
-  return comprobar(await limite(sb.from('suscripciones').select('uid, hasta'))).map(s => ({ uid: s.uid, hasta: Date.parse(s.hasta) }));
-}
-/** Alarga la suscripción «meses» meses (desde hoy o desde que termine, lo que sea más tarde) */
-export async function alargarSuscripcion(uid, meses = 1, actual = 0) {
-  necesitaUsuario();
-  const hasta = Math.max(Date.now(), actual || 0) + meses * 30 * DIA;
-  if (modoDemo) { const s = local.get('suscripciones', {}); s[uid] = hasta; local.set('suscripciones', s); return hasta; }
-  comprobar(await limite(sb.from('suscripciones').upsert({ uid, hasta: new Date(hasta).toISOString(), actualizado: new Date().toISOString() })));
-  return hasta;
-}
-export async function quitarSuscripcion(uid) {
-  necesitaUsuario();
-  if (modoDemo) { const s = local.get('suscripciones', {}); delete s[uid]; local.set('suscripciones', s); return; }
-  comprobar(await limite(sb.from('suscripciones').delete().eq('uid', uid)));
-}
 
 export async function cambiarRol(uid, role) {
   necesitaUsuario();

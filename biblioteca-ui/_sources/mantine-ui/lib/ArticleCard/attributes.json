@@ -1,9 +1,0 @@
-{
-  "title": "Article card with image",
-  "category": "article-cards",
-  "dimmed": true,
-  "canvas": {
-    "center": true,
-    "maxWidth": 320
-  }
-}

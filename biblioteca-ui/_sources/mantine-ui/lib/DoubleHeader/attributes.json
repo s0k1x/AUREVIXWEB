@@ -1,8 +1,0 @@
-{
-  "title": "Header with multiple layers",
-  "category": "headers",
-  "responsive": true,
-  "canvas": {
-    "center": false
-  }
-}

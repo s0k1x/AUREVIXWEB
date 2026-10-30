@@ -1,6 +1,0 @@
-{
-  "$schema": "../category.schema.json",
-  "title": "Finance",
-  "description": "Icons for money, pricing, payments, currencies, banking, and financial trends.",
-  "icon": "piggy-bank"
-}

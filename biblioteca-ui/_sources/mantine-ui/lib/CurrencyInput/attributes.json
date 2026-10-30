@@ -1,8 +1,0 @@
-{
-  "title": "Number input with currency select",
-  "category": "inputs",
-  "canvas": {
-    "center": true,
-    "maxWidth": 420
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "types": ["react", "node", "next", "bun-types"]
-  },
-  "include": ["tests/**/*.ts", "tests/**/*.tsx"],
-  "exclude": ["node_modules"]
-}

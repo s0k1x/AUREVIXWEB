@@ -1,6 +1,0 @@
-{
-  "$schema": "../category.schema.json",
-  "title": "Home",
-  "description": "Icons for household spaces, furniture, appliances, utilities, cleaning, and home safety.",
-  "icon": "house"
-}

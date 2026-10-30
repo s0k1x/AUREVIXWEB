@@ -1,8 +1,0 @@
-{
-  "title": "Checkbox with image",
-  "category": "inputs",
-  "canvas": {
-    "center": true,
-    "maxWidth": 1080
-  }
-}

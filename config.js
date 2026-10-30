@@ -44,8 +44,6 @@ export const CONFIG = {
   // Temporada de la web (colores y ambiente): 'auto' según la fecha, '' ninguna, o halloween, blackfriday,
   // navidad, anonuevo, sanvalentin, verano. Se cambia en Ajustes → Negocio → «Temporada».
   temporada: 'auto',
-  // Suscripción a la Librería de componentes (se paga por Bizum o transferencia y se activa en Ajustes → Librería)
-  libreria: { precio: 9 },
   pagos: {
     bizum: '',
     iban: 'ES00 0000 0000 0000 0000 0000',

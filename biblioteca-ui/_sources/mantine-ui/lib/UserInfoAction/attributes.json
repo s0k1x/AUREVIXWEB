@@ -1,9 +1,0 @@
-{
-  "title": "User card with action",
-  "category": "users",
-  "dimmed": true,
-  "canvas": {
-    "center": true,
-    "maxWidth": 320
-  }
-}

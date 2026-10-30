@@ -1,6 +1,0 @@
-{
-  "$schema": "../category.schema.json",
-  "title": "Tools",
-  "description": "Icons for hand tools, equipment, maintenance, repair, and making things.",
-  "icon": "hammer"
-}
