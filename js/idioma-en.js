@@ -4,6 +4,7 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  'Hasta pronto': 'See you soon', 'Cerrando tu sesión…': 'Signing you out…', 'Entrando en tu cuenta…': 'Signing you in…', '¡Hola!': 'Hi!',
   // v59 · calculadora
   'Tu presupuesto': 'Your quote', 'La Librería es para suscriptores': 'The Library is for subscribers', 'Tu suscripción ha terminado': 'Your subscription has ended', 'Entrar para suscribirme': 'Sign in to subscribe', 'Ya he pagado: activar mi acceso': "I've paid: activate my access", 'Cómo pagar': 'How to pay', 'Cuotas mensuales': 'Monthly fees', 'se cobran cada mes desde la publicación': 'charged monthly from launch', 'Correo con tu dominio': 'Email with your domain', 'Urgente': 'Rush', 'opcionales': 'optional', '¿Para cuándo la necesitas?': 'When do you need it?', 'Plazo normal': 'Standard timing',
   'Descuento de bienvenida en tu primer pedido': 'Welcome discount on your first order', 'Al entregarte la web': 'When we deliver your website',
@@ -397,6 +398,7 @@ const fecha = t => t
 const dias = n => `${n} day${n === '1' ? '' : 's'}`;
 
 export const PATRONES = [
+  [/^¡Hola, (.+)!$/, m => `Hi, ${m[1]}!`],
   [/^Cuesta (.+ €) al mes y se añade a tu pedido como cuota mensual\.$/, m => `It costs ${m[1]} a month and is added to your order as a monthly fee.`],
   [/^\+ (.+ €)\/mes de cuotas$/, m => `+ ${m[1]}/month in fees`],
   [/^Hacia el (.+)$/, m => `By ${m[1]}`],

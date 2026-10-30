@@ -32,7 +32,7 @@ const servidor = createServer(async (req, res) => {
   if (!a) { res.writeHead(404, { 'Content-Type': TIPOS['.html'] }); return res.end(await readFile(join(RAIZ, '404.html'))); }
   let datos = a.datos;
   // Modo demo: sin Supabase (como en las pruebas a mano)
-  if (a.p.endsWith('config.js')) datos = String(datos).replace(/url: 'https:\/\/[^']*'/, "url: ''").replace(/anonKey: '[^']*'/, "anonKey: ''");
+  if (a.p.endsWith('config.js')) datos = String(datos).replace(/url:\s*(['"])https:\/\/[^'"]*\1/, "url: ''").replace(/anonKey:\s*(['"])[^'"]*\1/, "anonKey: ''"); // sirve con comillas simples o dobles (la copia minificada usa dobles)
   res.writeHead(200, { 'Content-Type': TIPOS[extname(a.p)] || 'application/octet-stream' });
   res.end(datos);
 });
@@ -90,6 +90,26 @@ for (const [nombre, tipo] of [['ordenador', PC], ['móvil', MOVIL]]) {
   const pg2 = await ctx.newPage();
   await pg2.goto(BASE + '/?comprar=negocio&diseno=filo', { waitUntil: 'load' }); await pg2.waitForTimeout(1500);
   ok(await pg2.evaluate(() => !!document.querySelector('#compraDlg[open]')), 'enlace «Empezar» abre el pedido');
+  await ctx.close();
+}
+
+/* ---------- 2b. Asistente (mascota) y sesión (animación al entrar y salir) ---------- */
+for (const [nombre, tipo] of [['ordenador', PC], ['móvil', MOVIL]]) {
+  const ctx = await contexto(tipo);
+  const pg = await ctx.newPage(); const e = errores(pg);
+  await pg.goto(BASE + '/', { waitUntil: 'load' }); await pg.waitForTimeout(2200);
+  await pg.click('#chatFab');
+  await pg.waitForTimeout(1800);
+  ok(await pg.evaluate(() => !!document.querySelector('#chat.abierto .chat-av .masc') && !document.querySelector('.masc-vuelo')), `${nombre}: el asistente se abre y la mascota aterriza`);
+  await pg.click('#chatCerrar'); await pg.waitForTimeout(1600);
+  ok(await pg.evaluate(() => !document.querySelector('.masc-vuelo') && getComputedStyle(document.querySelector('.chat-fab .masc')).visibility !== 'hidden'), `${nombre}: al cerrar, la mascota vuelve al botón`);
+  await pg.evaluate(() => document.querySelector('[data-login]').click()); await pg.waitForTimeout(500);
+  await pg.evaluate(() => document.querySelector('[data-demo=client]').click()); await pg.waitForTimeout(3600);
+  ok(await pg.evaluate(() => !document.querySelector('.ses-fx') && !!document.querySelector('#userBtn')), `${nombre}: iniciar sesión con la animación de bienvenida`);
+  await pg.evaluate(() => document.querySelector('#userBtn').click()); await pg.waitForTimeout(400);
+  await pg.evaluate(() => document.querySelector('[data-logout]').click()); await pg.waitForTimeout(3600);
+  ok(await pg.evaluate(() => !document.querySelector('.ses-fx') && !document.documentElement.classList.contains('menu-abierto') && getComputedStyle(document.querySelector('.menu-velo')).visibility === 'hidden' && !!document.querySelector('[data-login]')), `${nombre}: cerrar sesión no deja la pantalla borrosa`);
+  ok(!e.length, `${nombre}: asistente y sesión sin errores${e.length ? ` → ${e[0]}` : ''}`);
   await ctx.close();
 }
 

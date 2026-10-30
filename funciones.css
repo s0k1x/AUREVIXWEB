@@ -1372,3 +1372,145 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 .verif-widget{min-height:70px;display:grid;place-items:center;margin:10px 0 4px}
 .verif-caja small{color:var(--dim);font-size:12.5px}
 @media (prefers-reduced-motion:reduce){.verif,.verif-caja{transition:none}}
+
+/* ==========================================================
+   Mascota del asistente (js/mascota.js)
+   Robot dibujado en SVG. Dos formas: .cara (solo la cabeza, en un disco)
+   y .cuerpo (entero). Estados (data-estado):
+   normal · feliz · saluda · habla · piensa · dormido · adios · guino · vuela
+   Sin filtros ni animaciones infinitas en reposo: el parpadeo y la mirada
+   los lanza js/mascota.js de vez en cuando y aquí solo se suavizan.
+   ========================================================== */
+.masc{position:relative;display:block;width:100%;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.masc-svg{display:block;width:100%;height:100%;overflow:visible}
+.masc.cara{aspect-ratio:1/1;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 38%,#10201a 0,#050b08 62%,#020504 100%)}
+.masc.cara .masc-svg{overflow:hidden}
+.masc.cuerpo{aspect-ratio:400/470}
+.m-cuerpo,.m-puntos{display:none}
+.masc.cuerpo .m-cuerpo{display:inline}
+.m-puntos{opacity:0}
+
+/* Ojos: qué forma se ve y cómo se suaviza el cambio */
+.masc-svg :is(.o-arco,.o-sue,.o-pill){transition:opacity .18s ease,transform .09s ease-out}
+.masc-svg :is(.o-arco,.o-sue){opacity:0}
+.masc-svg .o-pill{transform-box:fill-box;transform-origin:center}
+.masc.parp .o-pill{transform:scaleY(.1)}
+.m-mira{transform:translate(calc(var(--gx,0) * 8px),calc(var(--gy,0) * 3px));transition:transform .45s cubic-bezier(.3,.7,.3,1)}
+.m-sigue{transform:translate(calc(var(--px,0) * 8px),calc(var(--py,0) * 5px));transition:transform .2s ease-out}
+.m-sigue-c{transform-origin:200px 244px;transform:rotate(calc(var(--px,0) * 4deg)) translate(calc(var(--px,0) * 3px),calc(var(--py,0) * 2px));transition:transform .25s ease-out}
+.masc:is([data-estado=feliz],[data-estado=saluda],[data-estado=adios],[data-estado=dormido]) .o-pill{opacity:0}
+.masc:is([data-estado=feliz],[data-estado=saluda],[data-estado=adios]) .o-arco{opacity:1}
+.masc[data-estado=dormido] .o-sue{opacity:1}
+.masc[data-estado=guino] .m-d .o-pill{opacity:0}
+.masc[data-estado=guino] .m-d .o-arco{opacity:1}
+.chat-fab:hover .masc[data-estado=normal] .o-pill{opacity:0}
+.chat-fab:hover .masc[data-estado=normal] .o-arco{opacity:1}
+
+/* Piezas que giran sobre una articulación */
+.m-todo{transform-origin:200px 450px}
+.m-cabeza{transform-origin:200px 244px;transition:transform .5s cubic-bezier(.3,1.2,.5,1)}
+.m-brazo-i{transform-origin:136px 282px;transform:rotate(9deg)}
+.m-brazo-d{transform-origin:264px 282px;transform:rotate(-9deg)}
+.m-pierna-i{transform-origin:176px 372px}
+.m-pierna-d{transform-origin:224px 372px}
+.m-brazo-i,.m-brazo-d{transition:transform .5s cubic-bezier(.3,1.2,.5,1)}
+.m-llama{opacity:0;transform-origin:50% 0}
+.m-sombra{transform-origin:200px 454px}
+
+/* Movimiento: solo en el robot entero (sesión, vuelo) y en los estados cortos (hablar, pensar) */
+@keyframes masc-piensa{from{transform:translate(-9px,-7px)}to{transform:translate(9px,-7px)}}
+@keyframes masc-habla{from{transform:scaleY(1)}to{transform:scaleY(.62)}}
+@keyframes masc-cabecea{0%,100%{transform:rotate(0)}30%{transform:rotate(-2.2deg)}70%{transform:rotate(1.8deg)}}
+@keyframes masc-respira{from{transform:scaleY(.8)}to{transform:scaleY(1.15)}}
+@keyframes masc-flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes masc-brazo-i{from{transform:rotate(7deg)}to{transform:rotate(13deg)}}
+@keyframes masc-brazo-d{from{transform:rotate(-7deg)}to{transform:rotate(-13deg)}}
+@keyframes masc-salto{0%,100%{transform:translateY(0) scale(1,1)}18%{transform:translateY(2px) scale(1.04,.95)}50%{transform:translateY(-22px) scale(.98,1.03)}82%{transform:translateY(0) scale(1.03,.97)}}
+@keyframes masc-saluda{from{transform:rotate(-104deg)}to{transform:rotate(-136deg)}}
+@keyframes masc-celebra{from{transform:rotate(106deg)}to{transform:rotate(138deg)}}
+@keyframes masc-llama{from{transform:scale(1,.8)}to{transform:scale(1.1,1.25)}}
+@keyframes masc-puntos{0%,100%{opacity:0;transform:translateY(4px)}40%,70%{opacity:1;transform:none}}
+@keyframes masc-sombra{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.8);opacity:.6}}
+@keyframes masc-pop{0%{transform:scale(.82)}55%{transform:scale(1.14)}100%{transform:scale(1)}}
+.masc[data-estado=piensa] .m-mira{animation:masc-piensa 1.25s ease-in-out infinite alternate}
+.masc[data-estado=piensa] .o-pill{transform:scaleY(.8)}
+.masc[data-estado=piensa] .m-cabeza{transform:rotate(-7deg) translateY(2px)}
+.masc[data-estado=piensa] .m-puntos{display:inline;opacity:1}
+.masc[data-estado=piensa] .m-puntos circle{animation:masc-puntos 1.5s ease-in-out infinite}
+.masc[data-estado=piensa] .m-puntos circle:nth-child(2){animation-delay:.25s}
+.masc[data-estado=piensa] .m-puntos circle:nth-child(3){animation-delay:.5s}
+.masc.cara .m-puntos{display:none!important}
+.masc[data-estado=habla] .m-i .o-pill{animation:masc-habla .3s ease-in-out infinite alternate}
+.masc[data-estado=habla] .m-d .o-pill{animation:masc-habla .3s ease-in-out .15s infinite alternate}
+.masc[data-estado=habla] .m-cabeza{animation:masc-cabecea 1.1s ease-in-out infinite}
+.masc[data-estado=guino] .m-cabeza{transform:rotate(5deg)}
+.masc.cuerpo:is([data-estado=normal],[data-estado=habla],[data-estado=guino]) .m-todo{animation:masc-flota 3.4s ease-in-out var(--d,0s) infinite}
+.masc.cuerpo:is([data-estado=normal],[data-estado=habla],[data-estado=guino]) .m-brazo-i{animation:masc-brazo-i 3.4s ease-in-out var(--d,0s) infinite alternate}
+.masc.cuerpo:is([data-estado=normal],[data-estado=habla],[data-estado=guino]) .m-brazo-d{animation:masc-brazo-d 3.4s ease-in-out calc(var(--d,0s) + .6s) infinite alternate}
+/* feliz: salta de alegría con los dos brazos arriba · saluda/adios: un brazo moviéndose */
+.masc.cuerpo[data-estado=feliz] .m-todo{animation:masc-salto .8s ease-in-out infinite}
+.masc.cuerpo[data-estado=feliz] .m-sombra{animation:masc-sombra .8s ease-in-out infinite}
+.masc.cuerpo[data-estado=feliz] .m-brazo-i{animation:masc-celebra .4s ease-in-out infinite alternate}
+.masc.cuerpo[data-estado=feliz] .m-brazo-d{animation:masc-saluda .4s ease-in-out .1s infinite alternate}
+.masc.cuerpo:is([data-estado=saluda],[data-estado=adios]) .m-brazo-d{animation:masc-saluda .45s ease-in-out infinite alternate}
+.masc.cuerpo:is([data-estado=saluda],[data-estado=adios]) .m-todo{animation:masc-flota 2.6s ease-in-out infinite}
+.masc.cuerpo:is([data-estado=saluda],[data-estado=adios]) .m-cabeza{animation:masc-cabecea 2s ease-in-out infinite}
+/* dormido: cabeza caída, brazos sueltos, respirando */
+.masc[data-estado=dormido] .m-cabeza{transform:rotate(9deg) translate(3px,7px)}
+.masc[data-estado=dormido] .o-sue{transform-box:fill-box;transform-origin:center;animation:masc-respira 2.4s ease-in-out infinite alternate}
+.masc.cuerpo[data-estado=dormido] .m-todo{transform:translateY(3px)}
+.masc.cuerpo[data-estado=dormido] .m-brazo-i{transform:rotate(4deg)}
+.masc.cuerpo[data-estado=dormido] .m-brazo-d{transform:rotate(-4deg)}
+/* vuela: brazos abiertos, llamas bajo los pies */
+.masc.cuerpo[data-estado=vuela] .m-brazo-i{transform:rotate(64deg)}
+.masc.cuerpo[data-estado=vuela] .m-brazo-d{transform:rotate(-64deg)}
+.masc.cuerpo[data-estado=vuela] .m-pierna-i{transform:rotate(10deg)}
+.masc.cuerpo[data-estado=vuela] .m-pierna-d{transform:rotate(-6deg)}
+.masc.cuerpo[data-estado=vuela] .m-llama{opacity:1;animation:masc-llama .14s ease-in-out infinite alternate}
+.masc.aterriza{animation:masc-pop .5s cubic-bezier(.3,1.5,.5,1)}
+
+/* El botón del chat y la cabecera del chat llevan la cara de la mascota */
+.chat-fab-ic{width:48px;height:48px;background:none;overflow:visible;box-shadow:none}
+.chat-fab-ic .masc{box-shadow:0 0 0 2px rgba(12,12,14,.22),0 4px 10px -2px rgba(0,0,0,.4)}
+.chat-av{width:46px;height:46px;border-radius:50%;background:none;font-size:0;overflow:visible;position:relative;box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 55%,transparent),0 0 18px -2px color-mix(in srgb,var(--accent) 60%,transparent)}
+@media (max-width:560px){.chat-fab-ic{width:46px;height:46px}}
+
+/* Vuelo: el robot sale del botón, cruza la pantalla y se convierte en el avatar.
+   Solo se mueve con transform (tarjeta gráfica); sin sombras ni filtros que recalcular. */
+.masc-vuelo{position:fixed;left:0;top:0;z-index:9500;pointer-events:none;will-change:transform,opacity;backface-visibility:hidden}
+.masc-vuelo .masc{height:100%}
+.masc-anillo{position:fixed;z-index:9400;pointer-events:none;border-radius:50%;border:2px solid var(--accent);will-change:transform,opacity;animation:masc-anillo .7s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes masc-anillo{from{opacity:.9;transform:scale(.6)}to{opacity:0;transform:scale(2.3)}}
+
+/* Animación al iniciar y cerrar sesión (fondo casi opaco, sin desenfoque: así va fluida en el móvil) */
+.ses-fx{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:20px;touch-action:none;background:radial-gradient(ellipse at 50% 42%,color-mix(in srgb,var(--accent) 9%,var(--bg)) 0,var(--bg) 70%);opacity:0;transition:opacity .28s ease;will-change:opacity}
+.ses-fx.on{opacity:.97}
+.ses-caja{display:grid;justify-items:center;gap:6px;text-align:center;font-family:var(--fb);color:var(--text);transform:translateY(16px) scale(.95);transition:transform .55s cubic-bezier(.3,1.4,.5,1);will-change:transform}
+.ses-fx.on .ses-caja{transform:none}
+.ses-caja b{font-family:var(--fd);font-size:clamp(24px,6vw,30px);letter-spacing:-.02em;line-height:1.15}
+.ses-caja small{color:var(--muted);font-size:15px}
+.ses-masc{position:relative;width:min(190px,52vw);margin-bottom:8px}
+.ses-entra .ses-masc{animation:ses-entra .8s cubic-bezier(.3,1.5,.5,1) both}
+.ses-sale.on .ses-masc{animation:ses-asiente 1.2s ease-in-out .1s both}
+@keyframes ses-entra{0%{transform:translateY(40px) scale(.6) rotate(-10deg);opacity:0}60%{transform:translateY(-8px) scale(1.06) rotate(4deg);opacity:1}100%{transform:none;opacity:1}}
+@keyframes ses-asiente{0%,100%{transform:none}40%{transform:translateY(4px) rotate(-2deg)}}
+.ses-barra{width:132px;height:3px;border-radius:3px;background:var(--line2);overflow:hidden;margin-top:14px}
+.ses-barra i{display:block;height:100%;border-radius:inherit;background:var(--accent);transform-origin:left;animation:ses-barra 1.7s cubic-bezier(.4,0,.2,1) both}
+.ses-sale .ses-barra i{animation-duration:1.9s}
+@keyframes ses-barra{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.ses-chispas{position:absolute;left:50%;top:38%;width:0;height:0;pointer-events:none}
+.ses-chispas i{position:absolute;left:0;top:0;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--accent);opacity:0;will-change:transform,opacity;animation:ses-chispa .95s ease-out var(--t,0s) both}
+.ses-chispas i:nth-child(3n){width:5px;height:5px;margin:-2.5px;background:#e3ffa6}
+@keyframes ses-chispa{0%{opacity:0;transform:rotate(var(--a)) translateY(-50px) scale(.4)}25%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--r) * -1.25)) scale(1)}}
+.ses-zz{position:absolute;right:16%;top:12%;pointer-events:none;font-family:var(--fd);font-weight:800;color:var(--accent)}
+.ses-zz i{position:absolute;left:0;top:0;font-style:normal;opacity:0;animation:ses-z 2s ease-out infinite}
+.ses-zz i:nth-child(1){font-size:16px;animation-delay:1.1s}
+.ses-zz i:nth-child(2){font-size:22px;animation-delay:1.6s}
+.ses-zz i:nth-child(3){font-size:28px;animation-delay:2.1s}
+@keyframes ses-z{0%{opacity:0;transform:translate(0,12px) rotate(-8deg)}25%{opacity:1}100%{opacity:0;transform:translate(26px,-44px) rotate(12deg)}}
+
+@media (prefers-reduced-motion:reduce){
+  .masc,.masc *,.ses-fx *{animation:none!important}
+  .ses-caja,.m-mira,.m-sigue,.m-sigue-c{transition:none}
+}
+html[data-movimiento=reducido] :is(.masc,.masc *,.ses-fx *){animation:none!important}
