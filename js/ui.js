@@ -15,7 +15,7 @@ import { aplicarApariencia, guardarApariencia } from './apariencia.js';
 import { campanaHTML, iniciarAvisos } from './avisos.js';
 import { iniciarDesplegables } from './desplegable.js';
 import { crearOtp } from './otp.js';
-import { transicionSesion, precargarFrames } from './mascota.js';
+import { transicionSesion } from './mascota.js';
 
 // Direcciones limpias: si alguien entra con «.html» (enlaces antiguos), la barra muestra la dirección bonita
 try {
@@ -485,8 +485,6 @@ function pintarSesion(u) {
     $('#avMenu')?.classList.remove('open');
   });
   iniciarAvisos();
-  // Con sesión iniciada, la hoja del robot se descarga cuando el navegador está libre (la usa «Cerrar sesión»)
-  setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(() => precargarFrames()) : precargarFrames()), 4000);
   // La apariencia elegida viaja con la cuenta entre dispositivos
   if (u.datos?.apariencia) guardarApariencia(u.datos.apariencia);
 }
@@ -702,7 +700,6 @@ function crearLogin() {
 /** Abre el login y devuelve el usuario (o null si lo cierra) */
 export function pedirLogin(subtitulo) {
   const d = $('#loginDlg') || crearLogin();
-  precargarFrames(); // el robot que saluda al entrar: la hoja de fotogramas se descarga mientras se escribe el código
   $('#lgSub').textContent = subtitulo || 'Para guardar tu pedido y seguir cada etapa de tu web.';
   $('#lgErr').textContent = '';
   abrir(d);

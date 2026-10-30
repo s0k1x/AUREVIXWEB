@@ -1286,3 +1286,27 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - `supabase/plataforma-v88.sql`. Es aditivo: límites al equipo, tickets, `gastos`, `estadisticas_web`, avisos de tickets, facturas de cuotas y extras, y `cambiosExtra` para el cliente.
   - Desplegar `correo` con los cambios de `_shared`.
   - Mientras no se aplique, el panel muestra cómo activarlo y lo demás sigue funcionando.
+
+### v89: el asistente, animado en código (sin imágenes)
+- **Ya no usa hojas de fotogramas.** Antes, cada acción era una imagen `.webp` (unos 1,9 MB en total). Ahora el robot vectorial se anima en vivo en `js/mascota.js` (`COREO` y `hornear()`):
+  - Cada estado se calcula fotograma a fotograma: se simula a 240 pasos por segundo y se guarda a 60 fps.
+  - Lo reproduce la tarjeta gráfica (solo transform y opacity), con nitidez a cualquier tamaño.
+  - Se han quitado `icons/asistente/`, `js/mascota-hojas.js` y `scripts/generar-mascota.js`.
+- **Principios de animación clásica:**
+  - Anticipación: se agacha antes de saltar.
+  - Estirar y aplastar, con volumen constante.
+  - Arcos: el salto sigue una parábola.
+  - Acción superpuesta y seguimiento: la cabeza, los brazos y las piernas cuelgan de muelles físicos, se retrasan, se pasan un poco y se asientan.
+  - El parpadeo y la mirada salen al azar, no en bucle. Al cambiar de estado, cada pieza pasa a la pose nueva con una transición, sin saltos.
+- **Estados:**
+  - Normal, habla, piensa, alegría, saluda, adiós, dormido y vuela.
+  - Nuevo: **escucha**, mientras le escribes; se inclina hacia ti y abre mucho los ojos.
+- **En el chat:**
+  - Te escucha mientras escribes.
+  - Al enviar da un salto de alegría (más largo si le saludas o le das las gracias) y se pone a pensar.
+  - Habla mientras sale la respuesta y termina con una sonrisa.
+- **Vuelo** (abrir y cerrar el chat, iniciar y cerrar sesión):
+  - Al subir va derecho, inclinado hacia donde avanza y con un vaivén.
+  - Al bajar se da la vuelta y cae de cabeza, con los brazos por delante como en un clavado.
+  - Antes de llegar se endereza con un golpe de propulsores y aterriza de pie.
+- Las mascotas que no se ven se pausan para no gastar batería. Con «reducir movimiento» se quedan en su pose fija.

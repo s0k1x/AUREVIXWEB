@@ -1362,9 +1362,10 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
    Mascota del asistente (js/mascota.js)
    Robot dibujado en SVG. Dos formas: .cara (solo la cabeza, en un disco)
    y .cuerpo (entero). Estados (data-estado):
-   normal · feliz · saluda · habla · piensa · dormido · adios · guino · vuela
-   Sin filtros ni animaciones infinitas en reposo: el parpadeo y la mirada
-   los lanza js/mascota.js de vez en cuando y aquí solo se suavizan.
+   normal · feliz · saluda · habla · piensa · escucha · dormido · adios · guino · vuela
+   El movimiento de cada estado lo hace js/mascota.js en código (coreografías).
+   Aquí van las poses fijas (sin movimiento reducido), las formas de los ojos y
+   los ejes de giro. El parpadeo y la mirada los lanza js/mascota.js al azar.
    ========================================================== */
 .masc{position:relative;display:block;width:100%;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .masc-lienzo{position:absolute;inset:0;display:block}
@@ -1409,44 +1410,22 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 .l-llama{opacity:0}
 
 /* Movimiento: todo con transform y opacity (compositor). Solo el robot entero (sesión, vuelo) y los estados cortos (hablar, pensar) */
-@keyframes masc-piensa{from{transform:translate(-2%,-1.5%)}to{transform:translate(2%,-1.5%)}}
-@keyframes masc-habla{from{transform:scaleY(1)}to{transform:scaleY(.62)}}
-@keyframes masc-cabecea{0%,100%{transform:rotate(0)}30%{transform:rotate(-2.2deg)}70%{transform:rotate(1.8deg)}}
-@keyframes masc-respira{from{transform:scale(1,1)}to{transform:scale(1.012,1.022)}}
-@keyframes masc-flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.4%)}}
-@keyframes masc-brazo-i{from{transform:rotate(7deg)}to{transform:rotate(14deg)}}
-@keyframes masc-brazo-d{from{transform:rotate(-7deg)}to{transform:rotate(-14deg)}}
-@keyframes masc-salto{0%,100%{transform:translateY(0) scale(1,1)}14%{transform:translateY(0) scale(1.06,.9)}46%{transform:translateY(-5.2%) scale(.96,1.07)}78%{transform:translateY(0) scale(1.05,.93)}90%{transform:translateY(0) scale(.99,1.02)}}
-@keyframes masc-saluda{from{transform:rotate(-104deg)}to{transform:rotate(-138deg)}}
-@keyframes masc-celebra{from{transform:rotate(104deg)}to{transform:rotate(140deg)}}
 @keyframes masc-llama{from{transform:scale(1,.75)}to{transform:scale(1.12,1.3)}}
-@keyframes masc-puntos{0%,100%{opacity:.25}40%,70%{opacity:1}}
-@keyframes masc-sombra{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.78);opacity:.55}}
 @keyframes masc-pop{0%{transform:scale(.82)}55%{transform:scale(1.14)}100%{transform:scale(1)}}
-@keyframes masc-cola{0%,100%{transform:rotate(0)}50%{transform:rotate(3deg)}}
-.masc[data-estado=piensa] .l-ojos{animation:masc-piensa 1.25s ease-in-out infinite alternate}
 .masc[data-estado=piensa] .ojo{transform:scaleY(.8)}
 .masc[data-estado=piensa] .l-cabeza{transform:rotate(-7deg) translateY(2px)}
-.masc[data-estado=piensa] .l-puntos{opacity:1;animation:masc-puntos 1.5s ease-in-out infinite}
-.masc[data-estado=habla] .ojo-i{animation:masc-habla .3s ease-in-out infinite alternate}
-.masc[data-estado=habla] .ojo-d{animation:masc-habla .3s ease-in-out .15s infinite alternate}
-.masc[data-estado=habla] .l-cabeza{animation:masc-cabecea 1.1s ease-in-out infinite}
+.masc[data-estado=piensa] .l-puntos{opacity:1}
+.masc[data-estado=piensa] .l-brazo-d{transform:rotate(-128deg)}
 .masc[data-estado=guino] .l-cabeza{transform:rotate(5deg)}
-.masc.cuerpo:is([data-estado=normal],[data-estado=habla],[data-estado=guino]) .m-todo{animation:masc-flota 3.4s ease-in-out var(--d,0s) infinite}
-.masc.cuerpo:is([data-estado=normal],[data-estado=habla],[data-estado=guino]) .l-brazo-i{animation:masc-brazo-i 3.4s ease-in-out var(--d,0s) infinite alternate}
-.masc.cuerpo:is([data-estado=normal],[data-estado=habla],[data-estado=guino]) .l-brazo-d{animation:masc-brazo-d 3.4s ease-in-out calc(var(--d,0s) + .6s) infinite alternate}
 /* feliz: salta de alegría con los dos brazos arriba (estirarse al subir, aplastarse al caer) · saluda/adiós: un brazo moviéndose */
-.masc.cuerpo[data-estado=feliz] .m-todo{animation:masc-salto .8s cubic-bezier(.4,0,.3,1) infinite}
-.masc.cuerpo[data-estado=feliz] .l-sombra{animation:masc-sombra .8s ease-in-out infinite}
-.masc.cuerpo[data-estado=feliz] .l-cabeza{animation:masc-cabecea .8s ease-in-out infinite}
-.masc.cuerpo[data-estado=feliz] .l-brazo-i{animation:masc-celebra .4s ease-in-out infinite alternate}
-.masc.cuerpo[data-estado=feliz] .l-brazo-d{animation:masc-saluda .4s ease-in-out .1s infinite alternate}
-.masc.cuerpo:is([data-estado=saluda],[data-estado=adios]) .l-brazo-d{animation:masc-saluda .45s ease-in-out infinite alternate}
-.masc.cuerpo:is([data-estado=saluda],[data-estado=adios]) .m-todo{animation:masc-flota 2.6s ease-in-out infinite}
-.masc.cuerpo:is([data-estado=saluda],[data-estado=adios]) .l-cabeza{animation:masc-cabecea 2s ease-in-out infinite}
+.masc.cuerpo[data-estado=feliz] .l-brazo-i{transform:rotate(120deg)}
+.masc.cuerpo[data-estado=feliz] .l-brazo-d{transform:rotate(-120deg)}
+.masc.cuerpo:is([data-estado=saluda],[data-estado=adios]) .l-brazo-d{transform:rotate(-122deg)}
+/* escucha (mientras le escribes): se inclina hacia ti con los ojos muy abiertos */
+.masc[data-estado=escucha] .l-cabeza{transform:rotate(7deg) translateY(.9%)}
+.masc[data-estado=escucha] .ojo{transform:scale(1.06,1.1)}
 /* dormido: cabeza caída, brazos sueltos, respirando */
 .masc[data-estado=dormido] .l-cabeza{transform:rotate(9deg) translate(.8%,1.5%)}
-.masc.cuerpo[data-estado=dormido] .m-todo{animation:masc-respira 2.8s ease-in-out infinite alternate}
 .masc.cuerpo[data-estado=dormido] .l-brazo-i{transform:rotate(4deg)}
 .masc.cuerpo[data-estado=dormido] .l-brazo-d{transform:rotate(-4deg)}
 /* vuela: brazos abiertos, llamas bajo los pies */
@@ -1455,20 +1434,7 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 .masc.cuerpo[data-estado=vuela] .l-pierna-i{transform:rotate(10deg)}
 .masc.cuerpo[data-estado=vuela] .l-pierna-d{transform:rotate(-6deg)}
 .masc.cuerpo[data-estado=vuela] .l-llama{opacity:1;animation:masc-llama .14s ease-in-out infinite alternate}
-.masc.cuerpo[data-estado=vuela] .l-cabeza{animation:masc-cola .5s ease-in-out infinite}
 .masc.aterriza{animation:masc-pop .5s cubic-bezier(.3,1.5,.5,1)}
-/* En reposo nunca está quieto del todo: la cabeza respira y se balancea un poco (el dibujo; las hojas de fotogramas ya lo hacen) */
-@keyframes masc-vive{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-1.2%) rotate(-1.8deg)}65%{transform:translateY(.4%) rotate(1.5deg)}}
-@media (prefers-reduced-motion:no-preference){html:not([data-movimiento=reducido]) .masc.cara[data-estado=normal] .l-cabeza{animation:masc-vive 4.6s ease-in-out var(--d,0s) infinite}}
-/* Hoja de fotogramas encima del dibujo (js/mascota.js → aplicarHoja). La caja mide un fotograma; la imagen,
-   la hoja entera, y dos animaciones por pasos la mueven: columnas (translate) y filas (transform). */
-.masc-fr{position:absolute;display:block;overflow:hidden;pointer-events:none;contain:strict}
-.fr-hoja{position:absolute;left:0;top:0;width:calc(var(--c) * 100%);height:auto;aspect-ratio:auto;max-width:none;display:block;will-change:transform,translate;
-  animation:fr-x calc(var(--ms) / var(--f)) steps(var(--c)) infinite,fr-y var(--ms) steps(var(--f)) infinite}
-@keyframes fr-x{to{translate:-100% 0}}
-@keyframes fr-y{to{transform:translateY(-100%)}}
-.masc.con-frames > .masc-lienzo{visibility:hidden}
-.masc.cara.con-frames{background:#040a06}
 .masc-chispa{position:fixed;z-index:9490;pointer-events:none;border-radius:50%;background:var(--accent);margin:-3px 0 0 -3px;will-change:transform,opacity;opacity:0}
 
 /* El botón del chat y la cabecera del chat llevan la cara de la mascota */
@@ -1481,6 +1447,7 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
    Solo se mueve con transform (tarjeta gráfica); sin sombras ni filtros que recalcular. */
 .masc-vuelo{position:fixed;left:0;top:0;z-index:9500;pointer-events:none;will-change:transform,opacity;backface-visibility:hidden}
 .masc-vuelo .masc{height:100%}
+.masc-vuelo .l-sombra{opacity:0}
 .masc-anillo{position:fixed;z-index:9400;pointer-events:none;border-radius:50%;border:2px solid var(--accent);will-change:transform,opacity;animation:masc-anillo .7s cubic-bezier(.2,.7,.3,1) forwards}
 @keyframes masc-anillo{from{opacity:.9;transform:scale(.6)}to{opacity:0;transform:scale(2.3)}}
 
