@@ -1186,3 +1186,8 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - Si los dos fallan, se explica el motivo y se propone entrar con Google.
   - Al comprobar el código, prueba `email` y, si no vale, `magiclink`.
 - Las dos funciones están desplegadas en Supabase.
+
+### v81 — arreglos vistos en el iPhone
+- **Robot del botón del asistente:** en Safari del iPhone la cara se salía del círculo y el botón se quedaba lima vacío. La animación de cada hoja de fotogramas lleva ahora números fijos (`steps(12)`…) en lugar de `steps(var(--c))`. El alto de la imagen sale de su proporción (`height:auto`) y no de un porcentaje dentro de una caja con `aspect-ratio`. Debajo del robot queda siempre el disco oscuro.
+- **Cabecera en el móvil:** al bajar por la página, asomaba contenido por detrás de la hora (iOS 26). La tapa de encima de la cabecera cubre ahora siempre la zona de la hora y 160 px más, no solo lo que se medía.
+- Comprobado en el vídeo de la prueba: el código por correo ya llega y se entra bien («Código correcto», «¡Hola, jose!»).
