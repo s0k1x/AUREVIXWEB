@@ -1145,3 +1145,13 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **«El más pedido» en claro:** tarjeta blanca con borde verde, en vez de rellena de color. La franja de aviso pasa a un tono suave del verde.
 - Con una temporada activa (Halloween, Navidad…) se mantienen sus colores.
 - **Pantalla del código:** botón «Entrar con Google» debajo de «pide otro», para poder entrar aunque el correo con el código no llegue.
+
+### v78 — borradores en toda la web y el robot volando con vida
+- **Borradores en toda la web (`js/borradores.js`):** lo que alguien escribe en cualquier campo (contacto, chat, mensajes del panel, revisa tu web, trabaja con nosotros…) se guarda en su navegador mientras escribe. Si cierra, recarga o se le va la conexión, al volver lo encuentra tal cual.
+  - Solo en ese navegador (`localStorage`, claves `tm_bor:`), nunca se envía a ningún sitio. No se guardan contraseñas, códigos, tarjetas, archivos ni el buscador de preguntas.
+  - Se borra al enviar (si el campo se vacía o desaparece), al vaciarlo a mano o a los 30 días. Cerrar un diálogo sin enviar no lo borra.
+  - Si se rechazan las preferencias en el aviso de cookies, no se guarda nada y se borra lo guardado.
+  - El cuestionario de pedido sigue con su propio borrador. Para excluir un campo: `data-sin-borrador`.
+- **El robot vuela con vida:** al abrir el asistente y al entrar o salir de la cuenta ya no viaja rígido. Bate los brazos como alas (más deprisa cuanto más rápido va, el de dentro de la curva más alto), patalea, adelanta la cabeza hacia donde va, mira el camino, parpadea y alarga las llamas al acelerar (`vidaEnVuelo` en `js/mascota.js`).
+- **Entrar y salir de la cuenta:** el robot sale volando del botón del asistente, cruza la pantalla en una curva amplia hasta el centro y saluda; al cerrar sesión se despide con la mano y vuelve volando a su botón (`trayecto`). La curva nunca se sale de la pantalla, también en el móvil. Con «menos movimiento» se queda como antes.
+- En reposo, la cabeza del dibujo respira y se balancea un poco.
