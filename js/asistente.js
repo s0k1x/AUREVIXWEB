@@ -315,7 +315,7 @@ export function iniciarChat() {
   // Fotogramas del robot: el de reposo cuando el navegador está libre; el resto (hablar, pensar, alegría y vuelo)
   // en cuanto se acerca el ratón o el dedo al botón, para que al abrir ya estén listos
   (window.requestIdleCallback ? f => requestIdleCallback(f, { timeout: 4000 }) : f => setTimeout(f, 2500))(() => precargarHojas('cara-normal'));
-  const resto = () => precargarHojas('cara-feliz', 'cuerpo-vuela', 'cara-habla', 'cara-piensa');
+  const resto = () => precargarHojas('cara-feliz', 'cara-habla', 'cara-piensa');
   ['pointerenter', 'focus', 'touchstart'].forEach(ev => fab.addEventListener(ev, resto, { once: true, passive: true }));
   setTimeout(() => estadoMascota(mFab, 'normal'), 2400); // el saludo inicial dura un momento
   const caja = el => { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width }; };

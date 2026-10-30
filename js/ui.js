@@ -8,6 +8,7 @@ import { iniciarEfectos } from './efectos.js';
 import { icono, pintarIconos } from './iconos.js';
 import { aplicarCache, cargarAjustesWeb } from './sitio.js';
 import { vigilarCampos } from './validar.js';
+import { iniciarBorradores } from './borradores.js';
 import { iniciarIdioma, botonIdioma } from './idioma.js';
 import { iniciarCookies } from './cookies.js';
 import { aplicarApariencia, guardarApariencia } from './apariencia.js';
@@ -766,6 +767,7 @@ export async function arrancar(pagina) {
   document.documentElement.classList.add('js');
   iniciarIdioma().catch(e => console.warn(e)).finally(() => document.documentElement.classList.remove('i18n-pendiente', 'i18n-anim'));
   vigilarCampos();
+  iniciarBorradores();
   // Red de seguridad: si algo falla sin control, se avisa (sin repetir el aviso en bucle)
   addEventListener('unhandledrejection', e => {
     const m = e.reason?.message || '';

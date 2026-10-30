@@ -2,7 +2,7 @@
    AVISO DE COOKIES Y ALMACENAMIENTO
    La web no usa cookies de publicidad ni de seguimiento.
    - Necesarias: sesión, seguridad y tu elección de cookies (siempre activas)
-   - Preferencias: tema, tamaño de letra, borradores del cuestionario, vista del panel
+   - Preferencias: tema, tamaño de letra, borradores (lo escrito a medias en cualquier campo), vista del panel
    - Estadísticas: no se usan. Si algún día se añaden, se activarán solo con tu permiso.
    ========================================================== */
 const CLAVE = 'tm_cookies';
@@ -46,7 +46,7 @@ function pintar(configurar = false) {
       <p>Usamos el almacenamiento imprescindible para que la web funcione (sesión y seguridad) y, solo si lo aceptas, para recordar tus preferencias. No usamos cookies de publicidad, de estadísticas ni de terceros. <a href="terminos-y-privacidad#cookies">Más información</a></p></div></div>
     <div class="ck-cfg">
       <label class="ck-row"><span><b>Necesarias</b><small>Inicio de sesión, seguridad y tu elección sobre cookies. Siempre activas.</small></span><input type="checkbox" checked disabled></label>
-      <label class="ck-row"><span><b>Preferencias</b><small>Tema, tamaño de letra, borrador del pedido, vistas del panel y el vendedor que te recomendó.</small></span><input type="checkbox" id="ckPref" ${c?.preferencias ? 'checked' : ''}></label>
+      <label class="ck-row"><span><b>Preferencias</b><small>Tema, tamaño de letra, lo que dejas escrito a medias en los formularios, vistas del panel y el vendedor que te recomendó.</small></span><input type="checkbox" id="ckPref" ${c?.preferencias ? 'checked' : ''}></label>
       <label class="ck-row off"><span><b>Estadísticas</b><small>No usamos herramientas de estadísticas ni de terceros.</small></span><input type="checkbox" disabled></label>
     </div>
     <div class="ck-btns">

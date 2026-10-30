@@ -1470,6 +1470,9 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 .masc.cuerpo[data-estado=vuela] .l-llama{opacity:1;animation:masc-llama .14s ease-in-out infinite alternate}
 .masc.cuerpo[data-estado=vuela] .l-cabeza{animation:masc-cola .5s ease-in-out infinite}
 .masc.aterriza{animation:masc-pop .5s cubic-bezier(.3,1.5,.5,1)}
+/* En reposo nunca está quieto del todo: la cabeza respira y se balancea un poco (el dibujo; las hojas de fotogramas ya lo hacen) */
+@keyframes masc-vive{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-1.2%) rotate(-1.8deg)}65%{transform:translateY(.4%) rotate(1.5deg)}}
+@media (prefers-reduced-motion:no-preference){html:not([data-movimiento=reducido]) .masc.cara[data-estado=normal] .l-cabeza{animation:masc-vive 4.6s ease-in-out var(--d,0s) infinite}}
 /* Hoja de fotogramas encima del dibujo (js/mascota.js → aplicarHoja). La caja mide un fotograma; la imagen,
    la hoja entera, y dos animaciones por pasos la mueven: columnas (translate) y filas (transform). */
 .masc-fr{position:absolute;display:block;overflow:hidden;pointer-events:none;contain:strict}
@@ -1504,6 +1507,8 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 .ses-masc{position:relative;width:min(190px,52vw);margin-bottom:8px}
 .ses-entra .ses-masc{animation:ses-entra .8s cubic-bezier(.3,1.5,.5,1) both}
 .ses-sale.on .ses-masc{animation:ses-asiente 1.2s ease-in-out .1s both}
+.ses-fx.con-vuelo .ses-masc{animation:none}
+.ses-fx.con-vuelo .ses-chispas i{animation-delay:calc(var(--t,0s) + 1.05s)}
 @keyframes ses-entra{0%{transform:translateY(40px) scale(.6) rotate(-10deg);opacity:0}60%{transform:translateY(-8px) scale(1.06) rotate(4deg);opacity:1}100%{transform:none;opacity:1}}
 @keyframes ses-asiente{0%,100%{transform:none}40%{transform:translateY(4px) rotate(-2deg)}}
 .ses-barra{width:132px;height:3px;border-radius:3px;background:var(--line2);overflow:hidden;margin-top:14px}
