@@ -1134,3 +1134,8 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - Fuera los adornos que restaban profesionalidad: rayas diagonales en el pie y en la pantalla de bienvenida, brillo de neón en la barra de progreso y en «Cómo trabajamos», brillo que recorría la banda del descuento y los estilos de las cintas que ya no se usaban.
 - El pie empieza con una fila limpia: marca, una frase de lo que hacemos y «Ver webs y precios», en lugar de la tarjeta del logotipo.
 - El sistema de diseño (`.claude/skills/aurevix-diseno`) recoge estas reglas.
+
+### v76 — pulido final
+- Fuera las etiquetas de mayúsculas sobre los títulos de las 16 páginas de sectores y guías (`scripts/paginas.py`): el título ya lo dice todo.
+- Ningún texto de la web baja de 12 px (antes había 20 estilos de 9,5 a 11,5 px). Se mantienen como estaban las pestañas del panel en el móvil y las miniaturas de las ventanas de ejemplo.
+- Comprobado en 360, 390, 768 y 1440 px, en oscuro y claro, sobre nueve páginas: sin desbordes ni errores. `tests/pruebas.mjs`: 59 de 59.

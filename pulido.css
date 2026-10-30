@@ -191,7 +191,7 @@ html[data-tema=claro] .dom-suf{color:var(--accent)}
 .dom-sec{display:grid;gap:10px;min-width:0}
 .dom-h{margin:0;font-size:15px;font-weight:700;letter-spacing:0}
 .dom-op b{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.dom-gratis,.dom-precio-op{font-style:normal;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:99px;line-height:1.4}
+.dom-gratis,.dom-precio-op{font-style:normal;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;line-height:1.4}
 .dom-gratis{background:rgba(74,222,128,.14);color:var(--ok)}
 .dom-precio-op{background:var(--accent-soft);color:var(--accent)}
 html[data-tema=claro] .dom-precio-op{color:var(--accent)}
