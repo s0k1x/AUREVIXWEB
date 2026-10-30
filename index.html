@@ -60,17 +60,17 @@
   <link rel="preload" href="fuentes/instrument-sans-latin-046090.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fuentes/bricolage-grotesque-latin-a97232.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fuentes/fuentes.css">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="componentes.css">
-  <link rel="stylesheet" href="animaciones.css">
-  <link rel="stylesheet" href="inicio.css">
-  <link rel="stylesheet" href="funciones.css">
-  <link rel="stylesheet" href="widgets.css">
-  <link rel="stylesheet" href="tema-claro.css">
-  <link rel="stylesheet" href="pulido.css">
-  <link rel="stylesheet" href="temporadas.css">
-  <link rel="stylesheet" href="iconos-vivos.css">
-  <link rel="stylesheet" href="paginas.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/animaciones.css">
+  <link rel="stylesheet" href="css/inicio.css">
+  <link rel="stylesheet" href="css/funciones.css">
+  <link rel="stylesheet" href="css/widgets.css">
+  <link rel="stylesheet" href="css/tema-claro.css">
+  <link rel="stylesheet" href="css/pulido.css">
+  <link rel="stylesheet" href="css/temporadas.css">
+  <link rel="stylesheet" href="css/iconos-vivos.css">
+  <link rel="stylesheet" href="css/paginas.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"ProfessionalService","@id":"https://aurevixweb.es/#negocio","name":"AurevixWeb","url":"https://aurevixweb.es/","description":"Diseño de páginas web para negocios: landing pages, webs de negocio, reservas y tiendas online, a precio cerrado.","logo":"https://aurevixweb.es/icons/icon-512.png","image":"https://aurevixweb.es/icons/og.png?v=2","email":"aurevixweb@gmail.com","areaServed":{"@type":"Country","name":"España"},"priceRange":"149€ - 990€","currenciesAccepted":"EUR","paymentAccepted":"Bizum, transferencia bancaria","knowsLanguage":["es","en"]},{"@type":"WebSite","@id":"https://aurevixweb.es/#web","url":"https://aurevixweb.es/","name":"AurevixWeb","inLanguage":"es-ES","publisher":{"@id":"https://aurevixweb.es/#negocio"}}]}</script>
   <!-- Precarga de los módulos: el navegador los pide todos a la vez en vez de uno tras otro -->
   <link rel="modulepreload" href="js/app.js">
@@ -153,6 +153,39 @@
 
 
 
+    <!-- ===== DISEÑOS DE PARTIDA ===== -->
+    <section id="disenos">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <h2>Diseños de partida</h2>
+          <p class="lead">Cada diseño se adapta a tu marca: colores, tipografía, textos, fotos y secciones. Pulsa en cualquiera para verlo a pantalla completa.</p>
+        </div>
+        <div class="opts dz-filtro reveal" id="dzFiltro" role="radiogroup" aria-label="Filtrar diseños"></div>
+        <div class="disenos" id="disenosGrid"></div>
+        <nav class="pg-otros dz-sectores reveal" aria-label="Webs por sector"><b>Webs pensadas para tu sector</b><a class="pg-otro" href="webs-para-barberias">Barberías<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-centros-de-estetica">Centros de estética<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-restaurantes">Restaurantes<i data-i="arrow"></i></a><a class="pg-otro" href="tiendas-online">Tiendas online<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-gimnasios">Gimnasios<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-profesionales">Profesionales<i data-i="arrow"></i></a></nav>
+      </div>
+    </section>
+    <!-- ===== ANTES Y DESPUÉS (js/antes-despues.js) ===== -->
+    <section id="cambio">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <h2>El antes y el después</h2>
+          <p class="lead">La misma barbería, con una web de hace años y con un diseño nuestro. Desliza para compararlas.</p>
+        </div>
+        <div class="ad reveal" id="antesDespues">
+          <div class="ad-marco">
+            <div class="ad-bar"><i></i><i></i><i></i><span>barberiafilo.com</span></div>
+            <div class="ad-vista thumb">
+              <iframe class="ad-antes" tabindex="-1" aria-hidden="true" title=""></iframe>
+              <div class="ad-despues"><iframe tabindex="-1" aria-hidden="true" title=""></iframe></div>
+              <span class="ad-et ad-et-a">Antes</span><span class="ad-et ad-et-d">Después</span>
+              <div class="ad-linea" aria-hidden="true"><span class="ad-asa"><i data-i="arrow"></i><i data-i="arrow"></i></span></div>
+              <input class="ad-rango" type="range" min="0" max="100" value="50" aria-label="Comparar antes y después: desliza para ver más de una o de otra">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
     <!-- ===== TIPOS DE WEB Y PRECIOS ===== -->
     <section id="webs" class="alt">
       <div class="wrap">
@@ -180,14 +213,6 @@
           <p class="lead">Elige el tipo de web y los extras: ves el precio final, lo que pagas al empezar y el plazo, antes de pedir nada.</p>
         </div>
         <div class="calc reveal" id="calc"></div>
-        <div class="rv-portada reveal">
-          <div><h2>¿Cómo está tu web actual?</h2><p>Escribe su dirección: la medimos con Google y la comparamos con una de las nuestras. Gratis y en menos de un minuto.</p></div>
-          <form action="revisa-tu-web" method="get">
-            <input type="hidden" name="auto" value="1">
-            <input name="url" type="text" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="tunegocio.es" aria-label="Dirección de tu web" required maxlength="200">
-            <button class="btn btn-primary" type="submit">Revisar mi web</button>
-          </form>
-        </div>
       </div>
     </section>
     <!-- ===== CÓMO TRABAJAMOS ===== -->
@@ -202,39 +227,6 @@
           <div class="step reveal"><span class="st-dot"></span><h3>Diseño y revisión</h3><p>Preparamos la web y te enviamos una vista previa. Puedes aprobarla o pedir los cambios que necesites.</p></div>
           <div class="step reveal"><span class="st-dot"></span><h3>Publicación</h3><p>Abonas el resto y publicamos la web en tu dominio. Te quedas con todos los accesos.</p></div>
         </div>
-      </div>
-    </section>
-    <!-- ===== ANTES Y DESPUÉS (js/antes-despues.js) ===== -->
-    <section id="cambio">
-      <div class="wrap">
-        <div class="sec-head reveal">
-          <h2>El antes y el después</h2>
-          <p class="lead">La misma barbería, con una web de hace años y con un diseño nuestro. Desliza para compararlas.</p>
-        </div>
-        <div class="ad reveal" id="antesDespues">
-          <div class="ad-marco">
-            <div class="ad-bar"><i></i><i></i><i></i><span>barberiafilo.com</span></div>
-            <div class="ad-vista thumb">
-              <iframe class="ad-antes" tabindex="-1" aria-hidden="true" title=""></iframe>
-              <div class="ad-despues"><iframe tabindex="-1" aria-hidden="true" title=""></iframe></div>
-              <span class="ad-et ad-et-a">Antes</span><span class="ad-et ad-et-d">Después</span>
-              <div class="ad-linea" aria-hidden="true"><span class="ad-asa"><i data-i="arrow"></i><i data-i="arrow"></i></span></div>
-              <input class="ad-rango" type="range" min="0" max="100" value="50" aria-label="Comparar antes y después: desliza para ver más de una o de otra">
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- ===== DISEÑOS DE PARTIDA ===== -->
-    <section id="disenos">
-      <div class="wrap">
-        <div class="sec-head reveal">
-          <h2>Diseños de partida</h2>
-          <p class="lead">Cada diseño se adapta a tu marca: colores, tipografía, textos, fotos y secciones. Pulsa en cualquiera para verlo a pantalla completa.</p>
-        </div>
-        <div class="opts dz-filtro reveal" id="dzFiltro" role="radiogroup" aria-label="Filtrar diseños"></div>
-        <div class="disenos" id="disenosGrid"></div>
-        <nav class="pg-otros dz-sectores reveal" aria-label="Webs por sector"><b>Webs pensadas para tu sector</b><a class="pg-otro" href="webs-para-barberias">Barberías<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-centros-de-estetica">Centros de estética<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-restaurantes">Restaurantes<i data-i="arrow"></i></a><a class="pg-otro" href="tiendas-online">Tiendas online<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-gimnasios">Gimnasios<i data-i="arrow"></i></a><a class="pg-otro" href="webs-para-profesionales">Profesionales<i data-i="arrow"></i></a></nav>
       </div>
     </section>
     <!-- ===== CASOS REALES (solo si el propietario añade alguno en Ajustes) ===== -->
@@ -264,6 +256,19 @@
         </div>
         <div class="op-grid" id="opGrid"></div>
         <div class="op-actions" id="opActions"></div>
+      </div>
+    </section>
+    <!-- ===== REVISA TU WEB (lleva a revisa-tu-web con el análisis en marcha) ===== -->
+    <section id="revisa" class="alt">
+      <div class="wrap">
+        <div class="rv-portada reveal">
+          <div><h2>¿Cómo está tu web actual?</h2><p>Escribe su dirección: la medimos con Google y la comparamos con una de las nuestras. Gratis y en menos de un minuto.</p></div>
+          <form action="revisa-tu-web" method="get">
+            <input type="hidden" name="auto" value="1">
+            <input name="url" type="text" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="tunegocio.es" aria-label="Dirección de tu web" required maxlength="200">
+            <button class="btn btn-primary" type="submit">Revisar mi web</button>
+          </form>
+        </div>
       </div>
     </section>
     <!-- ===== PREGUNTAS FRECUENTES ===== -->

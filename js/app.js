@@ -208,7 +208,7 @@ function alAcercarse(el, fn, margen = '600px') {
 alAcercarse($('#calc'), () => import('./calculadora.js').then(m => m.montarCalculadora($('#calc'), { bienvenida: bvActivo() })));
 /* Navegación lateral por secciones (solo en pantallas anchas; el CSS la oculta en el resto) */
 (() => {
-  const SEC = [['webs', 'Precios'], ['calcula', 'Presupuesto'], ['como', 'Cómo trabajamos'], ['disenos', 'Diseños'], ['opiniones', 'Opiniones'], ['faq', 'Preguntas'], ['contacto', 'Contacto']]
+  const SEC = [['disenos', 'Diseños'], ['cambio', 'Antes y después'], ['webs', 'Precios'], ['calcula', 'Presupuesto'], ['como', 'Cómo trabajamos'], ['opiniones', 'Opiniones'], ['revisa', 'Revisa tu web'], ['faq', 'Preguntas'], ['contacto', 'Contacto']]
     .map(([id, t]) => [document.getElementById(id), t]).filter(([el]) => el);
   if (!SEC.length || !('IntersectionObserver' in window)) return;
   const nav = document.createElement('nav');
@@ -1540,7 +1540,10 @@ async function pintarCifras() {
   io?.observe?.(g);
   new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); g.classList.add('dibuja'); } }, { threshold: .4 }).observe(g);
 }
-pintarCifras();
+pintarCifras().then(alternarFranjas);
+/* Franjas de fondo alternas según las secciones que se ven (Casos y Cifras solo aparecen con datos reales) */
+function alternarFranjas() { $$('main > section:not(.hero):not(.join-sec):not([hidden])').forEach((s, i) => s.classList.toggle('alt', i % 2 === 1)); }
+alternarFranjas();
 document.querySelectorAll('[data-reservar-llamada]').forEach(b => { b.hidden = !CONFIG.llamadas?.activo; });
 // Antes y después: la barbería con una web anticuada y con el diseño «Filo»
 import('./antes-despues.js').then(m => m.iniciarAntesDespues(urlPlantilla('filo', 'Barbería Filo', '', true))).catch(() => {});
@@ -1553,6 +1556,7 @@ if (CONFIG.casos?.length) {
     ${c.sector ? `<small>${esc(c.sector)}</small>` : ''}<h3>${esc(c.nombre)}</h3>${c.texto ? `<p>${esc(c.texto)}</p>` : '<p></p>'}
     <span class="caso-url">${esc(c.url.replace(/^https:\/\/(www\.)?/i, '').replace(/\/$/, ''))}${icono('external')}</span></a>`).join('');
   $('#casos').hidden = false;
+  alternarFranjas();
   $$('#casos .reveal').forEach(el => io?.observe?.(el));
 }
 

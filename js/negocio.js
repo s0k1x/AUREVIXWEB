@@ -3,7 +3,7 @@
    Lo usan el panel (propietario) y «Mis proyectos» (cliente).
    - Mantenimiento: pedido.mantenimiento = { estado: 'activo'|'pausado'|'baja', desde, proximo,
      cuotas: [{ periodo: 'AAAA-MM', importe, pagado, metodo }], baja, motivoBaja }
-     Solo lo cambia el propietario (supabase/plataforma-v88.sql). El cliente pide la baja con
+     Solo lo cambia el propietario (supabase/migraciones/plataforma-v88.sql). El cliente pide la baja con
      una consulta de soporte de tipo «baja».
    - Cambios extra: pedido.cambiosExtra = [{ id, concepto, detalle, importe, estado: 'propuesto'|
      'aceptado'|'rechazado'|'pagado', propuesto, respondido, acuerdo: { nombre, texto, t }, pagado }]

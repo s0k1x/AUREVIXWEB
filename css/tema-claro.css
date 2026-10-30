@@ -141,7 +141,7 @@ html[data-tema=claro] .btn-primary,html[data-tema=claro] .msg.yo,html[data-tema=
 html[data-tema=claro] .btn-dark{background:#16161b;color:var(--accent-oscuro,#c8f560)}
 html[data-tema=claro] .kpis .kpi:first-child{color:#fff}
 html[data-tema=claro] .kpis .kpi:first-child small,html[data-tema=claro] .kpis .kpi:first-child span{color:rgba(255,255,255,.78)}
-html[data-tema=claro] .wordmark,html[data-tema=claro] .brand-card .logo2 img,html[data-tema=claro] .splash-nombre{content:url(icons/nombre-oscuro.png)}
+html[data-tema=claro] .wordmark,html[data-tema=claro] .brand-card .logo2 img,html[data-tema=claro] .splash-nombre{content:url(../icons/nombre-oscuro.png)}
 html[data-tema=claro] .toast{background:#16161b;color:#fff}
 html[data-tema=claro] .header.scrolled,html[data-tema=claro] .header.open{border-color:var(--line)}
 html[data-tema=claro] .user-menu,html[data-tema=claro] .av-menu,html[data-tema=claro] .cookies,html[data-tema=claro] .chat-panel{box-shadow:0 24px 60px rgba(20,20,26,.16)}

@@ -8,7 +8,7 @@ export const CONFIG = {
   marca: 'AurevixWeb',
   eslogan: 'Webs profesionales para tu negocio',
   email: 'aurevixweb@gmail.com',           // único canal de contacto (no hay WhatsApp)
-  dominio: 'aurevixweb.es',                 // reservado; aún no apunta a la web (ver LEEME.md, punto 12)
+  dominio: 'aurevixweb.es',                 // reservado; aún no apunta a la web (ver docs/LEEME.md, punto 12)
   aviso: 'Plazas abiertas para nuevos proyectos este mes', // texto de la píldora de la portada
   anuncio: { activo: false, texto: '' },    // franja de aviso arriba del todo
   estadoWeb: 'normal',
@@ -26,7 +26,7 @@ export const CONFIG = {
   bienvenida: { activo: true, codigo: 'BIENVENIDA10', pct: 10 },
 
   // Recomienda a un amigo: cada cliente tiene su código AMIGO-XXXXXXXX. Su amigo tiene «pct» % en su
-  // primera web y el cliente recibe «premio» (lo das tú desde el panel). Necesita supabase/referidos-v66.sql
+  // primera web y el cliente recibe «premio» (lo das tú desde el panel). Necesita supabase/migraciones/referidos-v66.sql
   referidos: { activo: false, pct: 10, premio: 'un mes de mantenimiento gratis' },
 
   // Webs de clientes reales que quieres enseñar en la portada (Ajustes → Negocio → Casos reales)

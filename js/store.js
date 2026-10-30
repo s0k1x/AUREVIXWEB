@@ -195,7 +195,7 @@ export async function iniciar() {
   if (fallo) throw fallo;
 }
 
-// Perfil del usuario (tabla perfiles). Se crea solo al registrarse (ver supabase/esquema.sql).
+// Perfil del usuario (tabla perfiles). Se crea solo al registrarse (ver supabase/migraciones/esquema.sql).
 async function sincronizar(su) {
   const meta = su.user_metadata || {};
   let perfil = null;
@@ -307,7 +307,7 @@ export async function cerrarSesion() {
   await sb.auth.signOut();
 }
 
-/* ---------- Notificaciones push (supabase/push-v68.sql, js/push.js) ---------- */
+/* ---------- Notificaciones push (supabase/migraciones/push-v68.sql, js/push.js) ---------- */
 export async function guardarSuscripcionPush({ endpoint, p256dh, auth, dispositivo }) {
   necesitaUsuario();
   if (modoDemo) return;
@@ -528,13 +528,13 @@ export async function crearResena({ estrellas, texto, plan, pedidoId }) {
 }
 
 /** Horas de llamada ya reservadas (solo las horas, nunca quién): para enseñar los huecos libres.
-    En el servidor, huecos_ocupados() (supabase/funciones-v94.sql). */
+    En el servidor, huecos_ocupados() (supabase/migraciones/funciones-v94.sql). */
 export async function huecosOcupados() {
   if (modoDemo) return local.get('tickets', []).filter(t => t.tipo === 'llamada' && t.estado !== 'cerrado').map(t => t.llamada);
   try { const { data, error } = await limite(sb.rpc('huecos_ocupados'), 8000); return error ? [] : (data || []).map(x => x.llamada || x); } catch { return []; }
 }
 /** Cifras de la portada (webs entregadas, días de media, valoración y entregas por mes): solo totales, nunca datos de
-    nadie. En el servidor, la función cifras_publicas() (supabase/funciones-v94.sql). null si aún no está o falla. */
+    nadie. En el servidor, la función cifras_publicas() (supabase/migraciones/funciones-v94.sql). null si aún no está o falla. */
 export async function cifrasPublicas() {
   if (modoDemo) {
     const P = local.get('orders', []).filter(p => p.estado === 'entregado'), R = local.get('resenas', []).filter(r => r.aprobada);
@@ -679,7 +679,7 @@ export async function tienePedidos() {
   return (await misPedidos()).some(p => p.estado !== 'cancelado');
 }
 /** Código «Recomienda a un amigo» de un cliente: AMIGO- + las 8 primeras cifras de su id
-    (mismo cálculo que la función cupon() de supabase/referidos-v66.sql) */
+    (mismo cálculo que la función cupon() de supabase/migraciones/referidos-v66.sql) */
 export function codigoAmigo(uid) {
   let h = String(uid || '').replace(/-/g, '').toUpperCase();
   if (!/^[0-9A-F]{8}/.test(h)) { // ids del modo demo: se convierten en 8 cifras hexadecimales
@@ -1040,7 +1040,7 @@ export async function borrarWeb(version) {
   }
 }
 
-/* ---------- Estadísticas de visitas (supabase/visitas-v65.sql) ----------
+/* ---------- Estadísticas de visitas (supabase/migraciones/visitas-v65.sql) ----------
    Sin cookies ni datos de la persona: solo se suma 1 al contador del día
    para esa página, web de procedencia, tipo de dispositivo e idioma. */
 export function contarVisita(pagina, origen, dispositivo, idioma) {
@@ -1055,7 +1055,7 @@ export async function listarVisitas(dias = 30) {
   return comprobar(await limite(sb.from('visitas').select('dia, pagina, origen, dispositivo, idioma, visitas').gte('dia', desde).limit(10000)));
 }
 
-/** Visitas y contactos reales de la web publicada de un pedido (supabase/plataforma-v88.sql).
+/** Visitas y contactos reales de la web publicada de un pedido (supabase/migraciones/plataforma-v88.sql).
     Lo ven el cliente dueño del pedido y el equipo. Devuelve [{ dia, tipo: 'visita'|'contacto', origen, dispositivo, visitas }] */
 export async function estadisticasWeb(pedidoId, dias = 90) {
   necesitaUsuario();
@@ -1069,7 +1069,7 @@ export async function estadisticasWeb(pedidoId, dias = 90) {
     return L;
   }
   const { data, error } = await limite(sb.rpc('estadisticas_web', { p_pedido: pedidoId, p_dias: dias }));
-  if (error) { if (/estadisticas_web|function|404/i.test(error.message)) throw new Error('Las estadísticas aún no están activadas (falta aplicar supabase/plataforma-v88.sql).'); throw new Error(traducirError(error)); }
+  if (error) { if (/estadisticas_web|function|404/i.test(error.message)) throw new Error('Las estadísticas aún no están activadas (falta aplicar supabase/migraciones/plataforma-v88.sql).'); throw new Error(traducirError(error)); }
   return data || [];
 }
 /** Visita o contacto en la web publicada de un cliente (cuenta en «visitas» como w-<nombre> / c-<nombre>) */
@@ -1077,7 +1077,7 @@ export function contarEnWebCliente(slug, tipo, dispositivo, origen = '') {
   contarVisita(`${tipo === 'contacto' ? 'c' : 'w'}-${String(slug).slice(0, 38)}`.replace(/-+$/, ''), origen.slice(0, 60), dispositivo, 'es');
 }
 
-/* ---------- Gastos del negocio (solo propietario · supabase/plataforma-v88.sql) ---------- */
+/* ---------- Gastos del negocio (solo propietario · supabase/migraciones/plataforma-v88.sql) ---------- */
 const gastoDeFila = f => ({ id: f.id, fecha: f.fecha, concepto: f.concepto, categoria: f.categoria, importe: Number(f.importe), iva: Number(f.iva || 0), recurrente: !!f.recurrente, nota: f.nota || '' });
 export async function listarGastos() {
   necesitaUsuario();

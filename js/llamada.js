@@ -6,7 +6,7 @@
    «llamada» en el panel (Soporte). Las horas se calculan en hora de
    Madrid, que es la del negocio, y se enseñan en la del visitante.
    El servidor no deja reservar dos veces la misma hora
-   (supabase/funciones-v94.sql) y solo dice qué horas están ocupadas,
+   (supabase/migraciones/funciones-v94.sql) y solo dice qué horas están ocupadas,
    nunca quién las tiene.
    Al terminar, botones para añadirla a Google Calendar o a cualquier
    calendario (archivo .ics).

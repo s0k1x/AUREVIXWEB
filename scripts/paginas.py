@@ -36,8 +36,8 @@ SPLASH = linea('<div class="splash listo" id="splash0"')
 SPLASH_JS = next(l for l in lineas if l.startswith("<script>(function(){var s=document.getElementById('splash0')"))
 ICONOS = '\n'.join(l for l in lineas if re.match(r'\s*<link rel="(icon|apple-touch-icon|manifest)"', l) or 'name="theme-color"' in l)
 
-CSS = ['fuentes/fuentes.css', 'style.css', 'componentes.css', 'animaciones.css', 'inicio.css', 'funciones.css',
-       'tema-claro.css', 'pulido.css', 'temporadas.css', 'iconos-vivos.css', 'paginas.css']
+CSS = ['fuentes/fuentes.css', 'css/style.css', 'css/componentes.css', 'css/animaciones.css', 'css/inicio.css', 'css/funciones.css',
+       'css/tema-claro.css', 'css/pulido.css', 'css/temporadas.css', 'css/iconos-vivos.css', 'css/paginas.css']
 
 
 def pagina(slug, titulo, desc, cuerpo, *, nombre_visita, ld=None, og='og.png?v=2', clase=''):

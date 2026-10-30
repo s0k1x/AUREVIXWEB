@@ -36,7 +36,7 @@ const PCT = CONFIG.comision ?? 30;
 const comision = p => Math.round((p.total || 0) * PCT) / 100;
 const ventasDe = uid => datos.pedidos.filter(p => p.ref === uid && p.estado !== 'cancelado');
 /* ---------- Comisiones con control antifraude ----------
-   - Solo cuentan los pagos que confirma el propietario (el servidor no deja al vendedor tocar el pago: supabase/plataforma-v88.sql).
+   - Solo cuentan los pagos que confirma el propietario (el servidor no deja al vendedor tocar el pago: supabase/migraciones/plataforma-v88.sql).
    - La comisión espera los 14 días de desistimiento desde que el cliente paga del todo: si cancela, no se ha pagado nada de más.
    - Ventas sospechosas (el cliente es el propio vendedor, comparte su correo o su dominio, o muchas cancelaciones) quedan retenidas
      hasta que el propietario las revisa. */
@@ -426,7 +426,7 @@ async function pintarVisitas() {
   if (!caja.isConnected) return;
   caja.removeAttribute('aria-busy');
   const cab = '<div class="card-h"><h3>Visitas a la web</h3><span class="muted" style="font-size:13px">últimos 30 días · sin cookies</span></div>';
-  if (!filas) { caja.innerHTML = cab + vacio('chart', 'Aún no se pueden ver las visitas. Ejecuta supabase/visitas-v65.sql en Supabase.'); return; }
+  if (!filas) { caja.innerHTML = cab + vacio('chart', 'Aún no se pueden ver las visitas. Ejecuta supabase/migraciones/visitas-v65.sql en Supabase.'); return; }
   // Los pasos del embudo («ev-…») se cuentan aparte de las visitas
   const eventos = filas.filter(f => f.pagina.startsWith('ev-'));
   filas = filas.filter(f => !f.pagina.startsWith('ev-'));
@@ -1173,7 +1173,7 @@ function pintarFinanzas() {
     <div class="cols">
       <div class="card">
         <div class="card-h"><h3>Gastos</h3>${gastosCache ? '<button class="btn btn-sm btn-primary" id="gNuevo">' + icono('plus') + '<span>Añadir gasto</span></button>' : ''}</div>
-        ${gastosCache === null ? `<div class="empty"><div class="em">${icono('lock')}</div><b>Falta activar los gastos</b><p>Ejecuta <code>supabase/plataforma-v88.sql</code> en Supabase → SQL Editor una sola vez y recarga.</p></div>`
+        ${gastosCache === null ? `<div class="empty"><div class="em">${icono('lock')}</div><b>Falta activar los gastos</b><p>Ejecuta <code>supabase/migraciones/plataforma-v88.sql</code> en Supabase → SQL Editor una sola vez y recarga.</p></div>`
         : `<form class="g-form card" id="gForm" hidden novalidate>
             <input type="hidden" name="id">
             <div class="g-grid">

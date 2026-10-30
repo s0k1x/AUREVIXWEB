@@ -337,7 +337,7 @@ function sobreBarras(t) {
   return arriba < H ? `${Math.round(H - arriba + 12)}px` : '';
 }
 function colocarAviso(t) {
-  t.style.top = ''; t.style.bottom = ''; t.classList.remove('arriba');
+  t.style.top = ''; t.style.bottom = ''; t.classList.remove('en-alto');
   const H = innerHeight, r = t.getBoundingClientRect(), alto = r.height || 50, ancho = r.width || 300;
   const base = parseFloat(getComputedStyle(t).bottom) || 24; // los 24 px y la zona segura del móvil, ya calculados por el navegador
   // 1) Abajo: si hay algo que se pueda tocar, justo encima del obstáculo (sin pasar del tercio de arriba de la pantalla)
@@ -351,7 +351,7 @@ function colocarAviso(t) {
   }
   // 2) Arriba, por debajo de la cabecera si hay hueco
   for (const top of [72, 16]) {
-    if (!obstaculos(t, top, alto, ancho).length) { t.style.bottom = 'auto'; t.style.top = `calc(${top}px + env(safe-area-inset-top))`; t.classList.add('arriba'); return; }
+    if (!obstaculos(t, top, alto, ancho).length) { t.style.bottom = 'auto'; t.style.top = `calc(${top}px + env(safe-area-inset-top))`; t.classList.add('en-alto'); return; }
   }
   // 3) Pantalla llena de botones: abajo, al menos por encima de las barras fijas (solo tapa contenido unos segundos)
   t.style.bottom = sobreBarras(t);
@@ -459,9 +459,9 @@ export function pintarCabecera(activa = '') {
     <div class="wrap">
       <a href="./" class="logo"><img class="logo-img" src="icons/logo-a.png" alt="" width="34" height="34"><span data-marca>${marcaHTML()}</span></a>
       <nav class="nav" id="nav" aria-label="Principal">
-        <a href="${ir('#webs')}">Webs y precios</a>
         <a href="${ir('#disenos')}">Diseños</a>
-        <a href="${ir('#opiniones')}">Opiniones</a>
+        <a href="${ir('#webs')}">Webs y precios</a>
+        <a href="${ir('#como')}">Cómo trabajamos</a>
         <a href="${ir('#contacto')}">Contacto</a>
         <a href="trabaja-con-nosotros" class="${activa === 'trabaja' ? 'act' : ''}">Trabaja con nosotros</a>
       </nav>
