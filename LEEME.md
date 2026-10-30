@@ -1237,3 +1237,15 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **animate-expo (háptica):** `vibrar()` en `js/efectos.js` (en Android; Safari del iPhone no lo permite). Una vibración por acción y junto a lo que se ve: éxito con la celebración, error con el aviso de error y un toque al descartar un aviso.
 - **animation-vocabulary:** catálogo de movimiento con el nombre técnico de cada animación de la web, en `.claude/skills/aurevix-diseno/SKILL.md`.
 - **write-swift:** no aplica; la web no tiene código Swift.
+
+### v87 — correos y factura rediseñados, y el código vuelve a salir por Brevo
+- **Por qué llegaba el correo de reserva de Supabase:** la función `codigo` exigía el anti-robots (Turnstile) siempre que existiera `TURNSTILE_SECRET`. Pero en Ajustes está activo solo para la web, no al entrar (`login: false`), así que la web no mandaba el token y la función respondía 403. Ahora lo exige solo si en Ajustes también está activado al entrar, que es justo cuando la web lo pide.
+- La clave de Brevo es de solo envío y no puede leer la cuenta. Ya no se registra como error.
+- **Plantillas nuevas (`supabase/functions/_shared/plantillas.ts`)**, al estilo de los recibos de las grandes empresas de software:
+  - Tarjeta blanca sobre fondo cálido, cabecera discreta con logotipo y etiqueta («Código de acceso» o «Factura 2026-0007»), lo importante grande y los detalles en tablas. Modo oscuro en Apple Mail, iOS y Outlook.com, y versión de texto plano.
+  - **Código:** cifras grandes en su caja, «Caduca en 10 minutos · Solo sirve una vez», qué hacer si no lo pediste y cuándo se pidió.
+  - **Pago:** sello «Señal pagada» o «Pagado», el importe grande, una fila con pedido, factura, método y pendiente, el resumen con IVA, «Lo siguiente» en pasos numerados, el botón «Ver mi proyecto» y el pie legal.
+  - **Factura en PDF:** franja lima, logotipo, «Factura» y número con sello «PAGADA», una fila con fecha, pedido y forma de pago, emisor y «Facturado a», la tabla de conceptos, la caja del total y el pie legal.
+- `supabase/plantillas/codigo-acceso.html`: la misma plantilla para el correo de reserva de Supabase (Authentication → Email Templates → «Magic Link» y «Confirm signup»), con `{{ .Token }}`.
+- Vista previa sin enviar nada: `deno run -A scripts/vista-correos.ts <carpeta> http://127.0.0.1:8731` (genera los dos correos y el PDF).
+- Desplegadas: `codigo` (v3) y `correo` (v8).

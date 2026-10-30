@@ -9,10 +9,12 @@
 //  Reglas:
 //  - Sin nombre solo entra si la cuenta ya existe; con nombre la crea.
 //  - Un código por correo cada 40 s y 10 por IP cada 10 minutos.
-//  - Si hay TURNSTILE_SECRET, exige el anti-robots igual que el login.
+//  - Exige el anti-robots solo si en Ajustes está activado también al entrar
+//    (igual que la web, que solo entonces lo pide).
 //  - Solo responde a la web (aurevixweb.es).
 // ==========================================================
-import { enviarCorreo, estadoBrevo, FalloCorreo, plantilla, esc, WEB, MARCA } from '../_shared/correo.ts';
+import { enviarCorreo, estadoBrevo, FalloCorreo, WEB } from '../_shared/correo.ts';
+import { correoCodigo } from '../_shared/plantillas.ts';
 
 const SB_URL = Deno.env.get('SUPABASE_URL') || '';
 const SERVICIO = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
@@ -76,8 +78,23 @@ async function crearCodigo(email: string, nombre: string) {
   return { codigo, nueva: !usuario, nombre: nombreCuenta };
 }
 
+/* ¿Pide la web la verificación anti-robots al entrar? (Ajustes → Negocio → «Verificación anti-robots» + «al entrar»).
+   Se lee de la base de datos, no de lo que mande el navegador; se recuerda 5 minutos. */
+let pideAlEntrar = { valor: false, hasta: 0 };
+async function verificacionAlEntrar() {
+  if (Date.now() < pideAlEntrar.hasta) return pideAlEntrar.valor;
+  let valor = false;
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/ajustes?clave=eq.web&select=datos`, { headers: { apikey: SERVICIO, Authorization: `Bearer ${SERVICIO}` }, signal: AbortSignal.timeout(6000) });
+    const t = (await r.json())?.[0]?.datos?.turnstile || {};
+    valor = !!(t.activo && t.login && t.siteKey);
+  } catch { /* sin datos: no se exige */ }
+  pideAlEntrar = { valor, hasta: Date.now() + 300_000 };
+  return valor;
+}
+
 async function turnstileOk(token: unknown, ip: string) {
-  if (!TURNSTILE) return true;
+  if (!TURNSTILE || !(await verificacionAlEntrar())) return true;
   if (typeof token !== 'string' || token.length < 10) return false;
   const datos = new FormData();
   datos.append('secret', TURNSTILE);
@@ -87,24 +104,6 @@ async function turnstileOk(token: unknown, ip: string) {
     const j = await (await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body: datos, signal: AbortSignal.timeout(8000) })).json();
     return !!j.success;
   } catch { return false; }
-}
-
-/* ---------- El correo ---------- */
-function correoCodigo(codigo: string, nombre: string, nueva: boolean) {
-  const hola = nombre ? `Hola ${nombre.trim().split(/\s+/)[0]},` : 'Hola,';
-  const para = nueva ? 'crear tu cuenta' : 'entrar en tu cuenta';
-  const cuerpo = `
-  <tr><td style="padding:30px 28px 8px">
-    <p style="margin:0 0 12px;font-size:16px;line-height:1.5">${esc(hola)}</p>
-    <p style="margin:0 0 20px;font-size:16px;line-height:1.5">Este es tu código para ${para} en ${MARCA}:</p>
-    <p style="margin:0 0 20px;padding:18px 0;border-radius:12px;background:#f6f8ef;text-align:center;font-size:36px;font-weight:700;letter-spacing:.3em;font-family:'SFMono-Regular',Menlo,Consolas,monospace;color:#16161b">${codigo}</p>
-    <p style="margin:0;font-size:14px;line-height:1.5;color:#5b5953">Escríbelo en la web. Caduca en 1 hora y solo sirve una vez.</p>
-  </td></tr>`;
-  return {
-    asunto: `${codigo} es tu código de ${MARCA}`,
-    html: plantilla({ titulo: 'Tu código', previa: `Tu código es ${codigo}. Caduca en 1 hora.`, cuerpo, pie: `Si no lo has pedido tú, ignora este correo: nadie puede entrar sin el código.<br>${WEB.replace('https://', '')}` }),
-    texto: `${hola}\n\nTu código para ${para} en ${MARCA}: ${codigo}\n\nEscríbelo en la web. Caduca en 1 hora y solo sirve una vez.\nSi no lo has pedido tú, ignora este correo.\n\n${WEB}`
-  };
 }
 
 /* La primera petición de cada arranque deja en los registros cómo está la cuenta de Brevo */
