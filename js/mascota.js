@@ -11,6 +11,7 @@
    Todo se anima en código (sin imágenes): cada estado es una coreografía
    que mueve las piezas en vivo con la API de animaciones del navegador.
    ========================================================== */
+import { COLORES_ASISTENTE, guardarApariencia, leerApariencia } from './apariencia.js';
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const sinMovimiento = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.movimiento === 'reducido';
@@ -27,18 +28,23 @@ function defs() {
     <linearGradient id="mg-bco" x1="0" y1="0" x2=".7" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#e9eeec"/><stop offset="1" stop-color="#b3beba"/></linearGradient>
     <linearGradient id="mg-osc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b4743"/><stop offset="1" stop-color="#0b0f0d"/></linearGradient>
     <linearGradient id="mg-visor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0e1512"/><stop offset="1" stop-color="#010302"/></linearGradient>
-    <linearGradient id="mg-llama" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0ffc2"/><stop offset=".45" stop-color="#7dff2a" stop-opacity=".85"/><stop offset="1" stop-color="#3cff10" stop-opacity="0"/></linearGradient>
+    <linearGradient id="mg-llama" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#fff"/><stop offset=".3" style="stop-color:var(--m-luz)"/><stop offset=".55" style="stop-color:var(--m-halo)" stop-opacity=".85"/><stop offset="1" style="stop-color:var(--m-halo)" stop-opacity="0"/></linearGradient>
+    <linearGradient id="mg-logo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--m-luz)"/><stop offset="1" style="stop-color:var(--m-logo,var(--m-halo))"/></linearGradient>
+    <mask id="mm-logo" maskContentUnits="objectBoundingBox" style="mask-type:alpha"><image href="icons/logo-a-verde.png" x="0" y="0" width="1" height="1" preserveAspectRatio="none"/></mask>
   </defs></svg>`;
   (document.body || document.documentElement).prepend(d.firstChild);
 }
 
 /* ---------- El dibujo (400 × 470; la cabeza ocupa de y 22 a 240) ---------- */
-const LIMA = '#d6ff7a', HALO = '#5cff22';
+// El color de las luces sale de dos variables CSS (--m-luz: el trazo claro; --m-halo: el resplandor), así se
+// puede cambiar en Ajustes → Apariencia sin volver a dibujar. Ver COLORES_ASISTENTE y funciones.css.
+const LIMA = 'var(--m-luz)', HALO = 'var(--m-halo)';
+const tz = c => `style="stroke:${c}"`, rl = c => `style="fill:${c}"`;
 const espejo = x => `<g transform="translate(400 0) scale(-1 1)">${x}</g>`;
 /** Brillo: capas cada vez más anchas y transparentes por debajo del trazo claro (simula el resplandor sin filtros) */
 const CAPAS = [[4.4, .05], [3.3, .08], [2.4, .13], [1.6, .22]];
-const trazo = (d, w) => `<g class="m-neon" fill="none" stroke-linecap="round" stroke-linejoin="round">${CAPAS.map(([k, o]) => `<path d="${d}" stroke="${HALO}" stroke-opacity="${o}" stroke-width="${(w * k).toFixed(1)}"/>`).join('')}<path d="${d}" stroke="${LIMA}" stroke-width="${w}"/></g>`;
-const aro = (cx, cy, rx, ry, w) => `<g class="m-neon">${CAPAS.map(([k, o]) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="${HALO}" stroke-opacity="${o}" stroke-width="${(w * k).toFixed(1)}"/>`).join('')}<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="rgba(160,255,70,.16)" stroke="${LIMA}" stroke-width="${w}"/></g>`;
+const trazo = (d, w) => `<g class="m-neon" fill="none" stroke-linecap="round" stroke-linejoin="round">${CAPAS.map(([k, o]) => `<path d="${d}" ${tz(HALO)} stroke-opacity="${o}" stroke-width="${(w * k).toFixed(1)}"/>`).join('')}<path d="${d}" ${tz(LIMA)} stroke-width="${w}"/></g>`;
+const aro = (cx, cy, rx, ry, w) => `<g class="m-neon">${CAPAS.map(([k, o]) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" ${tz(HALO)} stroke-opacity="${o}" stroke-width="${(w * k).toFixed(1)}"/>`).join('')}<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" style="fill:${HALO};stroke:${LIMA}" fill-opacity=".16" stroke-width="${w}"/></g>`;
 const PIERNA = `<rect x="156" y="368" width="40" height="54" rx="18" fill="url(#mg-bco)"/>
   <rect x="156" y="398" width="40" height="12" rx="5" fill="url(#mg-osc)"/>
   <path d="M143 424Q143 412 166 412L188 412Q210 412 210 426L210 437Q210 446 199 446L154 446Q143 446 143 437Z" fill="url(#mg-bco)"/>
@@ -63,9 +69,11 @@ const ojo = (cx, lado) => {
   const rect = (extra) => `<rect x="${cx - 10.5}" y="131" width="21" height="36" rx="10.5" ${extra}/>`;
   return capa(`ojo ojo-${lado} m-${lado}`, `
         <g class="o-arco">${trazo(`M${cx - 23} 161Q${cx} 119 ${cx + 23} 161`, 12)}</g>
-        <g class="o-pill">${[[40, .05], [30, .08], [21, .13], [12, .22]].map(([w, o]) => rect(`fill="none" stroke="${HALO}" stroke-opacity="${o}" stroke-width="${w}"`)).join('')}${rect(`fill="${LIMA}"`)}</g>
+        <g class="o-pill">${[[40, .05], [30, .08], [21, .13], [12, .22]].map(([w, o]) => rect(`fill="none" ${tz(HALO)} stroke-opacity="${o}" stroke-width="${w}"`)).join('')}${rect(rl(LIMA))}</g>
         <g class="o-sue">${trazo(`M${cx - 21} 144Q${cx} 166 ${cx + 21} 144`, 9)}</g>`);
 };
+/** Logotipo: la forma del PNG hace de máscara y el color lo ponen las variables (un degradado como el original) */
+const LOGO = (x, y, t) => `<rect x="${x}" y="${y}" width="${t}" height="${t}" fill="url(#mg-logo)" mask="url(#mm-logo)"/>`;
 const OREJA = `<ellipse cx="46" cy="150" rx="25" ry="58" fill="url(#mg-osc)"/>${aro(45, 150, 15.5, 43, 5)}`;
 const RANURA = `<path d="M66 106C76 76 96 56 120 44" fill="none" stroke="#18211d" stroke-width="12" stroke-linecap="round"/>${trazo('M66 106C76 76 96 56 120 44', 3)}`;
 const CASCO = `
@@ -73,30 +81,33 @@ const CASCO = `
     <path d="M72 108C86 58 138 32 200 30" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="3" stroke-linecap="round"/>
     <path d="M160 26C152 46 148 60 140 76M240 26C248 46 252 60 260 76" fill="none" stroke="#b9c4c0" stroke-width="1.6" stroke-linecap="round"/>
     ${RANURA}${espejo(RANURA)}
-    <image href="icons/logo-a-verde.png" x="174" y="36" width="52" height="52"/>
+    ${LOGO(174, 36, 52)}
     ${OREJA}${espejo(OREJA)}
     <rect x="85" y="79" width="230" height="132" rx="60" fill="#aab6b2"/>
     <rect x="88" y="82" width="224" height="126" rx="57" fill="url(#mg-visor)"/>
     <path d="M246 92Q292 92 306 122Q270 106 232 100Z" fill="#fff" fill-opacity=".13"/>
     <circle cx="112" cy="188" r="3" fill="#fff" fill-opacity=".18"/>`;
-const PUNTOS = `<g fill="${LIMA}"><circle cx="292" cy="30" r="5"/><circle cx="312" cy="18" r="6.5"/><circle cx="336" cy="8" r="8"/></g>`;
+const PUNTOS = `<g ${rl(LIMA)}><circle cx="292" cy="30" r="5"/><circle cx="312" cy="18" r="6.5"/><circle cx="336" cy="8" r="8"/></g>`;
 const TORSO = `
   <rect x="178" y="232" width="44" height="30" rx="12" fill="url(#mg-osc)"/>
   <path d="M146 266Q146 257 158 257L242 257Q254 257 254 266L256 330Q256 376 200 380Q144 376 144 330Z" fill="url(#mg-bco)"/>
   <path d="M145 348Q200 366 255 348L256 361Q200 380 144 361Z" fill="url(#mg-osc)"/>
   ${trazo('M166 260Q200 275 234 260', 3.5)}${trazo('M156 322Q152 344 161 363', 3)}${trazo('M244 322Q248 344 239 363', 3)}
-  <image href="icons/logo-a-verde.png" x="182" y="283" width="36" height="36"/>`;
+  ${LOGO(182, 283, 36)}`;
 
+/* Arcoíris (celebraciones): seis copias de los ojos, una por color, que se funden una en otra (solo opacidad) */
+const ARCO = [['#ffd0d6', '#ff3b5c'], ['#ffe0b8', '#ff9a1f'], ['#fff6b0', '#ffd21a'], ['#d6ff9a', '#4cff2a'], ['#b8f2ff', '#1fb8ff'], ['#e2c8ff', '#9a4dff']];
+const ARCO_C = ARCO.map(c => c[1]);
 /** HTML de la mascota. cuerpo: robot entero · disco: círculo oscuro detrás (solo en el vuelo) */
-export function mascotaHTML(estado = 'normal', { cuerpo = false, disco = false, clase = '', vivo = true } = {}) {
+export function mascotaHTML(estado = 'normal', { cuerpo = false, disco = false, clase = '', vivo = true, arcoiris = false } = {}) {
   defs(); iniciar(); vigilar();
   const cabeza = `<span class="l-g l-cabeza"><span class="l-g l-sigue-c">
         ${capa('l-casco', CASCO)}
-        <span class="l-g l-ojos">${ojo(149, 'i')}${ojo(251, 'd')}</span>
+        <span class="l-g l-ojos">${arcoiris ? ARCO.map(([luz, halo], i) => `<span class="l-g ojos-arco" style="--m-luz:${luz};--m-halo:${halo};--i:${i}">${ojo(149, 'i')}${ojo(251, 'd')}</span>`).join('') : `${ojo(149, 'i')}${ojo(251, 'd')}`}</span>
         ${cuerpo ? capa('l-puntos', PUNTOS) : ''}
       </span></span>`;
   const corporal = cuerpo ? `<span class="l-g m-cuerpo l-corporal">
-        ${capa('l-sombra', `<ellipse cx="200" cy="454" rx="100" ry="9" fill="rgba(0,0,0,.55)"/><ellipse cx="200" cy="454" rx="108" ry="11" fill="none" stroke="${HALO}" stroke-opacity=".28" stroke-width="2"/>`)}
+        ${capa('l-sombra', `<ellipse cx="200" cy="454" rx="100" ry="9" fill="rgba(0,0,0,.55)"/><ellipse cx="200" cy="454" rx="108" ry="11" fill="none" ${tz(HALO)} stroke-opacity=".28" stroke-width="2"/>`)}
         ${capa('l-llama l-llama-i', LLAMA(176))}${capa('l-llama l-llama-d', LLAMA(224))}
         ${capa('l-pierna l-pierna-i', PIERNA)}${capa('l-pierna l-pierna-d', espejo(PIERNA))}
         ${capa('l-torso', TORSO)}
@@ -152,7 +163,7 @@ function iniciar() {
       const e = m.dataset.estado;
       if (m._parp === undefined) { m._parp = ahora + 700 + Math.random() * 2200; m._mira = ahora + 1400 + Math.random() * 2500; m._feliz = ahora + 7000 + Math.random() * 6000; }
       if (ahora > m._parp && !m._ojosAnim && e !== 'dormido' && !/^(feliz|saluda|adios)$/.test(e)) {
-        m.classList.add('parp'); setTimeout(() => m.classList.remove('parp'), 130);
+        parpadear(m);
         m._parp = ahora + (Math.random() < .22 ? 380 : 2400 + Math.random() * 4200); // a veces, doble parpadeo
       }
       if (ahora > m._mira && e === 'normal') {
@@ -165,6 +176,12 @@ function iniciar() {
     });
   };
   latido();
+}
+/** Parpadeo de verdad: cierra deprisa, se queda un instante, abre más despacio y se pasa un pelo (ojos vivos) */
+function parpadear(m) {
+  m.querySelectorAll('.ojo').forEach(o => o.animate([
+    { transform: 'scaleY(1)' }, { transform: 'scaleY(.07)', offset: .3, easing: 'linear' }, { transform: 'scaleY(.07)', offset: .42, easing: 'cubic-bezier(.2,.7,.3,1.2)' }, { transform: 'scaleY(1)' }
+  ], { duration: 200, easing: 'cubic-bezier(.5,0,.9,.4)' }));
 }
 export const seguirPuntero = iniciar; // por compatibilidad: arranca la vida propia
 /** Descarga el logotipo del pecho antes de necesitarlo, para que el vuelo no tenga tirones */
@@ -360,7 +377,7 @@ export function puntoMascota(m) {
  * suaves; al principio coge impulso (se agacha) y al final se aplasta y se asienta.
  * Son 96 fotogramas calculados de antemano: solo transform y opacity, en la tarjeta gráfica.
  */
-export function trayecto(de, a, { ms = 1100, deCara = false, aCara = false } = {}) {
+export function trayecto(de, a, { ms = 1100, deCara = false, aCara = false, capa = document.body, arcoiris = false } = {}) {
   if (sinMovimiento() || !de || !a || typeof Element.prototype.animate !== 'function') return Promise.resolve(false);
   const dx = a.x - de.x, dy = a.y - de.y, dist = Math.hypot(dx, dy) || 1;
   // El arco se abre hacia el lado con más sitio (prefiriendo subir) y nunca se sale de la pantalla
@@ -393,13 +410,13 @@ export function trayecto(de, a, { ms = 1100, deCara = false, aCara = false } = {
   // Velocidad: entrada y salida suaves (cúbica), y su derivada para saber lo rápido que va en cada momento
   const avance = v => (v < .5 ? 4 * v ** 3 : 1 - (-2 * v + 2) ** 3 / 2);
   const rapidez = v => (v < .5 ? 12 * v * v : 6 * (-2 * v + 2) ** 2 / 2) / 3;
-  const IMPULSO = .12, LLEGA = .86, N = 96;
+  const IMPULSO = .12, LLEGA = .86, N = 140;
   const S = Math.max(de.s, a.s) * 1.08;
   const el = document.createElement('div');
   el.className = 'masc-vuelo';
   el.style.cssText = `width:${400 * S}px;height:${470 * S}px;transform-origin:${CX * S}px ${CY * S}px`;
-  el.innerHTML = mascotaHTML('vuela', { cuerpo: true, disco: deCara || aCara, vivo: false });
-  document.body.append(el);
+  el.innerHTML = mascotaHTML('vuela', { cuerpo: true, disco: deCara || aCara, vivo: false, arcoiris });
+  capa.append(el);
 
   const F = [];
   for (let k = 0; k <= N; k++) {
@@ -428,15 +445,16 @@ export function trayecto(de, a, { ms = 1100, deCara = false, aCara = false } = {
     disco?.animate(deCara ? [{ opacity: 1 }, { opacity: 0, offset: .2 }, { opacity: 0 }] : [{ opacity: 0 }, { opacity: 0, offset: .76 }, { opacity: 1, offset: .87 }, { opacity: 1 }], { duration: ms, fill: 'both' });
     cuerpos.forEach(c => c.animate(deCara ? [{ opacity: 0 }, { opacity: 1, offset: .2 }, { opacity: 1 }] : [{ opacity: 1 }, { opacity: 1, offset: .76 }, { opacity: 0, offset: .87 }, { opacity: 0 }], { duration: ms, fill: 'both' }));
   }
-  // Estela de chispas
-  for (let i = 0; i < 10; i++) {
-    const u = IMPULSO + .05 + i * .065, c = en(avance((u - IMPULSO) / (LLEGA - IMPULSO)));
-    const ch = document.createElement('i'), tam = (3 + Math.random() * 4).toFixed(1);
+  // Estela de chispas (en arcoíris: más, más grandes y de todos los colores, dibujando el camino)
+  const nCh = arcoiris ? 30 : 10;
+  for (let i = 0; i < nCh; i++) {
+    const u = IMPULSO + .04 + i * (.7 / nCh), c = en(avance((u - IMPULSO) / (LLEGA - IMPULSO)));
+    const ch = document.createElement('i'), tam = ((arcoiris ? 5 : 3) + Math.random() * (arcoiris ? 6 : 4)).toFixed(1);
     ch.className = 'masc-chispa';
-    ch.style.cssText = `left:${(c.x + (Math.random() - .5) * 20).toFixed(1)}px;top:${(c.y + 300 * (de.s + a.s) / 2 + (Math.random() - .5) * 16).toFixed(1)}px;width:${tam}px;height:${tam}px`;
-    document.body.append(ch);
-    ch.animate([{ opacity: 0, transform: 'scale(.3)' }, { opacity: .9, transform: 'scale(1)', offset: .2 }, { opacity: 0, transform: `translate(${((Math.random() - .5) * 16).toFixed(1)}px,24px) scale(.15)` }],
-      { duration: 650, delay: ms * u, fill: 'both', easing: 'cubic-bezier(.23,1,.32,1)' }).finished.catch(() => {}).then(() => ch.remove());
+    ch.style.cssText = `left:${(c.x + (Math.random() - .5) * 20).toFixed(1)}px;top:${(c.y + 300 * (de.s + a.s) / 2 + (Math.random() - .5) * 16).toFixed(1)}px;width:${tam}px;height:${tam}px${arcoiris ? `;--c:${ARCO_C[i % ARCO_C.length]}` : ''}`;
+    capa.append(ch);
+    ch.animate([{ opacity: 0, transform: 'scale(.3)' }, { opacity: .95, transform: 'scale(1)', offset: .18 }, { opacity: 0, transform: `translate(${((Math.random() - .5) * 22).toFixed(1)}px,${arcoiris ? 34 : 24}px) scale(.15)` }],
+      { duration: arcoiris ? 900 : 650, delay: ms * u, fill: 'both', easing: 'cubic-bezier(.23,1,.32,1)' }).finished.catch(() => {}).then(() => ch.remove());
   }
   return vuelo.finished.catch(() => {}).then(() => { el.remove(); return true; });
 }
@@ -556,6 +574,45 @@ const COREO = {
       return { y: 0, sx: 1 + .012 * aire, sy: 1 + .022 * aire, hr: 9 + 1.6 * sn(t, 1, .2), hy: 1.5 + .5 * sn(t, 1, .2), bi: 4 + 1.5 * sn(t), bd: -4 - 1.5 * sn(t) };
     }
   },
+  // Voltereta (pantalla de mantenimiento): se agacha, salta girando una vuelta entera sobre su centro con brazos y
+  // piernas recogidos (como un mortal), se abre al bajar para frenar y aterriza aplastándose; luego respira un momento
+  voltereta: {
+    ms: () => 2000,
+    pose: t => {
+      const A = .16, B = .62, C = .8;
+      let y = 0, sx = 1, sy = 1, vr = 0, recoge = 0, brazos = 0, aire = 0;
+      if (t < A) { const c = ss(t / A); y = 2 * c; sx = 1 + .1 * c; sy = 1 - .14 * c; brazos = -.3 * c; }
+      else if (t < B) {
+        const p = (t - A) / (B - A), v = 1 - 2 * p;
+        y = -18 * 4 * p * (1 - p); aire = Math.sin(Math.PI * p);
+        vr = 360 * (p < .5 ? 4 * p ** 3 : 1 - (-2 * p + 2) ** 3 / 2); // gira despacio al salir y al acabar, deprisa arriba
+        recoge = Math.sin(Math.PI * Math.min(1, p * 1.15)); sx = 1 - .05 * Math.abs(v); sy = 1 + .08 * Math.abs(v); brazos = 1 - recoge * .6;
+      } else if (t < C) {
+        const l = (t - B) / (C - B), g = Math.exp(-5 * l) * Math.cos(TAU * 1.4 * l) * (1 - l);
+        y = 1.2 * Math.max(0, g); sx = 1 + .12 * g; sy = 1 - .15 * g; brazos = .6 * (1 - ss(l)); vr = 360;
+      } else vr = 360; // 360° es la misma postura que 0°: el bucle vuelve a empezar sin dar marcha atrás
+      return {
+        y, sx, sy, vr, hr: 3 * sn(t, 1, .1) - 6 * recoge, hy: 1.2 * recoge,
+        bi: 10 + 120 * brazos + 40 * recoge, bd: -10 - 120 * brazos - 40 * recoge,
+        pi: 34 * recoge, pd: -34 * recoge,
+        so: 1 - .45 * aire, sa: 1 - .7 * aire
+      };
+    }
+  },
+  // Asombro (celebraciones): ojos enormes que laten, brazos arriba celebrando y saltitos de alegría
+  asombro: {
+    ms: () => 1200,
+    pose: t => {
+      const bote = Math.abs(sn(t, 2)), brilla = .5 + .5 * sn(t, 4);
+      return {
+        y: -3.2 * bote, sx: 1 + .05 * (1 - bote) - .03 * bote, sy: 1 - .06 * (1 - bote) + .05 * bote,
+        hr: 3 * sn(t, 1, .1), hy: -.6 * bote,
+        ow: 1.3 + .04 * brilla, oi: 1.42 + .06 * brilla, od: 1.42 + .06 * brilla,
+        bi: 128 + 18 * sn(t, 2), bd: -128 - 18 * sn(t, 2, .5), pi: 9 * bote, pd: -9 * bote,
+        so: 1 - .25 * bote, sa: 1 - .4 * bote
+      };
+    }
+  },
   // Vuela en el sitio: los propulsores lo sostienen, sube y baja con un vaivén; las piernas cuelgan con inercia
   vuela: {
     ms: () => 1600,
@@ -607,13 +664,15 @@ function hornear(estado, forma, ms) {
       sal.push(q); siguiente++;
     }
   }
-  sal.push(sal[0]); // el bucle cierra en el mismo sitio
+  sal.push({ ...sal[0], ...(sal[0].vr != null ? { vr: sal[sal.length - 1].vr } : {}) }); // el bucle cierra en el mismo sitio (una vuelta entera = la misma postura)
   // Cada pieza, sus fotogramas (solo las que mueve esta coreografía)
   const tiene = k => k in def.pose(0, forma);
   const fr = (f, k) => ({ ...f, offset: k / F });
   const piezas = {};
   const cuerpo = forma === 'cuerpo';
-  if (cuerpo || tiene('sx') || sal.some(q => Math.abs(q.y) > .05)) piezas.todo = sal.map((q, k) => fr({ transform: `translateY(${n2(q.y)}%) rotate(${n2(q.r)}deg) scale(${n2(q.sx)},${n2(q.sy)})` }, k));
+  // La vuelta (vr) gira sobre el centro del cuerpo, no sobre los pies: se sube el eje, se gira y se vuelve a bajar
+  const vuelta = tiene('vr') ? q => `translateY(-44%) rotate(${n2(q.vr)}deg) translateY(44%) ` : () => '';
+  if (cuerpo || tiene('sx') || sal.some(q => Math.abs(q.y) > .05)) piezas.todo = sal.map((q, k) => fr({ transform: `translateY(${n2(q.y)}%) ${vuelta(q)}rotate(${n2(q.r)}deg) scale(${n2(q.sx)},${n2(q.sy)})` }, k));
   piezas.cabeza = sal.map((q, k) => fr({ transform: `translateY(${n2(q.hy)}%) rotate(${n2(q.hr)}deg)` }, k));
   if (cuerpo) {
     piezas.brazoI = sal.map((q, k) => fr({ transform: `rotate(${n2(q.bi)}deg)` }, k));
@@ -771,4 +830,65 @@ export function transicionSesion(tipo, nombre = '') {
   const seguro = setTimeout(() => o.quitar(), 9000); // nunca se queda pegada
   activa = o;
   return o;
+}
+
+/* ---------- Color del asistente ---------- */
+/** Botones para elegir el color (radios name="asistente"); los usan Ajustes → Apariencia y el chat */
+export function paletaAsistente(actual = leerApariencia().asistente) {
+  return `<div class="masc-paleta" role="radiogroup" aria-label="Color del asistente">${Object.entries(COLORES_ASISTENTE).map(([id, [nombre, luz, halo]]) =>
+    `<label class="mp-c" title="${nombre}"><input type="radio" name="asistente" value="${id}" ${id === (actual || 'lima') ? 'checked' : ''}><i style="--a:${luz};--b:${halo}" aria-hidden="true"></i><span class="sr">${nombre}</span></label>`).join('')}</div>`;
+}
+/** Cambia el color de todas las mascotas (y lo recuerda); se alegran al estrenarlo */
+export function colorAsistente(id) {
+  if (!COLORES_ASISTENTE[id]) return;
+  guardarApariencia({ asistente: id });
+  document.querySelectorAll('.masc[data-estado=normal]').forEach(m => estadoMascota(m, 'feliz', 1000));
+}
+
+/* ---------- Celebración (solo en momentos importantes: pago, pedido nuevo, web aprobada) ----------
+   El robot sale volando del botón del asistente dejando una estela de colores, se pone en grande con los ojos
+   enormes en arcoíris, celebra con una explosión de chispas y un bocadillo, y vuelve en picado a su sitio.
+   No bloquea nada (no recoge toques) y va por encima de los diálogos abiertos (capa «popover» del navegador). */
+let enFiesta = false;
+export function fiesta(titulo = '¡Hecho!', texto = '') {
+  if (enFiesta || document.hidden) return Promise.resolve();
+  enFiesta = true;
+  defs(); iniciar(); vigilar();
+  const capa = document.createElement('div');
+  capa.className = 'masc-fiesta';
+  capa.setAttribute('aria-hidden', 'true'); // el mensaje ya está en la página; esto es solo la celebración
+  capa.innerHTML = `<div class="mf-masc">${mascotaHTML('asombro', { cuerpo: true, arcoiris: true })}
+      <span class="mf-chispas">${Array.from({ length: 16 }, (_, i) => `<i style="--a:${i * 22.5}deg;--r:${i % 2 ? 96 : 128}px;--t:${(i % 4) * 40}ms;--c:${ARCO_C[i % ARCO_C.length]}"></i>`).join('')}</span></div>
+    <div class="mf-bocadillo"><b>${esc(titulo)}</b>${texto ? `<small>${esc(texto)}</small>` : ''}</div>`;
+  try { capa.popover = 'manual'; } catch { /* sin popover: va en el documento */ }
+  document.body.append(capa);
+  try { capa.showPopover?.(); } catch { /* ya visible */ }
+  const masc = capa.querySelector('.masc');
+  const centro = puntoMascota(masc);
+  const boton = [...document.querySelectorAll('#chat .chat-fab .masc')].find(m => { const r = m.getBoundingClientRect(); return r.width && r.bottom > 0 && r.top < innerHeight; });
+  const rincon = boton ? puntoMascota(boton) : { x: innerWidth - 44, y: innerHeight - 44, s: 46 / LADO };
+  const quitar = () => { try { capa.hidePopover?.(); } catch {} capa.remove(); if (boton) boton.style.visibility = ''; enFiesta = false; };
+  if (sinMovimiento() || !centro) {
+    capa.classList.add('llega');
+    return new Promise(ok => setTimeout(() => { quitar(); ok(); }, 2200));
+  }
+  masc.style.visibility = 'hidden';
+  if (boton) boton.style.visibility = 'hidden';
+  return trayecto(rincon, centro, { ms: 1000, deCara: !!boton, capa, arcoiris: true })
+    .then(() => {
+      masc.style.visibility = '';
+      rebote(masc, { de: .78, ms: 700 });
+      capa.classList.add('llega');
+      return new Promise(ok => setTimeout(ok, 1900));
+    })
+    .then(() => {
+      capa.classList.add('se-va');
+      masc.style.visibility = 'hidden';
+      return trayecto(centro, rincon, { ms: 950, aCara: !!boton, capa, arcoiris: true });
+    })
+    .then(() => {
+      quitar();
+      if (boton) { rebote(boton); estadoMascota(boton, 'feliz', 1400); }
+    })
+    .catch(quitar);
 }

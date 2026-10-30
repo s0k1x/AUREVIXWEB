@@ -743,7 +743,7 @@ function intro() {
 }
 
 /* Las franjas (aviso, modo demo) van DEBAJO de la cabecera: la cabecera es lo único que toca la zona de la hora del iPhone */
-function colocarFranja(b) {
+export function colocarFranja(b) {
   const h = document.querySelector('header.header, #header, .header');
   if (h && h.parentNode) h.after(b); else document.body.prepend(b);
 }
@@ -799,6 +799,12 @@ function iniciarVelo() {
 }
 
 let ultimoFallo = 0;
+/* Estado de la web (Ajustes → Negocio): el módulo solo se descarga si la web no está en «normal» */
+let estadoCargado = false;
+function estadoWeb() {
+  if ((CONFIG.estadoWeb || 'normal') === 'normal' && !estadoCargado) return;
+  import('./estado-web.js').then(m => { estadoCargado = true; m.aplicarEstadoWeb(); }).catch(e => console.warn(e));
+}
 export async function arrancar(pagina) {
   document.documentElement.classList.add('js');
   iniciarIdioma().catch(e => console.warn(e)).finally(() => document.documentElement.classList.remove('i18n-pendiente', 'i18n-anim'));
@@ -814,6 +820,7 @@ export async function arrancar(pagina) {
   });
   aplicarApariencia();
   aplicarCache();
+  estadoWeb(); // mantenimiento o demostración: al instante con la copia guardada (sin enseñar antes la web)
   aplicarTemporada(CONFIG.temporada); // colores al instante (el ambiente, cuando estén los ajustes)
   intro();
   pintarCabecera(pagina);
@@ -841,6 +848,8 @@ export async function arrancar(pagina) {
   catch (e) { console.error(e); toast('No se pudo conectar con el servidor', 'err'); }
   // Precios, avisos y formas de pago que ha cambiado el propietario (máx. 2,5 s de espera)
   await Promise.race([cargarAjustesWeb(), new Promise(r => setTimeout(r, 2500))]);
+  estadoWeb();
+  store.alCambiarUsuario(estadoWeb); // al entrar el equipo, desaparece la pantalla de mantenimiento
   aplicarTemporada(CONFIG.temporada, { animar: ['inicio', 'trabaja'].includes(pagina) });
   contarVisita(pagina);
   // Verificación anti-robots en las páginas públicas (primera visita o algo inusual)

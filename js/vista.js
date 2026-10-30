@@ -5,6 +5,7 @@
    Hace falta entrar con la cuenta del cliente o del equipo: los
    archivos de la web son privados.
    ========================================================== */
+import { fiesta } from './mascota.js';
 import * as store from './store.js';
 import { $, esc, icono, arrancar, pedirLogin, cargandoHTML, errorCargaHTML, toast } from './ui.js';
 import { montarVisor, enlaceVista } from './vistaweb.js';
@@ -62,7 +63,8 @@ store.alCambiarUsuario(async u => {
     alAprobar: async () => {
       await guardar(aprobarWeb(p), 'Web aprobada. Solo falta el pago final para publicarla.', `Versión ${v.n} aprobada`);
       confeti();
-      setTimeout(() => { location.href = volver; }, 1400);
+      fiesta('¡Web aprobada!', 'Solo falta el pago final para publicarla');
+      setTimeout(() => { location.href = volver; }, 2600);
     },
     alCambios: async (_w, texto, pagina) => {
       await guardar(pedirCambios(p, texto, { pagina }), 'Cambios enviados. Te avisaremos cuando estén hechos.');

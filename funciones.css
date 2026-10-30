@@ -1367,6 +1367,7 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
    Aquí van las poses fijas (sin movimiento reducido), las formas de los ojos y
    los ejes de giro. El parpadeo y la mirada los lanza js/mascota.js al azar.
    ========================================================== */
+:root{--m-luz:#d6ff7a;--m-halo:#5cff22;--m-logo:#5fbf1f}
 .masc{position:relative;display:block;width:100%;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .masc-lienzo{position:absolute;inset:0;display:block}
 .masc.cuerpo{aspect-ratio:400/470}
@@ -1391,11 +1392,9 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 /* Ojos: qué forma se ve y cómo se suaviza el cambio */
 .masc :is(.o-arco,.o-sue,.o-pill){transition:opacity .18s ease}
 .masc :is(.o-arco,.o-sue){opacity:0}
-.ojo{transition:transform .09s ease-out}
-.masc.parp .ojo{transform:scaleY(.1)}
 /* Mirada: la cabeza y los ojos siguen el puntero (--px, --py) y a ratos miran a su aire (--gx, --gy) */
-.l-ojos{transform:translate(calc(var(--px,0) * 2% + var(--gx,0) * 2%),calc(var(--py,0) * 1.064% + var(--gy,0) * .638%));transition:transform .22s cubic-bezier(.3,.7,.3,1)}
-.l-sigue-c{transform:rotate(calc(var(--px,0) * 4deg)) translate(calc(var(--px,0) * .75%),calc(var(--py,0) * .426%));transition:transform .25s ease-out}
+.l-ojos{transform:translate(calc(var(--px,0) * 2% + var(--gx,0) * 2%),calc(var(--py,0) * 1.064% + var(--gy,0) * .638%));transition:transform .28s cubic-bezier(.34,1.35,.5,1)}
+.l-sigue-c{transform:rotate(calc(var(--px,0) * 4deg)) translate(calc(var(--px,0) * .75%),calc(var(--py,0) * .426%));transition:transform .5s cubic-bezier(.3,1.2,.4,1)}
 .l-cabeza{transition:transform .5s cubic-bezier(.3,1.35,.5,1)}
 .masc:is([data-estado=feliz],[data-estado=saluda],[data-estado=adios],[data-estado=dormido]) .o-pill{opacity:0}
 .masc:is([data-estado=feliz],[data-estado=saluda],[data-estado=adios]) .o-arco{opacity:1}
@@ -1435,20 +1434,58 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 .masc.cuerpo[data-estado=vuela] .l-pierna-d{transform:rotate(-6deg)}
 .masc.cuerpo[data-estado=vuela] .l-llama{opacity:1;animation:masc-llama .14s ease-in-out infinite alternate}
 .masc.aterriza{animation:masc-pop .5s cubic-bezier(.3,1.5,.5,1)}
-.masc-chispa{position:fixed;z-index:9490;pointer-events:none;border-radius:50%;background:var(--accent);margin:-3px 0 0 -3px;will-change:transform,opacity;opacity:0}
+.masc-chispa{position:fixed;z-index:9490;pointer-events:none;border-radius:50%;background:var(--c,var(--m-halo));box-shadow:0 0 8px var(--c,var(--m-halo));margin:-3px 0 0 -3px;will-change:transform,opacity;opacity:0}
 
 /* El botón del chat y la cabecera del chat llevan la cara de la mascota */
 .chat-fab-ic{width:48px;height:48px;background:none;overflow:visible;box-shadow:none}
 .chat-fab-ic .masc{box-shadow:0 0 0 1px rgba(12,12,14,.25),0 3px 8px -2px rgba(0,0,0,.35)}
-.chat-av{width:46px;height:46px;border-radius:50%;background:none;font-size:0;overflow:visible;position:relative;box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 55%,transparent),0 0 18px -2px color-mix(in srgb,var(--accent) 60%,transparent)}
+.chat-av{width:46px;height:46px;border-radius:50%;background:none;font-size:0;overflow:visible;position:relative;box-shadow:0 0 0 2px color-mix(in srgb,var(--m-halo) 55%,transparent),0 0 18px -2px color-mix(in srgb,var(--m-halo) 60%,transparent)}
 @media (max-width:560px){.chat-fab-ic{width:46px;height:46px}}
 
 /* Vuelo: el robot sale del botón, cruza la pantalla y se convierte en el avatar.
    Solo se mueve con transform (tarjeta gráfica); sin sombras ni filtros que recalcular. */
+.masc[data-estado=asombro] .ojo{transform:scale(1.3,1.42)}
+.masc.cuerpo[data-estado=asombro] .l-brazo-i{transform:rotate(128deg)}
+.masc.cuerpo[data-estado=asombro] .l-brazo-d{transform:rotate(-128deg)}
+/* Ojos arcoíris (celebraciones): seis copias de los ojos, una por color, que se funden (solo opacidad: tarjeta gráfica) */
+.ojos-arco{will-change:opacity;animation:masc-arco 1.2s linear calc(var(--i) * -.2s) infinite}
+.ojos-arco:not(:first-child){opacity:0}
+@keyframes masc-arco{0%{opacity:0}8%,25%{opacity:1}33%,100%{opacity:0}}
+
+/* Celebración (js/mascota.js → fiesta): capa por encima de todo, incluso de los diálogos (popover), sin recoger toques */
+.masc-fiesta{position:fixed;inset:0;z-index:9600;margin:0;padding:0;border:0;width:100%;height:100%;max-width:none;max-height:none;background:none;overflow:visible;pointer-events:none;color:var(--text)}
+.masc-fiesta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse min(520px,90vw) min(420px,60vh) at 50% calc(clamp(56px,16vh,170px) + min(180px,42vw) * .75),rgba(4,6,8,.78),rgba(4,6,8,.35) 55%,transparent 75%);opacity:0;transition:opacity .45s ease}
+.masc-fiesta.llega::before{opacity:1}
+.masc-fiesta.se-va::before{opacity:0;transition-duration:.6s}
+.mf-masc{position:absolute;left:50%;top:clamp(56px,16vh,170px);width:min(180px,42vw);translate:-50% 0}
+.mf-bocadillo{position:absolute;left:50%;top:calc(clamp(56px,16vh,170px) + min(180px,42vw) * 1.2 + 14px);translate:-50% 0;display:grid;gap:2px;justify-items:center;text-align:center;max-width:min(340px,86vw);padding:12px 20px;border-radius:18px;background:var(--card);border:1px solid color-mix(in srgb,var(--m-halo) 45%,var(--line));box-shadow:0 18px 40px -16px rgba(0,0,0,.6),0 0 30px -10px var(--m-halo);font-family:var(--fb);opacity:0;scale:.86;transition:opacity .25s ease,scale .45s cubic-bezier(.3,1.5,.5,1)}
+.mf-bocadillo b{font-family:var(--fd);font-size:19px;letter-spacing:-.01em}
+.mf-bocadillo small{color:var(--muted);font-size:13.5px}
+.masc-fiesta.llega .mf-bocadillo{opacity:1;scale:1}
+.masc-fiesta.se-va .mf-bocadillo{opacity:0;scale:.92;transition-duration:.2s}
+.mf-chispas{position:absolute;left:50%;top:38%;width:0;height:0}
+.mf-chispas i{position:absolute;left:0;top:0;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);opacity:0;will-change:transform,opacity}
+.masc-fiesta.llega .mf-chispas i{animation:ses-chispa 1s cubic-bezier(.2,.8,.3,1) var(--t,0s) both}
+.mf-chispas i:nth-child(3n){width:6px;height:6px;margin:-3px}
+
+/* Color del asistente: muestras redondas con su brillo */
+.masc-paleta{display:flex;flex-wrap:wrap;gap:10px}
+.mp-c{position:relative;display:block;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mp-c input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.mp-c i{display:block;width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--a),var(--b) 72%);box-shadow:0 0 0 2px var(--bg2),0 0 0 3px var(--line2);transition:transform .25s cubic-bezier(.3,1.5,.5,1),box-shadow .2s ease}
+.mp-c:hover i{transform:scale(1.08)}
+.mp-c input:checked + i{transform:scale(1.12);box-shadow:0 0 0 2px var(--bg2),0 0 0 4px var(--b),0 0 16px 0 var(--b)}
+.mp-c input:focus-visible + i{outline:2px solid var(--text);outline-offset:5px}
+.aj-masc{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px}
+.aj-masc-ver{width:68px;flex:none}
+.chat-paleta{padding:12px 16px;border-bottom:1px solid var(--line);background:var(--card2)}
+.chat-paleta[hidden]{display:none}
+.chat-paleta p{margin:0 0 10px;font-size:13px;color:var(--muted)}
+
 .masc-vuelo{position:fixed;left:0;top:0;z-index:9500;pointer-events:none;will-change:transform,opacity;backface-visibility:hidden}
 .masc-vuelo .masc{height:100%}
 .masc-vuelo .l-sombra{opacity:0}
-.masc-anillo{position:fixed;z-index:9400;pointer-events:none;border-radius:50%;border:2px solid var(--accent);will-change:transform,opacity;animation:masc-anillo .7s cubic-bezier(.2,.7,.3,1) forwards}
+.masc-anillo{position:fixed;z-index:9400;pointer-events:none;border-radius:50%;border:2px solid var(--m-halo);will-change:transform,opacity;animation:masc-anillo .7s cubic-bezier(.2,.7,.3,1) forwards}
 @keyframes masc-anillo{from{opacity:.9;transform:scale(.6)}to{opacity:0;transform:scale(2.3)}}
 
 /* Animación al iniciar y cerrar sesión (fondo casi opaco, sin desenfoque: así va fluida en el móvil) */
@@ -1470,7 +1507,7 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 .ses-sale .ses-barra i{animation-duration:1.9s}
 @keyframes ses-barra{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .ses-chispas{position:absolute;left:50%;top:38%;width:0;height:0;pointer-events:none}
-.ses-chispas i{position:absolute;left:0;top:0;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--accent);opacity:0;will-change:transform,opacity;animation:ses-chispa .95s ease-out var(--t,0s) both}
+.ses-chispas i{position:absolute;left:0;top:0;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--m-halo);opacity:0;will-change:transform,opacity;animation:ses-chispa .95s ease-out var(--t,0s) both}
 .ses-chispas i:nth-child(3n){width:5px;height:5px;margin:-2.5px;background:#e3ffa6}
 @keyframes ses-chispa{0%{opacity:0;transform:rotate(var(--a)) translateY(-50px) scale(.4)}25%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--r) * -1.25)) scale(1)}}
 .ses-zz{position:absolute;right:16%;top:12%;pointer-events:none;font-family:var(--fd);font-weight:800;color:var(--accent)}
@@ -1567,3 +1604,22 @@ html[data-movimiento=reducido] :is(.masc,.masc *,.ses-fx *){animation:none!impor
 .seo-lista li svg{flex:none;margin-top:3px}
 .seo-lista li.mal svg{color:var(--danger)} .seo-lista li.medio svg{color:var(--warn)}
 .seo-nota-pie{margin:0;font-size:12.5px}
+
+/* ===== Estado de la web (js/estado-web.js) ===== */
+/* Mantenimiento: pantalla completa con el robot dando volteretas (se puede jugar con él). El equipo no la ve. */
+html.en-mant,html.en-mant body{overflow:hidden}
+.mant-web{position:fixed;inset:0;z-index:9800;display:grid;place-items:center;padding:24px 20px calc(24px + env(safe-area-inset-bottom));overflow:auto;
+  background:radial-gradient(ellipse 70% 55% at 50% 38%,color-mix(in srgb,var(--m-halo) 12%,var(--bg)) 0,var(--bg) 70%);color:var(--text);font-family:var(--fb);animation:mw-entra .5s ease both}
+@keyframes mw-entra{from{opacity:0}to{opacity:1}}
+.mw-caja{display:grid;justify-items:center;gap:10px;text-align:center;max-width:440px}
+.mw-masc{position:relative;width:min(220px,56vw);padding:0;border:0;background:none;cursor:pointer;margin:0 0 6px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.mw-masc:focus-visible{outline:2px solid var(--m-halo);outline-offset:8px;border-radius:24px}
+.mw-masc .masc{overflow:visible}
+.mw-chispas{position:absolute;left:50%;top:40%;width:0;height:0;pointer-events:none}
+.mw-chispas i{position:absolute;left:0;top:0;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);will-change:transform,opacity}
+.mant-web h1{margin:6px 0 0;font-family:var(--fd);font-size:clamp(26px,6.4vw,36px);line-height:1.1;letter-spacing:-.02em}
+.mant-web p{margin:0;color:var(--muted);font-size:16px;line-height:1.55}
+.mw-pista{display:inline-flex;align-items:center;gap:6px;margin-top:6px;color:var(--m-halo);font-size:13px;font-weight:600}
+.mw-correo{display:inline-flex;align-items:center;gap:8px;margin-top:8px;color:var(--text);font-size:14px;text-decoration:none;border-bottom:1px solid var(--line2)}
+.mw-equipo{margin-top:22px;font-size:12.5px;color:var(--dim)}
+@media (prefers-reduced-motion:reduce){.mant-web{animation:none}}
