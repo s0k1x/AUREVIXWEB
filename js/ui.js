@@ -520,6 +520,7 @@ function crearLogin() {
           <button class="btn btn-primary w100 sign" id="lgVerificar" type="submit"><span>Entrar</span></button>
         </form>
         <p class="lg-reenviar"><span>¿No te ha llegado? Mira en spam o</span> <button class="link-btn" id="lgReenviar" type="button">pide otro</button></p>
+        <button class="btn btn-ghost w100 lg-google2" id="lgGoogle2" type="button">${SVG_GOOGLE}<span>Entrar con Google</span></button>
       </div>
     </div>`;
   document.body.appendChild(d);
@@ -560,6 +561,8 @@ function crearLogin() {
     ocupado(b, false);
   };
   $('#lgGoogle').addEventListener('click', social(store.entrarConGoogle));
+  // Si el código no llega, se puede entrar con Google sin volver atrás
+  $('#lgGoogle2').addEventListener('click', social(store.entrarConGoogle));
   $('#lgGithub')?.addEventListener('click', social(store.entrarConGithub));
 
   /* Paso 2: el código */

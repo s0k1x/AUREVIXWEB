@@ -1526,3 +1526,7 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
   .ses-caja,.l-ojos,.l-sigue-c,.l-cabeza,.l-brazo{transition:none}
 }
 html[data-movimiento=reducido] :is(.masc,.masc *,.ses-fx *){animation:none!important}
+
+/* Pantalla del código: salida con Google si el correo no llega */
+.lg-google2{margin-top:12px;gap:10px}
+.lg-google2 svg{width:18px;height:18px;flex:none}
