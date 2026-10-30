@@ -8,10 +8,10 @@
    ========================================================== */
 import { CONFIG, PLANES, EXTRAS } from '../config.js';
 import * as store from './store.js';
-import { $, $$, esc, euros, icono, toast, arrancar, pedirLogin, ocupado, campo, interruptor, etiquetas, avatar, descargar, ROLES } from './ui.js';
+import { $, $$, esc, euros, icono, toast, arrancar, ocupado, campo, interruptor, etiquetas, avatar, descargar, ROLES } from './ui.js';
 import { leerApariencia, guardarApariencia } from './apariencia.js';
 import { paletaAsistente, mascotaHTML, estadoMascota } from './mascota.js';
-import { abrirCookies, consentimiento } from './cookies.js';
+import { consentimiento } from './cookies.js';
 import { ORIGINAL, ajustesActuales, guardarAjustesWeb } from './sitio.js';
 import { TEMPORADAS, temporadaPorFecha, aplicarTemporada } from './temporada.js';
 

@@ -11,7 +11,7 @@ import { vigilarCampos } from './validar.js';
 import { iniciarBorradores } from './borradores.js';
 import { iniciarIdioma, botonIdioma } from './idioma.js';
 import { iniciarCookies } from './cookies.js';
-import { aplicarApariencia, guardarApariencia, leerApariencia } from './apariencia.js';
+import { aplicarApariencia, guardarApariencia } from './apariencia.js';
 import { campanaHTML, iniciarAvisos } from './avisos.js';
 import { iniciarDesplegables } from './desplegable.js';
 import { crearOtp } from './otp.js';
@@ -927,6 +927,10 @@ export async function arrancar(pagina) {
   });
   aplicarApariencia();
   aplicarCache();
+  // Verificación anti-robots: lo primero de todo, con la copia guardada de los ajustes (sin esperar a la base de datos)
+  const publica = !['panel', 'ajustes', 'vista'].includes(pagina);
+  const verifica = () => import('./verificacion.js').then(m => { m.preconectar(); return m.puertaDeEntrada(); }).catch(() => {});
+  let puerta = publica && CONFIG.turnstile?.activo ? verifica() : null;
   estadoWeb(); // mantenimiento o demostración: al instante con la copia guardada (sin enseñar antes la web)
   aplicarTemporada(CONFIG.temporada); // colores al instante (el ambiente, cuando estén los ajustes)
   intro();
@@ -960,7 +964,8 @@ export async function arrancar(pagina) {
   aplicarTemporada(CONFIG.temporada, { animar: ['inicio', 'trabaja'].includes(pagina) });
   contarVisita(pagina);
   // Verificación anti-robots en las páginas públicas (primera visita o algo inusual)
-  if (!['panel', 'ajustes', 'vista'].includes(pagina) && CONFIG.turnstile?.activo) import('./verificacion.js').then(m => m.puertaDeEntrada()).catch(() => {});
+  // Primera visita de este navegador (aún sin copia de los ajustes): ahora que se sabe si está activa
+  if (!puerta && publica && CONFIG.turnstile?.activo) puerta = verifica();
   pintarAnuncio();
   pintarPie();
   vigilarMarcas();

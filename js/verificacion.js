@@ -24,6 +24,11 @@ export const verificacionActiva = () => !!(CONFIG.turnstile?.activo && CONFIG.tu
 
 /* ---------- El widget de Cloudflare ---------- */
 let script = null;
+/** Abre ya la conexión con Cloudflare (el control sale antes) */
+export function preconectar() {
+  if (document.querySelector('link[href="https://challenges.cloudflare.com"]')) return;
+  const l = document.createElement('link'); l.rel = 'preconnect'; l.href = 'https://challenges.cloudflare.com'; document.head.append(l);
+}
 function cargarScript() {
   if (window.turnstile) return Promise.resolve(window.turnstile);
   return (script ||= new Promise((ok, no) => {
@@ -109,8 +114,11 @@ export async function puertaDeEntrada() {
   if (!verificacionActiva()) return;
   const rapido = anotar('pagina');
   if (!rapido && Date.now() - leerPase() < DURA) return;
+  // Hasta que se compruebe, la web no se enseña: la verificación es lo primero que se ve
+  document.documentElement.classList.add('verificando');
   try { await verificarAhora(rapido ? 'Estás navegando muy rápido. Comprobamos que eres una persona antes de seguir.' : undefined); }
   catch (e) { console.warn(e); } // si Cloudflare no carga, no se bloquea la web: lo importante se comprueba al entrar y al enviar
+  finally { document.documentElement.classList.remove('verificando'); }
 }
 
 /** Antes de una acción sensible: si hay algo inusual, se pide verificación (si falla, lanza un error) */

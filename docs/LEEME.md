@@ -1365,3 +1365,42 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **Cara del robot** (botón y cabecera del chat):
   - Escala y gira desde el centro de la cabeza (antes lo hacía desde los pies, fuera del círculo, y se deformaba).
   - El bote y el estirar y aplastar son mucho más suaves.
+
+### v94–v96: funciones nuevas, diseños más profesionales, web organizada
+- **Portada:**
+  - Antes y después deslizable: web anticuada frente al diseño Filo.
+  - Cifras reales con gráfica de entregas. Solo aparecen con 3 o más webs entregadas, nunca con cifras de relleno.
+  - Casos con la captura de su web que se desplaza (mShots de WordPress.com).
+  - Bloque «¿Cómo está tu web actual?», que lleva al análisis ya en marcha.
+- **Configurador:** vista previa en vivo en el paso «Estilo», con el nombre y el color del cliente.
+- **Tema claro u oscuro:** botón en la cabecera (en el móvil, en el menú) con transición circular (View Transitions).
+- **Reservar una llamada** (`js/llamada.js`):
+  - Horario en Ajustes → Negocio → Llamadas.
+  - Huecos libres reales y confirmación con botón para añadirla a Google Calendar o archivo `.ics`.
+  - Llega a Soporte y al resumen del panel.
+  - El servidor impide reservar dos veces la misma hora.
+- **Firma en pantalla** (`js/firma.js`):
+  - Al confirmar el pedido y al aceptar un cambio extra.
+  - Se ve en el detalle del pedido y en el resumen imprimible.
+- **Revisa tu web:** mide a la vez, en vivo, la web del visitante y un diseño nuestro, y las compara.
+- **Recordatorios automáticos e informe mensual** (función `recordatorios` + tarea diaria):
+  - Cuota que vence o vencida, contenido pendiente, web lista para revisar.
+  - Informe mensual en PDF el día 1.
+  - Respeta el aviso «Recordatorios» de Ajustes → Avisos y nunca repite un aviso.
+- **SQL:** `supabase/migraciones/funciones-v94.sql`.
+- **Diseños predeterminados** (skill design-taste-frontend):
+  - Sin etiquetas pequeñas encima de los títulos, ni sombras, ni emoji, ni cinta que corre, ni números decorativos.
+  - Ventajas como lista limpia; títulos en dos líneas.
+  - Lienzo con paleta propia.
+- **Organización:**
+  - Hojas de estilo en `css/`, documentación en `docs/`, SQL en `supabase/migraciones/`, README con la estructura.
+  - Portada en orden lógico, con franjas alternas automáticas.
+  - Botón «volver arriba» encima del asistente, sin tapar el pie.
+- **Pantalla de carga nueva:** logotipo y nombre sobre el fondo con una línea fina que se completa (fuera la tarjeta).
+- **Verificación de Cloudflare primero:**
+  - Se lanza al arrancar, con la copia guardada de los ajustes.
+  - La web no se enseña hasta comprobarlo y la conexión con Cloudflare se abre antes.
+- **Revisión:**
+  - Importaciones sin uso eliminadas.
+  - Traducciones al inglés de todos los textos nuevos.
+  - Arreglado el choque de clases entre el aviso y el botón «volver arriba».

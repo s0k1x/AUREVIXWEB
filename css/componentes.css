@@ -246,7 +246,6 @@ input:checked ~ .ck-mark::after{left:.45em;top:.22em;width:.28em;height:.55em;bo
    ---------------------------------------------------------- */
 .splash{position:fixed;inset:0;z-index:2000;background:var(--bg);display:grid;place-items:center;transition:opacity .5s,visibility .5s}
 .splash.out{opacity:0;visibility:hidden}
-.splash .brand-card{background:#141418;box-shadow:0 30px 80px rgba(0,0,0,.6)}
 
 @media (prefers-reduced-motion:reduce){
   .bg-stripes{animation:none}

@@ -5,16 +5,12 @@ import { fiesta } from './mascota.js';
 import { CONFIG, PLANES, EXTRAS, COMPARATIVA } from '../config.js';
 import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from './store.js';
-import {
-  $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, pedirLogin, arrancar, mailLink, refPedido, whatsappLink, contarEvento,
-  ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados, desgloseIVA, ivaTexto, infoDatos, descargar,
-  estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, TAREAS, progreso, PAGOS, haceCuanto, METODOS
-} from './ui.js';
+import { $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, pedirLogin, arrancar, mailLink, refPedido, whatsappLink, contarEvento, ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados, desgloseIVA, ivaTexto, infoDatos, descargar, estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, PAGOS, haceCuanto } from './ui.js';
 import { planesActivos, extrasActivos } from './sitio.js';
 import { montarHilo, montarArchivos, abrirRecibo } from './colabora.js';
 import { botonPago, abrirPago, abrirResena, animarYPagar } from './pago.js';
 import { recomendar, iniciarChat } from './asistente.js';
-import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, pedirCambios, webCliente, desistimientoHTML, puedeDesistir, finDesistimiento, estadoParaEtapa, indiceEtapa, dominioTexto, fechaEntrega, plazoTexto, plazoClase, conHistorial, lineaTiempoHTML } from './proyecto.js';
+import { ETAPAS, barraEtapas, accionCliente, leerFormulario, aprobarWeb, pedirCambios, webCliente, desistimientoHTML, puedeDesistir, finDesistimiento, estadoParaEtapa, indiceEtapa, fechaEntrega, plazoTexto, plazoClase, conHistorial, lineaTiempoHTML } from './proyecto.js';
 import { importeSenal, importeResto } from './pago.js';
 import { confeti, contar } from './efectos.js';
 import { conMantenimiento, mantClienteHTML, extrasClienteHTML, textoAcuerdo, resumirVisitas, estadisticasHTML } from './negocio.js';

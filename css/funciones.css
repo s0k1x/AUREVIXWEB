@@ -6,13 +6,18 @@
 
 /* ---------- Bienvenida: logotipo y nombre a la vez ---------- */
 /* Bienvenida: tarjeta de marca con el logotipo y el nombre a la vez */
-.splash .splash-card{opacity:0;transform:scale(.92);transition:opacity .45s var(--e-out),transform .6s var(--e-spring),border-radius .5s ease-in-out}
-.splash.listo .splash-card{opacity:1;transform:none}
-.splash.listo .splash-card.on{transform:scale(1.04)}
-.splash-card .logo,.splash-card.on .logo{width:auto;overflow:visible;animation:none;gap:10px}
-.splash-card .logo2{position:static;transform:none}
-.splash-card .trail{display:none}
-@media (max-width:480px){.splash .splash-card{width:calc(100vw - 48px)}}
+/* Pantalla de carga: el logotipo y el nombre sobre el fondo de la web, con una línea fina que se completa */
+.splash-marca{display:grid;justify-items:center;gap:14px}
+.sp-logo{width:56px;height:56px;opacity:0;transform:translateY(8px) scale(.94);transition:opacity .45s var(--e-out),transform .6s var(--e-out)}
+.sp-nombre{width:190px;height:auto;opacity:0;transform:translateY(6px);transition:opacity .45s var(--e-out) .12s,transform .6s var(--e-out) .12s}
+.sp-linea{display:block;width:120px;height:2px;margin-top:6px;border-radius:2px;background:var(--line2);overflow:hidden;opacity:0;transition:opacity .3s ease .2s}
+.sp-linea b{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left}
+.splash.listo .sp-logo,.splash.listo .sp-nombre{opacity:1;transform:none}
+.splash.listo .sp-linea{opacity:1}
+.splash.vivo .sp-linea b{animation:sp-carga 1.4s cubic-bezier(.4,0,.2,1) .15s forwards}
+@keyframes sp-carga{to{transform:scaleX(1)}}
+.splash.out .splash-marca{transform:scale(1.03);opacity:0;transition:transform .5s var(--e-out),opacity .4s ease}
+@media (prefers-reduced-motion:reduce){.sp-logo,.sp-nombre,.sp-linea,.splash.out .splash-marca{transition:none}.splash.vivo .sp-linea b{animation:none;transform:none}}
 
 /* ---------- Franja de anuncio ---------- */
 .anuncio{position:relative;z-index:52;display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 48px;background:var(--accent);color:var(--ink);font-size:14px;font-weight:600;text-align:center}
@@ -500,7 +505,6 @@ html.intro body>*:not(.splash){visibility:hidden}
 /* Bienvenida estática: sale en el primer fotograma, antes de que cargue nada más */
 #splash0:not(.vivo){display:none}
 #splash0.vivo{display:grid}
-.splash.listo .splash-card{opacity:1;transform:none}
 /* Marca en la ventana de inicio de sesión */
 .lg-marca{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px auto 18px}
 .lg-marca img:first-child{width:40px;height:40px;object-fit:contain}
@@ -1347,6 +1351,9 @@ html[data-tema=claro] .pw-medidor[data-n="1"] .pw-nivel b{color:#c2410c}
 @media (max-width:640px){html body .cookies{box-shadow:0 0 0 100vmax rgba(0,0,0,.55),0 30px 80px rgba(0,0,0,.6)}}
 
 /* Verificación anti-robots (js/verificacion.js): pantalla centrada */
+/* Mientras se comprueba que es una persona, solo se ve la verificación (va en <html>, fuera de <body>) */
+html.verificando{background:var(--bg)}
+html.verificando body{visibility:hidden}
 .verif{position:fixed;inset:0;z-index:100000;font-family:var(--fb);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);opacity:0;transition:opacity .25s ease}
 .verif.on{opacity:1}
 .verif-caja{display:grid;justify-items:center;gap:10px;width:min(420px,100%);padding:32px 24px 24px;border-radius:24px;background:var(--card);border:1px solid var(--line2);text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.45);transform:translateY(8px) scale(.98);transition:transform .3s cubic-bezier(.23,1,.32,1)}

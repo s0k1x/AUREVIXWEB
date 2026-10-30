@@ -3,13 +3,10 @@
    ========================================================== */
 import { CONFIG, PLANES } from '../config.js';
 import { plantillaPorId, activarPlantilla } from './plantillas.js';
-import { ETAPAS, etapaDe, barraEtapas, estadoParaEtapa, entregasCliente, urlVistaPrevia, fechaEntrega, diasRestantes, plazoTexto, plazoClase, conHistorial, lineaTiempo, lineaTiempoHTML, siguientePaso, RECORDATORIOS, fichaTexto, dominioTexto } from './proyecto.js';
+import { ETAPAS, etapaDe, barraEtapas, estadoParaEtapa, entregasCliente, urlVistaPrevia, fechaEntrega, diasRestantes, plazoTexto, plazoClase, conHistorial, lineaTiempo, lineaTiempoHTML, siguientePaso, RECORDATORIOS, fichaTexto } from './proyecto.js';
 import { contar } from './efectos.js';
 import * as store from './store.js';
-import {
-  $, $$, esc, euros, fecha, fechaCorta, haceCuanto, icono, avatar, toast, abrir, cerrar, arrancar, pedirLogin, mailLink, refPedido,
-  ESTADOS, PAGOS, METODOS, cargandoHTML, errorCargaHTML, metaHTML, ocupado, campo, estrellas, etiquetas, TAREAS, progreso, copiar, descargar, tamano, datosLegalesPendientes
-} from './ui.js';
+import { $, $$, esc, euros, fecha, fechaCorta, haceCuanto, icono, avatar, toast, abrir, cerrar, arrancar, pedirLogin, mailLink, refPedido, ESTADOS, PAGOS, METODOS, cargandoHTML, errorCargaHTML, metaHTML, ocupado, campo, estrellas, etiquetas, TAREAS, progreso, copiar, descargar, tamano, datosLegalesPendientes } from './ui.js';
 import { montarHilo, montarArchivos, abrirRecibo, descargarArchivosCliente } from './colabora.js';
 import { prefsPermitidas } from './cookies.js';
 import { catalogo } from './asistente.js';

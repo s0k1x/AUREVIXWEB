@@ -4,6 +4,21 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  // v92–v95 · sesión, antes y después, revisa tu web, llamadas, firma, tema, mantenimiento y avisos
+  'Hola': 'Hi', 'Entrando en tu cuenta': 'Signing you in', 'Cerrando tu sesión': 'Signing you out',
+  'El antes y el después': 'Before and after', 'La misma barbería, con una web de hace años y con un diseño nuestro. Desliza para compararlas.': 'The same barbershop, with a years-old website and with one of our designs. Slide to compare them.',
+  'Antes': 'Before', 'Después': 'After', 'Antes y después': 'Before and after', 'Revisa tu web': 'Check your website',
+  '¿Cómo está tu web actual?': 'How is your current website doing?', 'Escribe su dirección: la medimos con Google y la comparamos con una de las nuestras. Gratis y en menos de un minuto.': 'Type its address: we measure it with Google and compare it with one of ours. Free and in under a minute.', 'Revisar mi web': 'Check my website',
+  'Tu web frente a una web nuestra': 'Your website vs one of ours', 'Tu web': 'Your website', 'Las dos se han medido ahora mismo, a la vez y en las mismas condiciones (PageSpeed Insights, móvil).': 'Both were measured just now, at the same time and under the same conditions (PageSpeed Insights, mobile).',
+  'Prefiero que me llaméis': 'I’d rather you call me', 'Reservar una llamada': 'Book a call', 'Reservar la llamada': 'Book the call', 'Llamada reservada': 'Call booked', 'Hecho': 'Done',
+  'Añadir a Google Calendar': 'Add to Google Calendar', 'Añadir a otro calendario (.ics)': 'Add to another calendar (.ics)', 'Tu nombre': 'Your name', '¿De qué quieres hablar? (opcional)': 'What would you like to talk about? (optional)',
+  'Cargando los huecos libres…': 'Loading available times…', 'Ir al formulario': 'Go to the form',
+  'Firma tu pedido': 'Sign your order', 'Firma el presupuesto': 'Sign the quote', 'Firmar y aceptar': 'Sign and accept', 'Borrar': 'Clear', 'Firma aquí': 'Sign here',
+  'Así quedaría con tu nombre y tu color. El diseño lo eliges en el paso 7.': 'This is how it would look with your name and colour. You choose the design in step 7.',
+  'webs entregadas': 'websites delivered', 'Tema claro': 'Light theme', 'Tema oscuro': 'Dark theme', 'Cambiar a tema claro': 'Switch to light theme', 'Cambiar a tema oscuro': 'Switch to dark theme',
+  'Volvemos enseguida': 'We’ll be back shortly', 'Mantenimiento': 'Maintenance', 'Acceso del equipo': 'Team access', 'Estamos mejorando la web. Gracias por tu paciencia.': 'We’re improving the website. Thanks for your patience.',
+  'Web en demostración': 'Demo website', 'Elige mi color': 'Pick my colour', 'Color del asistente': 'Assistant colour',
+  'Aviso de pago enviado': 'Payment notice sent', 'Pedido recibido': 'Order received', 'Web aprobada': 'Website approved', 'Solo falta el pago final para publicarla': 'Only the final payment is left to publish it', 'Ya estamos con tu web': 'We’re already working on your website',
   'Hasta pronto': 'See you soon', 'Cerrando tu sesión…': 'Signing you out…', 'Entrando en tu cuenta…': 'Signing you in…', '¡Hola!': 'Hi!',
   // v59 · calculadora
   'Tu presupuesto': 'Your quote', 'La Librería es para suscriptores': 'The Library is for subscribers', 'Tu suscripción ha terminado': 'Your subscription has ended', 'Entrar para suscribirme': 'Sign in to subscribe', 'Ya he pagado: activar mi acceso': "I've paid: activate my access", 'Cómo pagar': 'How to pay', 'Cuotas mensuales': 'Monthly fees', 'se cobran cada mes desde la publicación': 'charged monthly from launch', 'Correo con tu dominio': 'Email with your domain', 'Urgente': 'Rush', 'opcionales': 'optional', '¿Para cuándo la necesitas?': 'When do you need it?', 'Plazo normal': 'Standard timing',
