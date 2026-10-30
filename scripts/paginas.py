@@ -257,28 +257,28 @@ def sector(s, todos):
 
     <section class="pg-sec">
       <div class="wrap">
-        <div class="pg-sec-head"><span class="eyebrow">Qué incluye</span><h2>Lo que necesita la web de tu negocio</h2></div>
+        <div class="pg-sec-head"><h2>Lo que necesita la web de tu negocio</h2></div>
         <div class="pg-puntos">{"".join(f'<article class="pg-punto"><span class="pg-punto-ic"><i data-i="{ic}"></i></span><h3>{e(t)}</h3><p>{e(d)}</p></article>' for ic, t, d in s["puntos"])}</div>
       </div>
     </section>
 
     <section class="pg-sec alt">
       <div class="wrap pg-planes-grid">
-        <div class="pg-sec-head"><span class="eyebrow">Precio cerrado</span><h2>Elige el tipo de web</h2><p class="lead">Precio final, con el <span data-senal>50 %</span> al empezar y el resto a la entrega. Pagas por Bizum o transferencia.</p></div>
+        <div class="pg-sec-head"><h2>Elige el tipo de web</h2><p class="lead">Precio final, con el <span data-senal>50 %</span> al empezar y el resto a la entrega. Pagas por Bizum o transferencia.</p></div>
         <div class="pg-planes" data-planes="{s["plan"]},{s["alt"]}" data-diseno="{s["plantilla"]}"></div>
       </div>
     </section>
 
     <section class="pg-sec">
       <div class="wrap">
-        <div class="pg-sec-head"><span class="eyebrow">Cómo trabajamos</span><h2>De la idea a tu web publicada</h2></div>
+        <div class="pg-sec-head"><h2>De la idea a tu web publicada</h2></div>
         <ol class="pg-pasos">{"".join(f'<li><b>{e(t)}</b><span>{e(d)}</span></li>' for t, d in PASOS)}</ol>
       </div>
     </section>
 
     <section class="pg-sec alt">
       <div class="wrap faq-grid">
-        <div class="faq-side pg-sec-head"><span class="eyebrow">Preguntas</span><h2>Dudas frecuentes</h2><p class="lead">¿No está la tuya? <a href="./#contacto">Escríbenos</a> y te respondemos por correo.</p></div>
+        <div class="faq-side pg-sec-head"><h2>Dudas frecuentes</h2><p class="lead">¿No está la tuya? <a href="./#contacto">Escríbenos</a> y te respondemos por correo.</p></div>
         {faq_html(s["faq"])}
       </div>
     </section>
@@ -309,7 +309,6 @@ def guia(slug, titulo, desc, resumen, secciones, *, extra_fin='', faq=None):
     cuerpo = f'''    <article class="wrap guia">
       <header class="guia-cab">
         {migas_html}
-        <span class="eyebrow">Guía</span>
         <h1>{e(titulo)}</h1>
         <p class="lead">{e(resumen)}</p>
       </header>
@@ -530,7 +529,6 @@ REVISA = pagina('revisa-tu-web', 'Revisa tu web gratis: velocidad, Google y acce
     f'''    <section class="pg-hero pg-hero-corto">
       <div class="wrap">
         {migas(('Inicio', './'), ('Revisa tu web', ''))[0]}
-        <span class="eyebrow">Gratis · en un minuto</span>
         <h1>Revisa tu web gratis</h1>
         <p class="lead">Escribe la dirección de tu web y te decimos cómo va en el móvil: velocidad, Google, accesibilidad y buenas prácticas, con lo que conviene mejorar.</p>
         <form class="rv-form" id="rvForm" novalidate>
@@ -558,7 +556,6 @@ MANT = pagina('mantenimiento', 'Mantenimiento mensual de tu web · AurevixWeb',
       <div class="wrap pg-mant">
         <div>
           {migas(('Inicio', './'), ('Mantenimiento', ''))[0]}
-          <span class="eyebrow">Opcional · sin permanencia</span>
           <h1>Tu web, siempre al día</h1>
           <p class="lead">Cambias un precio, un horario o una foto y nos lo pides: lo hacemos nosotros. Y mientras, mantenemos tu web actualizada y con copias de seguridad.</p>
           <div class="pg-ctas"><a class="btn btn-primary" href="./#webs">Añadirlo a mi web <i data-i="arrow"></i></a><a class="btn btn-ghost" href="./#contacto">Tengo una pregunta</a></div>
@@ -570,7 +567,7 @@ MANT = pagina('mantenimiento', 'Mantenimiento mensual de tu web · AurevixWeb',
     </section>
     <section class="pg-sec">
       <div class="wrap">
-        <div class="pg-sec-head"><span class="eyebrow">Qué incluye</span><h2>Tú te ocupas de tu negocio</h2></div>
+        <div class="pg-sec-head"><h2>Tú te ocupas de tu negocio</h2></div>
         <div class="pg-puntos">{"".join(f'<article class="pg-punto"><span class="pg-punto-ic"><i data-i="{ic}"></i></span><h3>{e(t)}</h3><p>{e(d)}</p></article>' for ic, t, d in [
             ('pen', 'Cambios menores', 'Nuevos precios, un horario de verano, una foto mejor, un aviso de vacaciones: nos lo pides y lo cambiamos.'),
             ('refresh', 'Actualizaciones', 'Mantenemos al día la web y lo que la hace funcionar.'),
@@ -582,7 +579,7 @@ MANT = pagina('mantenimiento', 'Mantenimiento mensual de tu web · AurevixWeb',
     </section>
     <section class="pg-sec alt">
       <div class="wrap faq-grid">
-        <div class="faq-side pg-sec-head"><span class="eyebrow">Preguntas</span><h2>Dudas frecuentes</h2></div>
+        <div class="faq-side pg-sec-head"><h2>Dudas frecuentes</h2></div>
         {faq_html(MANT_FAQ)}
       </div>
     </section>''', nombre_visita='mantenimiento', ld=[migas(('Inicio', './'), ('Mantenimiento', ''))[1], faq_ld(MANT_FAQ)])
