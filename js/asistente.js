@@ -11,7 +11,7 @@ import * as store from './store.js';
 import { esc, icono, euros, mailLink } from './ui.js';
 import { planesActivos, extrasActivos } from './sitio.js';
 import { enIngles } from './idioma.js';
-import { mascotaHTML, estadoMascota, volar, rebote, seguirPuntero, precargar, precargarHojas } from './mascota.js';
+import { mascotaHTML, estadoMascota, volar, rebote, seguirPuntero, precargar } from './mascota.js';
 
 const ajuste = CONFIG.asistente || { activo: true, nombre: 'Asistente', saludo: '' };
 
@@ -312,11 +312,6 @@ export function iniciarChat() {
   /* La mascota del botón vuela hasta la cabecera del chat al abrirlo y vuelve al cerrarlo */
   const mFab = fab.querySelector('.masc'), mAv = nodo.querySelector('.chat-av .masc');
   seguirPuntero(); precargar();
-  // Fotogramas del robot: el de reposo cuando el navegador está libre; el resto (hablar, pensar, alegría y vuelo)
-  // en cuanto se acerca el ratón o el dedo al botón, para que al abrir ya estén listos
-  (window.requestIdleCallback ? f => requestIdleCallback(f, { timeout: 4000 }) : f => setTimeout(f, 2500))(() => precargarHojas('cara-normal'));
-  const resto = () => precargarHojas('cara-feliz', 'cara-habla', 'cara-piensa');
-  ['pointerenter', 'focus', 'touchstart'].forEach(ev => fab.addEventListener(ev, resto, { once: true, passive: true }));
   setTimeout(() => estadoMascota(mFab, 'normal'), 2400); // el saludo inicial dura un momento
   const caja = el => { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width }; };
   let origen = null, vuelo = 0;
@@ -390,7 +385,11 @@ export function iniciarChat() {
     guardar(hilo);
     pintar();
     msgs.insertAdjacentHTML('beforeend', '<div class="msg el escribiendo" aria-label="Escribiendo"><i></i><i></i><i></i></div>');
-    estadoMascota(mAv, 'piensa');
+    // Se alegra al recibir tu mensaje (más si le saludas o le das las gracias) y después se pone a pensar
+    clearTimeout(escuchando);
+    const alegre = /\b(gracias|genial|perfecto|hola|buenas|guay|me encanta|crack)\b/i.test(texto);
+    estadoMascota(mAv, 'feliz');
+    const piensa = setTimeout(() => { if (ocupado) estadoMascota(mAv, 'piensa'); }, alegre ? 1100 : 650);
     msgs.scrollTop = msgs.scrollHeight;
     let r = null;
     try { r = await respuestaRapida(texto); } catch (e) { console.warn(e); }
@@ -414,9 +413,20 @@ export function iniciarChat() {
     guardar(hilo);
     pintar();
     msgs.querySelectorAll('.msg.el').forEach((m, i, todos) => i === todos.length - 1 && m.classList.add('nuevo'));
-    estadoMascota(mAv, 'habla', Math.min(2600, 500 + r.texto.length * 14));
+    clearTimeout(piensa);
+    estadoMascota(mAv, 'habla');
+    // Habla lo que dura la respuesta y termina con una sonrisa
+    setTimeout(() => { if (mAv.dataset.estado === 'habla') estadoMascota(mAv, 'feliz', 900); }, Math.min(2600, 500 + r.texto.length * 14));
     ocupado = false;
   }
+  // Mientras escribes te escucha: se inclina hacia ti y abre los ojos; si dejas de escribir, vuelve a su sitio
+  let escuchando = 0;
+  input.addEventListener('input', () => {
+    if (ocupado) return;
+    if (mAv.dataset.estado !== 'escucha') estadoMascota(mAv, 'escucha');
+    clearTimeout(escuchando);
+    escuchando = setTimeout(() => { if (mAv.dataset.estado === 'escucha') estadoMascota(mAv, 'normal'); }, input.value.trim() ? 2600 : 600);
+  });
   nodo.querySelector('#chatForm').addEventListener('submit', e => { e.preventDefault(); const t = input.value; input.value = ''; enviar(t); });
   rapidas.addEventListener('click', e => { const b = e.target.closest('button'); if (b) enviar(b.textContent); });
 

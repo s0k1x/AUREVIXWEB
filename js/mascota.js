@@ -7,10 +7,10 @@
      · cara   → solo la cabeza en un disco (botón y cabecera del chat)
      · cuerpo → el robot entero (vuelo, inicio y cierre de sesión)
    Estados (data-estado): normal · feliz · saluda · habla · piensa ·
-   dormido · adios · guino · vuela.   Estilos: funciones.css («Mascota»).
+   escucha · dormido · adios · guino · vuela.   Estilos: funciones.css («Mascota»).
+   Todo se anima en código (sin imágenes): cada estado es una coreografía
+   que mueve las piezas en vivo con la API de animaciones del navegador.
    ========================================================== */
-
-import { HOJAS } from './mascota-hojas.js';
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const sinMovimiento = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.movimiento === 'reducido';
@@ -88,8 +88,8 @@ const TORSO = `
   <image href="icons/logo-a-verde.png" x="182" y="283" width="36" height="36"/>`;
 
 /** HTML de la mascota. cuerpo: robot entero · disco: círculo oscuro detrás (solo en el vuelo) */
-export function mascotaHTML(estado = 'normal', { cuerpo = false, disco = false, clase = '', hojas: conHojas = true } = {}) {
-  defs(); iniciar(); vigilarHojas();
+export function mascotaHTML(estado = 'normal', { cuerpo = false, disco = false, clase = '', vivo = true } = {}) {
+  defs(); iniciar(); vigilar();
   const cabeza = `<span class="l-g l-cabeza"><span class="l-g l-sigue-c">
         ${capa('l-casco', CASCO)}
         <span class="l-g l-ojos">${ojo(149, 'i')}${ojo(251, 'd')}</span>
@@ -102,7 +102,7 @@ export function mascotaHTML(estado = 'normal', { cuerpo = false, disco = false, 
         ${capa('l-torso', TORSO)}
       </span>` : '';
   const brazos = cuerpo ? `<span class="l-g m-cuerpo l-brazos">${capa('l-brazo l-brazo-i', BRAZO)}${capa('l-brazo l-brazo-d', espejo(BRAZO))}</span>` : '';
-  return `<span class="masc ${cuerpo ? 'cuerpo' : 'cara'} ${clase}" data-estado="${estado}"${conHojas ? '' : ' data-hojas="no"'} aria-hidden="true" style="--d:${(Math.random() * 3).toFixed(2)}s">
+  return `<span class="masc ${cuerpo ? 'cuerpo' : 'cara'} ${clase}" data-estado="${estado}"${vivo ? '' : ' data-anim="no"'} aria-hidden="true" style="--d:${(Math.random() * 3).toFixed(2)}s">
     <span class="masc-lienzo">
       ${disco ? `<span class="l-g l-disco">${capa('', '<circle cx="200" cy="134" r="186" fill="#040a06"/>')}</span>` : ''}
       <span class="l-g m-todo">${corporal}${cabeza}${brazos}</span>
@@ -149,10 +149,9 @@ function iniciar() {
     if (document.hidden || sinMovimiento()) return;
     const ahora = performance.now();
     document.querySelectorAll('.masc').forEach(m => {
-      if (m.classList.contains('con-frames')) return; // la hoja ya parpadea y mira sola
       const e = m.dataset.estado;
       if (m._parp === undefined) { m._parp = ahora + 700 + Math.random() * 2200; m._mira = ahora + 1400 + Math.random() * 2500; m._feliz = ahora + 7000 + Math.random() * 6000; }
-      if (ahora > m._parp && e !== 'dormido' && !/^(feliz|saluda|adios)$/.test(e)) {
+      if (ahora > m._parp && !m._ojosAnim && e !== 'dormido' && !/^(feliz|saluda|adios)$/.test(e)) {
         m.classList.add('parp'); setTimeout(() => m.classList.remove('parp'), 130);
         m._parp = ahora + (Math.random() < .22 ? 380 : 2400 + Math.random() * 4200); // a veces, doble parpadeo
       }
@@ -200,6 +199,24 @@ export function rebote(el, { de = .78, ms = 620 } = {}) {
   }), { duration: ms, easing: 'linear' });
 }
 
+const ss = t => { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t); };
+/**
+ * Postura en el aire según hacia dónde va (tx, ty: dirección; rap: rapidez 0–1; u: momento del vuelo 0–1).
+ * - Subiendo o de lado: va derecho, inclinado hacia donde avanza, con un vaivén suave.
+ * - Bajando: se da la vuelta poco a poco y cae de cabeza, como un clavado (la cabeza apunta hacia donde va).
+ * - Antes de tocar («llega»): se endereza con un golpe de propulsores para aterrizar de pie.
+ * Devuelve el giro en grados y cuánto está «de cabeza» (0–1) y frenando (0–1).
+ */
+function posturaVuelo(tx, ty, rap, u, llega) {
+  const endereza = ss((u - (llega - .17)) / .15);
+  const cae = ss((ty - .2) / .55) * Math.min(1, rap * 1.6) * (1 - endereza);
+  const inclina = Math.max(-22, Math.min(22, tx * 20 * rap)) + 5 * Math.sin(u * Math.PI * 5) * rap * (1 - cae);
+  let clavado = Math.atan2(tx, -ty) * 180 / Math.PI;
+  if (Math.abs(tx) < .04) clavado = 170 * (tx < 0 ? -1 : 1);
+  clavado = Math.max(-170, Math.min(170, clavado));
+  return { rot: inclina + (clavado - inclina) * cae, cae, frena: campana(u, llega - .2, llega + .02) };
+}
+
 /**
  * «de» y «a» son los rectángulos (en pantalla) de dos mascotas de tipo cara.
  * Vuelo con física: se agacha para coger impulso, despega estirándose, recorre un arco con el cuerpo
@@ -219,7 +236,7 @@ export function volar(de, a, { ms = 950 } = {}) {
   const el = document.createElement('div');
   el.className = 'masc-vuelo';
   el.style.cssText = `width:${400 * S}px;height:${470 * S}px;transform-origin:${CX * S}px ${CY * S}px`;
-  el.innerHTML = mascotaHTML('vuela', { cuerpo: true, disco: true, hojas: false });
+  el.innerHTML = mascotaHTML('vuela', { cuerpo: true, disco: true, vivo: false });
   document.body.append(el);
 
   // Trayectoria: curva de Bézier cuadrática con el punto de control por encima del punto medio (arco limpio)
@@ -232,7 +249,7 @@ export function volar(de, a, { ms = 950 } = {}) {
   const fotogramas = [], M = [];
   for (let k = 0; k <= N; k++) {
     const u = k / N;
-    let p, sx = 1, sy = 1, rot = 0, baja = 0, sc, tx = 0, ty = 0, rap = 0;
+    let p, sx = 1, sy = 1, rot = 0, baja = 0, sc, tx = 0, ty = 0, rap = 0, cae = 0, frena = 0;
     if (u < IMPULSO) {
       // Coge impulso: se agacha y se ensancha
       const w = Math.sin(Math.PI * (u / IMPULSO));
@@ -244,7 +261,7 @@ export function volar(de, a, { ms = 950 } = {}) {
       tx = d.x / (Math.hypot(d.x, d.y) || 1); ty = d.y / (Math.hypot(d.x, d.y) || 1); rap = rapidez * Math.sin(Math.PI * v) ** .5;
       // Se estira con la velocidad y se inclina hacia donde va
       sx = 1 - .07 * rapidez; sy = 1 + .11 * rapidez;
-      rot = Math.max(-22, Math.min(22, (d.x / vMax) * 20 + Math.sin(Math.PI * p) * -6));
+      ({ rot, cae, frena } = posturaVuelo(tx, ty, rapidez, u, LLEGA));
       sc = s0 + (s1 - s0) * p + (grande - (s0 + s1) / 2) * Math.sin(Math.PI * p);
     } else {
       // Toca destino: se aplasta y se asienta con un muelle
@@ -252,7 +269,7 @@ export function volar(de, a, { ms = 950 } = {}) {
       p = 1; sx = 1 + .12 * f; sy = 1 - .12 * f; sc = s1 * (1 + .1 * (1 - muelle(w * .5, { rigidez: 300, amort: 16 })) * (w < .02 ? 0 : 1));
     }
     const c = bez(p);
-    M.push({ u, tx, ty, rap, rot, fin: 0 });
+    M.push({ u, tx, ty, rap, rot, cae, frena, fin: 0 });
     fotogramas.push({
       transform: `translate3d(${(c.x - CX * S).toFixed(2)}px,${(c.y + baja - CY * S).toFixed(2)}px,0) scale(${(sc / S).toFixed(5)}) rotate(${rot.toFixed(2)}deg) scale(${sx.toFixed(4)},${sy.toFixed(4)})`,
       offset: u
@@ -294,18 +311,24 @@ function vidaEnVuelo(el, M, ms) {
   let fase = 0;
   const K = M.map((m, i) => {
     if (i) fase += (M[i].u - M[i - 1].u) * ms / 1000 * Math.PI * 2 * (2.2 + 3.4 * m.rap); // aleteo: 2,2 a 5,6 por segundo
-    const ala = Math.sin(fase), lado = Math.max(-1, Math.min(1, m.rot / 18)), quieto = 1 - m.rap;
+    const cae = m.cae || 0, frena = m.frena || 0, recto = 1 - cae;
+    const ala = Math.sin(fase), lado = Math.max(-1, Math.min(1, m.rot / 18)) * recto, quieto = 1 - m.rap;
+    // Hacia dónde va, visto desde el propio robot (si va de cabeza, «adelante» es hacia su coronilla): ahí miran los ojos
+    const g = -(m.rot || 0) * Math.PI / 180, lx = m.tx * Math.cos(g) - m.ty * Math.sin(g), ly = m.tx * Math.sin(g) + m.ty * Math.cos(g);
+    const mezcla = (a, b) => a + (b - a) * cae;
     return {
       u: m.u,
-      bi: 50 + 34 * (.5 + .5 * m.rap) * ala + 14 * lado - 30 * m.fin,
-      bd: -(50 + 34 * (.5 + .5 * m.rap) * Math.sin(fase + .35)) + 14 * lado + 30 * m.fin,
-      pi: 8 + 12 * Math.sin(fase * .9 + 1) * (.4 + .6 * m.rap) - 10 * m.tx * m.rap,
-      pd: -6 + 12 * Math.sin(fase * .9 + 1 + Math.PI) * (.4 + .6 * m.rap) - 10 * m.tx * m.rap,
-      cab: m.tx * 9 * m.rap + 2.5 * Math.sin(fase * .5) * quieto - lado * 4,
-      cy: -1.2 * Math.sin(fase) * (.4 + .6 * m.rap),
-      ox: m.tx * 4.5, oy: m.ty * 3,
+      // De cabeza: brazos estirados por delante (como un clavado) y piernas juntas; al frenar, brazos abiertos para equilibrarse
+      bi: mezcla(50 + 34 * (.5 + .5 * m.rap) * ala + 14 * lado - 30 * m.fin, 158 + 6 * ala) + 28 * frena,
+      bd: mezcla(-(50 + 34 * (.5 + .5 * m.rap) * Math.sin(fase + .35)) + 14 * lado + 30 * m.fin, -158 - 6 * Math.sin(fase + .35)) - 28 * frena,
+      pi: mezcla(8 + 12 * Math.sin(fase * .9 + 1) * (.4 + .6 * m.rap) - 10 * m.tx * m.rap, 3) + 10 * frena,
+      pd: mezcla(-6 + 12 * Math.sin(fase * .9 + 1 + Math.PI) * (.4 + .6 * m.rap) - 10 * m.tx * m.rap, -3) - 10 * frena,
+      cab: mezcla(m.tx * 9 * m.rap + 2.5 * Math.sin(fase * .5) * quieto - lado * 4, 0),
+      cy: -1.2 * Math.sin(fase) * (.4 + .6 * m.rap) * recto + 1.5 * frena,
+      ox: lx * 4.5, oy: ly * 3,
       parp: Math.abs(m.u - .42) < .025 ? .12 : 1,
-      ll: .7 + .7 * m.rap
+      // Llamas más largas al acelerar y un golpe fuerte al enderezarse para frenar
+      ll: .7 + .7 * m.rap + .9 * frena
     };
   });
   const a = (s, f) => { const n = q(s); if (n) n.animate(K.map(k => ({ transform: f(k), offset: k.u })), dur); };
@@ -375,7 +398,7 @@ export function trayecto(de, a, { ms = 1100, deCara = false, aCara = false } = {
   const el = document.createElement('div');
   el.className = 'masc-vuelo';
   el.style.cssText = `width:${400 * S}px;height:${470 * S}px;transform-origin:${CX * S}px ${CY * S}px`;
-  el.innerHTML = mascotaHTML('vuela', { cuerpo: true, disco: deCara || aCara, hojas: false });
+  el.innerHTML = mascotaHTML('vuela', { cuerpo: true, disco: deCara || aCara, vivo: false });
   document.body.append(el);
 
   const F = [];
@@ -384,9 +407,9 @@ export function trayecto(de, a, { ms = 1100, deCara = false, aCara = false } = {
     const d = en(Math.min(1, f + .012)), b = en(Math.max(0, f - .012)), paso = Math.hypot(d.x - b.x, d.y - b.y) || 1;
     F.push({ u, f, c, tx: (d.x - b.x) / paso, ty: (d.y - b.y) / paso, rap: u > IMPULSO && u < LLEGA ? Math.min(1, rapidez(v)) : 0 });
   }
-  let rot = F.map(q => Math.max(-24, Math.min(24, q.tx * 18 * q.rap + q.ty * -5 * q.rap)));
-  for (let pasada = 0; pasada < 3; pasada++) rot = rot.map((r, i) => (rot[Math.max(0, i - 1)] + 2 * r + rot[Math.min(N, i + 1)]) / 4);
-  const ss = t => { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t); };
+  const PO = F.map(q => posturaVuelo(q.tx, q.ty, q.rap, q.u, LLEGA));
+  let rot = PO.map(q => q.rot);
+  for (let pasada = 0; pasada < 4; pasada++) rot = rot.map((r, i) => (rot[Math.max(0, i - 1)] + 2 * r + rot[Math.min(N, i + 1)]) / 4);
   const fotogramas = F.map((q, k) => {
     const { u, f, c, rap } = q;
     // Crece a mitad de camino (se acerca a la pantalla) y acaba a su tamaño
@@ -398,7 +421,7 @@ export function trayecto(de, a, { ms = 1100, deCara = false, aCara = false } = {
     return { transform: `translate3d(${(c.x - CX * S).toFixed(2)}px,${(c.y + baja + vaiven - CY * S).toFixed(2)}px,0) scale(${(sc / S).toFixed(5)}) rotate(${rot[k].toFixed(2)}deg) scale(${sx.toFixed(4)},${sy.toFixed(4)})`, offset: u };
   });
   const vuelo = el.animate(fotogramas, { duration: ms, fill: 'both', easing: 'linear' });
-  vidaEnVuelo(el, F.map((q, k) => ({ u: q.u, tx: q.tx, ty: q.ty, rap: q.rap, rot: rot[k], fin: aCara ? ss((q.u - .66) / .2) : 0 })), ms);
+  vidaEnVuelo(el, F.map((q, k) => ({ u: q.u, tx: q.tx, ty: q.ty, rap: q.rap, rot: rot[k], cae: PO[k].cae, frena: PO[k].frena, fin: aCara ? ss((q.u - .66) / .2) : 0 })), ms);
   // Forma de cara en un extremo: el disco y el cuerpo se cruzan al salir o al llegar
   const disco = el.querySelector('.l-disco'), cuerpos = el.querySelectorAll('.m-cuerpo');
   if (deCara || aCara) {
@@ -418,73 +441,260 @@ export function trayecto(de, a, { ms = 1100, deCara = false, aCara = false } = {
   return vuelo.finished.catch(() => {}).then(() => { el.remove(); return true; });
 }
 
-/* ---------- Hojas de fotogramas: el robot animado de verdad, a 60 fps ----------
-   Para cada cosa que hace hay una hoja de fotogramas hecha con una coreografía propia (scripts/generar-mascota.js):
-   reposo, hablar, pensar y alegría en la cara; saludar, saltar y volar en el cuerpo entero. Se reproducen con
-   dos animaciones por pasos de translate/transform (la tarjeta gráfica, nunca el hilo principal).
-   Mientras una hoja no ha llegado se ve el dibujo en vector, así que nunca hay un hueco. */
-const RUTA_HOJAS = 'icons/asistente/';
-const V_HOJAS = '?v=2'; // súbelo al regenerar las hojas (v2: fondo transparente de verdad, sin el velo de grano)
-const QUE_HOJA = {
-  cara: { normal: 'cara-normal', habla: 'cara-habla', piensa: 'cara-piensa', feliz: 'cara-feliz', saluda: 'cara-feliz', guino: 'cara-feliz' },
-  cuerpo: { saluda: 'cuerpo-saluda', adios: 'cuerpo-saluda', feliz: 'cuerpo-feliz', vuela: 'cuerpo-vuela' }
+/* ---------- Coreografías en vivo: el robot animado en código, sin imágenes ----------
+   Cada estado es una función del tiempo t ∈ [0, 1) que devuelve la pose de cada pieza. Con ella se calculan
+   los fotogramas clave del bucle y el navegador los reproduce en la tarjeta gráfica (solo transform y opacity),
+   interpolando entre ellos a la frecuencia de la pantalla (60, 90 o 120 Hz): nítido a cualquier tamaño y sin
+   descargar nada. El último fotograma enlaza con el primero, así el bucle no se nota.
+   Al cambiar de estado, cada pieza pasa de donde está a la pose nueva con una transición corta (sin saltos).
+   El parpadeo y la mirada no van en el bucle: los lanza la «vida propia» al azar (más natural que un ciclo). */
+const TAU = Math.PI * 2;
+const sn = (t, f = 1, fase = 0) => Math.sin(TAU * (t * f + fase)); // onda que cierra el bucle si f es entero
+const campana = (t, a, b) => (t <= a || t >= b ? 0 : Math.sin(Math.PI * (t - a) / (b - a)));
+const n2 = v => +v.toFixed(3);
+const PIEZAS = {
+  todo: '.m-todo', cabeza: '.l-cabeza', ojos: '.l-ojos', ojoI: '.ojo-i', ojoD: '.ojo-d', brazoI: '.l-brazo-i', brazoD: '.l-brazo-d',
+  piernaI: '.l-pierna-i', piernaD: '.l-pierna-d', sombra: '.l-sombra', llama: '.l-llama', puntos: '.l-puntos'
 };
-const hojas = new Map();
-/** Descarga y descodifica una hoja (una sola vez). Devuelve una promesa que dice si está lista. */
-export function cargarHoja(id) {
-  if (!HOJAS[id]) return Promise.resolve(false);
-  if (!hojas.has(id)) {
-    hojas.set(id, new Promise(ok => {
-      const i = new Image();
-      i.decoding = 'async';
-      i.onload = () => (i.decode ? i.decode().catch(() => {}) : Promise.resolve()).then(() => ok(true));
-      i.onerror = () => { hojas.delete(id); ok(false); };
-      i.src = RUTA_HOJAS + id + '.webp' + V_HOJAS;
-    }));
+/* Coreografías. Cada una da la acción PRINCIPAL en función de t ∈ [0, 1) (todo en números):
+     y (cuerpo, % hacia abajo) · r (giro del cuerpo) · sx, sy (estirar y aplastar) · hr, hy (cabeza: giro y % hacia abajo)
+     bi, bd (brazos, grados) · pi, pd (piernas) · ex, ey (mirada, %) · oi, od, ow (ojos: alto izquierdo, alto derecho, ancho)
+     pu (puntos de pensar) · so, sa (sombra: tamaño, opacidad) · lx, ly, lo (llamas: ancho, largo, opacidad)
+   Lo que no da una coreografía no se toca (así la mirada sigue al ratón y el parpadeo sale al azar).
+   La acción SECUNDARIA no se escribe a mano: la calcula hornear() con física (muelles), ver más abajo. */
+const COREO = {
+  // Reposo: respira (el pecho se ensancha un pelo al subir) y se balancea; la cabeza va un poco por detrás
+  normal: {
+    ms: f => (f === 'cara' ? 4600 : 3800),
+    pose: (t, f) => ({
+      y: f === 'cara' ? 0 : -1.2 * sn(t), sx: 1 + .008 * sn(t, 1, .2), sy: 1 - .008 * sn(t, 1, .2),
+      hr: 2.4 * sn(t, 1, -.12) + 1.1 * sn(t, 2, .2), hy: f === 'cara' ? -1.1 * sn(t, 1, -.06) : 0,
+      bi: 9 + 3.5 * sn(t, 1, -.16), bd: -9 - 3.5 * sn(t, 1, .34)
+    })
+  },
+  // Escucha (mientras le escribes): se inclina hacia ti, asiente despacio y abre mucho los ojos
+  escucha: {
+    ms: () => 1900,
+    pose: t => ({
+      y: -.7 * sn(t), r: -1.2,
+      hr: 7 + 2 * sn(t, 1, .08), hy: .9 + .7 * Math.max(0, sn(t, 2)),
+      ow: 1.07 + .02 * sn(t, 2), oi: 1.12 + .03 * sn(t, 2), od: 1.12 + .03 * sn(t, 2, .08),
+      bi: 15 + 3 * sn(t), bd: -15 - 3 * sn(t, 1, .4)
+    })
+  },
+  // Habla: cabecea con las frases, los ojos laten como una voz y la mano explica en arcos
+  habla: {
+    ms: () => 2000,
+    pose: t => {
+      const voz = k => .5 - .5 * Math.cos(TAU * (t * 8 + k)) * (.6 + .4 * sn(t, 3, k)), frase = .5 - .5 * Math.cos(TAU * t);
+      return {
+        y: -.8 * sn(t, 2), r: .8 * sn(t, 1, .3),
+        hr: 2.6 * sn(t, 2, .1) + 1.2 * sn(t, 3), hy: .5 * Math.abs(sn(t, 4)),
+        oi: 1 - .38 * voz(0), od: 1 - .38 * voz(.06),
+        bi: 10 + 3 * sn(t, 2), bd: -16 - 36 * frase - 10 * sn(t, 4) * frase
+      };
+    }
+  },
+  // Piensa: mano a la barbilla, cabeza ladeada, ojos que buscan arriba y puntos que aparecen
+  piensa: {
+    ms: () => 2600,
+    pose: t => ({
+      y: -.6 * sn(t), r: 1,
+      hr: -8 + 2.4 * sn(t, 1, .15), hy: .4,
+      ex: -2.4 + 2.8 * (.5 - .5 * Math.cos(TAU * t)), ey: -1.4 + .4 * sn(t, 2),
+      oi: .84 - .76 * campana(t, .62, .66), od: .84 - .76 * campana(t, .62, .66),
+      bi: 9 + 2 * sn(t), bd: -126 + 5 * sn(t, 1, .3) - 4 * campana(t, .2, .3),
+      pu: Math.min(1, .25 + .75 * Math.max(0, sn(t, 1, -.25)))
+    })
+  },
+  // Alegría: se agacha para coger impulso, salta en parábola estirándose, celebra con los brazos arriba,
+  // cae, se aplasta al tocar el suelo y rebota hasta asentarse
+  feliz: {
+    ms: () => 1100,
+    pose: (t, f) => {
+      const H = f === 'cara' ? 2.4 : 9, A = .17, B = .72;
+      let y = 0, sx = 1, sy = 1, aire = 0, brazos = 0;
+      if (t < A) { const c = (t / A) ** 2; y = 1.4 * c; sx = 1 + .1 * c; sy = 1 - .13 * c; brazos = -.15 * c; }
+      else if (t < B) {
+        const p = (t - A) / (B - A), v = 1 - 2 * p; // velocidad: máxima al despegar y al caer, cero arriba
+        y = -H * 4 * p * (1 - p); sx = 1 - .055 * Math.abs(v); sy = 1 + .085 * Math.abs(v); aire = Math.sin(Math.PI * p); brazos = ss(p * 2.6);
+      } else {
+        const l = (t - B) / (1 - B), g = Math.exp(-5.5 * l) * Math.cos(TAU * 1.5 * l) * (1 - l);
+        y = .9 * Math.max(0, g); sx = 1 + .11 * g; sy = 1 - .14 * g; brazos = 1 - ss(l * 1.5);
+      }
+      return {
+        y, sx, sy, hr: 4 * sn(t, 1, .1), hy: 0,
+        bi: 14 + 106 * brazos + 9 * sn(t, 4) * brazos, bd: -14 - 106 * brazos - 9 * sn(t, 4, .25) * brazos,
+        pi: 10 * aire, pd: -10 * aire,
+        so: 1 - .3 * aire, sa: 1 - .5 * aire
+      };
+    }
+  },
+  // Saluda: brazo arriba moviendo la mano (con un pequeño latigazo al cambiar de lado); el cuerpo acompaña
+  saluda: {
+    ms: () => 1100,
+    pose: t => ({
+      y: -1 * sn(t), r: 1.4 * sn(t, 2, .5),
+      hr: 4 + 3 * sn(t, 2, .1), hy: 0,
+      bi: 10 + 3 * sn(t), bd: -124 - 20 * sn(t, 2) - 5 * sn(t, 4, .1)
+    })
+  },
+  // Se despide: más despacio y con la cabeza un poco gacha
+  adios: {
+    ms: () => 1500,
+    pose: t => ({
+      y: -.8 * sn(t), r: 1 * sn(t, 2, .5),
+      hr: -3 + 2.4 * sn(t, 1, .1), hy: .6,
+      bi: 8 + 2 * sn(t), bd: -118 - 16 * sn(t, 2)
+    })
+  },
+  // Dormido: respira hondo con la cabeza caída
+  dormido: {
+    ms: () => 3400,
+    pose: t => {
+      const aire = .5 - .5 * Math.cos(TAU * t);
+      return { y: 0, sx: 1 + .012 * aire, sy: 1 + .022 * aire, hr: 9 + 1.6 * sn(t, 1, .2), hy: 1.5 + .5 * sn(t, 1, .2), bi: 4 + 1.5 * sn(t), bd: -4 - 1.5 * sn(t) };
+    }
+  },
+  // Vuela en el sitio: los propulsores lo sostienen, sube y baja con un vaivén; las piernas cuelgan con inercia
+  vuela: {
+    ms: () => 1600,
+    pose: t => ({
+      y: -1.8 * sn(t), r: 2.2 * sn(t, 1, .25),
+      hr: -1.5 * sn(t, 1, .1), hy: 0,
+      bi: 62 + 6 * sn(t, 2), bd: -62 - 6 * sn(t, 2, .5), pi: 8, pd: -5,
+      lx: 1.05 + .12 * sn(t, 13) + .06 * sn(t, 21), ly: 1.15 + .28 * sn(t, 11, .3) + .12 * sn(t, 17) + .15 * sn(t), lo: 1,
+      so: .7 + .08 * sn(t, 1, .5), sa: .4
+    })
   }
-  return hojas.get(id);
+};
+
+/* Física de la acción secundaria: cada pieza cuelga de un muelle amortiguado que empuja la aceleración del cuerpo.
+   Así la cabeza se retrasa y se pasa al frenar, los brazos «flotan» un instante cuando el cuerpo cambia de dirección y
+   las piernas se balancean con inercia: los principios de «acción superpuesta» y «seguimiento» de la animación clásica.
+   Se simula a 240 pasos por segundo durante tres vueltas (para que el movimiento entre en régimen y el bucle cierre
+   perfecto) y se guarda la última a 60 fotogramas por segundo. Se calcula una sola vez por estado y tamaño. */
+const MUELLES = [
+  // pieza, frecuencia (Hz), amortiguación, ganancia, de qué aceleración
+  ['hy', 7, .42, -.0034, 'ay'], ['hr', 4.5, .38, -.03, 'ar'], ['hr', 3.2, .5, .0045, 'ay2'],
+  ['bi', 3.6, .3, .085, 'ay'], ['bd', 3.6, .3, -.085, 'ay'], ['bi', 3, .35, -.06, 'ar'], ['bd', 3, .35, -.06, 'ar'],
+  ['pi', 4.2, .28, .05, 'ay'], ['pd', 4.2, .28, -.05, 'ay'], ['pi', 3.4, .3, -.05, 'ar'], ['pd', 3.4, .3, -.05, 'ar']
+];
+const BASE = { y: 0, r: 0, sx: 1, sy: 1, hr: 0, hy: 0, bi: 9, bd: -9 };
+const horno = new Map();
+function hornear(estado, forma, ms) {
+  const def = COREO[estado], clave = `${estado}|${forma}|${Math.round(ms / 20)}`;
+  if (horno.has(clave)) return horno.get(clave);
+  const T = ms / 1000, dt = 1 / 240, F = Math.max(30, Math.round(T * 60));
+  const pose = t => ({ ...BASE, ...def.pose(((t % 1) + 1) % 1, forma) });
+  const muelles = MUELLES.map(([k, hz, z, g, de]) => ({ k, w: TAU * hz, z, g, de, x: 0, v: 0 }));
+  const sal = [];
+  const pasos = Math.round(3 * T / dt), ultima = pasos - Math.round(T / dt);
+  let siguiente = 0;
+  for (let i = 0; i <= pasos; i++) {
+    const t = i * dt / T, p = pose(t), pa = pose(t - dt / T), pd = pose(t + dt / T);
+    const acel = { ay: (pd.y - 2 * p.y + pa.y) / (dt * dt), ar: (pd.r - 2 * p.r + pa.r) / (dt * dt) };
+    acel.ay2 = acel.ay * Math.sign(p.hr || 1); // la cabeza ladeada cae un poco más hacia su lado
+    const extra = {};
+    for (const m of muelles) {
+      const objetivo = Math.max(-40, Math.min(40, m.g * acel[m.de]));
+      m.v += (m.w * m.w * (objetivo - m.x) - 2 * m.z * m.w * m.v) * dt; m.x += m.v * dt;
+      extra[m.k] = (extra[m.k] || 0) + m.x;
+    }
+    if (i >= ultima && (i - ultima) * dt >= siguiente * T / F - 1e-9 && sal.length < F) {
+      const q = { ...p };
+      for (const k in extra) if (k in q) q[k] += extra[k];
+      sal.push(q); siguiente++;
+    }
+  }
+  sal.push(sal[0]); // el bucle cierra en el mismo sitio
+  // Cada pieza, sus fotogramas (solo las que mueve esta coreografía)
+  const tiene = k => k in def.pose(0, forma);
+  const fr = (f, k) => ({ ...f, offset: k / F });
+  const piezas = {};
+  const cuerpo = forma === 'cuerpo';
+  if (cuerpo || tiene('sx') || sal.some(q => Math.abs(q.y) > .05)) piezas.todo = sal.map((q, k) => fr({ transform: `translateY(${n2(q.y)}%) rotate(${n2(q.r)}deg) scale(${n2(q.sx)},${n2(q.sy)})` }, k));
+  piezas.cabeza = sal.map((q, k) => fr({ transform: `translateY(${n2(q.hy)}%) rotate(${n2(q.hr)}deg)` }, k));
+  if (cuerpo) {
+    piezas.brazoI = sal.map((q, k) => fr({ transform: `rotate(${n2(q.bi)}deg)` }, k));
+    piezas.brazoD = sal.map((q, k) => fr({ transform: `rotate(${n2(q.bd)}deg)` }, k));
+    if (tiene('pi') || sal.some(q => Math.abs(q.pi || 0) > .3)) {
+      piezas.piernaI = sal.map((q, k) => fr({ transform: `rotate(${n2(q.pi || 0)}deg)` }, k));
+      piezas.piernaD = sal.map((q, k) => fr({ transform: `rotate(${n2(q.pd || 0)}deg)` }, k));
+    }
+    if (tiene('so')) piezas.sombra = sal.map((q, k) => fr({ transform: `scale(${n2(q.so)})`, opacity: n2(q.sa ?? 1) }, k));
+    if (tiene('lo')) piezas.llama = sal.map((q, k) => fr({ transform: `scale(${n2(q.lx)},${n2(q.ly)})`, opacity: n2(q.lo) }, k));
+  }
+  if (tiene('ex')) piezas.ojos = sal.map((q, k) => fr({ transform: `translate(${n2(q.ex)}%,${n2(q.ey)}%)` }, k));
+  if (tiene('oi')) {
+    piezas.ojoI = sal.map((q, k) => fr({ transform: `scale(${n2(q.ow ?? 1)},${n2(q.oi)})` }, k));
+    piezas.ojoD = sal.map((q, k) => fr({ transform: `scale(${n2(q.ow ?? 1)},${n2(q.od)})` }, k));
+  }
+  if (tiene('pu')) piezas.puntos = sal.map((q, k) => fr({ opacity: n2(q.pu) }, k));
+  horno.set(clave, piezas);
+  return piezas;
 }
-const hojaLista = id => hojas.has(id) && hojas.get(id)._lista;
-/** Precarga varias hojas cuando el navegador está libre */
-export function precargarHojas(...ids) {
-  if (sinMovimiento()) return Promise.resolve([]);
-  return Promise.all(ids.map(id => cargarHoja(id).then(ok => { if (ok) hojas.get(id)._lista = true; return ok; })));
-}
-/** La hoja colocada justo encima del dibujo (mismo tamaño y posición que el robot en vector) */
-function hojaHTML(id) {
-  const h = HOJAS[id], c = h.caja;
-  return `<span class="masc-fr" data-hoja="${id}" aria-hidden="true" style="width:${(100 / c.w).toFixed(3)}%;left:${(-100 * c.x / c.w).toFixed(3)}%;top:${(-100 * c.y / c.h).toFixed(3)}%;aspect-ratio:${h.w}/${h.h};--c:${h.cols};--f:${h.filas};--ms:${h.ms}ms"><img class="fr-hoja" src="${RUTA_HOJAS + id}.webp${V_HOJAS}" alt="" draggable="false" style="animation:fr-x ${(h.ms / h.filas).toFixed(2)}ms steps(${h.cols}) infinite,fr-y ${h.ms}ms steps(${h.filas}) infinite"></span>`;
-}
-/** Pone la hoja que toca según el estado de la mascota (o vuelve al vector si esa acción no tiene hoja) */
-function aplicarHoja(m) {
-  if (!m || m.dataset.hojas === 'no') return;
-  const id = QUE_HOJA[m.classList.contains('cuerpo') ? 'cuerpo' : 'cara'][m.dataset.estado];
-  const actual = m.querySelector(':scope > .masc-fr');
-  if (!id || sinMovimiento()) { m.classList.remove('con-frames'); actual?.remove(); return; }
-  if (actual?.dataset.hoja === id) { m.classList.add('con-frames'); return; }
-  cargarHoja(id).then(ok => {
-    if (!ok || !m.isConnected || QUE_HOJA[m.classList.contains('cuerpo') ? 'cuerpo' : 'cara'][m.dataset.estado] !== id) return;
-    hojas.get(id)._lista = true;
-    m.querySelector(':scope > .masc-fr')?.remove();
-    m.insertAdjacentHTML('beforeend', hojaHTML(id));
-    m.classList.add('con-frames');
+const ENTRA = 260; // ms de la transición de una pose a la siguiente
+/** Quita las animaciones de una mascota. Devuelve dónde estaba cada pieza (para enlazar con lo siguiente). */
+function parar(m) {
+  const antes = new Map();
+  (m._anims || []).forEach(a => {
+    const el = a.effect?.target;
+    if (el && !antes.has(el)) { const cs = getComputedStyle(el); antes.set(el, { transform: cs.transform, opacity: cs.opacity }); }
+    a.cancel();
   });
+  m._anims = [];
+  return antes;
 }
-// Cada vez que una mascota cambia de estado (o aparece una nueva) se le pone su hoja
-let vigilando = false;
-function vigilarHojas() {
+/** Pone la coreografía del estado actual (o deja la pose fija si ese estado no tiene) */
+function coreografia(m) {
+  if (!m?.isConnected || m.dataset.anim === 'no') return;
+  const antes = parar(m);
+  const def = COREO[m.dataset.estado];
+  const forma = m.classList.contains('cuerpo') ? 'cuerpo' : 'cara';
+  const ahora = new Set();
+  if (def && !sinMovimiento() && typeof m.animate === 'function') {
+    const ms = def.ms(forma) * (m._ritmo ||= .95 + Math.random() * .1);
+    const piezas = hornear(m.dataset.estado, forma, ms);
+    for (const [clave, fotos] of Object.entries(piezas)) {
+      m.querySelectorAll(PIEZAS[clave]).forEach(el => {
+        ahora.add(el);
+        const bucle = el.animate(fotos, { duration: ms, iterations: Infinity, delay: ENTRA, easing: 'linear' });
+        m._anims.push(bucle);
+        // Enlace: de la pose en la que estaba a la primera del bucle
+        const de = antes.get(el) || { transform: getComputedStyle(el).transform, opacity: getComputedStyle(el).opacity };
+        const { offset, ...primera } = fotos[0];
+        m._anims.push(el.animate([{ transform: de.transform, opacity: de.opacity }, { transform: 'none', opacity: 1, ...primera }], { duration: ENTRA, easing: 'cubic-bezier(.3,.7,.3,1)' }));
+      });
+    }
+  }
+  // Las piezas que se movían y ahora no: vuelven a su sitio con suavidad
+  antes.forEach((de, el) => {
+    if (ahora.has(el)) return;
+    const cs = getComputedStyle(el);
+    if (de.transform !== cs.transform || de.opacity !== cs.opacity) el.animate([{ transform: de.transform, opacity: de.opacity }, { transform: cs.transform, opacity: cs.opacity }], { duration: ENTRA + 60, easing: 'cubic-bezier(.3,.7,.3,1)' });
+  });
+  m._ojosAnim = ahora.has(m.querySelector('.ojo-i'));
+}
+// Cada vez que una mascota cambia de estado (o aparece una nueva) se le pone su coreografía.
+// Las que no se ven (chat cerrado, fuera de pantalla) se pausan para no gastar batería.
+let vigilando = false, visibles = null;
+function vigilar() {
   if (vigilando || typeof MutationObserver === 'undefined') return;
   vigilando = true;
+  visibles = typeof IntersectionObserver === 'function' ? new IntersectionObserver(es => es.forEach(e => {
+    e.target._fuera = !e.isIntersecting;
+    (e.target._anims || []).forEach(a => (e.isIntersecting ? a.playState === 'paused' && a.play() : a.playState === 'running' && a.pause()));
+  })) : null;
+  const nueva = m => { if (m.dataset.anim === 'no') return; visibles?.observe(m); coreografia(m); };
   new MutationObserver(lista => {
     for (const r of lista) {
-      if (r.type === 'attributes') { if (r.target.classList?.contains('masc')) aplicarHoja(r.target); continue; }
-      r.addedNodes.forEach(n => { if (n.nodeType !== 1) return; if (n.classList.contains('masc')) aplicarHoja(n); n.querySelectorAll?.('.masc').forEach(aplicarHoja); });
+      if (r.type === 'attributes') { if (r.target.classList?.contains('masc')) { coreografia(r.target); if (r.target._fuera) (r.target._anims || []).forEach(a => a.pause()); } continue; }
+      r.addedNodes.forEach(n => { if (n.nodeType !== 1) return; if (n.classList.contains('masc')) nueva(n); n.querySelectorAll?.('.masc').forEach(nueva); });
     }
   }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-estado'] });
-  document.querySelectorAll('.masc').forEach(aplicarHoja);
+  document.querySelectorAll('.masc').forEach(nueva);
 }
-/** El robot de la sesión (iniciar y cerrar): se descarga mientras se escribe el código */
-export const precargarFrames = () => precargarHojas('cuerpo-feliz', 'cuerpo-saluda');
 
 /* ---------- Animación al iniciar y cerrar sesión ---------- */
 let activa = null;
