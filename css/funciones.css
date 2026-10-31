@@ -1712,3 +1712,7 @@ html[data-tema=claro] .seg-etapas .hecha .seg-ic{color:#fff}
 .mp-hoy.al-dia div{display:grid;gap:2px}
 .mp-hoy.al-dia span{color:var(--muted);font-size:14px}
 html[data-tema=claro] .mp-hoy button{background:rgba(20,20,26,.04)}
+/* Pantalla «Actualizando»: la misma de carga, con un texto y la barra algo más rápida */
+.splash.act .splash-marca::after{content:"Actualizando a la última versión";margin-top:4px;font-size:14px;color:var(--muted);letter-spacing:.01em}
+html[lang=en] .splash.act .splash-marca::after{content:"Updating to the latest version"}
+.splash.act.vivo .sp-linea b{animation-duration:.85s}

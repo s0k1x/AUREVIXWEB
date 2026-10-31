@@ -35,7 +35,7 @@
     .pub-aviso.ver{opacity:1;transform:translate(-50%,0)}
     @media (prefers-reduced-motion:reduce){.pub-carga i{animation-duration:2s}}
   </style>
-  <script>/* Versión nueva de la web: se recarga una vez para no mezclar piezas de dos versiones */try{var sw=navigator.serviceWorker;if(sw&&sw.controller){window.__swVigila=1;sw.addEventListener('controllerchange',function(){if(window.__swRecargado||document.documentElement.classList.contains('es-web'))return;window.__swRecargado=1;location.reload()})}}catch(e){}</script>
+  <script>/* Versión nueva de la web: se recarga una vez para no mezclar piezas de dos versiones */try{var sw=navigator.serviceWorker;if(sw&&sw.controller){window.__swVigila=1;sw.addEventListener('controllerchange',function(){if(window.__swRecargado||document.documentElement.classList.contains('es-web'))return;window.__swRecargado=1;try{sessionStorage.setItem('tm_act','1')}catch(e){}location.reload()})}}catch(e){}</script>
 </head>
 <body>
   <main id="publica">

@@ -1615,12 +1615,26 @@ if (CONFIG.casos?.length) {
   // móvil (captura pública de WordPress.com «mShots»; si no llega, la tarjeta se queda solo con el texto)
   const captura = u => `https://s0.wp.com/mshots/v1/${encodeURIComponent(u)}?w=1280&h=2200`;
   $('#casosGrid').innerHTML = CONFIG.casos.map(c => `<a class="caso reveal" href="${esc(c.url)}" target="_blank" rel="noopener">
-    <span class="caso-disp" aria-hidden="true"><span class="caso-bar"><i></i><i></i><i></i></span><span class="caso-pant"><img src="${esc(captura(c.url))}" alt="" loading="lazy" decoding="async" onerror="this.closest('.caso-disp').remove()"></span></span>
+    <span class="caso-disp" aria-hidden="true"><span class="caso-bar"><i></i><i></i><i></i></span><span class="caso-pant cargando" data-dom="${esc(c.url.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/.*$/, ''))}"><img data-captura="${esc(captura(c.url))}" alt="" loading="lazy" decoding="async"></span></span>
     ${c.sector ? `<small>${esc(c.sector)}</small>` : ''}<h3>${esc(c.nombre)}</h3>${c.texto ? `<p>${esc(c.texto)}</p>` : '<p></p>'}
     <span class="caso-url">${esc(c.url.replace(/^https:\/\/(www\.)?/i, '').replace(/\/$/, ''))}${icono('external')}</span></a>`).join('');
   $('#casos').hidden = false;
   alternarFranjas();
   $$('#casos .reveal').forEach(el => io?.observe?.(el));
+  // mShots devuelve primero una imagen provisional («Generating preview», 400 px de ancho) mientras hace la captura.
+  // No se enseña: se vuelve a pedir cada pocos segundos hasta que llega la de verdad (1280 px). Si no llega, queda
+  // una tarjeta limpia con el nombre de la web en vez del logo de WordPress.
+  $$('#casosGrid img[data-captura]').forEach(img => {
+    const pant = img.closest('.caso-pant');
+    let intento = 0;
+    const pedir = () => { img.src = img.dataset.captura + (intento ? `&r=${intento}` : ''); };
+    img.addEventListener('load', () => {
+      if (img.naturalWidth >= 1000) { pant.classList.remove('cargando'); pant.classList.add('lista'); return; }
+      if (++intento <= 8) setTimeout(pedir, 3500); else { pant.classList.remove('cargando'); pant.classList.add('sin-captura'); }
+    });
+    img.addEventListener('error', () => { pant.classList.remove('cargando'); pant.classList.add('sin-captura'); });
+    pedir();
+  });
 }
 
 /* ---------- Preguntas frecuentes: lista numerada (adaptada de «Interactive Accordion» de 21st.dev) ----------
