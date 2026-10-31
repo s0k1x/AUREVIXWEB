@@ -853,7 +853,7 @@ function estadoWeb() {
 }
 /** Pantalla breve de «Actualizando» (logo, barra y texto) cuando la web o sus datos han cambiado desde la última visita */
 export function pantallaActualizando(ms = 900) {
-  if (document.getElementById('splash0') || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (document.getElementById('splash0') || document.querySelector('.splash.act') || window.self !== window.top || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const s = document.createElement('div');
   s.className = 'splash listo act vivo';
   s.setAttribute('aria-hidden', 'true');
@@ -908,6 +908,8 @@ export async function arrancar(pagina) {
   try { await store.iniciar(); }
   catch (e) { console.error(e); toast('No se pudo conectar con el servidor', 'err'); }
   // Precios, avisos y formas de pago que ha cambiado el propietario (máx. 2,5 s de espera)
+  // Páginas sin pantalla de carga propia (vista previa, seguimiento…): tras recargar por una versión nueva, aquí sale la de «Actualizando»
+  try { if (sessionStorage.getItem('tm_act') === '1') { sessionStorage.removeItem('tm_act'); pantallaActualizando(); } } catch { /* sin almacenamiento */ }
   let antes = null;
   try { antes = localStorage.getItem('tm_ajustes_web'); } catch { /* sin almacenamiento */ }
   const nuevos = await Promise.race([cargarAjustesWeb(), new Promise(r => setTimeout(r, 2500))]);

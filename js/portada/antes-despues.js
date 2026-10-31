@@ -1,33 +1,44 @@
 /* ==========================================================
    ANTES Y DESPUÉS (portada → #cambio)
-   La misma barbería con una web anticuada (dibujada aquí mismo, sin
-   cargar nada) y con el diseño «Filo». Una barra deslizante enseña más
+   La misma barbería con la web típica de hace unos años (plantilla genérica,
+   dibujada aquí mismo sin cargar nada) y con el diseño «Filo». Una barra deslizante enseña más
    de una o de otra: con el dedo, el ratón o el teclado (es un control
    de rango de verdad, accesible). Solo se carga al acercarse a la vista.
    ========================================================== */
 const ANTES = `<!doctype html><html lang="es"><head><meta charset="utf-8"><style>
-body{margin:0;background:#c9c9c9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect width='8' height='8' fill='%23c9c9c9'/%3E%3Cpath d='M0 0h4v4H0z' fill='%23bdbdbd'/%3E%3C/svg%3E");font-family:'Times New Roman',Times,serif;color:#222}
-.p{width:820px;margin:0 auto;background:#fff;border:3px ridge #888}
-.cab{background:linear-gradient(#3a6fd8,#1c3f8f);color:#ff0;text-align:center;padding:22px;font:bold 46px 'Comic Sans MS','Comic Sans',cursive;text-shadow:3px 3px 0 #000}
-.menu{background:#e8e8e8;border-top:2px solid #fff;border-bottom:2px solid #777;text-align:center;padding:8px;font:15px Arial}
-.menu a{color:#00e;margin:0 10px;text-decoration:underline}
-.cin{background:#000;color:#0f0;font:bold 15px 'Courier New',monospace;padding:6px;white-space:nowrap;overflow:hidden}
-table{width:100%;border-collapse:collapse}td{vertical-align:top;padding:14px}
-.lat{width:190px;background:#ffffcc;border-right:2px dashed #999;font:14px Verdana}
-.lat b{color:#c00}h2{color:#900;font-size:26px;margin:0 0 8px}p{font-size:17px;line-height:1.3}
-.foto{width:100%;height:210px;background:repeating-linear-gradient(45deg,#ddd 0 10px,#eee 10px 20px);border:2px inset #999;display:flex;align-items:center;justify-content:center;font:italic 15px Arial;color:#777}
-.cont{font:13px Arial;color:#555;text-align:center;padding:10px;border-top:1px solid #aaa}
-blink{color:red;font-weight:bold}
+/* La web típica de un negocio de hace unos años: plantilla genérica de WordPress a 960 px, letra pequeña,
+   foto de banco de imágenes, tres cajas con iconos, barra lateral y aviso de cookies. Nada roto, solo anticuado. */
+body{margin:0;background:#e9e9e9;font:13px/1.55 Arial,Helvetica,sans-serif;color:#555}
+.p{width:960px;margin:0 auto;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.15)}
+.top{background:#333;color:#bbb;font-size:11px;padding:6px 20px;display:flex;justify-content:space-between}
+.cab{display:flex;justify-content:space-between;align-items:center;padding:22px 20px;border-bottom:3px solid #2a7ab8}
+.logo{font:bold 28px Georgia,serif;color:#2a7ab8}.logo small{display:block;font:italic 12px Georgia,serif;color:#999}
+.menu a{font-size:12px;text-transform:uppercase;color:#444;margin-left:18px;font-weight:bold}.menu a:first-child{color:#2a7ab8}
+.slider{position:relative;height:300px;background:linear-gradient(135deg,#7d6b5d,#4a3f37 60%,#6b5a4c);display:flex;align-items:center;justify-content:center;text-align:center;color:#fff}
+.slider h1{font:normal 34px Georgia,serif;margin:0 0 8px;text-shadow:1px 1px 3px rgba(0,0,0,.6)}.slider p{margin:0 0 16px;font-size:14px}
+.slider a{display:inline-block;background:#2a7ab8;color:#fff;padding:8px 18px;border-radius:3px;font-size:12px;text-transform:uppercase}
+.dots{position:absolute;bottom:12px;left:0;right:0}.dots i{display:inline-block;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.5);margin:0 3px}.dots i:first-child{background:#fff}
+.cajas{display:flex;gap:20px;padding:26px 20px;background:#f6f6f6;border-bottom:1px solid #e3e3e3}
+.caja{flex:1;text-align:center;background:#fff;border:1px solid #e3e3e3;padding:18px}
+.caja i{display:inline-block;width:46px;height:46px;border-radius:50%;background:#2a7ab8;color:#fff;font:bold 20px/46px Arial;font-style:normal}
+.caja h3{font-size:15px;color:#333;margin:10px 0 6px}
+.cuerpo{display:flex;gap:24px;padding:26px 20px}
+.main{flex:1}.main h2{font:normal 22px Georgia,serif;color:#333;margin:0 0 10px;border-bottom:1px solid #eee;padding-bottom:8px}
+.lat{width:250px}.lat h4{font-size:12px;text-transform:uppercase;color:#333;border-bottom:2px solid #2a7ab8;padding-bottom:5px;margin:0 0 8px}
+.lat a{display:block;color:#2a7ab8;padding:4px 0;border-bottom:1px dotted #ddd;font-size:12px}
+.lat .w{margin-bottom:20px}
+.pie{background:#2b2b2b;color:#999;font-size:11px;padding:16px 20px;display:flex;justify-content:space-between}
+.cookies{position:fixed;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);color:#ddd;font-size:12px;padding:10px;text-align:center}
+.cookies b{background:#2a7ab8;color:#fff;padding:4px 10px;margin-left:8px;border-radius:2px;font-weight:normal}
 </style></head><body><div class="p">
-<div class="cab">✂ BARBERIA FILO ✂</div>
-<div class="menu"><a>Inicio</a>|<a>Quienes somos</a>|<a>Precios</a>|<a>Galeria</a>|<a>Contacto</a></div>
-<div class="cin">*** BIENVENIDOS A NUESTRA PAGINA WEB *** OFERTA: CORTE + BARBA 20 EUROS *** LLAMENOS ***</div>
-<table><tr><td class="lat"><b>NOVEDADES</b><br><br>01/03/2016<br>Abrimos los sabados!!<br><br>12/08/2015<br>Nueva pagina web<br><br><b>VISITAS:</b><br>000137<br><br><blink>¡NUEVO!</blink></td>
-<td><h2>Bienvenidos</h2><p>Somos una barberia con muchos años de experiencia. Ofrecemos cortes de pelo para caballero y niños, arreglo de barba y mucho mas. Venga a vernos sin compromiso.</p>
-<div class="foto">[ foto_local_2.jpg ]</div>
-<p><b>Horario:</b> L-V 10:00-20:30 · Sabados 9:30-14:00<br><b>Telefono:</b> 600 123 456</p></td></tr></table>
-<div class="cont">Pagina optimizada para Internet Explorer 6.0 · Resolucion 800x600 · © 2015</div>
-</div></body></html>`;
+<div class="top"><span>Tel: 600 123 456 · info@barberiafilo.com</span><span>Facebook · Twitter · Google+</span></div>
+<div class="cab"><div class="logo">Barbería Filo<small>Tu barbería de confianza</small></div><div class="menu"><a>Inicio</a><a>Quiénes somos</a><a>Servicios</a><a>Galería</a><a>Blog</a><a>Contacto</a></div></div>
+<div class="slider"><div><h1>Bienvenidos a Barbería Filo</h1><p>Los mejores cortes de pelo de la ciudad</p><a>Leer más</a></div><div class="dots"><i></i><i></i><i></i></div></div>
+<div class="cajas"><div class="caja"><i>✂</i><h3>Cortes de pelo</h3>Cortes para caballero y niño con los mejores profesionales.</div><div class="caja"><i>★</i><h3>Arreglo de barba</h3>Perfilado y arreglo de barba con navaja.</div><div class="caja"><i>☎</i><h3>Pide cita</h3>Llámanos o pásate por nuestro local sin compromiso.</div></div>
+<div class="cuerpo"><div class="main"><h2>Sobre nosotros</h2><p>Somos una barbería con muchos años de experiencia en el sector. Nuestro equipo de profesionales le ofrece un servicio de calidad en un ambiente agradable. Ofrecemos cortes de pelo, arreglo de barba, afeitado clásico y mucho más.</p><p>No dude en contactar con nosotros para cualquier consulta. Estaremos encantados de atenderle.</p><p><b>Horario:</b> Lunes a viernes de 10:00 a 20:30. Sábados de 9:30 a 14:00.</p></div>
+<div class="lat"><div class="w"><h4>Entradas recientes</h4><a>¡Ya abrimos los sábados!</a><a>Nuevos productos para la barba</a><a>Feliz Navidad 2016</a></div><div class="w"><h4>Categorías</h4><a>Noticias</a><a>Ofertas</a><a>Sin categoría</a></div></div></div>
+<div class="pie"><span>© 2016 Barbería Filo. Todos los derechos reservados.</span><span>Tema Business Pro · Funciona con WordPress</span></div>
+</div><div class="cookies">Este sitio web utiliza cookies para mejorar su experiencia. Si continúa navegando acepta su uso. <b>Aceptar</b></div></body></html>`;
 
 export function iniciarAntesDespues(urlDespues) {
   const raiz = document.getElementById('antesDespues');
