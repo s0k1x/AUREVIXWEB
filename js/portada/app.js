@@ -54,7 +54,7 @@ await arrancar('inicio');
 iniciarInclinacion();
 if (amigoSesion && CONFIG.referidos?.activo) setTimeout(() => toast(`Un amigo te recomienda: tienes un ${CONFIG.referidos.pct} % de descuento en tu primera web`, 'ok'), 1200);
 // El chat (y su robot) se prepara cuando el navegador queda libre: no compite con la carga de la portada
-('requestIdleCallback' in window ? requestIdleCallback : f => setTimeout(f, 800))(() => iniciarChat(), { timeout: 2000 });
+if (window.self === window.top) ('requestIdleCallback' in window ? requestIdleCallback : f => setTimeout(f, 800))(() => iniciarChat(), { timeout: 2000 });
 
 /* ==========================================================
    MINIATURAS VIVAS DE LAS PLANTILLAS
@@ -197,7 +197,7 @@ new IntersectionObserver(([e]) => {
 }, { threshold: .05 }).observe($('#vitrina'));
 document.addEventListener('visibilitychange', () => document.hidden ? clearTimeout(vtTimer) : reanudarVitrina());
 const cuandoLibre = fn => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 600));
-const vitrinaLista = () => cuandoLibre(() => { vtLista = true; arrancarVitrina(); });
+const vitrinaLista = () => cuandoLibre(() => { if (window.self !== window.top) return; vtLista = true; arrancarVitrina(); });
 document.readyState === 'complete' ? vitrinaLista() : addEventListener('load', vitrinaLista);
 
 /* ==========================================================
@@ -399,7 +399,7 @@ function activarGal(i, forzar = false) {
 const ioGal = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) activarGal(+e.target.dataset.gal); }), { rootMargin: '-45% 0px -45% 0px' });
 $$('#disenosGrid .gal-item').forEach(it => ioGal.observe(it));
 // La ventana grande solo empieza a cargar cuando la galería está cerca
-new IntersectionObserver(([e]) => { if (e.isIntersecting && !galCerca) { galCerca = true; escalaGal(); activarGal(Math.max(0, galIdx), true); } }, { rootMargin: '400px 0px' }).observe($('#disenosGrid'));
+new IntersectionObserver(([e]) => { if (e.isIntersecting && !galCerca && window.self === window.top) { galCerca = true; escalaGal(); activarGal(Math.max(0, galIdx), true); } }, { rootMargin: '400px 0px' }).observe($('#disenosGrid'));
 galGrande.addEventListener('change', () => { escalaGal(); if (galGrande.matches) activarGal(Math.max(0, galIdx), true); });
 // Con nombre de prueba, las ventanas lo enseñan
 document.addEventListener('nombre-prueba', () => {
@@ -1610,31 +1610,30 @@ alternarFranjas();
 document.querySelectorAll('[data-reservar-llamada]').forEach(b => { b.hidden = !CONFIG.llamadas?.activo; });
 // Antes y después: la barbería con una web anticuada y con el diseño «Filo»
 import('./antes-despues.js').then(m => m.iniciarAntesDespues(urlPlantilla('filo', 'Barbería Filo', '', true))).catch(() => {});
-if (CONFIG.casos?.length) {
-  // Cada caso, dentro de un portátil con la captura de su web que se desplaza sola al pasar por encima o al verse en el
-  // móvil (captura pública de WordPress.com «mShots»; si no llega, la tarjeta se queda solo con el texto)
-  const captura = u => `https://s0.wp.com/mshots/v1/${encodeURIComponent(u)}?w=1280&h=2200`;
+// Dentro de un marco (la propia portada vista en «Webs publicadas») no se pinta esta sección: así no se carga una dentro de otra
+const incrustada = window.self !== window.top;
+if (incrustada) document.documentElement.classList.add('incrustada');
+if (CONFIG.casos?.length && !incrustada) {
+  // Cada caso, dentro de un navegador con su web EN VIVO (reducida a su tamaño), que se recorre sola al pasar por encima
+  // o al verse en el móvil. Solo se carga cuando la tarjeta está a punto de verse.
+  const dominio = u => u.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '');
   $('#casosGrid').innerHTML = CONFIG.casos.map(c => `<a class="caso reveal" href="${esc(c.url)}" target="_blank" rel="noopener">
-    <span class="caso-disp" aria-hidden="true"><span class="caso-bar"><i></i><i></i><i></i></span><span class="caso-pant cargando" data-dom="${esc(c.url.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/.*$/, ''))}"><img data-captura="${esc(captura(c.url))}" alt="" loading="lazy" decoding="async"></span></span>
+    <span class="caso-disp" aria-hidden="true"><span class="caso-bar"><i></i><i></i><i></i><em>${esc(dominio(c.url).replace(/\/.*$/, ''))}</em></span><span class="caso-pant cargando"><iframe data-src="${esc(c.url)}" width="1280" height="2200" tabindex="-1" title="" loading="lazy" referrerpolicy="no-referrer"></iframe></span></span>
     ${c.sector ? `<small>${esc(c.sector)}</small>` : ''}<h3>${esc(c.nombre)}</h3>${c.texto ? `<p>${esc(c.texto)}</p>` : '<p></p>'}
-    <span class="caso-url">${esc(c.url.replace(/^https:\/\/(www\.)?/i, '').replace(/\/$/, ''))}${icono('external')}</span></a>`).join('');
+    <span class="caso-url">${esc(dominio(c.url))}${icono('external')}</span></a>`).join('');
   $('#casos').hidden = false;
   alternarFranjas();
   $$('#casos .reveal').forEach(el => io?.observe?.(el));
-  // mShots devuelve primero una imagen provisional («Generating preview», 400 px de ancho) mientras hace la captura.
-  // No se enseña: se vuelve a pedir cada pocos segundos hasta que llega la de verdad (1280 px). Si no llega, queda
-  // una tarjeta limpia con el nombre de la web en vez del logo de WordPress.
-  $$('#casosGrid img[data-captura]').forEach(img => {
-    const pant = img.closest('.caso-pant');
-    let intento = 0;
-    const pedir = () => { img.src = img.dataset.captura + (intento ? `&r=${intento}` : ''); };
-    img.addEventListener('load', () => {
-      if (img.naturalWidth >= 1000) { pant.classList.remove('cargando'); pant.classList.add('lista'); return; }
-      if (++intento <= 8) setTimeout(pedir, 3500); else { pant.classList.remove('cargando'); pant.classList.add('sin-captura'); }
-    });
-    img.addEventListener('error', () => { pant.classList.remove('cargando'); pant.classList.add('sin-captura'); });
-    pedir();
-  });
+  const escalaCaso = p => { if (p.clientWidth) { p.style.setProperty('--s', p.clientWidth / 1280); p.style.setProperty('--d', `${-(2200 * p.clientWidth / 1280 - p.clientHeight)}px`); } };
+  const roCaso = new ResizeObserver(es => es.forEach(e => escalaCaso(e.target)));
+  const ioCaso = new IntersectionObserver((es, o) => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    o.unobserve(e.target);
+    const f = e.target.querySelector('iframe');
+    f.addEventListener('load', () => { e.target.classList.remove('cargando'); e.target.classList.add('lista'); }, { once: true });
+    f.src = f.dataset.src;
+  }), { rootMargin: '400px 0px' });
+  $$('#casosGrid .caso-pant').forEach(p => { escalaCaso(p); roCaso.observe(p); ioCaso.observe(p); });
 }
 
 /* ---------- Preguntas frecuentes: lista numerada (adaptada de «Interactive Accordion» de 21st.dev) ----------
