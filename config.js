@@ -58,7 +58,7 @@ export const CONFIG = {
 
   // Redes sociales de la marca (déjalas en '' si no las tienes)
   // whatsapp: el número con prefijo de país, solo cifras (p. ej. 34600111222). Si lo pones, sale el botón de WhatsApp
-  redes: { instagram: '', tiktok: '', linkedin: '', whatsapp: '' },
+  redes: { instagram: 'https://www.instagram.com/aurevixweb.es', tiktok: 'https://www.tiktok.com/@aurevix39', linkedin: '', whatsapp: '' },
 
   // Verificación anti-robots (Cloudflare Turnstile). Se activa en Ajustes → Negocio.
   // siteKey es la clave PÚBLICA del widget; la secreta va en Supabase (TURNSTILE_SECRET).
