@@ -20,7 +20,7 @@ export function iniciarCierre() {
   const $ = s => v.querySelector(s);
   const escena = $('.lt-escena'), tapa = $('.lt-tapa'), movil = $('.vt-movil'), sombra = $('.lt-sombra'), brillo = $('.lt-brillo'), reflejo = $('.lt-reflejo');
   if (!escena || !tapa) return;
-  let inicio = 0, tramo = 1, fondo = 300, actual = 0, objetivo = 0, raf = 0, t0 = 0;
+  let inicio = 0, tramo = 1, fondo = 300, hueco = 0, extra = 0, actual = 0, objetivo = 0, raf = 0, t0 = 0;
 
   const medir = () => {
     const r = v.getBoundingClientRect(), y = r.top + scrollY;
@@ -29,6 +29,17 @@ export function iniciarCierre() {
     tramo = Math.max(220, r.height * .55);
     fondo = Math.round(tapa.offsetHeight);
     v.style.setProperty('--fondo', `${fondo}px`);
+    // Cuánto hueco queda sobre el portátil cerrado: se mide una vez con la tapa del todo cerrada
+    const dorso = $('.lt-dorso');
+    if (dorso) {
+      hueco = 0; pintar(1);
+      const d = dorso.getBoundingClientRect(), b = $('.lt-base')?.getBoundingClientRect(), vr = v.getBoundingClientRect();
+      const h = d.top - vr.top - 6;
+      hueco = Math.max(0, Math.min(h, r.height * .6));
+      // Lo que el portátil cerrado se sale por abajo de la caja: eso no se recoge (así no pisa las pestañas)
+      extra = Math.max(0, Math.max(d.bottom, b ? b.bottom : 0) - vr.bottom + 22);
+      pintar(actual);
+    }
   };
   const leer = () => (objetivo = quieto() ? 0 : lim((scrollY - inicio) / tramo));
 
@@ -41,12 +52,14 @@ export function iniciarCierre() {
     if (d3 !== en3d) { en3d = d3; v.classList.toggle('v3d', d3); }
     if (!d3) { LIMPIO(escena); LIMPIO(tapa); }
     else {
-      escena.style.transform = `translateZ(${(-fondo * .45 * e).toFixed(1)}px) rotateX(${(-31 * e).toFixed(2)}deg) translateY(${(-14 * e).toFixed(2)}%)`;
+      escena.style.transform = `translateZ(${(-fondo * .45 * e).toFixed(1)}px) rotateX(${(-31 * e).toFixed(2)}deg) translateY(${(-hueco * e).toFixed(1)}px) scale(${(1 - .22 * e).toFixed(3)})`;
       tapa.style.transform = `rotateX(${(-90 * e).toFixed(2)}deg)`;
     }
     // La tapa se ve de canto a ~74 % del cierre: antes enseña la pantalla, después el dorso
     const c = e > .74;
     if (c !== cerrada) { cerrada = c; tapa.classList.toggle('cerrada', c); }
+    // El hueco que deja la tapa al caer se recoge: la maqueta sube y lo de debajo la sigue (sin espacio vacío)
+    v.style.marginBottom = hueco ? `${(-Math.max(0, hueco - extra) * e).toFixed(1)}px` : '';
     if (reflejo) reflejo.style.transform = `translateX(${(-30 + 80 * e).toFixed(1)}%)`;
     if (brillo) brillo.style.transform = `translateX(${(-60 + 120 * e).toFixed(1)}%)`;
     if (sombra) { sombra.style.transform = `scale(${(1 - .12 * e).toFixed(3)}, ${(1 - .35 * e).toFixed(3)})`; sombra.style.opacity = (1 - .3 * e).toFixed(3); }

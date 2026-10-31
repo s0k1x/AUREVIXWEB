@@ -817,3 +817,38 @@ html[data-tema=claro] .gal-pal i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}
   .mv-view{border-radius:16px}
   .mv-notch{top:8px;height:7px}
 }
+
+/* ==========================================================
+   Estilo MacBook Pro (v123): aluminio gris espacial, marcos finos con muesca de cámara,
+   barra de menús, altavoces a los lados del teclado, trackpad grande y muesca para el dedo.
+   ========================================================== */
+.lt-screen{padding:8px 8px 11px;background:#000;border:1px solid #5c5c64;border-radius:17px 17px 5px 5px;
+  box-shadow:inset 0 0 0 1px #000,0 0 0 1px rgba(0,0,0,.6)}
+.lt-screen::before{display:none}
+.lt-menu{position:relative;display:flex;align-items:center;gap:7px;height:20px;padding:0 12px;background:rgba(22,22,27,.96);border-radius:8px 8px 0 0}
+.lt-menu i{width:16px;height:5px;border-radius:3px;background:#4b4b54}
+.lt-menu i:first-child{width:9px;height:9px;border-radius:50%;background:#6a6a74}
+.lt-menu .lt-notch{position:absolute;left:50%;top:-8px;width:15%;height:20px;margin-left:-7.5%;border-radius:0 0 10px 10px;background:#000}
+.lt-menu b{margin-left:auto;width:26px;height:5px;border-radius:3px;background:#4b4b54}
+.lt-bar{border-radius:0}
+.lt-dorso{border-radius:17px 17px 5px 5px;background:linear-gradient(180deg,#5d5d65,#44444b 45%,#34343a);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 0 0 1px rgba(255,255,255,.08)}
+.lt-dorso img{opacity:.9;filter:grayscale(1) brightness(2.3) contrast(.9)}
+.lt-deck{left:0;right:0;border-radius:0 0 20px 20px;background:linear-gradient(#585860,#44444b 70%,#3a3a40);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 0 0 1px rgba(255,255,255,.07)}
+.lt-teclas{left:11%;right:11%;top:7%;height:46%;background:#0b0b0e}
+.lt-deck::before,.lt-deck::after{content:"";position:absolute;top:9%;width:7%;height:38%;border-radius:4px;
+  background:radial-gradient(circle,#18181c 38%,transparent 42%) 0 0/6px 6px}
+.lt-deck::before{left:2.5%}.lt-deck::after{right:2.5%}
+.lt-pad{left:30%;right:30%;top:58%;height:34%;border-radius:9px;background:#4e4e56;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.lt-base{height:17px;margin:0;border-radius:0 0 18px 18px;background:linear-gradient(#6a6a72,#4c4c53 35%,#36363c 80%,#2a2a2f);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 18px 30px -12px rgba(0,0,0,.9)}
+.lt-base::after{width:17%;height:6px;border-radius:0 0 9px 9px;background:linear-gradient(#17171a,#2c2c32)}
+@media (max-width:640px){
+  .lt-screen{padding:5px 5px 7px;border-radius:12px 12px 4px 4px}
+  .lt-menu{height:14px;padding:0 8px;gap:5px}
+  .lt-menu i{width:10px;height:4px}.lt-menu i:first-child{width:6px;height:6px}
+  .lt-menu .lt-notch{top:-5px;height:14px;border-radius:0 0 7px 7px}
+  .lt-menu b{width:16px;height:4px}
+  .lt-dorso{border-radius:12px 12px 4px 4px}
+  .lt-base{height:12px}.lt-base::after{height:4px}
+}
+.hero-art{overflow-anchor:none}
