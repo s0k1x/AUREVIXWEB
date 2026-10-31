@@ -339,7 +339,7 @@ html.incrustada,html.incrustada body{overflow:hidden!important;scroll-behavior:a
 .pc-txt small{font-family:var(--fm);font-size:11.5px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
 .pc-fig{position:absolute;right:3%;bottom:0;height:96%;display:block}
 .pc-fig img{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;transition:transform .7s var(--e-out);transform-origin:50% 100%}
-.pc-pant{position:absolute;left:0;top:0;width:390px;height:844px;overflow:hidden;transform-origin:0 0;background:#0e0e12;pointer-events:none;transition:transform .7s var(--e-out)}
+.pc-pant{position:absolute;left:0;top:0;width:390px;height:844px;overflow:hidden;transform-origin:0 0;background:#0e0e12;pointer-events:none}
 .pc-pant iframe{display:block;width:100%;height:100%;border:0}
 .pc-ir{position:absolute;left:22px;bottom:18px;z-index:2;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--text);color:var(--bg)}
 .pc-ir svg{width:17px;height:17px}
@@ -356,15 +356,21 @@ html.incrustada,html.incrustada body{overflow:hidden!important;scroll-behavior:a
 .pc-pant iframe{opacity:0;transition:opacity .6s var(--e-out)}
 .pc-pant.lista iframe{opacity:1}
 @keyframes pcEntra{from{opacity:0;transform:translateY(18px)}}
-@keyframes pcRespira{50%{transform:translateY(-4px)}}
 .dz-personas.anim .pc:not(.viva){opacity:0}
 .dz-personas.anim .pc.viva{animation:pcEntra .7s var(--e-out) calc(var(--i, 0) * 70ms) backwards}
 .dz-personas.anim .pc::before{transition:opacity 1.2s var(--e-out)}
 .dz-personas.anim .pc:not(.viva)::before{opacity:0}
-.pc-fig{animation:pcRespira 8s ease-in-out infinite;animation-delay:calc(var(--i, 0) * -1.3s);animation-play-state:paused}
-.pc.en-vista .pc-fig{animation-play-state:running}
 @media (prefers-reduced-motion:reduce){
-  .dz-personas.anim .pc:not(.viva){opacity:1}.dz-personas.anim .pc.viva{animation:none}.pc-fig{animation:none}.pc:active{transform:none}
+  .dz-personas.anim .pc:not(.viva){opacity:1}.dz-personas.anim .pc.viva{animation:none}.pc:active{transform:none}
 }
 html[data-movimiento=reducido] .dz-personas.anim .pc:not(.viva){opacity:1}
-html[data-movimiento=reducido] .dz-personas.anim .pc.viva,html[data-movimiento=reducido] .pc-fig{animation:none}
+html[data-movimiento=reducido] .dz-personas.anim .pc.viva{animation:none}
+
+/* Personas de ejemplo (IA, sin fondo) en cuatro sitios concretos (v128). Solo en pantallas grandes: en el móvil estorban. */
+.rv-portada{position:relative}
+.rv-fig,.ct-fig{display:none;pointer-events:none;user-select:none}
+@media (min-width:1000px){
+  .rv-portada{grid-template-columns:clamp(120px,13vw,190px) 1.1fr 1fr;padding-left:clamp(22px,3vw,34px)}
+  .rv-fig{display:block;align-self:end;width:100%;height:auto;margin:calc(clamp(22px,4vw,36px) * -1) 0 calc(clamp(22px,4vw,36px) * -1)}
+  .ct-fig{display:block;width:min(100%,300px);height:auto;margin:28px 0 0}
+}
