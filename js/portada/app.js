@@ -167,6 +167,7 @@ $('#vtNombre').addEventListener('input', e => {
   clearTimeout(vtEscribe);
   vtEscribe = setTimeout(() => {
     vtNombre = e.target.value.trim().slice(0, 32);
+    if (vtNombre) contarEvento('nombre-prueba');
     try { vtNombre ? sessionStorage.setItem('tm_prueba_nombre', vtNombre) : sessionStorage.removeItem('tm_prueba_nombre'); } catch { /* sin almacenamiento */ }
     $('#vtAviso').textContent = vtNombre ? `Así se vería «${vtNombre}». Cambia de diseño abajo.` : 'Se ve al momento en todos los diseños';
     if (vtArrancada) mostrarVitrina(vtIdx);
@@ -321,9 +322,10 @@ function pintarComparaMovil(P) {
   };
 }
 
-$('#verComparar').addEventListener('click', e => {
-  const b = e.currentTarget, t = $('#comparaTabla');
-  if (!t.innerHTML) {
+/* Comparativa de los tipos de web: siempre a la vista debajo de los precios (en el móvil, dos a dos) */
+function pintarComparativa() {
+  const t = $('#comparaTabla');
+  {
     const P = planesActivos();
     t.innerHTML = `<div class="compara-scroll"><table class="compara"><caption class="compara-iva">Precios finales con el ${CONFIG.iva || 0} % de IVA incluido.</caption>
       <thead><tr><th></th>${P.map(p => `<th class="${p.popular ? 'pop' : ''}"><span class="pc-ic">${icono(p.icono)}</span><b>${esc(p.nombre)}</b><small>desde ${euros(p.precio)}</small></th>`).join('')}</tr></thead>
@@ -335,11 +337,8 @@ $('#verComparar').addEventListener('click', e => {
       <div class="cmp-m" id="cmpMovil"></div>`;
     pintarComparaMovil(P);
   }
-  t.hidden = !t.hidden;
-  b.setAttribute('aria-expanded', String(!t.hidden));
-  b.querySelector('span').textContent = t.hidden ? 'Comparar todos los planes' : 'Ocultar la comparativa';
-  if (!t.hidden) t.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-});
+}
+pintarComparativa();
 
 /* ==========================================================
    GALERÍA DE DISEÑOS
@@ -553,6 +552,7 @@ function abrirPreview(id, { nombre = '', color = '', alElegir = null } = {}) {
   if (!p) return;
   prevActual = id;
   prevAlElegir = alElegir;
+  contarEvento('vio-diseno');
   $('#prevTitle').textContent = `Diseño ${p.nombre}`;
   $('#prevSector').textContent = p.sector;
   $('#prevPick').innerHTML = `<span>${alElegir ? 'Elegir este' : 'Lo quiero'}</span>`;
@@ -872,6 +872,7 @@ function irA(i) {
   W.paso = i;
   W.max = Math.max(W.max || 0, i);
   const paso = PASOS[i];
+  contarEvento(`paso-${paso.id}`);
   $('#wizDots').innerHTML = PASOS.map((p, k) =>
     `<button type="button" class="${k === i ? 'on' : k <= W.max ? 'hecho' : ''}" data-ir="${k}" ${k > W.max ? 'disabled' : ''} aria-label="Paso ${k + 1}: ${p.titulo}"></button>`).join('');
   guardarBorrador();

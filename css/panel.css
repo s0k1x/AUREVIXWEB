@@ -449,3 +449,8 @@ html[data-tema=claro] .tabs [data-tab].on{background:#fff}
 @media (max-width:640px){.cmd-pie{display:none}.dlg-cmd{margin-top:10vh}}
 html[data-tema=claro] .cmd-lista [data-cmd].on{background:rgba(20,20,26,.06)}
 html[data-tema=claro] .dlg-cmd kbd,html[data-tema=claro] .pn-buscar kbd{background:rgba(20,20,26,.07)}
+.vis-peor{display:flex;gap:10px;align-items:flex-start;margin:6px 0 16px;padding:14px 16px;border-radius:14px;background:var(--bg2);font-size:15px}
+.vis-peor svg{width:18px;height:18px;flex:none;color:var(--warn);margin-top:2px}
+.vis-extra{display:flex;flex-wrap:wrap;gap:8px 22px;margin:16px 0 0;font-size:14px;color:var(--muted)}
+.vis-extra b{color:var(--text)}
+.vis-nota{font-size:13px;margin-top:10px}

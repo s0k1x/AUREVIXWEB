@@ -1655,3 +1655,7 @@ html.en-mant,html.en-mant body{overflow:hidden}
   .aj-grupo-nav p{grid-column:1/-1;margin-top:0}
 }
 html[data-tema=claro] .aj-nav a.on{background:rgba(20,20,26,.06)}
+/* Comparativa siempre a la vista bajo los precios */
+.comparar{margin-top:64px;display:block;text-align:left}
+.compara-tit{font-size:clamp(24px,2.4vw,32px);letter-spacing:-.02em;margin:0 0 18px}
+.compara-scroll{border:0}

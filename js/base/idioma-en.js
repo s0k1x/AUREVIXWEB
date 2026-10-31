@@ -4,6 +4,20 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  // v106 · comparativa y embudo
+  'Qué incluye cada tipo de web': 'What each website type includes',
+  'Vieron un diseño en grande': 'Viewed a design full size',
+  'Contaron su negocio': 'Described their business',
+  'Dejaron su contacto': 'Left their contact details',
+  'Eligieron dominio': 'Chose a domain',
+  'Eligieron estilo': 'Chose a style',
+  'Vieron los extras': 'Viewed the extras',
+  'Eligieron diseño': 'Chose a design',
+  'Llegaron al resumen': 'Reached the summary',
+  'Probaron con su nombre': 'Tried it with their name',
+  'paso a paso, de quien entra a quien pide': 'step by step, from visit to order',
+  'Cuando haya más visitas verás aquí en qué paso se va más gente.': 'Once there are more visits you will see here which step loses the most people.',
+  'El porcentaje de cada paso es sobre el paso anterior. Se cuenta una vez por visita, sin cookies.': 'Each percentage is relative to the previous step. Counted once per visit, without cookies.',
   // v104 · portada con tu nombre, galería, fichas de diseño y buscador del panel
   'Pruébalo con tu negocio': 'Try it with your business',
   'Escribe su nombre': 'Type its name',

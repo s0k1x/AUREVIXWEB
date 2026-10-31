@@ -440,16 +440,34 @@ async function pintarVisitas() {
   const eventos = filas.filter(f => f.pagina.startsWith('ev-'));
   filas = filas.filter(f => !f.pagina.startsWith('ev-'));
   const cuenta = k => eventos.filter(f => f.pagina === 'ev-' + k).reduce((t, f) => t + f.visitas, 0);
+  // Embudo: de quien entra a quien pide, paso a paso. Se marca dónde se va más gente.
   const pasos = [
     ['Visitas a la portada', filas.filter(f => f.pagina === 'inicio').reduce((t, f) => t + f.visitas, 0)],
-    ['Usaron la calculadora', cuenta('calculadora')],
-    ['Descargaron el presupuesto', cuenta('presupuesto')],
-    ['Empezaron un pedido', cuenta('pedido')],
+    ['Vieron un diseño en grande', cuenta('vio-diseno')],
+    ['Empezaron un pedido', Math.max(cuenta('pedido'), cuenta('paso-info'))],
+    ['Contaron su negocio', cuenta('paso-negocio')],
+    ['Dejaron su contacto', cuenta('paso-contacto')],
+    ['Eligieron dominio', cuenta('paso-dominio')],
+    ['Eligieron estilo', cuenta('paso-estilo')],
+    ['Vieron los extras', cuenta('paso-extras')],
+    ['Eligieron diseño', cuenta('paso-diseno')],
+    ['Llegaron al resumen', cuenta('paso-resumen')],
     ['Hicieron el pedido', cuenta('pedido-hecho')]
   ];
+  const extra = [['Usaron la calculadora', cuenta('calculadora')], ['Descargaron el presupuesto', cuenta('presupuesto')], ['Probaron con su nombre', cuenta('nombre-prueba')]];
   const tope = Math.max(1, pasos[0][1]);
-  const embudo = `<div class="card-h vis-embudo-h"><h3>Embudo de ventas</h3><span class="muted" style="font-size:13px">de quien entra a quien pide</span></div>
-    <ol class="vis-embudo">${pasos.map(([t, v], i) => `<li><span>${t}</span><div aria-hidden="true"><i style="width:${Math.max(v ? 2 : 0, (v / tope) * 100)}%"></i></div><b>${v}</b><small>${i && pasos[0][1] ? `${Math.round((v / pasos[0][1]) * 1000) / 10} %` : ''}</small></li>`).join('')}</ol>`;
+  // El salto con más abandono (solo si hay datos suficientes para que signifique algo)
+  let peor = null;
+  for (let i = 2; i < pasos.length; i++) {
+    const [ta, a] = pasos[i - 1], [tb, b] = pasos[i];
+    if (a >= 5 && (!peor || (a - b) / a > peor.p)) peor = { de: ta, a: tb, p: (a - b) / a };
+  }
+  const pct = (v, base) => base ? `${Math.round((v / base) * 1000) / 10} %` : '';
+  const embudo = `<div class="card-h vis-embudo-h"><h3>Embudo de ventas</h3><span class="muted" style="font-size:13px">paso a paso, de quien entra a quien pide</span></div>
+    ${peor && peor.p > 0 ? `<p class="vis-peor">${icono('alert')}<span>Donde más gente se va: entre «${esc(peor.de)}» y «${esc(peor.a)}» (${Math.round(peor.p * 100)} % no sigue).</span></p>` : '<p class="vis-peor muted">Cuando haya más visitas verás aquí en qué paso se va más gente.</p>'}
+    <ol class="vis-embudo">${pasos.map(([t, v], i) => `<li><span>${t}</span><div aria-hidden="true"><i style="width:${Math.max(v ? 2 : 0, (v / tope) * 100)}%"></i></div><b>${v}</b><small>${i ? pct(v, pasos[i - 1][1]) : ''}</small></li>`).join('')}</ol>
+    <p class="vis-extra">${extra.map(([t, v]) => `<span>${t}: <b>${v}</b></span>`).join('')}</p>
+    <p class="muted vis-nota">El porcentaje de cada paso es sobre el paso anterior. Se cuenta una vez por visita, sin cookies.</p>`;
   const suma = (L, k) => Object.entries(L.reduce((o, f) => ((o[f[k]] = (o[f[k]] || 0) + f.visitas), o), {})).sort((a, b) => b[1] - a[1]);
   const total = filas.reduce((t, f) => t + f.visitas, 0);
   const dias = Array.from({ length: 30 }, (_, i) => {
