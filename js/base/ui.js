@@ -25,6 +25,13 @@ try {
 export { icono, pintarIconos };
 
 /* ---------- Utilidades ---------- */
+/* Dentro de un marco (la web vista en «Webs publicadas»): la página se queda quieta en la portada. Nada puede
+   desplazarla ni, a través de ella, mover la página de fuera (scrollIntoView sube por todos los marcos). */
+if (typeof window !== 'undefined' && window.self !== window.top) {
+  const quieto = () => {};
+  Element.prototype.scrollIntoView = quieto; window.scrollTo = quieto; window.scroll = quieto; window.scrollBy = quieto;
+  document.documentElement.classList.add('incrustada');
+}
 export const $ = (s, c = document) => c.querySelector(s);
 export const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 /* Visitas de las páginas públicas, sin cookies. No cuenta robots, recargas,
