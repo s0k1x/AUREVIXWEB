@@ -326,3 +326,4 @@ html[data-tema=claro] .dzf-colores i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.1
 /* La portada vista dentro de otra (vista en vivo de un caso): solo el contenido */
 html.incrustada #chat,html.incrustada .arriba,html.incrustada .demo-banner,html.incrustada .splash{display:none!important}
 .caso > small{font-family:var(--fb);text-transform:none;letter-spacing:0;font-size:14px;color:var(--muted)}
+html.incrustada,html.incrustada body{overflow:hidden!important;scroll-behavior:auto}

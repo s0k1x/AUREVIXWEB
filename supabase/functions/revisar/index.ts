@@ -63,13 +63,23 @@ Deno.serve(async req => {
   const guardada = memoria.get(url);
   if (guardada && Date.now() - guardada.t < GUARDA) return json(guardada.datos, 200, h);
 
-  const q = new URLSearchParams({ url, strategy: 'mobile', locale: 'es' });
-  CATEGORIAS.forEach(c => q.append('category', c));
-  if (CLAVE) q.set('key', CLAVE);
-  let r: Response | null = null;
+  const pedir = (conClave: boolean) => {
+    const q = new URLSearchParams({ url, strategy: 'mobile', locale: 'es' });
+    CATEGORIAS.forEach(c => q.append('category', c));
+    if (conClave && CLAVE) q.set('key', CLAVE);
+    // Se presenta como aurevixweb.es: así vale también una clave restringida a «Sitios web» (aurevixweb.es/*)
+    return fetch(`${API}?${q}`, { headers: { Referer: 'https://aurevixweb.es/' }, signal: AbortSignal.timeout(75000) });
+  };
+  let r: Response | null = null, conClave = !!CLAVE;
   for (const pausa of [0, 3000]) {
     if (pausa) await new Promise(ok => setTimeout(ok, pausa));
-    try { r = await fetch(`${API}?${q}`, { signal: AbortSignal.timeout(75000) }); } catch (e) { console.warn('PageSpeed sin respuesta', String(e)); r = null; continue; }
+    try { r = await pedir(conClave); } catch (e) { console.warn('PageSpeed sin respuesta', String(e)); r = null; continue; }
+    // Clave mal restringida o no válida: se avisa en los registros y se mide sin ella (con el cupo compartido)
+    if (conClave && (r.status === 403 || r.status === 400)) {
+      console.warn('La clave PAGESPEED_KEY no vale (', r.status, '): revisa sus restricciones en Google Cloud. Se mide sin clave.');
+      conClave = false;
+      try { r = await pedir(false); } catch { r = null; continue; }
+    }
     if (r.status !== 429) break;
   }
   if (!r) return json({ error: 'Google no responde ahora mismo' }, 504, h);
