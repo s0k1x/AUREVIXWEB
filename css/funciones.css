@@ -1169,7 +1169,10 @@ input,textarea{caret-color:var(--accent)}
   .cmp-filas{list-style:none;margin:0;padding:0;display:grid}
   .cmp-filas li{display:grid;grid-template-columns:1fr 44px 44px;align-items:center;gap:6px;padding:11px 6px;border-bottom:1px solid var(--line);font-size:14px;line-height:1.35}
   .cmp-filas li:last-child{border-bottom:0}
-  .cmp-filas li.dif{background:var(--accent-soft);border-radius:10px;border-bottom-color:transparent}
+  /* Las filas resaltadas seguidas forman un solo bloque: solo se redondean las esquinas de fuera (sin «huequitos» entre filas) */
+  .cmp-filas li.dif{background:var(--accent-soft);border-radius:0;border-bottom-color:transparent}
+  .cmp-filas li.dif:not(.dif + .dif){border-top-left-radius:12px;border-top-right-radius:12px}
+  .cmp-filas li.dif:not(:has(+ .dif)){border-bottom-left-radius:12px;border-bottom-right-radius:12px}
   .cmp-filas li > span:first-child{color:var(--muted);min-width:0}
   .cmp-filas li.dif > span:first-child{color:var(--text)}
   .cmp-filas .si,.cmp-filas .no{justify-self:center}
