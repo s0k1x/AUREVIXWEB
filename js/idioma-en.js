@@ -4,6 +4,8 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  // v101 · panel y ajustes por grupos
+  'Día a día': 'Day to day', 'Clientes y dinero': 'Clients and money', 'Equipo': 'Team', 'Web': 'Website', 'Mi trabajo': 'My work', 'Mis ingresos': 'My earnings', 'Archivo': 'Archive', 'Estado y aspecto': 'Status and look', 'Ventas y precios': 'Sales and pricing', 'Atención al cliente': 'Customer service', 'Cobros y equipo': 'Payments and team', 'Legal y seguridad': 'Legal and security', 'Grupos de ajustes': 'Settings groups',
   // v100 · Trabaja con nosotros
   'Vende webs y cobra el': 'Sell websites and earn', 'en remoto, con horario libre': 'remote, flexible hours', 'Lo que ganas por cada venta': 'What you earn per sale',
   // v99 · base de conocimiento del asistente

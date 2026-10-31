@@ -80,15 +80,23 @@ store.alCambiarUsuario(async u => {
   $('#pnRole').textContent = u.role === 'owner' ? 'Panel de propietario' : 'Panel de trabajador';
   $('#pnHello').innerHTML = `Hola, <span class="nw">${esc(u.name.split(' ')[0])}&nbsp;<span class="saludo">${icono('hand')}</span></span>`;
   $('#pnRefresh').hidden = false;
-  const tabs = u.role === 'owner'
-    ? [['resumen', 'Resumen', 'chart'], ['pedidos', 'Pedidos', 'bag'], ['clientes', 'Clientes', 'users'], ['soporte', 'Soporte', 'help'], ['mantenimiento', 'Mantenimiento', 'refresh'], ['finanzas', 'Finanzas', 'euro'], ['agenda', 'Agenda', 'calendar'], ['actividad', 'Actividad', 'history'], ['candidaturas', 'Candidatos', 'briefcase'], ['videos', 'Vídeos', 'video'], ['resenas', 'Reseñas', 'star'], ['equipo', 'Equipo', 'award']]
-    : [['mios', 'Mis encargos', 'laptop'], ['agenda', 'Agenda', 'calendar'], ['disponibles', 'Disponibles', 'inbox'], ['soporte', 'Soporte', 'help'], ['ventas', 'Mis ventas', 'euro'], ['videos', 'Mis vídeos', 'video'], ['ranking', 'Ranking', 'trophy'], ['historial', 'Historial', 'folder']];
+  // Secciones agrupadas por para qué sirven (en el ordenador, menú lateral; en el móvil, un desplegable)
+  const grupos = u.role === 'owner'
+    ? [['Día a día', [['resumen', 'Resumen', 'chart'], ['pedidos', 'Pedidos', 'bag'], ['soporte', 'Soporte', 'help'], ['agenda', 'Agenda', 'calendar']]],
+       ['Clientes y dinero', [['clientes', 'Clientes', 'users'], ['mantenimiento', 'Mantenimiento', 'refresh'], ['finanzas', 'Finanzas', 'euro']]],
+       ['Equipo', [['equipo', 'Equipo', 'award'], ['candidaturas', 'Candidatos', 'briefcase'], ['videos', 'Vídeos', 'video']]],
+       ['Web', [['resenas', 'Reseñas', 'star'], ['actividad', 'Actividad', 'history']]]]
+    : [['Mi trabajo', [['mios', 'Mis encargos', 'laptop'], ['disponibles', 'Disponibles', 'inbox'], ['agenda', 'Agenda', 'calendar'], ['soporte', 'Soporte', 'help']]],
+       ['Mis ingresos', [['ventas', 'Mis ventas', 'euro'], ['videos', 'Mis vídeos', 'video'], ['ranking', 'Ranking', 'trophy']]],
+       ['Archivo', [['historial', 'Historial', 'folder']]]];
+  const tabs = grupos.flatMap(g => g[1]);
   const pedida = location.hash.slice(1);
   const pedidoHash = pedida.startsWith('pedido-') ? pedida.slice(7) : '';
   tab = tabs.some(t => t[0] === pedida) ? pedida : pedidoHash ? (u.role === 'owner' ? 'pedidos' : 'mios') : tabs[0][0];
-  tabsEl.innerHTML = tabs.map(([id, t, ic]) => `<button role="tab" data-tab="${id}">${icono(ic)}<span>${t}</span><i class="badge" data-badge="${id}"></i></button>`).join('');
-  // Cuadrícula sin huecos: 10 pestañas → 5 × 2, 4 → 4 × 1, 6 → 3 × 2…
-  tabsEl.style.setProperty('--cols', tabs.length <= 5 ? tabs.length : Math.ceil(tabs.length / 2));
+  tabsEl.innerHTML = `<button type="button" class="pn-nav-btn" aria-expanded="false" aria-controls="pnNavLista"><span class="pn-nav-act"></span><i class="badge" data-badge="total"></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+    <div class="pn-nav-lista" id="pnNavLista">${grupos.map(([g, items]) => `<div class="pn-grupo"><p class="pn-grupo-t">${g}</p>${items.map(([id, t, ic]) => `<button role="tab" data-tab="${id}">${icono(ic)}<span>${t}</span><i class="badge" data-badge="${id}"></i></button>`).join('')}</div>`).join('')}</div>`;
+  const navBtn = $('.pn-nav-btn', tabsEl);
+  navBtn.addEventListener('click', () => { const a = tabsEl.classList.toggle('abierto'); navBtn.setAttribute('aria-expanded', String(a)); });
   $('#pnAjustes').hidden = false;
   await cargar();
   if (pedidoHash) abrirPedido(pedidoHash);
@@ -165,7 +173,7 @@ tabsEl.addEventListener('click', e => {
   if (!b) return;
   irTab(b.dataset.tab);
 });
-function irTab(t) { tab = t; history.replaceState(null, '', '#' + tab); pintar(); }
+function irTab(t) { tab = t; history.replaceState(null, '', '#' + tab); tabsEl.classList.remove('abierto'); $('.pn-nav-btn', tabsEl)?.setAttribute('aria-expanded', 'false'); pintar(); if (matchMedia('(max-width:999px)').matches) tabsEl.scrollIntoView({ block: 'nearest' }); }
 
 function badges() {
   const n = {
@@ -182,8 +190,12 @@ function badges() {
     disponibles: datos.pedidos.filter(p => !p.asignado && p.estado === 'nuevo').length,
     videos: U.role === 'owner' ? datos.videos.filter(v => v.estado === 'pendiente').length : 0
   };
+  const visibles = $$('[data-tab]', tabsEl).map(b => b.dataset.tab);
+  n.total = visibles.filter(k => k !== tab).reduce((s, k) => s + (n[k] || 0), 0);
   $$('[data-badge]').forEach(b => { const v = n[b.dataset.badge]; b.textContent = v || ''; b.hidden = !v; });
   $$('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  const act = $(`[data-tab="${tab}"]`, tabsEl), sitio = $('.pn-nav-act', tabsEl);
+  if (act && sitio) sitio.innerHTML = act.querySelector('svg').outerHTML + `<span>${act.querySelector('span').textContent}</span>`;
 }
 
 function pintar() {

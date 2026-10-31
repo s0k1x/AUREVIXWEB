@@ -21,15 +21,16 @@ const nav = $('#ajNav'), body = $('#ajBody');
 let U = null;
 let seccion = location.hash.slice(1) || 'perfil';
 
+// [id, título, icono, ¿se ve?, grupo]
 const SECCIONES = u => [
-  ['perfil', 'Perfil', 'user', !!u],
-  ['cuenta', 'Cuenta y seguridad', 'key', !!u],
-  ['facturacion', 'Facturación', 'receipt', !!u],
-  ['trabajo', 'Trabajo y cobros', 'briefcase', u && u.role !== 'client'],
-  ['notificaciones', 'Avisos', 'bell', !!u],
-  ['apariencia', 'Apariencia', 'palette', true],
-  ['privacidad', 'Privacidad y cookies', 'shield', true],
-  ['negocio', 'Negocio', 'gear', u && u.role === 'owner']
+  ['perfil', 'Perfil', 'user', !!u, 'Tu cuenta'],
+  ['cuenta', 'Cuenta y seguridad', 'key', !!u, 'Tu cuenta'],
+  ['facturacion', 'Facturación', 'receipt', !!u, 'Tu cuenta'],
+  ['notificaciones', 'Avisos', 'bell', !!u, 'Tu cuenta'],
+  ['apariencia', 'Apariencia', 'palette', true, 'Preferencias'],
+  ['privacidad', 'Privacidad y cookies', 'shield', true, 'Preferencias'],
+  ['trabajo', 'Trabajo y cobros', 'briefcase', u && u.role !== 'client', 'Equipo'],
+  ['negocio', 'Negocio', 'gear', u && u.role === 'owner', 'Equipo']
 ].filter(x => x[3]);
 
 
@@ -37,11 +38,11 @@ function pintarNav() {
   const S = SECCIONES(U);
   if (!S.some(s => s[0] === seccion)) seccion = S[0][0];
   nav.innerHTML = `${U ? `<div class="aj-yo">${avatar(U, 'lg')}<div><b>${esc(U.name)}</b><small>${esc(U.email)}</small><span class="role-tag r-${U.role}">${ROLES[U.role]}</span></div></div>` : `<div class="aj-yo sin"><p>Inicia sesión para cambiar tu perfil, tus avisos y tus datos.</p><button class="btn btn-sm btn-primary" data-login>Entrar</button></div>`}
-    ${S.map(([k, t, ic]) => `<a href="#${k}" class="${k === seccion ? 'on' : ''}">${icono(ic)}<span>${t}</span></a>`).join('')}
+    ${[...new Set(S.map(x => x[4]))].map(g => `<div class="aj-grupo-nav"><p>${g}</p>${S.filter(x => x[4] === g).map(([k, t, ic]) => `<a href="#${k}" class="${k === seccion ? 'on' : ''}">${icono(ic)}<span>${t}</span></a>`).join('')}</div>`).join('')}
     ${U ? `<button class="aj-salir" data-logout>${icono('logout')}<span>Cerrar sesión</span></button>` : ''}`;
 }
 
-const bloque = (titulo, desc, contenido, id = '') => `<section class="card aj-b" ${id ? `id="${id}"` : ''}><div class="aj-bh"><h3>${titulo}</h3>${desc ? `<p class="muted">${desc}</p>` : ''}</div>${contenido}</section>`;
+const bloque = (titulo, desc, contenido, id = '') => `<section class="card aj-b" data-t="${esc(titulo)}" ${id ? `id="${id}"` : ''}><div class="aj-bh"><h3>${titulo}</h3>${desc ? `<p class="muted">${desc}</p>` : ''}</div>${contenido}</section>`;
 const guardarBtn = (id, txt = 'Guardar cambios') => `<div class="aj-acc"><button class="btn btn-primary" type="submit" id="${id}"><span>${txt}</span></button></div>`;
 const texto = (name, label, value = '', attrs = '', hint = '') => campo({ id: 'f_' + name.replace(/\W/g, '_'), name, label, value, attrs, hint });
 
@@ -49,9 +50,40 @@ async function pintar() {
   const fn = { perfil, cuenta, facturacion, trabajo, notificaciones, apariencia, privacidad, negocio }[seccion];
   body.innerHTML = '<div class="skeleton"></div>';
   body.onchange = null;
-  try { await fn(); } catch (e) { console.error(e); body.innerHTML = bloque('No se han podido cargar los ajustes', esc(e.message), ''); }
+  try { await fn(); if (seccion === 'negocio') agruparNegocio(); } catch (e) { console.error(e); body.innerHTML = bloque('No se han podido cargar los ajustes', esc(e.message), ''); }
   etiquetas(body);
   scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* Negocio tiene muchos bloques: se ordenan en grupos con un índice para saltar a cada uno */
+const GRUPOS_NEGOCIO = [
+  ['Estado y aspecto', ['Estado de la web', 'Temporada', 'Portada y pedidos', 'Casos reales']],
+  ['Ventas y precios', ['Precios y plazos', 'Extras', 'Descuento de bienvenida', 'Cupones de descuento', 'Recomienda a un amigo']],
+  ['Atención al cliente', ['Contacto', 'Llamadas', 'Asistente', 'Trustpilot']],
+  ['Cobros y equipo', ['Cobros y comisiones', 'Creadores de vídeo']],
+  ['Legal y seguridad', ['Datos legales', 'Verificación anti-robots (Cloudflare)']]
+];
+function agruparNegocio() {
+  const form = $('#fNeg', body);
+  if (!form) return;
+  const bloques = $$('.aj-b', form), primero = bloques[0];
+  if (!primero) return;
+  const titulo = b => b.dataset.t; // el título en español (no cambia al traducir la página)
+  const indice = document.createElement('nav');
+  indice.className = 'aj-indice';
+  indice.setAttribute('aria-label', 'Grupos de ajustes');
+  primero.before(indice);
+  let ancla = indice;
+  GRUPOS_NEGOCIO.forEach(([g, titulos], i) => {
+    const h = document.createElement('h2');
+    h.className = 'aj-grupo'; h.id = 'neg-' + i; h.textContent = g;
+    ancla.after(h); ancla = h;
+    titulos.forEach(t => { const b = bloques.find(x => titulo(x) === t); if (b) { ancla.after(b); ancla = b; } });
+  });
+  // Lo que no esté en ningún grupo (bloques nuevos) va al final, sin perderse
+  bloques.filter(b => !GRUPOS_NEGOCIO.some(([, ts]) => ts.includes(titulo(b)))).forEach(b => { ancla.after(b); ancla = b; });
+  indice.innerHTML = GRUPOS_NEGOCIO.map(([g], i) => `<a href="#neg-${i}" data-ir="neg-${i}">${g}</a>`).join('');
+  indice.addEventListener('click', e => { const a = e.target.closest('[data-ir]'); if (!a) return; e.preventDefault(); document.getElementById(a.dataset.ir)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 }
 
 /* ---------- Perfil ---------- */

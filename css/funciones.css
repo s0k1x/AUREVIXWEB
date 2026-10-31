@@ -391,7 +391,7 @@ a.cd:hover{border-color:var(--accent)}
 .aj-nav a,.aj-salir{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;color:var(--muted);font-weight:600;font-size:14.5px;background:none;border:0;text-align:left;cursor:pointer;font-family:inherit}
 .aj-nav a svg,.aj-salir svg{width:18px;height:18px;flex:none}
 .aj-nav a:hover,.aj-salir:hover{background:rgba(255,255,255,.04);color:var(--text)}
-.aj-nav a.on{background:var(--accent-soft);color:var(--text)}
+.aj-nav a.on{background:rgba(255,255,255,.06);color:var(--text)}
 .aj-nav a.on svg{color:var(--accent)}
 .aj-salir{margin-top:6px;border-top:1px solid var(--line);border-radius:0 0 12px 12px;padding-top:14px}
 .aj-body{display:grid;gap:16px;min-width:0}
@@ -444,10 +444,9 @@ a.cd:hover{border-color:var(--accent)}
 #fNeg{display:grid;gap:16px}
 @media (max-width:900px){
   .aj-grid{grid-template-columns:minmax(0,1fr)}
-  .aj-nav{position:static;display:flex;overflow-x:auto;scrollbar-width:none;padding:6px;gap:4px}
-  .aj-nav::-webkit-scrollbar{display:none}
+  .aj-nav{position:static;display:grid;gap:14px;padding:14px 10px}
   .aj-yo,.aj-salir{display:none}
-  .aj-nav a{flex:none;white-space:nowrap;padding:10px 14px}
+  .aj-nav a{white-space:normal;padding:10px 12px;font-size:14px;line-height:1.25}
   .aj-ops.cuatro{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width:520px){.aj-ops.tres{grid-template-columns:1fr 1fr 1fr}.aj-op > span{padding:14px 6px}.aj-fijo .btn{flex:1}}
@@ -672,19 +671,8 @@ html.intro body>*:not(.splash){visibility:hidden}
   .mp-dato b{grid-column:1/-1;margin-top:4px;font-size:14px}
   .mp-resumen > div:nth-child(3){grid-column:1/-1}
 
-  /* Pestañas del panel: en filas, sin deslizar */
-  .tabs{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:6px;overflow:visible;border-bottom:0;margin-bottom:20px}
-  .tabs button{justify-content:center;gap:6px;padding:10px 6px;font-size:13.5px;border:1px solid var(--line)!important;border-radius:12px;margin:0;background:rgba(255,255,255,.02);min-width:0}
-  .tabs button span{overflow:hidden;text-overflow:ellipsis}
-  .tabs button::after{display:none}
-  .tabs button.on{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 45%,transparent)!important;color:var(--text)}
-  .tabs button.on svg{color:var(--accent)}
-  .tabs .badge{position:absolute;top:-6px;right:-4px}
 
   /* Secciones de Ajustes: en filas, sin deslizar */
-  .aj-nav{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));overflow:visible;gap:6px;padding:8px}
-  .aj-nav a{white-space:normal;padding:10px 12px;font-size:13.5px;line-height:1.25;border:1px solid var(--line)}
-  .aj-nav a.on{border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
 }
 
 /* v23 · Chat del asistente: en el móvil, a pantalla completa */
@@ -825,13 +813,7 @@ dialog.dd-hoja .dd-op{min-height:52px;padding:12px 14px;font-size:16px}
 /* --- Pestañas del panel en el móvil: cuadrícula sin huecos (icono encima del texto) --- */
 .badge:empty{display:none}
 @media (max-width:640px){
-  .tabs{grid-template-columns:repeat(var(--cols,5),minmax(0,1fr));gap:6px}
-  .tabs button{position:relative;flex-direction:column;gap:5px;padding:10px 2px 9px;font-size:11.5px;line-height:1.15;border-radius:14px}
-  .tabs button svg{width:18px;height:18px}
-  .tabs button span{max-width:100%;white-space:nowrap}
-  .tabs .badge{top:-5px;right:-3px;min-width:18px;height:18px;font-size:11px;padding:0 5px}
 }
-@media (max-width:370px){.tabs button{font-size:10.5px}}
 
 /* --- Filtros que llenan sus filas (sin un botón suelto) --- */
 @media (max-width:640px){
@@ -853,7 +835,6 @@ dialog.dd-hoja .dd-op{min-height:52px;padding:12px 14px;font-size:16px}
   .aj-fijo .btn{height:48px}
 }
 @media (max-width:640px){
-  .tabs button span{font-size:11px;letter-spacing:-.015em}
   html.menu-abierto #chat,html.menu-abierto .arriba{opacity:0;pointer-events:none}
 }
 
@@ -1657,3 +1638,20 @@ html.en-mant,html.en-mant body{overflow:hidden}
 
 /* El pie deja sitio a los botones flotantes (asistente y volver arriba) para que nunca tapen sus textos */
 @media (max-width:760px){.footer{padding-bottom:calc(132px + env(safe-area-inset-bottom))}}
+
+/* ---------- Ajustes: menú por grupos y Negocio ordenado ---------- */
+.aj-nav{border:0}
+.aj-yo{border-bottom:0;margin-bottom:0}
+.aj-grupo-nav{display:grid;gap:2px}
+.aj-grupo-nav p{margin:6px 0 4px;padding:0 12px;font-size:13px;font-weight:600;color:var(--muted)}
+.aj-salir{margin-top:6px}
+.aj-indice{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}
+.aj-indice a{display:inline-flex;align-items:center;height:38px;padding:0 16px;border-radius:999px;background:var(--card);color:var(--text);font-weight:600;font-size:14px;text-decoration:none;transition:background-color .2s var(--e-out)}
+@media (hover:hover) and (pointer:fine){.aj-indice a:hover{background:var(--card2)}}
+.aj-grupo{font-size:24px;letter-spacing:-.02em;margin:34px 0 12px;scroll-margin-top:100px}
+.aj-indice + .aj-grupo{margin-top:20px}
+@media (max-width:900px){
+  .aj-grupo-nav{grid-template-columns:1fr 1fr;gap:4px}
+  .aj-grupo-nav p{grid-column:1/-1;margin-top:0}
+}
+html[data-tema=claro] .aj-nav a.on{background:rgba(20,20,26,.06)}
