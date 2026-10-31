@@ -4,6 +4,13 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  // v103 · borrar pedidos con facturas, panel de ventas
+  'al mes': 'per month', 'al año': 'per year',
+  'Tu panel de ventas: tu enlace, tu objetivo del mes y el estado de cada comisión (datos de ejemplo).': 'Your sales dashboard: your link, your monthly goal and the status of each commission (sample data).',
+  'Este pedido tiene facturas emitidas y no se puede borrar: la ley obliga a conservarlas. Puedes marcarlo como cancelado.': 'This order has issued invoices and cannot be deleted: the law requires keeping them. You can mark it as cancelled.',
+  'Este pedido tiene facturas emitidas: se queda guardado como cancelado (la ley obliga a conservar las facturas).': 'This order has issued invoices: it stays saved as cancelled (the law requires keeping invoices).',
+  'No se puede borrar porque tiene otros datos que dependen de él.': 'It cannot be deleted because other data depends on it.',
+  'Pedido cancelado': 'Order cancelled',
   // v101 · panel y ajustes por grupos
   'Día a día': 'Day to day', 'Clientes y dinero': 'Clients and money', 'Equipo': 'Team', 'Web': 'Website', 'Mi trabajo': 'My work', 'Mis ingresos': 'My earnings', 'Archivo': 'Archive', 'Estado y aspecto': 'Status and look', 'Ventas y precios': 'Sales and pricing', 'Atención al cliente': 'Customer service', 'Cobros y equipo': 'Payments and team', 'Legal y seguridad': 'Legal and security', 'Grupos de ajustes': 'Settings groups',
   // v100 · Trabaja con nosotros

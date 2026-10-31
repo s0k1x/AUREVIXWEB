@@ -48,8 +48,7 @@ se oscurece para que el texto blanco se lea.
 
 - Botón: `.btn` (50 px de alto, píldora, 600) + `.btn-primary` (acento) · `.btn-ghost`
   (borde `--line`) · `.btn-dark`. Al pulsar `scale(.97)`.
-- Tarjeta: `.card` (`--card`, borde `--line`, radio `--r`, padding 26 px) con la
-  profundidad de `temporadas.css` (`--luz`, `--sombra-1..3`).
+- Tarjeta: `.card` (`--card`, radio `--r`, padding 26 px), sin sombra en reposo: se separa por el tono. Solo flotan menús, diálogos y el botón del chat.
 - Secciones: `<section>` con `padding:92px 0`; títulos con `.eyebrow` + `h2`.
 - Iconos: `js/base/iconos.js` → `icono('nombre')` (trazo 2, `currentColor`). Al pasar el
   ratón se animan con `iconos-vivos.css` (ver allí cómo añadir uno).

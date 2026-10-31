@@ -9,16 +9,13 @@
   <meta name="description" content="Vende webs con inteligencia artificial y redes sociales y llévate el 30 % de cada venta. Remoto, sin horarios y sin inversión.">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0c0c0e">
-  <link rel="icon" href="favicon.ico" sizes="48x48">
-  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-touch-icon-152.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="icons/apple-touch-icon-167.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="icons/apple-touch-icon-120.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180.png?v=2">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png?v=2">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=2">
+  <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=2">
+  <link rel="icon" href="favicon.ico?v=2" sizes="16x16 32x32 48x48">
   <link rel="canonical" href="https://aurevixweb.es/trabaja-con-nosotros">
   <link rel="alternate" hreflang="es" href="https://aurevixweb.es/trabaja-con-nosotros">
   <link rel="alternate" hreflang="en" href="https://aurevixweb.es/trabaja-con-nosotros?lang=en">
@@ -126,6 +123,10 @@
         <div class="sec-head reveal">
           <h2>Qué te ofrecemos</h2>
         </div>
+        <figure class="t-panel reveal">
+          <img src="icons/panel-ventas.webp" width="1400" height="894" loading="lazy" decoding="async" alt="Panel de ventas de un comercial: enlace de ventas para compartir, objetivo del mes y comisiones generadas, en espera, pendientes y cobradas">
+          <figcaption>Tu panel de ventas: tu enlace, tu objetivo del mes y el estado de cada comisión (datos de ejemplo).</figcaption>
+        </figure>
         <div class="ventajas">
           <div class="vj reveal"><b><span data-comision></span> % de cada venta</b><p>Sin límite de ventas ni objetivos mínimos.</p></div>
           <div class="vj reveal"><b>Pago por vídeo</b><p><span data-v="precio">15 €</span> por cada vídeo aprobado, aunque no venda.</p></div>
@@ -157,8 +158,8 @@
             <div class="rango-m"><span>1</span><span>10</span><span>20</span></div>
           </div>
           <div class="calc-res">
-            <div><small>Al mes</small><b id="calcMes">0 €</b></div>
-            <div><small>Al año</small><b id="calcAno">0 €</b></div>
+            <div><b id="calcMes">0 €</b><small>al mes</small></div>
+            <div><b id="calcAno">0 €</b><small>al año</small></div>
           </div>
           <p class="calc-nota">Cálculo orientativo. La comisión se calcula sobre el importe que paga el cliente por la web.</p>
         </div>
@@ -189,8 +190,8 @@
               <input type="range" id="vcBonus" min="0" max="8" value="2" aria-label="Vídeos con bonus">
             </div>
             <div class="calc-res">
-              <div><small>Al mes</small><b id="vcMes">0 €</b></div>
-              <div><small>Al año</small><b id="vcAno">0 €</b></div>
+              <div><b id="vcMes">0 €</b><small>al mes</small></div>
+              <div><b id="vcAno">0 €</b><small>al año</small></div>
             </div>
             <p class="calc-nota">Sin contar las comisiones por ventas. Hasta <span data-v="maxMes">12</span> vídeos pagados al mes; cada vídeo se revisa antes de aprobarlo.</p>
           </div>

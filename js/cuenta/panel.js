@@ -1659,7 +1659,11 @@ function abrirPedido(id) {
   $('#odDel', box)?.addEventListener('click', async () => {
     if (!confirm('¿Borrar este pedido para siempre?')) return;
     try { await store.borrarPedido(p.id); cerrar(dlg); toast('Pedido borrado'); await cargar(); }
-    catch (err) { toast(err.message, 'err'); }
+    catch (err) {
+      if (!err.conFacturas) return toast(err.message, 'err');
+      if (p.estado === 'cancelado') return toast('Este pedido tiene facturas emitidas: se queda guardado como cancelado (la ley obliga a conservar las facturas).');
+      if (confirm('Este pedido tiene facturas emitidas y no se puede borrar: la ley obliga a conservarlas.\n\n¿Lo marcamos como cancelado? Seguirá guardado con sus facturas, pero fuera de los pedidos activos.')) guardar({ estado: 'cancelado' }, 'Pedido cancelado');
+    }
   });
   if (!dlg.open) abrir(dlg);
 }

@@ -1091,7 +1091,7 @@ body.vista-body .demo-banner,body.vista-body .anuncio,body.vista-body::before{di
 .ck-btns .ck-par{flex:1 1 40%}
 .ck-btns .ck-cfg-btn{flex:1 1 100%;justify-content:center;font-size:13px;min-height:36px}
 /* Primera capa de protección de datos junto a cada formulario */
-.info-datos{margin:10px 0 0;font-size:12px;line-height:1.5;color:var(--muted)}
+.info-datos{margin:10px 0 0;font-size:13px;line-height:1.5;color:var(--muted)}
 .info-datos b{color:var(--muted);font-weight:600}
 .info-datos a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 /* Precio con IVA */
@@ -1203,7 +1203,7 @@ input,textarea{caret-color:var(--accent)}
 .pc-price small.pc-iva{font-family:var(--fb);letter-spacing:0;text-transform:none}
 
 /* v45 · Pie en columnas: servicios, empresa, legal y cuenta */
-.footer-cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:28px 32px;padding:8px 0 28px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.footer-cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:28px 32px;padding:8px 0 36px;margin-bottom:8px}
 .footer-col{display:grid;align-content:start;gap:4px;min-width:0}
 .footer-col b{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
 .footer-col a,.footer-col .link-btn{justify-self:start;padding:4px 0;font-size:14px;color:var(--muted);transition:color .18s ease;overflow-wrap:anywhere}

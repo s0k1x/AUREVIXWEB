@@ -224,6 +224,8 @@ const traducirError = e => {
   if (m.includes('signups not allowed')) return 'No hay ninguna cuenta con ese email. Regístrate primero.';
   if (m.includes('token has expired') || (m.includes('otp') && m.includes('invalid'))) return 'El código no es correcto o ha caducado. Pide otro.';
   if (m.includes('rate limit') || m.includes('security purposes')) return 'Demasiados intentos. Espera un minuto y vuelve a probar.';
+  if (m.includes('foreign key') && m.includes('facturas')) return 'Este pedido tiene facturas emitidas y no se puede borrar: la ley obliga a conservarlas. Puedes marcarlo como cancelado.';
+  if (m.includes('foreign key')) return 'No se puede borrar porque tiene otros datos que dependen de él.';
   return e?.message || 'Algo ha fallado, inténtalo de nuevo';
 };
 const volverA = () => location.origin + location.pathname;
@@ -406,7 +408,12 @@ export async function actualizarPedido(id, cambios) {
 export async function borrarPedido(id) {
   necesitaUsuario();
   if (modoDemo) { local.set('orders', local.get('orders', []).filter(o => o.id !== id)); return; }
-  await borrar('pedidos', id);
+  try { await borrar('pedidos', id); }
+  catch (e) {
+    // Con facturas no se borra (hay que conservarlas): quien llama ofrece cancelarlo
+    if (/facturas/.test(e.message)) { const err = new Error(e.message); err.conFacturas = true; throw err; }
+    throw e;
+  }
 }
 
 /* ---------- Candidaturas (Trabaja con nosotros) ---------- */

@@ -53,7 +53,7 @@ html[data-tema=claro]{
   --sombra-3:0 4px 10px rgba(20,20,26,.06),0 34px 70px -30px rgba(20,20,26,.28);
   --brillo:none;
 }
-.card,.plan-card,.dz,.op-card,.calc-res,.kpi,.mp,.puesto,.cand,.lb-paga{box-shadow:var(--luz),var(--sombra-1);background-image:var(--brillo)}
+.card,.plan-card,.dz,.op-card,.calc-res,.kpi,.mp,.puesto,.cand,.lb-paga{box-shadow:none;background-image:var(--brillo)}
 .dlg-box,.av-menu,.user-menu,.cookies{box-shadow:var(--luz),var(--sombra-3)}
 .header.scrolled,.header.solid{box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
 html[data-tema=claro] .header.scrolled,html[data-tema=claro] .header.solid{box-shadow:0 10px 30px -18px rgba(20,20,26,.18)}
@@ -64,9 +64,4 @@ html[data-tema=claro] .header.scrolled,html[data-tema=claro] .header.solid{box-s
 /* El plan destacado flota un poco por encima del resto */
 .plan-card.popular{box-shadow:var(--luz),0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent),0 30px 60px -30px color-mix(in srgb,var(--accent) 45%,transparent),var(--sombra-2)}
 
-/* Botón principal: un brillo que cruza al pasar el ratón (solo ordenador) */
 .btn-primary{position:relative}
-.btn-primary::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
-  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.45) 50%,transparent 65%);transform:translateX(-120%);transition:transform .7s cubic-bezier(.23,1,.32,1)}
-@media (hover:hover) and (pointer:fine){.btn-primary:hover::after{transform:translateX(120%)}}
-@media (prefers-reduced-motion:reduce){.btn-primary::after{display:none}}
