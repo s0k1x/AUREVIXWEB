@@ -758,43 +758,97 @@ html[data-tema=claro] .gal-pal i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}
 }
 
 /* ==========================================================
-   Portátil y móvil en 3D (v125)
-   El portátil son 4 imágenes (abierto → cerrado) que se mezclan con el scroll; la web va en su pantalla,
-   encajada con una transformación 2D (nada de capas 3D: Safari no pinta bien un iframe dentro de ellas).
-   js/portada/cierre.js lo mueve; aquí, el estado abierto (lo que se ve sin JavaScript o sin movimiento).
+   Portátil y móvil con el scroll (v121)
+   Al bajar, la tapa del portátil se cierra sobre el teclado y el móvil
+   se retira hasta desaparecer; al subir, se abre y el móvil vuelve.
+   La pantalla siempre enseña las webs. js/portada/cierre.js mueve las
+   piezas con transform y opacity (muelle sin rebote, un solo bucle).
+   Aquí, el estado abierto: es lo que se ve sin JavaScript o sin movimiento.
    ========================================================== */
-.hero-art{overflow-anchor:none}
-.vitrina{padding:0;cursor:pointer}
-.lp{position:relative;width:100%;max-width:680px;margin:0 auto;aspect-ratio:996/702}
-.lp-f{position:absolute;left:0;bottom:0;width:100%;height:auto;display:block;user-select:none;-webkit-user-drag:none;pointer-events:none}
-.lp-f:not(:first-of-type){opacity:0}
-.lp-sombra{position:absolute;left:6%;right:6%;bottom:-3%;height:9%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.65),transparent);pointer-events:none}
-/* Pantalla del portátil: 1280×800 lógicos que cierre.js encaja en la pantalla de cada imagen */
-.lp-pant{position:absolute;left:0;top:0;width:1280px;height:800px;overflow:hidden;transform-origin:0 0;background:#0e0e12;pointer-events:none}
-.lp-pant .lt-bar{height:40px;padding:0 18px;gap:9px;border-radius:0}
-.lp-pant .lt-bar i{width:12px;height:12px}
-.lp-pant .lt-url{font-size:14px;padding:5px 14px}
-.lp-pant .lt-view{width:1280px;height:760px;aspect-ratio:auto;border-radius:0}
-/* Móvil (misma imagen en todos los pasos): delante, abajo a la derecha */
-.mv{position:absolute;right:0;bottom:2%;width:23%;aspect-ratio:298/581;z-index:2;will-change:translate,scale,opacity}
-.mv>img{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
-.mv-pant{position:absolute;left:5.2%;top:2.8%;width:89.6%;height:94.4%;border-radius:11% / 5.5%;overflow:hidden;background:#0e0e12}
-.mv-pant .mv-view{position:absolute;inset:0;aspect-ratio:auto;border-radius:0}
-.mv.fuera{visibility:hidden}
-/* Objetos flotantes (solo adorno: no se pueden pulsar) */
-.obj{position:absolute;z-index:3;height:auto;pointer-events:none;user-select:none;filter:drop-shadow(0 18px 24px rgba(0,0,0,.55));will-change:translate;animation:objFlota 7s ease-in-out infinite}
-.obj-euro{left:-4%;top:-5%;width:11%;animation-delay:-1s}
-.obj-check{right:-3%;top:-7%;width:10%;animation-delay:-3s}
-.obj-calendario{left:2%;bottom:14%;width:11.5%;animation-delay:-5s}
-.obj-escudo{right:20%;top:-9%;width:9%;animation-delay:-2s;display:none}
-@keyframes objFlota{50%{transform:translateY(-10px) rotate(2deg)}}
-.hero-art.dormida .obj{animation-play-state:paused}
-@media (max-width:640px){
-  .obj-euro{left:-1%;top:-9%;width:14%}.obj-check{right:0;top:-10%;width:13%}.obj-calendario{display:none}
-  .mv{width:25%}
-}
-@media (min-width:1100px){.obj-escudo{display:block}}
-@media (prefers-reduced-motion:reduce){.obj{animation:none}}
-html[data-movimiento=reducido] .obj{animation:none}
+.vitrina{--fondo:300px}
+/* Abierto y en reposo es un portátil plano, sin ninguna capa 3D (Safari no pinta bien un iframe dentro de capas 3D).
+   Solo mientras se cierra (.v3d, lo pone cierre.js) se activa la perspectiva. */
+.laptop{position:relative;margin-bottom:calc(var(--fondo) * .2)}
+.lt-escena{position:relative}
+.lt-tapa{position:relative;z-index:2;transform-origin:50% 100%}
+.v3d .laptop{perspective:1900px;perspective-origin:50% 20%}
+.v3d .lt-escena{transform-style:preserve-3d}
+.v3d .lt-tapa{transform-style:preserve-3d}
+/* Pantalla o dorso: se elige por ángulo (clase .cerrada), no con backface-visibility, que Safari ignora con iframes dentro */
+.lt-dorso{visibility:hidden}
+.lt-tapa.cerrada .lt-dorso{visibility:visible}
+.lt-tapa.cerrada .lt-screen{visibility:hidden}
+/* Cristal: un reflejo muy suave que se desliza al inclinar la tapa */
+.lt-reflejo{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.07) 50%,transparent 62%);
+  transform:translateX(-30%);will-change:transform}
+/* Dorso de aluminio oscuro con el logo; un brillo recorre la tapa al cerrarla */
+.lt-dorso{position:absolute;inset:0;overflow:hidden;border-radius:18px 18px 4px 4px;transform:rotateX(180deg) translateZ(1px);
+  background:linear-gradient(180deg,#34343c,#202026 45%,#17171b);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.06);display:grid;place-items:center}
+.lt-dorso img{position:relative;width:11%;height:auto;opacity:.8;filter:grayscale(1) brightness(1.6)}
+.lt-brillo{position:absolute;inset:-20% -10%;background:linear-gradient(100deg,transparent 35%,rgba(255,255,255,.09) 50%,transparent 65%);transform:translateX(-60%);will-change:transform}
+.lt-deck{position:absolute;left:-5%;right:-5%;top:calc(100% - 16px);height:var(--fondo);transform-origin:50% 0;transform:translateY(4px) rotateX(90deg);visibility:hidden;
+  border-radius:0 0 18px 18px;background:linear-gradient(#24242b,#18181d);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+.lt-teclas{position:absolute;left:8%;right:8%;top:8%;height:44%;border-radius:8px;background:#101013;
+  -webkit-mask:repeating-linear-gradient(90deg,#000 0 calc(100% / 14 - 3px),transparent 0 calc(100% / 14)),repeating-linear-gradient(#000 0 calc(100% / 6 - 3px),transparent 0 calc(100% / 6));
+  -webkit-mask-composite:source-in;mask:repeating-linear-gradient(90deg,#000 0 calc(100% / 14 - 3px),transparent 0 calc(100% / 14)),repeating-linear-gradient(#000 0 calc(100% / 6 - 3px),transparent 0 calc(100% / 6));mask-composite:intersect}
+.lt-pad{position:absolute;left:33%;right:33%;top:60%;height:30%;border-radius:10px;background:#1d1d23;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.lt-base{position:relative}
+.v3d .lt-base{transform:translateY(-12px) translateZ(var(--fondo)) scaleY(.7);transform-origin:50% 0}
+.v3d .lt-deck{visibility:visible}
+.lt-view .vt-capa{will-change:auto}
+/* Sombra en el suelo: más ancha y suave con la tapa abierta, más pegada al cerrarla */
+.lt-sombra{position:absolute;left:4%;right:4%;bottom:-6%;height:18%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.7),transparent);
+  pointer-events:none;will-change:transform,opacity}
 .vt-tabs,.vt-prueba{position:relative;z-index:3}
-.vitrina::before{inset:6% 0 0 0}
+
+/* El móvil, como un iPhone: marco de titanio, isla y botones laterales */
+.vt-movil{padding:6px;border-radius:30px;background:#060608;border:1.5px solid #4a4a52;
+  box-shadow:inset 0 0 0 1px #000,-20px 30px 60px -20px rgba(0,0,0,.9);will-change:translate,scale,opacity}
+.vt-movil.fuera{visibility:hidden}
+.mv-view{border-radius:24px}
+.mv-notch{top:12px;width:32%;height:11px}
+.mv-botones,.mv-botones::before,.mv-botones::after{position:absolute;width:3px;border-radius:2px;background:#3d3d45}
+.mv-botones{left:-4.5px;top:17%;height:6%}
+.mv-botones::before{content:"";left:0;top:170%;height:150%}
+.mv-botones::after{content:"";left:0;top:360%;height:150%}
+.vt-movil::after{content:"";position:absolute;right:-4.5px;top:27%;width:3px;height:13%;border-radius:2px;background:#3d3d45}
+@media (max-width:640px){
+  .vt-movil{border-radius:20px;padding:4px}
+  .mv-view{border-radius:16px}
+  .mv-notch{top:8px;height:7px}
+}
+
+/* ==========================================================
+   Estilo MacBook Pro (v123): aluminio gris espacial, marcos finos con muesca de cámara,
+   barra de menús, altavoces a los lados del teclado, trackpad grande y muesca para el dedo.
+   ========================================================== */
+.lt-screen{padding:8px 8px 11px;background:#000;border:1px solid #5c5c64;border-radius:17px 17px 5px 5px;
+  box-shadow:inset 0 0 0 1px #000,0 0 0 1px rgba(0,0,0,.6)}
+.lt-screen::before{display:none}
+.lt-menu{position:relative;display:flex;align-items:center;gap:7px;height:20px;padding:0 12px;background:rgba(22,22,27,.96);border-radius:8px 8px 0 0}
+.lt-menu i{width:16px;height:5px;border-radius:3px;background:#4b4b54}
+.lt-menu i:first-child{width:9px;height:9px;border-radius:50%;background:#6a6a74}
+.lt-menu .lt-notch{position:absolute;left:50%;top:-8px;width:15%;height:20px;margin-left:-7.5%;border-radius:0 0 10px 10px;background:#000}
+.lt-menu b{margin-left:auto;width:26px;height:5px;border-radius:3px;background:#4b4b54}
+.lt-bar{border-radius:0}
+.lt-dorso{border-radius:17px 17px 5px 5px;background:linear-gradient(180deg,#5d5d65,#44444b 45%,#34343a);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 0 0 1px rgba(255,255,255,.08)}
+.lt-dorso img{opacity:.9;filter:grayscale(1) brightness(2.3) contrast(.9)}
+.lt-deck{left:0;right:0;border-radius:0 0 20px 20px;background:linear-gradient(#585860,#44444b 70%,#3a3a40);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 0 0 1px rgba(255,255,255,.07)}
+.lt-teclas{left:11%;right:11%;top:7%;height:46%;background:#0b0b0e}
+.lt-deck::before,.lt-deck::after{content:"";position:absolute;top:9%;width:7%;height:38%;border-radius:4px;
+  background:radial-gradient(circle,#18181c 38%,transparent 42%) 0 0/6px 6px}
+.lt-deck::before{left:2.5%}.lt-deck::after{right:2.5%}
+.lt-pad{left:30%;right:30%;top:58%;height:34%;border-radius:9px;background:#4e4e56;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.lt-base{height:17px;margin:0;border-radius:0 0 18px 18px;background:linear-gradient(#6a6a72,#4c4c53 35%,#36363c 80%,#2a2a2f);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 18px 30px -12px rgba(0,0,0,.9)}
+.lt-base::after{width:17%;height:6px;border-radius:0 0 9px 9px;background:linear-gradient(#17171a,#2c2c32)}
+@media (max-width:640px){
+  .lt-screen{padding:5px 5px 7px;border-radius:12px 12px 4px 4px}
+  .lt-menu{height:14px;padding:0 8px;gap:5px}
+  .lt-menu i{width:10px;height:4px}.lt-menu i:first-child{width:6px;height:6px}
+  .lt-menu .lt-notch{top:-5px;height:14px;border-radius:0 0 7px 7px}
+  .lt-menu b{width:16px;height:4px}
+  .lt-dorso{border-radius:12px 12px 4px 4px}
+  .lt-base{height:12px}.lt-base::after{height:4px}
+}
+.hero-art{overflow-anchor:none}

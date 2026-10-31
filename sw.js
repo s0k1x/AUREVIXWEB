@@ -12,7 +12,7 @@
    - Fotos de los diseños: se guardan la primera vez y después
      salen al instante.
    ========================================================== */
-const VERSION = 'v125';
+const VERSION = 'v126';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
@@ -23,7 +23,7 @@ const ARCHIVOS = [
   'js/vendor/supabase.js', 'js/base/sinzoom.js', 'js/base/iconos.js', 'js/asistente/asistente.js', 'js/cuenta/proyecto.js', 'js/cuenta/negocio.js', 'js/cuenta/seo.js', 'js/base/sitio.js', 'js/base/cookies.js', 'js/base/apariencia.js', 'js/base/avisos.js', 'js/cuenta/colabora.js', 'js/cuenta/ajustes.js', 'js/base/otp.js', 'js/portada/calculadora.js', 'js/base/validar.js', 'js/cuenta/dominio.js', 'js/base/idioma.js', 'js/base/idioma-en.js', 'js/portada/publica.js', 'js/cuenta/vistaweb.js', 'js/cuenta/vista.js', 'js/portada/seguimiento.js', 'js/base/desplegable.js', 'js/base/zip.js', 'js/cuenta/brief.js', 'js/base/temporada.js', 'js/base/push.js', 'js/base/verificacion.js', 'js/portada/presupuesto.js',
   'ajustes', 'css/funciones.css', 'css/widgets.css', 'css/tema-claro.css', 'css/pulido.css', 'css/temporadas.css', 'css/iconos-vivos.css', 'css/paginas.css', 'js/portada/pagina.js', 'icons/nombre-oscuro.png',
   'fuentes/fuentes.css', 'fuentes/instrument-sans-latin-046090.woff2', 'fuentes/instrument-sans-latin-ext-284bb9.woff2', 'fuentes/bricolage-grotesque-latin-a97232.woff2', 'fuentes/bricolage-grotesque-latin-ext-a4fe79.woff2', 'fuentes/jetbrains-mono-latin-f70309.woff2', 'fuentes/jetbrains-mono-latin-ext-a83f17.woff2',
-  'manifest.json', 'icons/logo-a.png', 'icons/logo-a-verde.png', 'js/asistente/mascota.js', 'js/base/estado-web.js', 'js/portada/llamada.js', 'js/cuenta/firma.js', 'js/portada/antes-despues.js', 'js/base/borradores.js', 'js/portada/inclinar.js', 'js/portada/cierre.js', 'js/portada/escena-datos.js', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
+  'manifest.json', 'icons/logo-a.png', 'icons/logo-a-verde.png', 'js/asistente/mascota.js', 'js/base/estado-web.js', 'js/portada/llamada.js', 'js/cuenta/firma.js', 'js/portada/antes-despues.js', 'js/base/borradores.js', 'js/portada/inclinar.js', 'js/portada/cierre.js', 'js/portada/escena-datos.js', 'js/portada/personas.js', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', e => {
