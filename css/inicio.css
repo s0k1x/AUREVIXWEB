@@ -766,11 +766,18 @@ html[data-tema=claro] .gal-pal i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}
    Aquí, el estado abierto: es lo que se ve sin JavaScript o sin movimiento.
    ========================================================== */
 .vitrina{--fondo:300px}
-.laptop{position:relative;perspective:1900px;perspective-origin:50% 20%;margin-bottom:calc(var(--fondo) * .2)}
-.lt-escena{position:relative;transform-style:preserve-3d;transform:translateZ(calc(var(--fondo) * -.45)) rotateX(-9deg)}
-.lt-tapa{position:relative;z-index:2;transform-style:preserve-3d;transform-origin:50% 100%;transform:rotateX(10deg)}
-.lt-escena,.lt-tapa{will-change:transform}
-.lt-screen,.lt-dorso{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+/* Abierto y en reposo es un portátil plano, sin ninguna capa 3D (Safari no pinta bien un iframe dentro de capas 3D).
+   Solo mientras se cierra (.v3d, lo pone cierre.js) se activa la perspectiva. */
+.laptop{position:relative;margin-bottom:calc(var(--fondo) * .2)}
+.lt-escena{position:relative}
+.lt-tapa{position:relative;z-index:2;transform-origin:50% 100%}
+.v3d .laptop{perspective:1900px;perspective-origin:50% 20%}
+.v3d .lt-escena{transform-style:preserve-3d}
+.v3d .lt-tapa{transform-style:preserve-3d}
+/* Pantalla o dorso: se elige por ángulo (clase .cerrada), no con backface-visibility, que Safari ignora con iframes dentro */
+.lt-dorso{visibility:hidden}
+.lt-tapa.cerrada .lt-dorso{visibility:visible}
+.lt-tapa.cerrada .lt-screen{visibility:hidden}
 /* Cristal: un reflejo muy suave que se desliza al inclinar la tapa */
 .lt-reflejo{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.07) 50%,transparent 62%);
   transform:translateX(-30%);will-change:transform}
@@ -779,13 +786,16 @@ html[data-tema=claro] .gal-pal i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}
   background:linear-gradient(180deg,#34343c,#202026 45%,#17171b);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.06);display:grid;place-items:center}
 .lt-dorso img{position:relative;width:11%;height:auto;opacity:.8;filter:grayscale(1) brightness(1.6)}
 .lt-brillo{position:absolute;inset:-20% -10%;background:linear-gradient(100deg,transparent 35%,rgba(255,255,255,.09) 50%,transparent 65%);transform:translateX(-60%);will-change:transform}
-.lt-deck{position:absolute;left:-5%;right:-5%;top:calc(100% - 16px);height:var(--fondo);transform-origin:50% 0;transform:translateY(4px) rotateX(90deg);
+.lt-deck{position:absolute;left:-5%;right:-5%;top:calc(100% - 16px);height:var(--fondo);transform-origin:50% 0;transform:translateY(4px) rotateX(90deg);visibility:hidden;
   border-radius:0 0 18px 18px;background:linear-gradient(#24242b,#18181d);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
 .lt-teclas{position:absolute;left:8%;right:8%;top:8%;height:44%;border-radius:8px;background:#101013;
   -webkit-mask:repeating-linear-gradient(90deg,#000 0 calc(100% / 14 - 3px),transparent 0 calc(100% / 14)),repeating-linear-gradient(#000 0 calc(100% / 6 - 3px),transparent 0 calc(100% / 6));
   -webkit-mask-composite:source-in;mask:repeating-linear-gradient(90deg,#000 0 calc(100% / 14 - 3px),transparent 0 calc(100% / 14)),repeating-linear-gradient(#000 0 calc(100% / 6 - 3px),transparent 0 calc(100% / 6));mask-composite:intersect}
 .lt-pad{position:absolute;left:33%;right:33%;top:60%;height:30%;border-radius:10px;background:#1d1d23;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-.lt-base{position:relative;transform:translateY(-12px) translateZ(var(--fondo)) scaleY(.7);transform-origin:50% 0}
+.lt-base{position:relative}
+.v3d .lt-base{transform:translateY(-12px) translateZ(var(--fondo)) scaleY(.7);transform-origin:50% 0}
+.v3d .lt-deck{visibility:visible}
+.lt-view .vt-capa{will-change:auto}
 /* Sombra en el suelo: más ancha y suave con la tapa abierta, más pegada al cerrarla */
 .lt-sombra{position:absolute;left:4%;right:4%;bottom:-6%;height:18%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.7),transparent);
   pointer-events:none;will-change:transform,opacity}
