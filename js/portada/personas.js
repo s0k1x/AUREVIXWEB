@@ -57,8 +57,7 @@ export function iniciarPersonas() {
     const f = e.target.querySelector('iframe[data-src]'); if (f) { encender(f); f.src = f.dataset.src; f.removeAttribute('data-src'); }
     io.unobserve(e.target);
   }), { rootMargin: '300px' });
-  // Entrada escalonada (una vez) y respiración solo mientras la tarjeta se ve
+  // Entrada escalonada (una vez)
   const entra = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('viva'); entra.unobserve(e.target); } }), { threshold: .2 });
-  const vista = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('en-vista', e.isIntersecting)), { threshold: 0 });
-  nav.querySelectorAll('.pc').forEach(c => { io.observe(c); entra.observe(c); vista.observe(c); });
+  nav.querySelectorAll('.pc').forEach(c => { io.observe(c); entra.observe(c); });
 }

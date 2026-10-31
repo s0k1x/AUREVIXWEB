@@ -127,3 +127,8 @@
 .t-panel img{display:block;width:100%;height:auto;border-radius:20px;background:var(--card)}
 .t-panel figcaption{margin-top:14px;color:var(--muted);font-size:15px}
 @media (max-width:560px){.t-panel{margin-bottom:36px}.t-panel img{border-radius:14px}}
+
+/* El equipo sobre las cifras del hero (v128) */
+.t-der{display:grid;gap:28px;justify-items:end;align-self:end}
+.t-equipo{display:block;width:min(100%,420px);height:auto;pointer-events:none;user-select:none}
+@media (max-width:900px){.t-equipo{display:none}.t-der{justify-items:stretch}}
