@@ -313,3 +313,12 @@ html[data-tema=claro] .dzf-colores i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.1
   .dzf-fotos::-webkit-scrollbar{display:none}
   .dzf-fotos li{scroll-snap-align:center}
 }
+/* Captura de cada caso: no se enseña la imagen provisional de mShots; mientras, un fondo que respira */
+.caso-pant{position:relative;background:var(--card2)}
+.caso-pant img{opacity:0;transition:opacity .4s var(--e-out),object-position 7s cubic-bezier(.45,0,.25,1)}
+.caso-pant.lista img{opacity:1}
+.caso-pant.cargando::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.05) 50%,transparent 70%) 0 0/200% 100%;animation:casoCarga 1.6s linear infinite}
+@keyframes casoCarga{to{background-position:-200% 0}}
+.caso-pant.sin-captura img{display:none}
+.caso-pant.sin-captura::before{content:attr(data-dom);position:absolute;inset:0;display:grid;place-items:center;padding:20px;text-align:center;font-family:var(--fd);font-weight:700;font-size:clamp(20px,3vw,30px);letter-spacing:-.02em;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.caso-pant.cargando::after{animation:none}}

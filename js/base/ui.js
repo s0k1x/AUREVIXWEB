@@ -851,6 +851,17 @@ function estadoWeb() {
   if ((CONFIG.estadoWeb || 'normal') === 'normal' && !estadoCargado) return;
   import('./estado-web.js').then(m => { estadoCargado = true; m.aplicarEstadoWeb(); }).catch(e => console.warn(e));
 }
+/** Pantalla breve de «Actualizando» (logo, barra y texto) cuando la web o sus datos han cambiado desde la última visita */
+export function pantallaActualizando(ms = 900) {
+  if (document.getElementById('splash0') || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const s = document.createElement('div');
+  s.className = 'splash listo act vivo';
+  s.setAttribute('aria-hidden', 'true');
+  s.innerHTML = '<div class="splash-marca"><img class="sp-logo" src="icons/logo-a.png" alt="" width="56" height="56"><img class="sp-nombre" src="icons/nombre.png" alt="" width="190" height="19"><i class="sp-linea"><b></b></i></div>';
+  document.body.append(s);
+  setTimeout(() => { s.classList.add('out'); setTimeout(() => s.remove(), 600); }, ms);
+}
+
 export async function arrancar(pagina) {
   document.documentElement.classList.add('js');
   iniciarIdioma().catch(e => console.warn(e)).finally(() => document.documentElement.classList.remove('i18n-pendiente', 'i18n-anim'));
@@ -897,7 +908,10 @@ export async function arrancar(pagina) {
   try { await store.iniciar(); }
   catch (e) { console.error(e); toast('No se pudo conectar con el servidor', 'err'); }
   // Precios, avisos y formas de pago que ha cambiado el propietario (máx. 2,5 s de espera)
-  await Promise.race([cargarAjustesWeb(), new Promise(r => setTimeout(r, 2500))]);
+  let antes = null;
+  try { antes = localStorage.getItem('tm_ajustes_web'); } catch { /* sin almacenamiento */ }
+  const nuevos = await Promise.race([cargarAjustesWeb(), new Promise(r => setTimeout(r, 2500))]);
+  if (antes && nuevos && JSON.stringify(nuevos) !== antes) pantallaActualizando();
   estadoWeb();
   store.alCambiarUsuario(estadoWeb); // al entrar el equipo, desaparece la pantalla de mantenimiento
   aplicarTemporada(CONFIG.temporada, { animar: ['inicio', 'trabaja'].includes(pagina) });
@@ -917,7 +931,7 @@ export async function arrancar(pagina) {
       const recargar = () => {
         const a = document.activeElement;
         if (document.querySelector('dialog[open]') || (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) return false;
-        window.__swRecargado = 1; location.reload(); return true;
+        window.__swRecargado = 1; try { sessionStorage.setItem('tm_act', '1'); } catch { /* sin almacenamiento */ } location.reload(); return true;
       };
       if (!recargar()) document.addEventListener('visibilitychange', function una() { if (document.hidden) return; if (recargar()) document.removeEventListener('visibilitychange', una); });
     });
@@ -929,8 +943,13 @@ export async function arrancar(pagina) {
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (!habia || recargado || document.querySelector('dialog[open]') || document.activeElement?.matches('input,textarea,select')) return;
       recargado = true;
+      try { sessionStorage.setItem('tm_act', '1'); } catch { /* sin almacenamiento */ }
       location.reload();
     });
+    // Con la pestaña abierta mucho rato: se mira si hay versión nueva al volver a ella y cada 30 minutos
+    const mirar = () => navigator.serviceWorker.getRegistration().then(r => r?.update()).catch(() => {});
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) mirar(); });
+    setInterval(mirar, 30 * 60e3);
   }
   instalarPWA();
 }
