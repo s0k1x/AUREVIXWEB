@@ -18,8 +18,7 @@ import { comprobar as comprobarCampo } from '../base/validar.js';
 import { dominioHTML, montarDominio, leerDominio, sugerirNombre, marcarError } from '../cuenta/dominio.js';
 import { prefsPermitidas, consentidoExpreso } from '../base/cookies.js';
 import { iniciarInclinacion } from './inclinar.js';
-import { iniciarCierre } from './cierre.js';
-import { iniciarPersonas } from './personas.js';
+import { iniciarSectores } from './sectores.js';
 
 /* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor.
    Recordarlo 30 días en el navegador no es imprescindible para el visitante, así que solo se guarda
@@ -54,8 +53,7 @@ const leerAmigo = () => {
 
 await arrancar('inicio');
 iniciarInclinacion();
-iniciarCierre();
-iniciarPersonas();
+iniciarSectores();
 if (amigoSesion && CONFIG.referidos?.activo) setTimeout(() => toast(`Un amigo te recomienda: tienes un ${CONFIG.referidos.pct} % de descuento en tu primera web`, 'ok'), 1200);
 // El chat (y su robot) se prepara cuando el navegador queda libre: no compite con la carga de la portada
 if (window.self === window.top) ('requestIdleCallback' in window ? requestIdleCallback : f => setTimeout(f, 800))(() => iniciarChat(), { timeout: 2000 });
@@ -161,7 +159,7 @@ function mostrarVitrina(i) {
   });
   $('#vitrina').style.setProperty('--vt', p.c.accent);
   clearTimeout(vtTimer);
-  if (!vtPausa && vtVisible !== false && !document.hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) vtTimer = setTimeout(() => vitrinaCerrandose() ? vitrinaEsperar() : mostrarVitrina(vtIdx + 1), DURA);
+  if (!vtPausa && vtVisible !== false && !document.hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA);
 }
 $('#vtChips').addEventListener('click', e => { const b = e.target.closest('[data-vt]'); if (b) mostrarVitrina(+b.dataset.vt); });
 $('#vitrina').addEventListener('pointerenter', () => { vtPausa = true; clearTimeout(vtTimer); $('.hero-art').classList.add('pausa'); });
@@ -193,10 +191,6 @@ const arrancarVitrina = () => {
   vt.pc = capas($('#vtPc')); vt.mv = capas($('#vtMv'));
   escalaVitrina(); mostrarVitrina(0);
 };
-/* Mientras el portátil se cierra (cierre.js) la pantalla no cambia de diseño: espera a que vuelva a estar abierto */
-const vitrinaCerrandose = () => $('#vitrina').classList.contains('cerrando');
-const vitrinaEsperar = () => { clearTimeout(vtTimer); vtTimer = 0; };
-document.addEventListener('vitrina-abierta', () => reanudarVitrina());
 const reanudarVitrina = () => { if (vtArrancada && vtVisible && !vtPausa && !document.hidden) { clearTimeout(vtTimer); vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA); } };
 new IntersectionObserver(([e]) => {
   vtVisible = e.isIntersecting;
