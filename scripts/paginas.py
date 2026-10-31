@@ -592,7 +592,8 @@ MANT = pagina('mantenimiento', 'Mantenimiento mensual de tu web · AurevixWeb',
 # ==========================================================
 _dz = json.loads(subprocess.run(['node', '--input-type=module', '-e',
     "import { PLANTILLAS } from './js/portada/plantillas.js'; import { PLANES } from './config.js';"
-    "console.log(JSON.stringify({ t: PLANTILLAS.map(({ id, nombre, dominio, sector, desc, fuentes, c, secciones }) => ({ id, nombre, dominio, sector, desc, fuentes: { d: fuentes.d, b: fuentes.b }, c, secciones: secciones.map(x => x.tipo) })),"
+    "console.log(JSON.stringify({ t: PLANTILLAS.map(({ id, nombre, dominio, sector, desc, fuentes, c, secciones, hero }) => ({ id, nombre, dominio, sector, desc, fuentes: { d: fuentes.d, b: fuentes.b }, c, secciones: secciones.map(x => x.tipo),"
+    " fotos: [...new Set([hero?.img, ...secciones.flatMap(x => [x.img, ...(x.imgs || []), ...(x.items || []).map(i => i?.img)])].filter(n => typeof n === 'number'))].slice(0, 5) })),"
     " p: PLANES.map(({ id, plantillas }) => ({ id, plantillas })) }))"], cwd=RAIZ, capture_output=True, text=True, check=True).stdout)
 DISENOS = _dz['t']
 QUE_TRAE = {
@@ -621,6 +622,13 @@ def ficha(d):
     desc = f'{d["desc"]} Diseño de partida {d["nombre"]} de AurevixWeb, adaptado a tu marca y a precio cerrado.'
     producto = {'@context': 'https://schema.org', '@type': 'Service', 'name': titulo, 'description': desc, 'areaServed': {'@type': 'Country', 'name': 'España'},
                 'provider': {'@id': f'{DOMINIO}/#negocio', '@type': 'ProfessionalService', 'name': 'AurevixWeb', 'url': f'{DOMINIO}/'}}
+    foto = lambda n, w: f'https://images.pexels.com/photos/{n}/pexels-photo-{n}.jpeg?auto=compress&cs=tinysrgb&w={w}'
+    fotos = ''.join(f'<li><img src="{foto(n, 900)}" srcset="{foto(n, 600)} 600w, {foto(n, 900)} 900w, {foto(n, 1400)} 1400w" sizes="(max-width:900px) 85vw, 33vw" width="900" height="675" loading="lazy" decoding="async" alt=""></li>' for n in d.get('fotos', [])[:4])
+    banda = f'''
+    <section class="pg-sec dzf-fotos-sec" aria-label="Fotos de ejemplo del diseño">
+      <ul class="dzf-fotos">{fotos}</ul>
+      <p class="wrap dzf-fotos-pie">Fotos de ejemplo de Pexels, de uso libre. En tu web van las tuyas o las que elijamos contigo.</p>
+    </section>''' if fotos else ''
     cuerpo = f'''    <section class="pg-hero">
       <div class="wrap pg-hero-grid">
         <div class="pg-hero-txt">
@@ -643,7 +651,7 @@ def ficha(d):
         </figure>
       </div>
     </section>
-
+{banda}
     <section class="pg-sec">
       <div class="wrap dzf-grid">
         <div class="pg-sec-head"><h2>Qué trae</h2><p class="lead">Las secciones con las que empieza. Quitamos, añadimos o reordenamos las que necesites.</p></div>

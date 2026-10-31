@@ -303,3 +303,13 @@ html[data-tema=claro] .rv-cat.mal .rv-anillo,html[data-tema=claro] .rv-cat.mal .
   .dzf-colores{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 html[data-tema=claro] .dzf-colores i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}
+/* Franja de fotos de la ficha: grandes, de borde a borde y deslizables en el móvil */
+.dzf-fotos-sec{padding-top:0}
+.dzf-fotos{list-style:none;margin:0;padding:0 var(--gutter);display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:12px}
+.dzf-fotos img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:16px;background:var(--card)}
+.dzf-fotos-pie{margin-top:14px;color:var(--muted);font-size:14px}
+@media (max-width:900px){
+  .dzf-fotos{grid-auto-columns:82%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+  .dzf-fotos::-webkit-scrollbar{display:none}
+  .dzf-fotos li{scroll-snap-align:center}
+}

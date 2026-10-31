@@ -1590,7 +1590,7 @@ $$('.faq details').forEach((d, i) => {
   const t = document.createElement('span');
   t.className = 'faq-t';
   t.append(...s.childNodes);
-  s.innerHTML = `<span class="faq-n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>`;
+  s.innerHTML = `<span class="faq-n" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>`;
   s.append(t);
   d.classList.add('faq-it');
 });

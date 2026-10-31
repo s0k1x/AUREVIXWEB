@@ -730,6 +730,7 @@ export function fiesta(titulo = 'Hecho', texto = '') {
   try { el.showPopover?.(); } catch { /* ya visible */ }
   const cara = el.querySelector('.masc');
   requestAnimationFrame(() => el.classList.add('on'));
+  document.documentElement.classList.add('con-fiesta');
   setTimeout(() => cara.isConnected && estadoMascota(cara, 'feliz'), 280);
   const DURA = sinMovimiento() ? 3200 : 3400;
   let fuera = 0;
@@ -737,6 +738,7 @@ export function fiesta(titulo = 'Hecho', texto = '') {
     clearTimeout(fuera);
     if (enFiesta === quitar) enFiesta = null;
     el.classList.remove('on');
+    document.documentElement.classList.remove('con-fiesta');
     setTimeout(() => { try { el.hidePopover?.(); } catch {} el.remove(); }, sinMovimiento() ? 0 : 360);
   };
   enFiesta = quitar;
