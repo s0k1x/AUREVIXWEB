@@ -4,8 +4,8 @@
    Google (gratis, sin claves; en español), como se ve en un móvil:
    velocidad, accesibilidad, buenas prácticas y SEO, y lo que conviene
    mejorar. No se guarda nada: la dirección va de su navegador a Google.
-   Si un día hay muchas revisiones, se puede añadir una clave de la API
-   de Google en config.js → pagespeedKey (restringida a aurevixweb.es).
+   Con una clave de la API de Google (Ajustes → Negocio → Revisa tu web, restringida a
+   aurevixweb.es) el cupo es propio; sin ella se comparte y Google a veces responde 429.
    ========================================================== */
 import { CONFIG } from '../../config.js';
 import { $, esc, icono, toast } from '../base/ui.js';
@@ -128,13 +128,24 @@ export function iniciarRevision() {
         if (CONFIG.pagespeedKey) q.set('key', CONFIG.pagespeedKey);
         return fetch(`${API}?${q}`, { signal: ctl.signal });
       };
-      // La nuestra va en paralelo y, si falla, la revisión sale igual (sin comparación)
-      const refNuestra = /aurevixweb\.es/i.test(url) ? Promise.resolve(null) : pedir(NUESTRA).then(x => (x.ok ? x.json() : null)).then(j => j?.lighthouseResult || null).catch(() => null);
-      const r = await pedir(url);
-      const j = await r.json().catch(() => ({}));
-      if (r.status === 429) throw new Error('Ahora mismo hay muchas revisiones. Prueba de nuevo en un minuto.');
+      // Si Google está ocupado (cupo compartido sin clave), se reintenta solo dos veces antes de rendirse
+      const espera = ms => new Promise(ok => setTimeout(ok, ms));
+      let r, j;
+      for (const pausa of [0, 4000, 9000]) {
+        if (pausa) {
+          const b = res.querySelector('.rv-carga b');
+          if (b) b.textContent = 'Google está muy ocupado, lo intentamos otra vez…';
+          await espera(pausa);
+        }
+        r = await pedir(url);
+        j = await r.json().catch(() => ({}));
+        if (r.status !== 429) break;
+      }
+      if (r.status === 429) throw new Error('Google tiene ahora mismo demasiadas revisiones. Prueba de nuevo en un par de minutos.');
+      // La nuestra, después (no a la vez: así no se gasta el doble de cupo en el mismo momento). Si falla, sale sin comparación
+      const refNuestra = /aurevixweb\.es/i.test(url) ? null : await pedir(NUESTRA).then(x => (x.ok ? x.json() : null)).then(x => x?.lighthouseResult || null).catch(() => null);
       if (!r.ok || !j.lighthouseResult) throw new Error('No hemos podido analizar esa web. Comprueba que la dirección es correcta y que la web está publicada.');
-      res.innerHTML = pintar(j, url, await refNuestra);
+      res.innerHTML = pintar(j, url, refNuestra);
       res.querySelectorAll('i[data-i]').forEach(i => (i.outerHTML = icono(i.dataset.i)));
       res.querySelector('h2')?.focus?.();
     } catch (err) {

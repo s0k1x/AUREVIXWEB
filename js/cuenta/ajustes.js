@@ -61,7 +61,7 @@ const GRUPOS_NEGOCIO = [
   ['Ventas y precios', ['Precios y plazos', 'Extras', 'Descuento de bienvenida', 'Cupones de descuento', 'Recomienda a un amigo']],
   ['Atención al cliente', ['Contacto', 'Llamadas', 'Asistente', 'Trustpilot']],
   ['Cobros y equipo', ['Cobros y comisiones', 'Creadores de vídeo']],
-  ['Legal y seguridad', ['Datos legales', 'Verificación anti-robots (Cloudflare)']]
+  ['Legal y seguridad', ['Datos legales', 'Verificación anti-robots (Cloudflare)', 'Revisa tu web (Google PageSpeed)']]
 ];
 function agruparNegocio() {
   const form = $('#fNeg', body);
@@ -408,6 +408,8 @@ async function negocio() {
       ${interruptor({ id: 'tsActivo', titulo: 'Activar la verificación', checked: !!a.turnstile?.activo })}
       ${texto('tsSiteKey', 'Clave del sitio (Site Key)', a.turnstile?.siteKey || '', 'autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="0x4AAAA…"', 'Es la clave pública. La secreta nunca va aquí.')}
       ${interruptor({ id: 'tsLogin', titulo: 'Pedirla también al entrar a la cuenta', texto: 'Actívalo solo si has activado el captcha (Turnstile) en Supabase → Authentication → Attack Protection.', checked: !!a.turnstile?.login })}`)}
+    ${bloque('Revisa tu web (Google PageSpeed)', 'La herramienta gratuita «Revisa tu web» mide las webs con Google. Sin clave, Google comparte un cupo pequeño entre todo el mundo y a veces responde «muchas revisiones». Con una clave propia y gratuita el cupo es vuestro (unas 25.000 revisiones al día).', `
+      ${texto('psKey', 'Clave de la API de PageSpeed Insights', a.pagespeedKey || '', 'autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="AIza…"', 'Créala en console.cloud.google.com → APIs y servicios → activa «PageSpeed Insights API» → Credenciales → Crear clave de API. Restríngela a «Sitios web» con aurevixweb.es/* y solo a la API de PageSpeed: así es segura aunque se vea en la web.')}`)}
     ${bloque('Creadores de vídeo', 'Pago fijo por cada vídeo aprobado y publicado. Se muestra en «Trabaja con nosotros» y en el panel de cada creador.', `
       <div class="aj-nums">
         <label class="aj-num"><span>Pago por vídeo (€)</span><input type="number" min="0" step="1" name="vPrecio" value="${a.videos.precio}"></label>
@@ -440,7 +442,7 @@ async function negocio() {
     const o = ORIGINAL.config;
     await guardar({
       estadoWeb: 'normal', mensajeMant: '', aviso: o.aviso, anuncio: o.anuncio, aceptarPedidos: o.aceptarPedidos, mensajeCerrado: o.mensajeCerrado, horario: o.horario, respuesta: o.respuesta, email: o.email,
-      senal: o.senal, comision: o.comision, urgente: o.urgente, temporada: o.temporada, pagos: o.pagos, trustpilot: o.trustpilot, referidos: o.referidos, casos: CONFIG.casos || [], turnstile: { ...CONFIG.turnstile }, bienvenida: o.bienvenida, videos: o.videos, redes: o.redes, asistente: { activo: o.asistente.activo, saludo: o.asistente.saludo },
+      senal: o.senal, comision: o.comision, urgente: o.urgente, temporada: o.temporada, pagos: o.pagos, trustpilot: o.trustpilot, referidos: o.referidos, casos: CONFIG.casos || [], turnstile: { ...CONFIG.turnstile }, pagespeedKey: CONFIG.pagespeedKey || '', bienvenida: o.bienvenida, videos: o.videos, redes: o.redes, asistente: { activo: o.asistente.activo, saludo: o.asistente.saludo },
       planes: Object.fromEntries(ORIGINAL.planes.map(p => [p.id, { precio: p.precio, entrega: p.entrega, dias: p.dias, activo: true, popular: !!p.popular }])),
       extras: Object.fromEntries(ORIGINAL.extras.map(x => [x.id, { precio: x.precio, activo: true }]))
     }, null, $('#resetNeg'));
@@ -477,6 +479,7 @@ async function negocio() {
       email: v('email') || CONFIG.email, horario: v('horario'), respuesta: v('respuesta'),
       redes: { instagram: v('instagram'), tiktok: v('tiktok'), linkedin: v('linkedin'), whatsapp: v('whatsapp').replace(/\D/g, '') }, trustpilot: v('trustpilot'),
       turnstile: { activo: $('#tsActivo').checked, siteKey: v('tsSiteKey'), login: $('#tsLogin').checked },
+      pagespeedKey: v('psKey').replace(/[^\w-]/g, ''),
       referidos: { activo: $('#refActivo').checked, pct: Math.min(50, Math.max(1, +v('refPct') || 10)), premio: v('refPremio') }, casos,
       bienvenida: { activo: $('#bvActivo').checked, codigo: v('bvCodigo').toUpperCase().replace(/[^A-Z0-9_-]/g, '') || ORIGINAL.config.bienvenida.codigo, pct: Math.min(100, Math.max(1, +v('bvPct') || 10)) },
       videos: { precio: Math.max(0, +v('vPrecio') || 0), bonus: Math.max(0, +v('vBonus') || 0), visitas: Math.max(0, +v('vVisitas') || 0), maxMes: Math.max(1, +v('vMax') || 1) },
