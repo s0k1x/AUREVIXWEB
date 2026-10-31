@@ -12,18 +12,18 @@
    - Fotos de los diseños: se guardan la primera vez y después
      salen al instante.
    ========================================================== */
-const VERSION = 'v99';
+const VERSION = 'v102';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
 const ARCHIVOS = [
   './', 'trabaja-con-nosotros', 'panel', 'diseno', 'terminos-y-privacidad', 'sin-conexion', 'vista-previa',
   'css/style.css', 'css/componentes.css', 'css/animaciones.css', 'css/inicio.css', 'css/panel.css', 'css/trabaja.css', 'config.js',
-  'js/app.js', 'js/ui.js', 'js/store.js', 'js/plantillas.js', 'js/panel.js', 'js/pago.js', 'js/efectos.js',
-  'js/vendor/supabase.js', 'js/sinzoom.js', 'js/iconos.js', 'js/asistente.js', 'js/proyecto.js', 'js/negocio.js', 'js/seo.js', 'js/sitio.js', 'js/cookies.js', 'js/apariencia.js', 'js/avisos.js', 'js/colabora.js', 'js/ajustes.js', 'js/otp.js', 'js/calculadora.js', 'js/validar.js', 'js/dominio.js', 'js/idioma.js', 'js/idioma-en.js', 'js/publica.js', 'js/vistaweb.js', 'js/vista.js', 'js/desplegable.js', 'js/zip.js', 'js/brief.js', 'js/temporada.js', 'js/push.js', 'js/verificacion.js', 'js/presupuesto.js',
-  'ajustes', 'css/funciones.css', 'css/widgets.css', 'css/tema-claro.css', 'css/pulido.css', 'css/temporadas.css', 'css/iconos-vivos.css', 'css/paginas.css', 'js/pagina.js', 'icons/nombre-oscuro.png',
+  'js/portada/app.js', 'js/base/ui.js', 'js/base/store.js', 'js/portada/plantillas.js', 'js/cuenta/panel.js', 'js/cuenta/pago.js', 'js/base/efectos.js',
+  'js/vendor/supabase.js', 'js/base/sinzoom.js', 'js/base/iconos.js', 'js/asistente/asistente.js', 'js/cuenta/proyecto.js', 'js/cuenta/negocio.js', 'js/cuenta/seo.js', 'js/base/sitio.js', 'js/base/cookies.js', 'js/base/apariencia.js', 'js/base/avisos.js', 'js/cuenta/colabora.js', 'js/cuenta/ajustes.js', 'js/base/otp.js', 'js/portada/calculadora.js', 'js/base/validar.js', 'js/cuenta/dominio.js', 'js/base/idioma.js', 'js/base/idioma-en.js', 'js/portada/publica.js', 'js/cuenta/vistaweb.js', 'js/cuenta/vista.js', 'js/base/desplegable.js', 'js/base/zip.js', 'js/cuenta/brief.js', 'js/base/temporada.js', 'js/base/push.js', 'js/base/verificacion.js', 'js/portada/presupuesto.js',
+  'ajustes', 'css/funciones.css', 'css/widgets.css', 'css/tema-claro.css', 'css/pulido.css', 'css/temporadas.css', 'css/iconos-vivos.css', 'css/paginas.css', 'js/portada/pagina.js', 'icons/nombre-oscuro.png',
   'fuentes/fuentes.css', 'fuentes/instrument-sans-latin-046090.woff2', 'fuentes/instrument-sans-latin-ext-284bb9.woff2', 'fuentes/bricolage-grotesque-latin-a97232.woff2', 'fuentes/bricolage-grotesque-latin-ext-a4fe79.woff2', 'fuentes/jetbrains-mono-latin-f70309.woff2', 'fuentes/jetbrains-mono-latin-ext-a83f17.woff2',
-  'manifest.json', 'icons/logo-a.png', 'icons/logo-a-verde.png', 'js/mascota.js', 'js/estado-web.js', 'js/llamada.js', 'js/firma.js', 'js/antes-despues.js', 'js/borradores.js', 'js/inclinar.js', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
+  'manifest.json', 'icons/logo-a.png', 'icons/logo-a-verde.png', 'js/asistente/mascota.js', 'js/base/estado-web.js', 'js/portada/llamada.js', 'js/cuenta/firma.js', 'js/portada/antes-despues.js', 'js/base/borradores.js', 'js/portada/inclinar.js', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', e => {
@@ -117,7 +117,7 @@ async function fotoRapida(req) {
   return res;
 }
 
-// Notificaciones push (las manda la función «notificar» de Supabase, ver js/push.js)
+// Notificaciones push (las manda la función «notificar» de Supabase, ver js/base/push.js)
 self.addEventListener('push', e => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch { d = { texto: e.data && e.data.text() }; }

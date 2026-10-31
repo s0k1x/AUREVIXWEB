@@ -442,7 +442,7 @@ h1 em,h2 em{font-style:italic;color:var(--accent)}
 <body>
 <div id="site"></div>
 <script type="module">
-  import { pintarPlantilla } from './js/plantillas.js';
+  import { pintarPlantilla } from './js/portada/plantillas.js';
   const q = new URLSearchParams(location.search);
   pintarPlantilla(document.getElementById('site'), q.get('t'), { nombre: q.get('n'), color: q.get('c'), mini: q.get('m') === '1', exportar: q.get('x') === '1' });
   if (window.top === window && q.get('x') !== '1') {

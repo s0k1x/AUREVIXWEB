@@ -272,7 +272,7 @@
 
   <script type="module">
     import { CONFIG } from './config.js';
-    import { $$, arrancar } from './js/ui.js';
+    import { $$, arrancar } from './js/base/ui.js';
     await arrancar('terminos');
     // Los datos se pintan después de cargar los ajustes del negocio (pueden cambiarse desde Ajustes → Negocio)
     const L = CONFIG.legal || {};

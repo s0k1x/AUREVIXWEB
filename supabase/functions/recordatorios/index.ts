@@ -1,7 +1,7 @@
 // ==========================================================
 //  RECORDATORIOS AUTOMÁTICOS E INFORME MENSUAL · función de Supabase
 //  La llama cada día la tarea programada «aurevix-recordatorios»
-//  (supabase/migraciones/funciones-v94.sql) con su firma secreta (cabecera x-cron,
+//  (supabase/migraciones/v94-funciones.sql) con su firma secreta (cabecera x-cron,
 //  guardada en Vault). Envía por correo (Brevo):
 //  - Cuota de mantenimiento: aviso 3 días antes y, si vence, uno más.
 //  - Contenido pendiente (etapa «Contenido») y web lista para revisar

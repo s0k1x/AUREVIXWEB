@@ -26,14 +26,12 @@ html[data-tema=claro] .demo-box p{color:#6b5a20}
   html[data-tema=claro] .nav{background:rgba(246,245,240,.97)}
 }
 html[data-tema=claro] .empty .em,html[data-tema=claro] .gate .em,html[data-tema=claro] .estado-cand .big{border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);box-shadow:0 10px 30px -12px color-mix(in srgb,var(--accent) 40%,transparent)}
-html[data-tema=claro] .vj > span{border:1px solid color-mix(in srgb,var(--accent) 20%,transparent)}
 /* --- componentes.css --- */
 html[data-tema=claro] .btn-primary{box-shadow:0 8px 18px -10px color-mix(in srgb,var(--accent) 60%,transparent)}
 html[data-tema=claro] .btn-primary:hover{box-shadow:0 12px 26px -10px color-mix(in srgb,var(--accent) 70%,transparent)}
-html[data-tema=claro] .opt > span{background:rgba(20,20,26,0.036);color:rgba(20,20,26,0.648);box-shadow:rgba(0,0,0,.25) 0 2px 1px 0 inset,rgba(20,20,26,0.072) 0 1px 1px 0}
-html[data-tema=claro] .opt > span:hover{background:#e6e4dc;color:#16161b;box-shadow:rgba(0,0,0,.3) 0 -4px 1px 0 inset,rgba(20,20,26,0.09) 0 -1px 1px 0,rgba(0,0,0,.2) 0 2px 4px 1px}
-html[data-tema=claro] .opt input:checked + span{background:#d8eeac;color:#24400a;box-shadow:rgba(0,0,0,.3) 0 -4px 1px 0 inset,rgba(20,20,26,0.153) 0 -1px 1px 0,rgba(0,0,0,.2) 0 2px 4px 1px}
-html[data-tema=claro] .opt input:checked + span:hover{background:#cde79a}
+html[data-tema=claro] .opt > span{background:rgba(20,20,26,.05);color:rgba(20,20,26,.72)}
+html[data-tema=claro] .opt > span:hover{background:rgba(20,20,26,.09);color:#16161b}
+html[data-tema=claro] .opt input:checked + span{background:var(--accent);color:#fff}
 html[data-tema=claro] .slider{background:#d3d1c8}
 html[data-tema=claro] .switch-row{background:rgba(20,20,26,0.018)}
 html[data-tema=claro] .gl-checkbox__box{background:rgba(20,20,26,0.045);border:1px solid rgba(20,20,26,0.126)}
@@ -97,9 +95,6 @@ html[data-tema=claro] .tarea:hover{background:rgba(20,20,26,0.036)}
 html[data-tema=claro] .enlace{background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 10%,transparent),transparent 60%),var(--card);border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
 /* --- trabaja.css --- */
 html[data-tema=claro] .pct{box-shadow:0 10px 40px -10px color-mix(in srgb,var(--accent) 60%,transparent)}
-html[data-tema=claro] .t-stats div{background:rgba(20,20,26,0.027)}
-html[data-tema=claro] .t-stats div:first-child span{color:rgba(20,20,26,.65)}
-html[data-tema=claro] .perfil li{color:#36342f}
 html[data-tema=claro] .rango input::-webkit-slider-thumb{box-shadow:0 0 0 1px var(--accent),0 6px 20px color-mix(in srgb,var(--accent) 40%,transparent)}
 html[data-tema=claro] .calc-barra{background:rgba(255,255,255,.94)}
 html[data-tema=claro] .faq details[open]{border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
