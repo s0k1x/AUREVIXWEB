@@ -224,6 +224,9 @@ PASOS = [('Eliges', 'el tipo de web y este diseño de partida, y respondes un cu
          ('Revisas y publicamos', 'Ves la vista previa, pides cambios y, cuando das el visto bueno, se publica.')]
 
 
+FOTOS_ALT = {'filo': 'Dueño de una barbería mirando su móvil junto a la barra de nogal', 'calma': 'Esteticista con una tableta en una cabina de tratamientos luminosa y tranquila', 'brasa': 'Cocinero mirando su móvil junto al horno de leña de un restaurante', 'kiosko': 'Dueño de una tienda online preparando un paquete con el portátil abierto', 'pulso': 'Entrenador personal revisando su móvil en un gimnasio con luz tenue', 'lienzo': 'Fotógrafo en su estudio con el portátil y copias de sus fotos sobre la mesa'}
+
+
 def sector(s, todos):
     migas_html, migas_ld = migas(('Inicio', './'), ('Webs por sector', ''), (s['corto'], ''))
     migas_html = migas_html.replace('<span aria-current="page">Webs por sector</span>', '<span>Webs por sector</span>')
@@ -255,6 +258,8 @@ def sector(s, todos):
         </figure>
       </div>
     </section>
+
+    <figure class="wrap pg-foto"><img src="img/fotos/{s["plantilla"]}.webp" width="1280" height="720" alt="{e(FOTOS_ALT[s["plantilla"]])}" decoding="async"></figure>
 
     <section class="pg-sec">
       <div class="wrap">

@@ -4,6 +4,13 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  // v124 · fotos de sector
+  'Dueño de una barbería mirando su móvil junto a la barra de nogal': 'Barbershop owner checking his phone at a walnut counter',
+  'Esteticista con una tableta en una cabina de tratamientos luminosa y tranquila': 'Aesthetician with a tablet in a bright, calm treatment room',
+  'Cocinero mirando su móvil junto al horno de leña de un restaurante': 'Chef checking his phone next to a restaurant wood-fired oven',
+  'Dueño de una tienda online preparando un paquete con el portátil abierto': 'Online store owner packing a parcel with the laptop open',
+  'Entrenador personal revisando su móvil en un gimnasio con luz tenue': 'Personal trainer checking his phone in a dimly lit gym',
+  'Fotógrafo en su estudio con el portátil y copias de sus fotos sobre la mesa': 'Photographer in his studio with a laptop and prints of his photos on the desk',
   // v112 · Revisa tu web
   'Google está muy ocupado, lo intentamos otra vez…': 'Google is very busy, trying again…',
   'Google tiene ahora mismo demasiadas revisiones. Prueba de nuevo en un par de minutos.': 'Google has too many checks right now. Please try again in a couple of minutes.',
