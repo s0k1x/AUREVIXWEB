@@ -81,5 +81,6 @@ export function iniciarCookies() {
   document.addEventListener('click', e => {
     if (e.target.closest('[data-cookies]')) { e.preventDefault(); abrirCookies(); }
   });
-  if (!consentimiento()) setTimeout(() => pintar(false), 900);
+  // Dentro de otra página (la vista en vivo de «Webs publicadas») el aviso ya lo ha visto la página de fuera
+  if (!consentimiento() && window.self === window.top) setTimeout(() => pintar(false), 900);
 }

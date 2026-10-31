@@ -257,10 +257,7 @@ html[data-tema=claro] .rv-cat.mal .rv-anillo,html[data-tema=claro] .rv-cat.mal .
 .caso-bar{display:flex;gap:5px;padding:7px 10px;border-bottom:1px solid var(--line)}
 .caso-bar i{width:7px;height:7px;border-radius:50%;background:var(--line2)}
 .caso-pant{display:block;aspect-ratio:16/10;overflow:hidden}
-.caso-pant img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 0;transition:object-position 7s cubic-bezier(.45,0,.25,1)}
-.caso:hover .caso-pant img,.caso:focus-visible .caso-pant img{object-position:50% 100%;transition-duration:9s}
-@media (hover:none){.caso.in .caso-pant img{object-position:50% 100%;transition-delay:.6s;transition-duration:10s}}
-@media (prefers-reduced-motion:reduce){.caso-pant img{transition:none}}
+
 /* Revisa tu web: comparación con una web nuestra medida a la vez */
 .rv-cmp{display:grid;gap:10px;padding:18px;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
 .rv-cmp-cab,.rv-cmp-f{display:grid;grid-template-columns:minmax(110px,1fr) 2fr 2fr;gap:14px;align-items:center}
@@ -273,13 +270,13 @@ html[data-tema=claro] .rv-cat.mal .rv-anillo,html[data-tema=claro] .rv-cat.mal .
 .rv-cmp-b b{width:30px;text-align:right;font-family:var(--fd);font-variant-numeric:tabular-nums}
 @media (max-width:560px){.rv-cmp-cab,.rv-cmp-f{grid-template-columns:1fr 1fr;row-gap:4px}.rv-cmp-cab span,.rv-cmp-f > span{grid-column:1/-1}}
 /* Portada: «¿Cómo está tu web actual?» */
-.rv-portada{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center;padding:clamp(22px,4vw,36px);border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.rv-portada{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center;padding:clamp(22px,4vw,36px);border-radius:var(--r);background:var(--card)}
 .rv-portada h2{font-size:clamp(24px,3.4vw,32px);letter-spacing:-.02em;margin:0 0 8px}
 .rv-portada p{margin:0;color:var(--muted)}
 .rv-portada form{display:flex;gap:10px}
-.rv-portada input{flex:1;min-width:0;height:50px;padding:0 16px;border-radius:12px;border:1px solid var(--line2);background:var(--field);color:var(--text);font:inherit;font-size:16px}
+.rv-portada input{flex:1 1 auto;min-width:0;height:52px;padding:0 20px;border-radius:999px;border:1px solid var(--line2);background:var(--field);color:var(--text);font:inherit;font-size:16px}
 .rv-portada input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-@media (max-width:760px){.rv-portada{grid-template-columns:1fr}.rv-portada form{flex-direction:column}.rv-portada .btn{width:100%}}
+@media (max-width:760px){.rv-portada{grid-template-columns:1fr}.rv-portada form{flex-direction:column}.rv-portada input{flex:none;width:100%}.rv-portada .btn{width:100%}}
 
 /* ---------- Ficha de cada diseño (diseno-filo…) ---------- */
 .dzf-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:56px;align-items:start}
@@ -313,12 +310,19 @@ html[data-tema=claro] .dzf-colores i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.1
   .dzf-fotos::-webkit-scrollbar{display:none}
   .dzf-fotos li{scroll-snap-align:center}
 }
-/* Captura de cada caso: no se enseña la imagen provisional de mShots; mientras, un fondo que respira */
+
+/* Cada caso: su web en vivo, reducida a 1280 px de ancho, que se recorre sola al pasar por encima (o al verse en el móvil) */
+.caso-bar{align-items:center}
+.caso-bar em{margin-left:8px;font-style:normal;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .caso-pant{position:relative;background:var(--card2)}
-.caso-pant img{opacity:0;transition:opacity .4s var(--e-out),object-position 7s cubic-bezier(.45,0,.25,1)}
-.caso-pant.lista img{opacity:1}
+.caso-pant iframe{position:absolute;left:0;top:0;width:1280px;height:2200px;border:0;transform-origin:0 0;transform:scale(var(--s,.3));pointer-events:none;opacity:0;transition:opacity .45s var(--e-out)}
+.caso-pant.lista iframe{opacity:1}
 .caso-pant.cargando::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.05) 50%,transparent 70%) 0 0/200% 100%;animation:casoCarga 1.6s linear infinite}
 @keyframes casoCarga{to{background-position:-200% 0}}
-.caso-pant.sin-captura img{display:none}
-.caso-pant.sin-captura::before{content:attr(data-dom);position:absolute;inset:0;display:grid;place-items:center;padding:20px;text-align:center;font-family:var(--fd);font-weight:700;font-size:clamp(20px,3vw,30px);letter-spacing:-.02em;color:var(--muted)}
-@media (prefers-reduced-motion:reduce){.caso-pant.cargando::after{animation:none}}
+@keyframes casoRecorre{to{transform:translateY(var(--d,0)) scale(var(--s,.3))}}
+@media (hover:hover){.caso:hover .caso-pant.lista iframe,.caso:focus-visible .caso-pant.lista iframe{animation:casoRecorre 9s ease-in-out .2s both}}
+@media (hover:none){.caso.in .caso-pant.lista iframe{animation:casoRecorre 12s ease-in-out .8s infinite alternate}}
+@media (prefers-reduced-motion:reduce){.caso-pant iframe{animation:none!important}.caso-pant.cargando::after{animation:none}}
+/* La portada vista dentro de otra (vista en vivo de un caso): solo el contenido */
+html.incrustada #chat,html.incrustada .arriba,html.incrustada .demo-banner,html.incrustada .splash{display:none!important}
+.caso > small{font-family:var(--fb);text-transform:none;letter-spacing:0;font-size:14px;color:var(--muted)}

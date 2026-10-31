@@ -111,7 +111,7 @@ function anotar(accion) {
 
 /** Al cargar una página pública: primera visita, pase caducado o navegación a ritmo de robot */
 export async function puertaDeEntrada() {
-  if (!verificacionActiva()) return;
+  if (!verificacionActiva() || window.self !== window.top) return; // dentro de un marco ya se verificó la página de fuera
   const rapido = anotar('pagina');
   if (!rapido && Date.now() - leerPase() < DURA) return;
   // Hasta que se compruebe, la web no se enseña: la verificación es lo primero que se ve
