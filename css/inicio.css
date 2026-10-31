@@ -756,3 +756,57 @@ html[data-tema=claro] .gal-pal i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}
   .prev-bar .btn{order:2}
   .prev-bar .icon-btn{order:3}
 }
+
+/* ==========================================================
+   Portátil y móvil con el scroll (v120)
+   Al bajar, la tapa del portátil se cierra sobre el teclado y el móvil
+   pasa delante con el aviso «Tu web ya está publicada»; al subir se
+   abre otra vez. --p (0 abierto → 1 cerrado) lo pone js/portada/cierre.js.
+   Solo transform y opacity. Sin movimiento: se queda abierto.
+   ========================================================== */
+.vitrina{--p:0;--fondo:300px}
+.laptop{perspective:1900px;perspective-origin:50% 20%;margin-bottom:calc(var(--fondo) * .2)}
+.lt-escena{position:relative;transform-style:preserve-3d;
+  transform:translateZ(calc(var(--fondo) * -.45)) rotateX(calc(-9deg - var(--p) * 22deg)) translateY(calc(var(--p) * -14%))}
+.lt-tapa{position:relative;z-index:2;transform-style:preserve-3d;transform-origin:50% 100%;
+  transform:rotateX(calc(10deg - var(--p) * 100deg))}
+.lt-screen,.lt-dorso{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.lt-dorso{position:absolute;inset:0;border-radius:18px 18px 4px 4px;transform:rotateX(180deg);
+  background:linear-gradient(160deg,#2c2c34,#19191e 55%,#121216);border:1px solid rgba(255,255,255,.12);display:grid;place-items:center}
+.lt-dorso img{width:12%;height:auto;opacity:.55}
+.lt-apagado{position:absolute;inset:0;background:#050506;pointer-events:none;opacity:clamp(0,calc(var(--p) * 1.6 - .25),1)}
+.lt-deck{position:absolute;left:-5%;right:-5%;top:calc(100% - 16px);height:var(--fondo);transform-origin:50% 0;transform:translateY(4px) rotateX(90deg);
+  border-radius:0 0 16px 16px;background:linear-gradient(#1c1c22,#141418);border:1px solid rgba(255,255,255,.08)}
+.lt-teclas{position:absolute;left:9%;right:9%;top:7%;height:46%;border-radius:8px;
+  background:repeating-linear-gradient(90deg,#0c0c0f 0 calc(100% / 14 - 3px),transparent 0 calc(100% / 14)),repeating-linear-gradient(#0c0c0f 0 calc(100% / 6 - 3px),transparent 0 calc(100% / 6));opacity:.9}
+.lt-pad{position:absolute;left:34%;right:34%;top:60%;height:30%;border-radius:10px;background:#18181d;border:1px solid rgba(255,255,255,.07)}
+.lt-base{position:relative;transform:translateY(-12px) translateZ(var(--fondo)) scaleY(.7);transform-origin:50% 0}
+.vt-tabs,.vt-prueba{position:relative;z-index:3}
+
+/* El móvil, como un iPhone: marco de titanio, isla, botones laterales */
+.vt-movil{padding:6px;border-radius:30px;background:#060608;border:1.5px solid #4a4a52;
+  box-shadow:inset 0 0 0 1px #000,-20px 30px 60px -20px rgba(0,0,0,.9);
+  translate:calc(var(--p) * -70%) calc(var(--p) * 8%);scale:calc(1 + var(--p) * .2)}
+.mv-view{border-radius:24px}
+.mv-notch{top:12px;width:32%;height:11px}
+.mv-botones,.mv-botones::before,.mv-botones::after{position:absolute;width:3px;border-radius:2px;background:#3d3d45}
+.mv-botones{left:-4.5px;top:17%;height:6%}
+.mv-botones::before{content:"";left:0;top:170%;height:150%}
+.mv-botones::after{content:"";left:0;top:360%;height:150%}
+.vt-movil::after{content:"";position:absolute;right:-4.5px;top:27%;width:3px;height:13%;border-radius:2px;background:#3d3d45}
+.mv-aviso{--v:clamp(0,calc((var(--p) - .5) * 4),1);position:absolute;left:7%;right:7%;top:6.5%;z-index:4;display:flex;align-items:center;gap:7px;
+  padding:8px 9px;border-radius:14px;background:rgba(28,28,32,.92);color:#f3f1ea;font-size:9px;line-height:1.25;
+  opacity:var(--v);transform:translateY(calc((1 - var(--v)) * -40%)) scale(calc(.9 + var(--v) * .1))}
+.mv-aviso img{width:20px;height:20px;border-radius:5px;flex:none}
+.mv-aviso span{display:grid;min-width:0;flex:1}
+.mv-aviso b{font-size:9.5px;font-weight:700}
+.mv-aviso small{font-size:9px;color:#c9c7bf;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv-aviso em{font-style:normal;font-size:8px;color:#a19f96;align-self:flex-start}
+@media (max-width:640px){
+  .vt-movil{border-radius:20px;padding:4px}
+  .mv-view{border-radius:16px}
+  .mv-notch{top:8px;height:7px}
+  .mv-aviso{padding:5px 6px;gap:5px;border-radius:9px;font-size:7px}
+  .mv-aviso img{width:14px;height:14px;border-radius:4px}
+  .mv-aviso b{font-size:7.5px}.mv-aviso small{font-size:7px}.mv-aviso em{display:none}
+}

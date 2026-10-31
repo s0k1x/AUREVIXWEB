@@ -4,6 +4,9 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  // v120 · portátil y móvil con el scroll
+  'Tu web ya está publicada': 'Your website is live',
+  'ahora': 'now',
   // v112 · Revisa tu web
   'Google está muy ocupado, lo intentamos otra vez…': 'Google is very busy, trying again…',
   'Google tiene ahora mismo demasiadas revisiones. Prueba de nuevo en un par de minutos.': 'Google has too many checks right now. Please try again in a couple of minutes.',
