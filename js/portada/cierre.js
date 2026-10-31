@@ -32,10 +32,21 @@ export function iniciarCierre() {
   };
   const leer = () => (objetivo = quieto() ? 0 : lim((scrollY - inicio) / tramo));
 
+  const LIMPIO = el => { el.style.transform = ''; };
+  let en3d = null, cerrada = null;
   const pintar = p => {
     const e = suave(p);
-    escena.style.transform = `translateZ(${(-fondo * .45).toFixed(1)}px) rotateX(${(-9 - 22 * e).toFixed(2)}deg) translateY(${(-14 * e).toFixed(2)}%)`;
-    tapa.style.transform = `rotateX(${(10 - 100 * e).toFixed(2)}deg)`;
+    // En reposo abierto no hay ninguna capa 3D: portátil plano (así Safari pinta la web de la pantalla)
+    const d3 = p > 0.002;
+    if (d3 !== en3d) { en3d = d3; v.classList.toggle('v3d', d3); }
+    if (!d3) { LIMPIO(escena); LIMPIO(tapa); }
+    else {
+      escena.style.transform = `translateZ(${(-fondo * .45 * e).toFixed(1)}px) rotateX(${(-31 * e).toFixed(2)}deg) translateY(${(-14 * e).toFixed(2)}%)`;
+      tapa.style.transform = `rotateX(${(-90 * e).toFixed(2)}deg)`;
+    }
+    // La tapa se ve de canto a ~74 % del cierre: antes enseña la pantalla, después el dorso
+    const c = e > .74;
+    if (c !== cerrada) { cerrada = c; tapa.classList.toggle('cerrada', c); }
     if (reflejo) reflejo.style.transform = `translateX(${(-30 + 80 * e).toFixed(1)}%)`;
     if (brillo) brillo.style.transform = `translateX(${(-60 + 120 * e).toFixed(1)}%)`;
     if (sombra) { sombra.style.transform = `scale(${(1 - .12 * e).toFixed(3)}, ${(1 - .35 * e).toFixed(3)})`; sombra.style.opacity = (1 - .3 * e).toFixed(3); }
