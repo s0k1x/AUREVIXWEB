@@ -4,8 +4,8 @@
    Google (gratis, sin claves; en español), como se ve en un móvil:
    velocidad, accesibilidad, buenas prácticas y SEO, y lo que conviene
    mejorar. No se guarda nada: la dirección va de su navegador a Google.
-   Con una clave de la API de Google (Ajustes → Negocio → Revisa tu web, restringida a
-   aurevixweb.es) el cupo es propio; sin ella se comparte y Google a veces responde 429.
+   La medición la hace la función de Supabase «revisar» con la clave de Google guardada
+   como secreto (PAGESPEED_KEY): la clave nunca está en la web y el cupo es propio.
    ========================================================== */
 import { CONFIG } from '../../config.js';
 import { $, esc, icono, toast } from '../base/ui.js';
@@ -122,10 +122,16 @@ export function iniciarRevision() {
     res.innerHTML = `<div class="wrap rv-carga"><span class="rv-spin" aria-hidden="true"></span><div><b>Analizando ${esc(new URL(url).hostname)}…</b><p>Google abre tu web como un móvil y la mide. Suele tardar entre 20 y 40 segundos.</p></div></div>`;
     res.scrollIntoView({ behavior: 'smooth', block: 'start' });
     try {
+      // Con Supabase, la revisión la hace la función «revisar» con la clave de Google guardada como secreto
+      // (nunca en la web). Sin Supabase (modo demo), directamente a Google sin clave.
       const pedir = u => {
+        if (CONFIG.supabase?.url) return fetch(`${CONFIG.supabase.url}/functions/v1/revisar`, {
+          method: 'POST', signal: ctl.signal,
+          headers: { 'Content-Type': 'application/json', apikey: CONFIG.supabase.anonKey, Authorization: `Bearer ${CONFIG.supabase.anonKey}` },
+          body: JSON.stringify({ url: u })
+        });
         const q = new URLSearchParams({ url: u, strategy: 'mobile', locale: 'es' });
         CATEGORIAS.forEach(([k]) => q.append('category', k));
-        if (CONFIG.pagespeedKey) q.set('key', CONFIG.pagespeedKey);
         return fetch(`${API}?${q}`, { signal: ctl.signal });
       };
       // Si Google está ocupado (cupo compartido sin clave), se reintenta solo dos veces antes de rendirse

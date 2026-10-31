@@ -16,7 +16,7 @@ Supabase de base de datos y funciones del servidor.
 | `js/asistente/` | El chat (`asistente.js`) y el robot animado (`mascota.js`). |
 | `js/vendor/` | Librerías de terceros alojadas aquí (Supabase, jsPDF, QR). |
 | `icons/`, `fuentes/`, `promo/` | Iconos e imágenes, tipografías propias y material de promoción. |
-| `supabase/functions/` | Funciones del servidor: `asistente` (IA), `codigo` (entrar con código), `correo` (facturas), `recordatorios` (avisos e informe mensual), `notificar`, `verificar`. Lo común está en `_shared/`. |
+| `supabase/functions/` | Funciones del servidor: `asistente` (IA), `codigo` (entrar con código), `correo` (facturas), `recordatorios` (avisos e informe mensual), `revisar` (Revisa tu web con Google PageSpeed), `notificar`, `verificar`. Lo común está en `_shared/`. |
 | `supabase/migraciones/` | Los SQL de la base de datos, numerados por versión (`v00-esquema.sql`, `v44-…` … `v94-…`): se aplican en ese orden en Supabase → SQL Editor. |
 | `supabase/plantillas/` | Plantillas de correo de reserva para Supabase. |
 | `scripts/` | Herramientas: compilación para Cloudflare, generador de páginas, iconos e imágenes, vista previa de correos, vídeo promo y lo necesario para publicar la librería aparte. |

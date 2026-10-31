@@ -67,7 +67,6 @@ export const CONFIG = {
 
   // «Revisa tu web gratis»: funciona sin clave. Si un día Google limita las revisiones,
   // crea una clave de PageSpeed Insights en Google Cloud, restríngela a aurevixweb.es y ponla aquí
-  pagespeedKey: '',
 
   // Inicio de sesión con GitHub además de Google (actívalo también en Supabase)
   loginGithub: false,
