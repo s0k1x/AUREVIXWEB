@@ -18,6 +18,7 @@ import { comprobar as comprobarCampo } from '../base/validar.js';
 import { dominioHTML, montarDominio, leerDominio, sugerirNombre, marcarError } from '../cuenta/dominio.js';
 import { prefsPermitidas, consentidoExpreso } from '../base/cookies.js';
 import { iniciarInclinacion } from './inclinar.js';
+import { iniciarCierre } from './cierre.js';
 
 /* Enlace de ventas: si alguien entra con ?ref=ID, el pedido queda a nombre de ese vendedor.
    Recordarlo 30 días en el navegador no es imprescindible para el visitante, así que solo se guarda
@@ -52,6 +53,7 @@ const leerAmigo = () => {
 
 await arrancar('inicio');
 iniciarInclinacion();
+iniciarCierre();
 if (amigoSesion && CONFIG.referidos?.activo) setTimeout(() => toast(`Un amigo te recomienda: tienes un ${CONFIG.referidos.pct} % de descuento en tu primera web`, 'ok'), 1200);
 // El chat (y su robot) se prepara cuando el navegador queda libre: no compite con la carga de la portada
 if (window.self === window.top) ('requestIdleCallback' in window ? requestIdleCallback : f => setTimeout(f, 800))(() => iniciarChat(), { timeout: 2000 });
