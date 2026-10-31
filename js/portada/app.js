@@ -53,7 +53,8 @@ const leerAmigo = () => {
 await arrancar('inicio');
 iniciarInclinacion();
 if (amigoSesion && CONFIG.referidos?.activo) setTimeout(() => toast(`Un amigo te recomienda: tienes un ${CONFIG.referidos.pct} % de descuento en tu primera web`, 'ok'), 1200);
-iniciarChat();
+// El chat (y su robot) se prepara cuando el navegador queda libre: no compite con la carga de la portada
+('requestIdleCallback' in window ? requestIdleCallback : f => setTimeout(f, 800))(() => iniciarChat(), { timeout: 2000 });
 
 /* ==========================================================
    MINIATURAS VIVAS DE LAS PLANTILLAS
@@ -113,7 +114,7 @@ const fotosListas = f => new Promise(ok => {
   pend.forEach(i => { i.addEventListener('load', fin, { once: true }); i.addEventListener('error', fin, { once: true }); });
   setTimeout(ok, 3000);
 });
-const vt = { pc: capas($('#vtPc')), mv: capas($('#vtMv')), activa: 0 };
+const vt = { pc: null, mv: null, activa: 0 }; // las ventanas se crean al arrancar la vitrina (no durante la carga)
 function escalaVitrina() {
   const pc = $('#vtPc'), mv = $('#vtMv');
   pc.style.setProperty('--s', pc.clientWidth / 1280);
@@ -184,6 +185,7 @@ let vtVisible = false, vtLista = false, vtArrancada = false;
 const arrancarVitrina = () => {
   if (vtArrancada || !vtLista || !vtVisible) return;
   vtArrancada = true;
+  vt.pc = capas($('#vtPc')); vt.mv = capas($('#vtMv'));
   escalaVitrina(); mostrarVitrina(0);
 };
 const reanudarVitrina = () => { if (vtArrancada && vtVisible && !vtPausa && !document.hidden) { clearTimeout(vtTimer); vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA); } };
@@ -450,8 +452,10 @@ function avanzarPasos() {
   pasosEl.style.setProperty('--prog', k.toFixed(3));
   pasosHijos.forEach((s, i) => s.classList.toggle('hecho', k >= (i + .35) / pasosHijos.length));
 }
-addEventListener('scroll', () => requestAnimationFrame(avanzarPasos), { passive: true });
-avanzarPasos();
+// Solo se mide mientras la sección está cerca de la pantalla (antes, en cada scroll desde el principio)
+let pasosCerca = false;
+new IntersectionObserver(([e]) => { pasosCerca = e.isIntersecting; if (pasosCerca) requestAnimationFrame(avanzarPasos); }, { rootMargin: '200px 0px' }).observe(pasosEl);
+addEventListener('scroll', () => { if (pasosCerca) requestAnimationFrame(avanzarPasos); }, { passive: true });
 
 /* ==========================================================
    TE AYUDO A ELEGIR (asistente: texto libre o 3 preguntas)
