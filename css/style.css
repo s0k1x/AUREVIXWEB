@@ -278,8 +278,6 @@ dialog.dlg::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit
 .pc-time svg,.mp-who svg,.cand-meta svg,.dz-scroll svg,.demo-banner svg,.demo-box b svg,.link-btn svg,.od-pay p svg{width:14px;height:14px;flex:none}
 .od-note svg,.nota svg{width:18px;height:18px;flex:none;color:var(--accent)}
 .pf-ic svg{width:26px;height:26px}
-.vj > span{display:inline-grid!important;place-items:center;width:52px;height:52px;border-radius:16px;background:var(--accent-soft);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 20%,transparent)}
-.vj > span svg{width:24px;height:24px}
 .cero-ic svg,.cero-mini svg{width:24px;height:24px}
 .toast .t-ic svg{width:14px;height:14px}
 /* Logotipo AurevixWeb */

@@ -69,20 +69,18 @@
       <div class="hero-bg hero-iso" aria-hidden="true"></div>
       <div class="wrap t-hero-grid">
         <div>
-          <h1>Comercial de páginas web con un <span class="pct"><em class="num" data-count="30">30</em> %</span> de comisión.</h1>
+          <h1>Vende webs y cobra el <span class="pct"><em class="num" data-count="30">30</em> %</span>.</h1>
           <p class="lead">Buscamos personas con experiencia en <b>inteligencia artificial</b>, <b>redes sociales</b> o <b>ventas</b> para presentar nuestras webs a negocios. Nosotros diseñamos y entregamos cada proyecto; tú captas al cliente y cobras tu comisión. ¿Lo tuyo son los vídeos? También <b>pagamos por cada vídeo</b> que publiques.</p>
           <div class="t-ctas">
             <a href="#candidatura" class="btn btn-primary" data-magnet><span>Enviar candidatura</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             <a href="#calculadora" class="btn btn-ghost">Calcular comisiones</a>
-            <a href="#videos" class="btn btn-ghost"><span>Pago por vídeo</span></a>
           </div>
         </div>
-        <div class="t-stats">
-          <div><b><em class="num" data-count="30">30</em> %</b><span>de comisión por web vendida</span></div>
-          <div><b><em class="num" data-count="0">0</em> €</b><span>de inversión inicial</span></div>
-          <div><b>100 %</b><span>en remoto, horario libre</span></div>
-          <div><b><em class="num" data-count="15" id="statVideo">15</em> €</b><span>por cada vídeo aprobado</span></div>
-        </div>
+        <dl class="t-stats">
+          <div><dt><em class="num" data-count="0">0</em> €</dt><dd>de inversión inicial</dd></div>
+          <div><dt>100 %</dt><dd>en remoto, con horario libre</dd></div>
+          <div><dt><em class="num" data-count="15" id="statVideo">15</em> €</dt><dd>por cada vídeo aprobado</dd></div>
+        </dl>
       </div>
     </section>
 
@@ -93,8 +91,7 @@
           <h2>Perfiles que buscamos</h2>
         </div>
         <div class="perfiles">
-          <article class="perfil reveal" style="--c:#b98cff">
-            <span class="pf-ic"><i data-i="brain"></i></span>
+          <article class="perfil reveal">
             <h3>Inteligencia artificial</h3>
             <ul>
               <li>Usas herramientas de IA (ChatGPT, Claude, Gemini…) en tu día a día</li>
@@ -102,8 +99,7 @@
               <li>Sabes adaptar una propuesta a cada cliente</li>
             </ul>
           </article>
-          <article class="perfil reveal" style="--c:#ff5a8a">
-            <span class="pf-ic"><i data-i="phone"></i></span>
+          <article class="perfil reveal">
             <h3>Redes sociales</h3>
             <ul>
               <li>Creas contenido para Instagram, TikTok u otras redes</li>
@@ -111,8 +107,7 @@
               <li>Analizas qué publicaciones funcionan mejor</li>
             </ul>
           </article>
-          <article class="perfil reveal" style="--c:#c8f560">
-            <span class="pf-ic"><i data-i="handshake"></i></span>
+          <article class="perfil reveal">
             <h3>Ventas</h3>
             <ul>
               <li>Te comunicas con soltura con negocios, en persona o por mensaje</li>
@@ -121,12 +116,32 @@
             </ul>
           </article>
         </div>
-        <p class="nota reveal"><i data-i="bulb"></i> No es necesario saber programar ni diseñar. El diseño y el desarrollo de las webs son cosa nuestra.</p>
+        <p class="nota reveal">No es necesario saber programar ni diseñar. El diseño y el desarrollo de las webs son cosa nuestra.</p>
+      </div>
+    </section>
+
+    <!-- ===== VENTAJAS ===== -->
+    <section>
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <h2>Qué te ofrecemos</h2>
+        </div>
+        <div class="ventajas">
+          <div class="vj reveal"><b><span data-comision></span> % de cada venta</b><p>Sin límite de ventas ni objetivos mínimos.</p></div>
+          <div class="vj reveal"><b>Pago por vídeo</b><p><span data-v="precio">15 €</span> por cada vídeo aprobado, aunque no venda.</p></div>
+          <div class="vj reveal"><b>Tu enlace de ventas</b><p>Los pedidos que llegan a través de tu enlace se asignan a tu nombre de forma automática.</p></div>
+          <div class="vj reveal"><b>Panel de ventas</b><p>Consulta tus ventas y el estado de cada comisión en cualquier momento.</p></div>
+          <div class="vj reveal"><b>Material de venta</b><p>Catálogo con precios cerrados, diseños de ejemplo y vista previa con el nombre del cliente.</p></div>
+          <div class="vj reveal"><b>Formación en IA</b><p>Te mostramos cómo usamos la IA para preparar propuestas y contenido.</p></div>
+          <div class="vj reveal"><b>Remoto y sin horarios</b><p>Organizas tu tiempo y trabajas desde donde quieras.</p></div>
+          <div class="vj reveal"><b>Sin inversión</b><p>No hay cuotas, compras mínimas ni costes de alta.</p></div>
+          <div class="vj reveal"><b>Acompañamiento inicial</b><p>Te explicamos los productos, los precios y cómo presentar las webs a los clientes.</p></div>
+        </div>
       </div>
     </section>
 
     <!-- ===== CALCULADORA ===== -->
-    <section id="calculadora">
+    <section class="alt" id="calculadora">
       <div class="wrap calc-grid">
         <div class="sec-head reveal">
           <h2>Calculadora de comisiones</h2>
@@ -152,7 +167,7 @@
 
 
     <!-- ===== CREADORES DE VÍDEO ===== -->
-    <section class="alt" id="videos">
+    <section id="videos">
       <div class="wrap">
         <div class="sec-head reveal">
           <h2>Te pagamos por cada vídeo</h2>
@@ -186,26 +201,6 @@
           <li><i data-i="check"></i>Cobras a final de mes por transferencia bancaria</li>
           <li><i data-i="check"></i>Sin exclusividad: sigues con tu contenido de siempre</li>
         </ul>
-      </div>
-    </section>
-
-    <!-- ===== VENTAJAS ===== -->
-    <section>
-      <div class="wrap">
-        <div class="sec-head reveal">
-          <h2>Qué te ofrecemos</h2>
-        </div>
-        <div class="ventajas">
-          <div class="vj reveal"><span><i data-i="euro"></i></span><b><span data-comision></span> % de cada venta</b><p>Sin límite de ventas ni objetivos mínimos.</p></div>
-          <div class="vj reveal"><span><i data-i="video"></i></span><b>Pago por vídeo</b><p><span data-v="precio">15 €</span> por cada vídeo aprobado, aunque no venda.</p></div>
-          <div class="vj reveal"><span><i data-i="link"></i></span><b>Tu enlace de ventas</b><p>Los pedidos que llegan a través de tu enlace se asignan a tu nombre de forma automática.</p></div>
-          <div class="vj reveal"><span><i data-i="chart"></i></span><b>Panel de ventas</b><p>Consulta tus ventas y el estado de cada comisión en cualquier momento.</p></div>
-          <div class="vj reveal"><span><i data-i="tool"></i></span><b>Material de venta</b><p>Catálogo con precios cerrados, diseños de ejemplo y vista previa con el nombre del cliente.</p></div>
-          <div class="vj reveal"><span><i data-i="brain"></i></span><b>Formación en IA</b><p>Te mostramos cómo usamos la IA para preparar propuestas y contenido.</p></div>
-          <div class="vj reveal"><span><i data-i="home"></i></span><b>Remoto y sin horarios</b><p>Organizas tu tiempo y trabajas desde donde quieras.</p></div>
-          <div class="vj reveal"><span><i data-i="ban"></i></span><b>Sin inversión</b><p>No hay cuotas, compras mínimas ni costes de alta.</p></div>
-          <div class="vj reveal"><span><i data-i="sprout"></i></span><b>Acompañamiento inicial</b><p>Te explicamos los productos, los precios y cómo presentar las webs a los clientes.</p></div>
-        </div>
       </div>
     </section>
 
@@ -255,7 +250,6 @@
     const PCT = CONFIG.comision ?? 30;
     $$('[data-comision]').forEach(e => (e.textContent = PCT));
     $$('.pct .num').forEach(e => { e.dataset.count = PCT; e.textContent = PCT; });
-    $$('.t-stats .num').forEach((e, i) => { if (i === 0) { e.dataset.count = PCT; e.textContent = PCT; } });
 
     // Campos del formulario
     $('#candCampos').innerHTML = `
@@ -304,7 +298,7 @@
     /* ---------- Calculadora de ganancias ---------- */
     const tipos = PLANES.filter(p => p.id !== 'medida');
     $('#calcTipo').innerHTML = opciones('calcTipo', tipos.map(p => `${p.nombre} · ${p.precio} €`), tipos.find(p => p.popular) ? `${tipos.find(p => p.popular).nombre} · ${tipos.find(p => p.popular).precio} €` : '');
-    $('#calcEj').innerHTML = tipos.map(p => `<div><span>${esc(p.nombre)}</span><b>${euros(p.precio * PCT / 100)}</b></div>`).join('') + '<small>lo que ganas por cada venta</small>';
+    $('#calcEj').innerHTML = tipos.map(p => `<div><span>${esc(p.nombre)}</span><b>${euros(p.precio * PCT / 100)}</b></div>`).join('') + '<small>Lo que ganas por cada venta</small>';
     function calcular() {
       const sel = $('input[name=calcTipo]:checked')?.value || '';
       const plan = tipos.find(p => sel.startsWith(p.nombre)) || tipos[0];

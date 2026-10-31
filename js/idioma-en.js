@@ -4,6 +4,8 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  // v100 · Trabaja con nosotros
+  'Vende webs y cobra el': 'Sell websites and earn', 'en remoto, con horario libre': 'remote, flexible hours', 'Lo que ganas por cada venta': 'What you earn per sale',
   // v99 · base de conocimiento del asistente
   'Puedes reservar una llamada sin compromiso: elige día y hora entre los huecos libres con «Reservar una llamada» (en Contacto) y te llamamos nosotros.': 'You can book a no-obligation call: pick a day and time from the free slots with “Book a call” (in Contact) and we will call you.',
   'Ahora mismo no hay llamadas disponibles. Escríbenos desde el formulario de contacto o por correo y te respondemos enseguida.': 'There are no calls available right now. Write to us from the contact form or by email and we will reply right away.',
