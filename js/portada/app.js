@@ -5,7 +5,7 @@ import { fiesta } from '../asistente/mascota.js';
 import { CONFIG, PLANES, EXTRAS, COMPARATIVA } from '../../config.js';
 import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from '../base/store.js';
-import { $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, pedirLogin, arrancar, mailLink, refPedido, whatsappLink, contarEvento, ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados, desgloseIVA, ivaTexto, infoDatos, descargar, estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, PAGOS, haceCuanto } from '../base/ui.js';
+import { $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, pedirLogin, arrancar, mailLink, refPedido, whatsappLink, contarEvento, ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados, desgloseIVA, ivaTexto, infoDatos, descargar, estrellas, ocupado, copiar, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, PAGOS, haceCuanto } from '../base/ui.js';
 import { planesActivos, extrasActivos } from '../base/sitio.js';
 import { montarHilo, montarArchivos, abrirRecibo } from '../cuenta/colabora.js';
 import { botonPago, abrirPago, abrirResena, animarYPagar } from '../cuenta/pago.js';
@@ -570,7 +570,18 @@ $('#prevPick').addEventListener('click', () => {
 
 const planPara = id => PLANES.find(pl => pl.plantillas[0] === id) || PLANES.find(pl => pl.plantillas.includes(id)) || PLANES[2];
 const quieroDiseno = id => plantillaPorId(id) && abrirCompra(planPara(id).id, id);
-document.addEventListener('click', e => {
+document.addEventListener('click', async e => {
+  const sg = e.target.closest('[data-seguimiento]');
+  if (sg) {
+    ocupado(sg, true);
+    try {
+      const url = `${location.origin}${location.pathname.replace(/[^/]*$/, '')}seguimiento?t=${await store.crearSeguimiento(sg.dataset.seguimiento)}`;
+      if (navigator.share && matchMedia('(pointer: coarse)').matches) { try { await navigator.share({ title: 'Así va mi web', url }); } catch { /* cancelado */ } }
+      else await copiar(url);
+    } catch (err) { toast(err.message, 'err'); }
+    ocupado(sg, false);
+    return;
+  }
   const q = e.target.closest('[data-quiero]');
   if (q) return quieroDiseno(q.dataset.quiero);
   const v = e.target.closest('[data-ver]');
@@ -1230,6 +1241,7 @@ function tarjetaProyecto(p) {
     ${cancelado ? '<p class="muted">Este pedido está cancelado.</p>' : `
     ${barraEtapas(p)}
     ${abiertoAqui ? `
+    <div class="mp-seg"><button type="button" class="link-btn" data-seguimiento="${p.id}">${icono('link')}<span>Compartir el seguimiento</span></button><small>Un enlace para enseñar cómo va tu web, sin iniciar sesión</small></div>
     <nav class="mp-tabs" role="tablist">${PESTANAS.map(([k, t, ic]) => `<button type="button" role="tab" data-pest="${k}" class="${pestana === k ? 'on' : ''}">${icono(ic)}<span>${t}</span></button>`).join('')}</nav>
     <div class="mp-pest" id="pest-${p.id}">${pestanaHTML(p)}</div>` : `
     <button type="button" class="mp-abrir" data-toggle="${p.id}">${ETAPAS.find(e => e.id === (p.etapa || 'recibido'))?.accion ? `${icono('alert')} <b>Te toca a ti:</b> ${esc(ETAPAS.find(e => e.id === p.etapa)?.cliente || '')}` : `${icono('eye')} Ver detalles, mensajes y archivos`}</button>`}`}

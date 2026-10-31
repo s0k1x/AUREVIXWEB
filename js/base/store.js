@@ -416,6 +416,34 @@ export async function borrarPedido(id) {
   }
 }
 
+/* ---------- Seguimiento público del proyecto (supabase/migraciones/v106-seguimiento.sql) ----------
+   Un enlace secreto por pedido para enseñar el avance sin iniciar sesión: solo etapa, fechas y negocio. */
+export async function crearSeguimiento(pedidoId) {
+  necesitaUsuario();
+  if (modoDemo) {
+    const m = local.get('seguimientos', {});
+    m[pedidoId] ||= Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2, '0')).join('');
+    local.set('seguimientos', m);
+    return m[pedidoId];
+  }
+  const { data, error } = await limite(sb.rpc('crear_seguimiento', { p_pedido: pedidoId }));
+  if (error) throw new Error(/function|schema cache/i.test(error.message) ? 'El seguimiento aún no está activado (falta ejecutar supabase/migraciones/v106-seguimiento.sql).' : traducirError(error));
+  return data;
+}
+export async function verSeguimiento(token) {
+  if (!/^[a-f0-9]{64}$/.test(token || '')) return null;
+  if (modoDemo) {
+    const id = Object.entries(local.get('seguimientos', {})).find(([, t]) => t === token)?.[0];
+    const p = local.get('orders', []).find(o => o.id === id);
+    if (!p || p.estado === 'cancelado') return null;
+    return { negocio: p.respuestas?.negocio || '', plan: p.plan, planNombre: p.planNombre, etapa: p.etapa, estado: p.estado, createdAt: p.createdAt, fechaEntrega: p.fechaEntrega, urgente: p.urgente,
+      hitos: (p.historial || []).filter(h => /^(Etapa|Estado):/.test(h.texto)).map(({ texto, t }) => ({ texto, t })) };
+  }
+  const { data, error } = await limite(sb.rpc('ver_seguimiento', { p_token: token }), 10000);
+  if (error) throw new Error(traducirError(error));
+  return data;
+}
+
 /* ---------- Candidaturas (Trabaja con nosotros) ---------- */
 export async function enviarCandidatura(datos) {
   webAbierta();
