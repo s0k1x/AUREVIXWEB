@@ -409,6 +409,144 @@ h1 em,h2 em{font-style:italic;color:var(--accent)}
   .li span{font-size:19px}
   [data-tema=pulso] .cinta{transform:none;margin:0}
 }
+
+/* ==========================================================
+   DIRECCIÓN DE ARTE POR DISEÑO
+   Cada diseño tiene su propio carácter, no solo otros colores:
+   Filo · cartel editorial oscuro   Brasa · cálido de mantel     Kiosko · escaparate luminoso
+   Lienzo · minimal de galería      Calma · spa sereno de arcos  Pulso · energía en diagonal
+   ========================================================== */
+
+/* ---------- FILO · barbería: cartel editorial oscuro ---------- */
+[data-tema=filo] .nv .w{display:grid;grid-template-columns:1fr auto 1fr}
+[data-tema=filo] .nv .lg{grid-column:2;grid-row:1;justify-self:center;font-size:26px;letter-spacing:.18em}
+[data-tema=filo] .nv .nl{grid-column:1;grid-row:1;margin:0;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+[data-tema=filo] .nv .nv-r{grid-column:3;grid-row:1;justify-self:end}
+[data-tema=filo] .hero.img h1{font-size:clamp(64px,13.5vw,250px);line-height:.84;max-width:none}
+[data-tema=filo] .hbg::after{background:linear-gradient(180deg,rgba(14,12,10,.55),rgba(14,12,10,0) 30%,rgba(14,12,10,.2) 55%,rgba(14,12,10,.96))}
+[data-tema=filo] .hbg img.ok{filter:saturate(.75) contrast(1.05)}
+[data-tema=filo] .hero.img p{font-size:clamp(17px,1.4vw,21px)}
+[data-tema=filo] .h2{font-size:clamp(44px,7.4vw,128px);max-width:none;line-height:.9}
+[data-tema=filo] .li{padding:26px 0}
+[data-tema=filo] .li b{font-family:var(--fd);font-size:clamp(20px,2vw,30px);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+[data-tema=filo] .li span{font-size:clamp(26px,2.6vw,40px)}
+[data-tema=filo] .li i{border-bottom:1px dashed color-mix(in srgb,var(--accent) 45%,transparent)}
+[data-tema=filo] .g img.ok{filter:grayscale(.55) contrast(1.08);transition:filter .7s var(--e),transform 1.2s var(--e)}
+@media (hover:hover){[data-tema=filo] .g:hover img.ok{filter:none}}
+[data-tema=filo] .op{background:transparent;border-top:1px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:0;padding:34px 4px 0}
+[data-tema=filo] .op blockquote{font-family:var(--fd);font-size:clamp(20px,1.8vw,28px);font-weight:400;text-transform:uppercase;letter-spacing:.02em;line-height:1.2}
+[data-tema=filo] .b{letter-spacing:.12em;text-transform:uppercase;font-size:13.5px}
+
+/* ---------- BRASA · restaurante: cálido de mantel ---------- */
+[data-tema=brasa] h1,[data-tema=brasa] .h2,[data-tema=brasa] .cta h2{font-weight:500;font-style:italic;letter-spacing:-.03em}
+[data-tema=brasa] h1 em,[data-tema=brasa] h2 em{font-style:normal}
+.hero.collage{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);align-items:center;gap:clamp(30px,5vw,90px);min-height:clamp(620px,calc(100vh - 78px),980px);padding:clamp(40px,5vw,80px) var(--g)}
+.hero.collage h1{font-size:clamp(54px,7.6vw,138px);line-height:.95}
+.col-fotos{position:relative;height:clamp(460px,46vw,780px)}
+.cf{position:absolute;overflow:hidden;border-radius:calc(var(--radius) * 1.6)}
+.cf .ph{position:absolute;inset:0}
+.cf0{inset:0 18% 12% 0}
+.cf1{right:0;top:8%;width:36%;aspect-ratio:3/4;box-shadow:0 30px 60px -24px rgba(42,29,20,.45);border:6px solid var(--bg)}
+.cf2{right:10%;bottom:0;width:30%;aspect-ratio:1;border-radius:50%;box-shadow:0 30px 60px -24px rgba(42,29,20,.45);border:6px solid var(--bg)}
+.sello{position:absolute;left:-28px;bottom:6%;z-index:2;width:clamp(110px,10vw,150px);aspect-ratio:1;border-radius:50%;background:var(--accent);color:var(--ink);display:grid;place-items:center}
+.sello svg{position:absolute;inset:0;width:100%;height:100%;animation:selloGira 22s linear infinite}
+.sello text{font:700 11.5px var(--fb);letter-spacing:.16em;text-transform:uppercase;fill:currentColor}
+.sello span{font-size:26px;transform:rotate(-45deg);display:grid}
+@keyframes selloGira{to{transform:rotate(360deg)}}
+.mini .sello svg,.sin-anim .sello svg{animation:none}
+[data-tema=brasa] .lista .li b{font-family:var(--fd);font-size:20px;font-weight:500}
+[data-tema=brasa] .lista.multi .grupo{background:var(--surface);border:0;box-shadow:0 1px 0 var(--line)}
+[data-tema=brasa] .grupo h3{font-style:italic;font-weight:500;font-size:30px}
+[data-tema=brasa] .gal{gap:14px;padding:0 var(--g)}
+[data-tema=brasa] .g{border-radius:calc(var(--radius) * 1.2)}
+[data-tema=brasa] .op{background:var(--surface);box-shadow:0 20px 50px -30px rgba(42,29,20,.35)}
+
+/* ---------- KIOSKO · tienda: escaparate luminoso ---------- */
+[data-tema=kiosko] h1,[data-tema=kiosko] .h2{font-weight:700;letter-spacing:-.045em}
+.hero.escaparate{padding:clamp(48px,6vw,96px) 0 clamp(30px,4vw,60px)}
+.hero.escaparate .hc{text-align:center;display:flex;flex-direction:column;align-items:center}
+.hero.escaparate h1{font-size:clamp(52px,9vw,168px);line-height:.92;max-width:14ch}
+.hero.escaparate p{margin-left:auto;margin-right:auto;text-align:center}
+.hero.escaparate .btns{justify-content:center}
+.esc-fila{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,1.2vw,20px);margin-top:clamp(40px,5vw,80px)}
+.esc-it{position:relative;display:block;aspect-ratio:4/5;border-radius:calc(var(--radius) * 1.4);overflow:hidden;background:var(--surface);animation:sube 1.1s var(--e) both}
+.esc1{animation-delay:.08s}.esc2{animation-delay:.16s}.esc3{animation-delay:.24s}
+.esc-it:nth-child(even){transform:translateY(clamp(16px,3vw,48px))}
+.esc-it .ph{position:absolute;inset:0}
+.esc-it > span{position:absolute;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;border-radius:999px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:14px}
+.esc-it > span b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.esc-it > span em{font-style:normal;color:var(--muted);white-space:nowrap}
+.esc-it .tag{font-style:normal}
+@media (hover:hover){.esc-it:hover img{transform:scale(1.05)}}
+.mini .esc-it,.sin-anim .esc-it{animation:none}
+[data-tema=kiosko] .prod-img{border-radius:calc(var(--radius) * 1.4)}
+[data-tema=kiosko] .v{background:var(--surface);border-radius:var(--radius);padding:28px}
+[data-tema=kiosko] .ventajas{gap:14px}
+[data-tema=kiosko] .cta{border-radius:calc(var(--radius) * 2);margin:0 var(--g) clamp(60px,6vw,100px)}
+
+/* ---------- LIENZO · portfolio: minimal de galería ---------- */
+[data-tema=lienzo] .nv{background:color-mix(in srgb,var(--bg) 94%,transparent);border-bottom:0}
+[data-tema=lienzo] .lg{font-size:28px;font-style:italic}
+[data-tema=lienzo] .hero.big h1{font-size:clamp(68px,15vw,300px);letter-spacing:-.05em;line-height:.86}
+[data-tema=lienzo] .hero.big h1 em{font-style:italic;color:var(--text)}
+[data-tema=lienzo] .hv.wide img.ok{filter:grayscale(1) contrast(1.05)}
+[data-tema=lienzo] .h2{font-size:clamp(46px,7.6vw,140px);font-style:italic;max-width:none}
+[data-tema=lienzo] .proys{gap:clamp(24px,3vw,56px) clamp(14px,1.6vw,28px);padding:0 var(--g)}
+[data-tema=lienzo] .proy{background:var(--surface)}
+[data-tema=lienzo] .proy img.ok{filter:grayscale(1);transition:filter .8s var(--e),transform 1.2s var(--e)}
+@media (hover:hover){[data-tema=lienzo] .proy:hover img.ok{filter:none}}
+[data-tema=lienzo] .proy-i b{font-style:italic}
+[data-tema=lienzo] .b{border-radius:0}
+[data-tema=lienzo] .txt{font-family:var(--fd);font-size:clamp(24px,2.4vw,38px);line-height:1.25;color:var(--text);max-width:24ch}
+[data-tema=lienzo] .datos div{background:transparent;border:0;border-top:1px solid var(--text);border-radius:0;padding:18px 0 0}
+[data-tema=lienzo] .datos b{color:var(--text);font-style:italic}
+
+/* ---------- CALMA · estética: spa sereno de arcos ---------- */
+[data-tema=calma]{background:linear-gradient(180deg,var(--bg),color-mix(in srgb,var(--accent) 7%,var(--bg)))}
+[data-tema=calma] h1,[data-tema=calma] .h2,[data-tema=calma] .cta h2{font-style:italic;font-weight:400;letter-spacing:-.02em}
+[data-tema=calma] .hero.split h1{font-size:clamp(58px,8.4vw,150px);line-height:.98}
+[data-tema=calma] .lista .li{border-bottom:0;padding:16px 20px;margin:0 -20px;border-radius:999px;transition:background .35s var(--e)}
+@media (hover:hover){[data-tema=calma] .lista .li:hover{background:var(--surface);padding-left:24px}}
+[data-tema=calma] .reserva{box-shadow:0 40px 80px -40px rgba(35,48,42,.35);border-radius:32px}
+[data-tema=calma] .gal{gap:16px;padding:0 var(--g)}
+[data-tema=calma] .g{border-radius:999px 999px 28px 28px}
+[data-tema=calma] .g0{border-radius:400px 400px 32px 32px}
+[data-tema=calma] .op{border-radius:32px;background:var(--surface)}
+[data-tema=calma] .q{font-size:42px;opacity:.6}
+
+/* ---------- PULSO · gimnasio: energía en diagonal ---------- */
+[data-tema=pulso] .hero.img{clip-path:polygon(0 0,100% 0,100% calc(100% - 6vw),0 100%)}
+[data-tema=pulso] .hero.img h1{transform:skewX(-8deg);transform-origin:left bottom;font-size:clamp(70px,13vw,230px);line-height:.86}
+[data-tema=pulso] .hbg img.ok{filter:grayscale(1) contrast(1.15)}
+[data-tema=pulso] .hbg::after{background:linear-gradient(180deg,rgba(10,10,10,.4),rgba(10,10,10,.1) 40%,rgba(10,10,10,.92)),linear-gradient(100deg,color-mix(in srgb,var(--accent) 35%,transparent),transparent 45%)}
+[data-tema=pulso] .h2{transform:skewX(-8deg);transform-origin:left bottom;font-size:clamp(48px,7.8vw,140px);max-width:none;line-height:.88}
+[data-tema=pulso] .datos div{background:transparent;border:0;border-left:4px solid var(--accent);border-radius:0;padding:6px 0 6px 18px}
+[data-tema=pulso] .datos b{font-size:clamp(44px,5vw,84px);color:var(--text)}
+[data-tema=pulso] .plan{border-radius:0;clip-path:polygon(0 0,100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%)}
+[data-tema=pulso] .plan.dest{transform:scale(1.03)}
+[data-tema=pulso] .g img.ok{filter:grayscale(1) contrast(1.15);transition:filter .5s var(--e),transform 1.2s var(--e)}
+@media (hover:hover){[data-tema=pulso] .g:hover img.ok{filter:none}}
+[data-tema=pulso] .b{text-transform:uppercase;letter-spacing:.08em;font-weight:800;border-radius:0;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+[data-tema=pulso] .op{border-radius:0;border-left:4px solid var(--accent);background:var(--surface)}
+
+@media (max-width:980px){
+  [data-tema=filo] .nv .w{display:flex}
+  [data-tema=filo] .nv .lg{font-size:22px;letter-spacing:.12em}
+  .hero.collage{grid-template-columns:minmax(0,1fr);min-height:0;padding-top:28px}
+  .hero.collage .col-fotos{order:-1;height:92vw}
+  .sello{left:auto;right:6%;bottom:-18px;width:104px}
+  .esc-fila{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .esc-it:nth-child(even){transform:translateY(24px)}
+  [data-tema=pulso] .hero.img{clip-path:polygon(0 0,100% 0,100% calc(100% - 9vw),0 100%)}
+}
+@media (max-width:560px){
+  [data-tema=filo] .hero.img h1{font-size:clamp(58px,17vw,110px)}
+  [data-tema=pulso] .hero.img h1{font-size:clamp(62px,18vw,120px)}
+  [data-tema=lienzo] .hero.big h1{font-size:clamp(60px,19vw,120px)}
+  .esc-it > span{left:8px;right:8px;bottom:8px;padding:9px 12px;font-size:12.5px}
+  .esc-it > span em{display:none}
+  [data-tema=kiosko] .v{padding:20px}
+}
 </style>
   <script>/* Sin zoom (ni doble toque ni pellizco) */document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});document.addEventListener('gesturechange',function(e){e.preventDefault()},{passive:false})</script>
 <style>html{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}body{-webkit-touch-callout:none}</style>  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180.png?v=2">

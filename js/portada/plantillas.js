@@ -26,7 +26,7 @@ export const PLANTILLAS = [
     ]
   },
   {
-    id: 'brasa', dominio: 'brasayco.es', nombre: 'Brasa', sector: 'Restaurante · Bar',
+    id: 'brasa', heroTipo: 'collage', dominio: 'brasayco.es', nombre: 'Brasa', sector: 'Restaurante · Bar',
     desc: 'Tonos cálidos, carta digital con fotos de los platos, horario y reserva de mesa.', marca: 'Brasa & Co.',
     fuentes: { d: 'Fraunces', b: 'Inter', url: 'family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600' },
     c: { bg: '#f7f0e5', surface: '#fffaf2', text: '#2a1d14', muted: '#7a6656', accent: '#c4532d' },
@@ -48,7 +48,7 @@ export const PLANTILLAS = [
     ]
   },
   {
-    id: 'kiosko', dominio: 'kiosko.shop', nombre: 'Kiosko', sector: 'Tienda online',
+    id: 'kiosko', heroTipo: 'escaparate', dominio: 'kiosko.shop', nombre: 'Kiosko', sector: 'Tienda online',
     desc: 'Tienda online con catálogo, carrito de compra y ventajas de envío y devolución.', marca: 'Kiosko',
     fuentes: { d: 'Space Grotesk', b: 'Inter', url: 'family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600' },
     c: { bg: '#f6f6f3', surface: '#ffffff', text: '#111111', muted: '#6b6b6b', accent: '#2f5bff' },
@@ -259,6 +259,28 @@ function hero(p) {
         ${(h.badges || []).map(([i, b, t], k) => `<div class="badge bd${k}">${icono(i)}<div><b>${esc(b)}</b><span>${esc(t)}</span></div></div>`).join('')}
       </div>
     </header>`;
+  if (h.tipo === 'escaparate') {
+    // Tienda: titular centrado y, debajo, una fila de productos como en las grandes tiendas online
+    const prods = (p.secciones.find(x => x.tipo === 'productos')?.items || []).slice(0, 4);
+    return `
+    <header class="hero escaparate"><div class="w">
+      <div class="hc"><h1 class="parte">${h.titulo}</h1><p>${esc(h.texto)}</p>${btns}</div>
+      <div class="esc-fila">${prods.map(([n, pr, tag, img], i) => `<a class="esc-it esc${i}" href="#">${foto(img, { ancho: '(max-width:980px) 50vw, 25vw', alt: n, primero: i < 2 })}<span><b>${esc(n)}</b><em>${esc(pr)}</em></span>${tag ? `<i class="tag">${esc(tag)}</i>` : ''}</a>`).join('')}</div>
+    </div></header>`;
+  }
+  if (h.tipo === 'collage') {
+    // Restaurante: collage de fotos superpuestas y un sello redondo
+    const extra = (p.secciones.find(x => x.tipo === 'galeria')?.imgs || []).slice(0, 2);
+    return `
+    <header class="hero collage">
+      <div class="hc"><h1 class="parte">${h.titulo}</h1><p>${esc(h.texto)}</p>${h.kicker ? `<p class="hdato">${esc(h.kicker)}</p>` : ''}${btns}</div>
+      <div class="col-fotos">
+        <div class="cf cf0">${foto(h.img, { primero: true, ancho: '(max-width:980px) 100vw, 40vw' })}</div>
+        ${extra.map((id, i) => `<div class="cf cf${i + 1}">${foto(id, { ancho: '22vw' })}</div>`).join('')}
+        <a class="sello" href="#" aria-label="${esc(h.cta)}"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><path id="selloC" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0"/></defs><text><textPath href="#selloC">${esc(h.cta)} · ${esc(h.cta)} · </textPath></text></svg><span>${icono('arrow')}</span></a>
+      </div>
+    </header>`;
+  }
   return `
     <header class="hero big"><div class="w">
       <h1 class="parte">${h.titulo}</h1>
@@ -267,7 +289,8 @@ function hero(p) {
 }
 
 export function pintarPlantilla(raiz, id, opciones = {}) {
-  const p = plantillaPorId(id) || PLANTILLAS[0];
+  const base = plantillaPorId(id) || PLANTILLAS[0];
+  const p = base.heroTipo ? { ...base, hero: { ...base.hero, tipo: base.heroTipo } } : base;
   const marca = (opciones.nombre || '').trim() || p.marca;
   const accent = hexValido(opciones.color) ? opciones.color : p.c.accent;
   mini = !!opciones.mini; prioridad = 0;
