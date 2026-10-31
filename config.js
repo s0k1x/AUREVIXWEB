@@ -26,7 +26,7 @@ export const CONFIG = {
   bienvenida: { activo: true, codigo: 'BIENVENIDA10', pct: 10 },
 
   // Recomienda a un amigo: cada cliente tiene su código AMIGO-XXXXXXXX. Su amigo tiene «pct» % en su
-  // primera web y el cliente recibe «premio» (lo das tú desde el panel). Necesita supabase/migraciones/referidos-v66.sql
+  // primera web y el cliente recibe «premio» (lo das tú desde el panel). Necesita supabase/migraciones/v66-referidos.sql
   referidos: { activo: false, pct: 10, premio: 'un mes de mantenimiento gratis' },
 
   // Webs de clientes reales que quieres enseñar en la portada (Ajustes → Negocio → Casos reales)

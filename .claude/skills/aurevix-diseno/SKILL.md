@@ -16,9 +16,9 @@ fondos de colores por sección, degradados llamativos ni varios acentos a la vez
 - `componentes.css`, `funciones.css`, `widgets.css`, `inicio.css` — piezas por zona.
 - `pulido.css` — ajustes finos de movimiento y tipografía.
 - `tema-claro.css` — el mismo diseño en claro (`html[data-tema=claro]`).
-- `css/temporadas.css` + `js/temporada.js` — el acento cambia por temporada (Halloween,
+- `css/temporadas.css` + `js/base/temporada.js` — el acento cambia por temporada (Halloween,
   Navidad…). **Usa siempre `var(--accent)`**, nunca el verde escrito a mano.
-- `js/mascota.js` — el robot del asistente: dibujo vectorial por capas animado en código (coreografías calculadas
+- `js/asistente/mascota.js` — el robot del asistente: dibujo vectorial por capas animado en código (coreografías calculadas
   fotograma a fotograma con física de muelles). Su color sale de `--m-luz`, `--m-halo` y `--m-logo` (Ajustes → Apariencia).
 
 ## Tokens (oscuro, por defecto)
@@ -51,7 +51,7 @@ se oscurece para que el texto blanco se lea.
 - Tarjeta: `.card` (`--card`, borde `--line`, radio `--r`, padding 26 px) con la
   profundidad de `temporadas.css` (`--luz`, `--sombra-1..3`).
 - Secciones: `<section>` con `padding:92px 0`; títulos con `.eyebrow` + `h2`.
-- Iconos: `js/iconos.js` → `icono('nombre')` (trazo 2, `currentColor`). Al pasar el
+- Iconos: `js/base/iconos.js` → `icono('nombre')` (trazo 2, `currentColor`). Al pasar el
   ratón se animan con `iconos-vivos.css` (ver allí cómo añadir uno).
 
 ## Movimiento
@@ -70,8 +70,8 @@ ni brillos que recorren tarjetas: superficies lisas (`--bg`, `--bg2`, `--card`) 
 ## Reglas
 
 1. Un solo acento por pantalla; el resto en grises cálidos.
-2. Precios con `euros()` y el IVA con `ivaTexto()` (`js/ui.js`).
-3. Todo texto nuevo en español → añade su traducción en `js/idioma-en.js`.
+2. Precios con `euros()` y el IVA con `ivaTexto()` (`js/base/ui.js`).
+3. Todo texto nuevo en español → añade su traducción en `js/base/idioma-en.js`.
 4. Al subir cambios, sube `VERSION` en `sw.js` y añade los archivos nuevos a `ARCHIVOS`.
 5. Prueba en móvil (390 px) y en ordenador (1440 px), en oscuro y en claro.
 
@@ -88,7 +88,7 @@ Cada movimiento de la web con su nombre técnico. Antes de añadir uno nuevo, mi
 | Maqueta y tarjetas de precios | **3D tilt** + **Perspective** 1100 px | Muelle amortiguado sin bounce, solo con ratón |
 | Insignia de éxito | **Flip** (rotateY) + **Reveal** de brillo | Sin overshoot; con partículas que frenan (follow-through) |
 | Robot del asistente volando | **Shared element transition** | Sale del botón y se convierte en el avatar del chat; anticipation al despegar, squash & stretch al aterrizar |
-| Robot en reposo | **Idle animation** / **Float** | Coreografía en código (`COREO` en `js/mascota.js`): respiración, cabeza con retraso, parpadeo al azar |
+| Robot en reposo | **Idle animation** / **Float** | Coreografía en código (`COREO` en `js/asistente/mascota.js`): respiración, cabeza con retraso, parpadeo al azar |
 | Pantalla de carga | **Fade in / Draw** | Logotipo y nombre suben y aparecen, una línea fina se completa; sin tarjeta |
 | «Escribiendo…» del chat | **Pulse** | Solo mientras la IA responde de verdad |
 | Precios y cifras | **Tabular numbers** | `font-variant-numeric: tabular-nums` |

@@ -90,7 +90,7 @@ def pagina(slug, titulo, desc, cuerpo, *, nombre_visita, ld=None, og='og.png?v=2
 {cuerpo}
   </main>
   <footer id="footer"></footer>
-  <script type="module" src="js/pagina.js"></script>
+  <script type="module" src="js/portada/pagina.js"></script>
 </body>
 </html>
 '''
@@ -117,7 +117,7 @@ def faq_ld(preguntas):
 
 
 # Valores de config.js como texto inicial (lo que ven Google y quien no tiene JavaScript);
-# al cargar, js/pagina.js los cambia por los de Ajustes si el propietario los ha cambiado.
+# al cargar, js/portada/pagina.js los cambia por los de Ajustes si el propietario los ha cambiado.
 _cfg = (RAIZ / 'config.js').read_text(encoding='utf-8')
 PLANES = {m[0]: (int(m[1]), m[2]) for m in re.findall(r"id: '(\w+)', nombre: '[^']*', precio: (\d+), entrega: '([^']*)'", _cfg)}
 EXTRAS = {m[0]: int(m[1]) for m in re.findall(r"\{ id: '(\w+)', nombre: '[^']*', precio: (\d+)", _cfg)}

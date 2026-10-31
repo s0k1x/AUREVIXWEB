@@ -11,7 +11,7 @@
 //    al de facturación si puso otro).
 //  - Lleva la FACTURA en PDF: número correlativo por año (2026-0001…),
 //    creado una sola vez por pago (tabla «facturas», ver
-//    supabase/migraciones/facturas-v61.sql). Al reenviar se usa la misma factura.
+//    supabase/migraciones/v61-facturas.sql). Al reenviar se usa la misma factura.
 //  - Los datos fiscales (titular, NIF, domicilio) e IVA se leen de
 //    Ajustes en la base de datos, no del navegador.
 //  El envío lo hace el módulo común _shared/correo.ts (API de Brevo, con

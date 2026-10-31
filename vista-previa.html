@@ -60,12 +60,12 @@
   <link rel="stylesheet" href="css/pulido.css">
   <link rel="stylesheet" href="css/temporadas.css">
   <link rel="stylesheet" href="css/iconos-vivos.css">
-  <link rel="modulepreload" href="js/vista.js">
-  <link rel="modulepreload" href="js/vistaweb.js">
-  <link rel="modulepreload" href="js/ui.js">
-  <link rel="modulepreload" href="js/store.js">
+  <link rel="modulepreload" href="js/cuenta/vista.js">
+  <link rel="modulepreload" href="js/cuenta/vistaweb.js">
+  <link rel="modulepreload" href="js/base/ui.js">
+  <link rel="modulepreload" href="js/base/store.js">
   <link rel="modulepreload" href="config.js">
-  <link rel="modulepreload" href="js/proyecto.js">
+  <link rel="modulepreload" href="js/cuenta/proyecto.js">
   <script>/* Sin zoom (ni doble toque ni pellizco) */document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});document.addEventListener('gesturechange',function(e){e.preventDefault()},{passive:false})</script>
   <script>/* Versión nueva de la web: se recarga una vez para no mezclar piezas de dos versiones */try{var sw=navigator.serviceWorker;if(sw&&sw.controller){window.__swVigila=1;sw.addEventListener('controllerchange',function(){var a=document.activeElement;if(window.__swRecargado||document.querySelector('dialog[open]')||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)))return;window.__swRecargado=1;location.reload()})}}catch(e){}</script>
   <script>/* Inglés: se oculta la página un instante hasta traducirla (máximo 1,5 s) */try{var L=new URLSearchParams(location.search).get('lang')||localStorage.getItem('tm_idioma')||(!/bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent)&&(navigator.language||'').toLowerCase().indexOf('en')===0?'en':'es');var A=0;try{A=sessionStorage.getItem('tm_idioma_anim')}catch(e){}if(L==='en'||A){if(L==='en')document.documentElement.lang='en';document.documentElement.classList.add('i18n-pendiente');if(A){try{var d=JSON.parse(A),h=document.documentElement;h.classList.add('i18n-anim');h.style.setProperty('--ic-palabra',JSON.stringify(d.v==='en'?'English':'Español'));h.style.setProperty('--ic-etq',JSON.stringify(d.v==='en'?'IDIOMA · LANGUAGE':'LANGUAGE · IDIOMA'))}catch(e){}}setTimeout(function(){document.documentElement.classList.remove('i18n-pendiente','i18n-anim')},1500)}}catch(e){}</script>
@@ -74,6 +74,6 @@
 <body class="vista-body">
   <header id="header" hidden></header>
   <main class="vista" id="vista"></main>
-  <script type="module" src="js/vista.js"></script>
+  <script type="module" src="js/cuenta/vista.js"></script>
 </body>
 </html>

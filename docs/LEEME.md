@@ -10,25 +10,25 @@
 | `trabaja.html` | Página «Trabaja con nosotros» con formulario de candidatura |
 | `panel.html` | Panel de **propietario** (resumen, pedidos, clientes, soporte, agenda, actividad, candidaturas, reseñas, equipo) y de **trabajador** (encargos, agenda, disponibles, soporte, ventas, ranking) |
 | `ajustes.html` | Ajustes de cada usuario (perfil, cuenta, facturación, cobros, avisos, apariencia, privacidad) y del **negocio** para el propietario |
-| `js/colabora.js` | Mensajes, archivos y recibos de cada proyecto |
-| `js/sitio.js` | Aplica los ajustes del negocio (precios, plazos, pagos, avisos) |
-| `js/cookies.js`, `js/apariencia.js`, `js/avisos.js` | Aviso de cookies, tema claro/oscuro y campana de avisos |
+| `js/cuenta/colabora.js` | Mensajes, archivos y recibos de cada proyecto |
+| `js/base/sitio.js` | Aplica los ajustes del negocio (precios, plazos, pagos, avisos) |
+| `js/base/cookies.js`, `js/base/apariencia.js`, `js/base/avisos.js` | Aviso de cookies, tema claro/oscuro y campana de avisos |
 | `LICENSE` | Licencia: todos los derechos reservados |
 | `terminos.html` | Términos y condiciones + política de privacidad (se rellena con `config.js → legal`) |
 | `config.js` | Valores iniciales: marca, correo, pagos, datos legales, precios, extras, Supabase y asistente |
-| `js/proyecto.js` | Etapas del proyecto (dominio, contenido, diseño, revisión, pago final, publicada) |
-| `js/asistente.js` | Chat de dudas y «Te ayudo a elegir» |
-| `js/plantillas.js` | Textos, colores y fotos de los 6 diseños (puedes añadir más) |
-| `js/store.js` | Login y base de datos (Supabase o modo demo) |
-| `supabase/migraciones/esquema.sql` | Tablas y permisos de la base de datos |
+| `js/cuenta/proyecto.js` | Etapas del proyecto (dominio, contenido, diseño, revisión, pago final, publicada) |
+| `js/asistente/asistente.js` | Chat de dudas y «Te ayudo a elegir» |
+| `js/portada/plantillas.js` | Textos, colores y fotos de los 6 diseños (puedes añadir más) |
+| `js/base/store.js` | Login y base de datos (Supabase o modo demo) |
+| `supabase/migraciones/v00-esquema.sql` | Tablas y permisos de la base de datos |
 | `supabase/functions/asistente/index.ts` | Función que habla con Gemini para el chat y «Te ayudo a elegir» (la clave nunca va en la web) |
-| `js/vistaweb.js` | Web del cliente (v43): subir versiones (.zip, carpeta o archivos) y el visor en móvil, tableta y ordenador |
-| `vista-previa.html`, `js/vista.js` | La vista previa en su propia página (`/vista-previa?p=…&v=…`) |
+| `js/cuenta/vistaweb.js` | Web del cliente (v43): subir versiones (.zip, carpeta o archivos) y el visor en móvil, tableta y ordenador |
+| `vista-previa.html`, `js/cuenta/vista.js` | La vista previa en su propia página (`/vista-previa?p=…&v=…`) |
 | `manifest.json`, `sw.js`, `icons/` | Lo que la hace instalable como app (PWA) |
 | `library/` | Librería de componentes en `aurevixweb.es/library` (v31): página, índice y núcleo compartido con el generador |
 | `library/extra.json`, `library/extra/` | Componentes que añades tú a mano desde el móvil (ver sección 21) |
 | `scripts/generar-indice.mjs` | Regenera `library/indice.json` y `library/iconos.json` a partir de `biblioteca-ui/` (necesita ordenador con Node) |
-| `js/zip.js` | Crea archivos .zip (lo usan la librería, la web del cliente y «Archivos del cliente») |
+| `js/base/zip.js` | Crea archivos .zip (lo usan la librería, la web del cliente y «Archivos del cliente») |
 | `robots.txt`, `.nojekyll` | Que los buscadores no indexen la librería · que GitHub Pages publique `biblioteca-ui/` tal cual |
 
 ## 1. Cambia tus datos
@@ -52,7 +52,7 @@ respuestas automáticas (sin IA). En «Entrar» tienes botones para probar como 
 Todo se puede hacer desde el móvil en **supabase.com**:
 
 1. **New project** → nombre → contraseña de la base de datos (guárdala) → región **Europe (Frankfurt o Irlanda)**.
-2. **SQL Editor → New query**. Abre `supabase/migraciones/esquema.sql`, pega todo y pulsa **Run**.
+2. **SQL Editor → New query**. Abre `supabase/migraciones/v00-esquema.sql`, pega todo y pulsa **Run**.
    Crea las tablas, los permisos, los avisos automáticos, el tiempo real y la carpeta de archivos.
    **Se puede volver a ejecutar** cuando subas una versión nueva: no borra datos.
    El propietario es `aurevixweb@gmail.com` (el SQL deja solo ese correo como propietario).
@@ -83,7 +83,7 @@ Listo: los clientes entran con Google o email, sus pedidos se guardan en la nube
 3. **Edge Functions → Secrets** → añade `GEMINI_API_KEY` con tu clave.
    (Opcional: `GEMINI_MODEL` para cambiar de modelo; por defecto usa `gemini-3.5-flash-lite`, el más rápido y barato.)
 
-El asistente responde solo con los precios, extras y diseños de `config.js` y `js/plantillas.js`: si cambias un precio, el asistente lo sabe al momento.
+El asistente responde solo con los precios, extras y diseños de `config.js` y `js/portada/plantillas.js`: si cambias un precio, el asistente lo sabe al momento.
 Si la IA falla o no está configurada, el chat sigue funcionando con respuestas automáticas.
 Revisa los límites y precios de la API de Gemini en ai.google.dev antes de abrir la web al público.
 
@@ -123,7 +123,7 @@ datos del cliente y del pedido, y todo lo que ha enviado el cliente.
 - Las fotos se piden al tamaño justo para cada pantalla y se guardan en el móvil la primera vez, así que después cargan al instante.
 - Si una foto no carga, se ve un fondo de color: nunca queda un hueco roto.
 - Para la web de un cliente, sustituye esas fotos por las suyas.
-- Los iconos están en `js/iconos.js`. En el HTML: `<i data-i="star"></i>`.
+- Los iconos están en `js/base/iconos.js`. En el HTML: `<i data-i="star"></i>`.
 
 ## 8. Cobros (lo más barato posible)
 Solo aparecen las formas de pago que rellenes en `config.js → pagos`:
@@ -505,7 +505,7 @@ etiquetas, índice de iconos caído).
   si falla. En una prueba con un servidor lento simulado (350 ms por petición), volver a abrir la app pasó de unos
   3,7 s a unos 0,9 s.
 - **Miniaturas de «Diseños de partida».** La escala y el recorrido de cada miniatura se calculan con JavaScript
-  (`colocarDz` en `js/app.js`). Safari no recalculaba el `transform` cuando cambiaba una variable CSS, y por eso la
+  (`colocarDz` en `js/portada/app.js`). Safari no recalculaba el `transform` cuando cambiaba una variable CSS, y por eso la
   web salía encogida con una franja blanca. El fondo de cada tarjeta lleva el color de su plantilla. Al cambiar el
   tamaño, la escala se recoloca sin animación.
 - **Franja de arriba en Safari (iOS 26).** La cabecera es opaca y se prolonga hacia arriba (`.header::before`), así
@@ -528,7 +528,7 @@ etiquetas, índice de iconos caído).
 ### v35 — etiquetas de los formularios en móvil
 - Las etiquetas animadas largas («Teléfono, email y WhatsApp que se publican en la web»…) se aplastaban en iPhone porque
   cada letra podía encogerse. Ahora las letras no se encogen y la etiqueta salta de línea entre palabras (`etiquetas()` en
-  `js/ui.js`, `.fc-w` en `componentes.css`). Se acortaron dos etiquetas de «Más detalles». `sw.js` v35.
+  `js/base/ui.js`, `.fc-w` en `componentes.css`). Se acortaron dos etiquetas de «Más detalles». `sw.js` v35.
 
 ## 26. Versión v36 — direcciones limpias
 
@@ -562,7 +562,7 @@ Las páginas ya no acaban en `.html`:
 
 ### v38 — zona de la hora y zoom, segunda pasada
 - Una pieza fija con el color de la web (`body::before`, alto `env(safe-area-inset-top)`) tapa siempre la zona de la hora del iPhone, haya o no cabecera a la vista. También en la librería.
-- Las vistas previas (iframes con `srcdoc`: librería, generador y web del cliente) llevan su propio bloqueo de zoom (`js/sinzoom.js`), porque son documentos aparte y el doble toque dentro de ellas hacía zoom a toda la página. `sw.js` v38.
+- Las vistas previas (iframes con `srcdoc`: librería, generador y web del cliente) llevan su propio bloqueo de zoom (`js/base/sinzoom.js`), porque son documentos aparte y el doble toque dentro de ellas hacía zoom a toda la página. `sw.js` v38.
 - Si la franja sigue viéndose en Safari tras recargar, haz una captura con la barra de direcciones visible: puede ser una versión guardada anterior.
 
 ## 28. Versión v39 — más iconos, imágenes al compartir y recarga sin saltos
@@ -587,7 +587,7 @@ Medido en un móvil con la CPU 4 veces más lenta (Chromium, no iPhone real). En
 - No medido: iPhone real. En los datos del servidor de pruebas no cuenta la compresión de GitHub Pages.
 
 ### v41 — etiquetas de los campos ya rellenos (Ajustes)
-- En Ajustes, los campos que ya traían texto (por ejemplo «Texto de la píldora de la portada») dejaban la etiqueta encima del texto. La etiqueta subía solo por `:placeholder-shown`, que en Safari no siempre se actualiza en campos rellenados al pintar la página. Ahora cada campo con texto lleva la clase `.lleno` (`marcarLleno` y `revisarCampos` en `js/ui.js`) y la etiqueta sube por esa clase. Se actualiza al escribir, al vaciar, al abrir un diálogo y al limpiar un formulario. `sw.js` v41.
+- En Ajustes, los campos que ya traían texto (por ejemplo «Texto de la píldora de la portada») dejaban la etiqueta encima del texto. La etiqueta subía solo por `:placeholder-shown`, que en Safari no siempre se actualiza en campos rellenados al pintar la página. Ahora cada campo con texto lleva la clase `.lleno` (`marcarLleno` y `revisarCampos` en `js/base/ui.js`) y la etiqueta sube por esa clase. Se actualiza al escribir, al vaciar, al abrir un diálogo y al limpiar un formulario. `sw.js` v41.
 - Comprobado en las 4 secciones de Ajustes con campos (Negocio, Perfil, Facturación y Trabajo y cobros): ningún campo con texto sin subir y ningún vacío que suba. Safari real: sin probar.
 
 ### v42 — sin fundido entre páginas (arregla el parpadeo al recargar en Chrome)
@@ -686,7 +686,7 @@ aprobación (pasa a «Pago final»); la página `/vista-previa`; y versiones a l
 - **Supabase (aplicado el 28/10/2026)**: las funciones internas (`avisar`, `avisos_*`, `limitar_cliente`, `nuevo_usuario`,
   `proteger_rol`, `rls_auto_enable`, `uids_propietarios`) ya no se pueden llamar desde fuera. Antes, cualquiera, sin iniciar
   sesión, podía usar `avisar` para mandar avisos falsos a la campana de otro usuario. Los disparadores funcionan igual.
-  Índices nuevos en `mensajes(uid)` y `resenas(uid)`. El SQL está en `supabase/migraciones/seguridad-v44.sql`.
+  Índices nuevos en `mensajes(uid)` y `resenas(uid)`. El SQL está en `supabase/migraciones/v44-seguridad.sql`.
 - **Pendiente en Supabase** (se hace en el panel, no por SQL): *Authentication → Providers → Email → Leaked password
   protection* (no deja usar contraseñas filtradas).
 - El generador de códigos QR va dentro de la web (`js/vendor/qrcode.js`, MIT) en lugar de cargarse de un CDN.
@@ -776,7 +776,7 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 ## 34. Versión v47 — widgets de la portada y recorrido con scroll
 
 - **Franja de garantías** bajo la portada: precio final con IVA, solo transferencia, pago en dos partes, 14 días para desistir y plazo de respuesta. Los porcentajes y el texto de respuesta salen de `config.js`.
-- **Calculadora de presupuesto** (`#calcula`, `js/calculadora.js`): tipo de web, extras, entrega urgente y descuento de bienvenida. Usa la misma fórmula que el pedido y enseña total, desglose de IVA, señal, resto y plazo. «Pedir esta web» abre el pedido con el plan, los extras y la urgencia ya marcados (`abrirCompra(plan, '', { urgente, extras })`). Se carga solo al acercarse a la sección.
+- **Calculadora de presupuesto** (`#calcula`, `js/portada/calculadora.js`): tipo de web, extras, entrega urgente y descuento de bienvenida. Usa la misma fórmula que el pedido y enseña total, desglose de IVA, señal, resto y plazo. «Pedir esta web» abre el pedido con el plan, los extras y la urgencia ya marcados (`abrirCompra(plan, '', { urgente, extras })`). Se carga solo al acercarse a la sección.
 - **Recorrido «Cómo trabajamos»** (`js/mundo.js`): un mundo isométrico dibujado en SVG con una estación por paso. Al hacer scroll la cámara se para en cada estación y viaja a la siguiente sin cortes, con la ruta dibujándose y un punto que avanza. Los textos se leen de la lista `.steps` del HTML, así que se editan ahí. Solo usa `transform`/`opacity` y el bucle solo corre mientras se ve. Con «reducir movimiento» o sin JavaScript se queda la lista de siempre.
 - Es la técnica de Scroll World, pero en vector: la versión original genera vídeos con IA de pago (Higgsfield/Monid) y no había ninguna herramienta gratuita utilizable desde aquí. A cambio no hay vídeos que descargar y pesa unos pocos KB.
 - Estilos nuevos en `widgets.css`. Service worker en **v47**.
@@ -789,8 +789,8 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 - **«Cómo trabajamos»** vuelve a ser la lista de pasos de antes: se quita el recorrido con scroll de la v47 (`js/mundo.js`).
 - **Pedido en el móvil arreglado**: la clase `.paso` del «siguiente paso» del panel pisaba la de los pasos del pedido y los enseñaba todos a la vez. Ahora el del panel se llama `.sig-paso`.
 - **Webs de clientes en `aurevixweb.es/<nombre>`**: en el panel, dentro del pedido → «Web del cliente» → «Enlace público», se elige el nombre (sale del negocio) y la versión, y se pulsa «Publicar». Al publicar por primera vez le llega un mensaje al cliente con el enlace. Cualquiera puede ver esa versión sin cuenta; el resto de versiones y archivos siguen siendo privados. «Despublicar» lo quita (y borrar la versión publicada también).
-  - Cómo funciona: GitHub Pages sirve `404.html` para las direcciones que no existen; esa página (`js/publica.js`) busca el nombre en la tabla `webs_publicas` y monta la web aislada en un iframe. Las páginas internas tienen dirección limpia (`/nombre/contacto`).
-  - **Hace falta** ejecutar una vez `supabase/migraciones/webs-publicas-v48.sql` en el SQL Editor de Supabase (crea la tabla y el permiso de lectura de solo esas versiones). Sin él, «Publicar» da error y los enlaces enseñan «Esta página no existe».
+  - Cómo funciona: GitHub Pages sirve `404.html` para las direcciones que no existen; esa página (`js/portada/publica.js`) busca el nombre en la tabla `webs_publicas` y monta la web aislada en un iframe. Las páginas internas tienen dirección limpia (`/nombre/contacto`).
+  - **Hace falta** ejecutar una vez `supabase/migraciones/v48-webs-publicas.sql` en el SQL Editor de Supabase (crea la tabla y el permiso de lectura de solo esas versiones). Sin él, «Publicar» da error y los enlaces enseñan «Esta página no existe».
 
 ## 36. Versión v49 — asistente útil de verdad y pulido de toda la web
 
@@ -809,11 +809,11 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 ## 37. Versión v50 — inglés, cuestionario por secciones, dominio y datos de contacto reales
 
 - **Equipo (panel)**: cada trabajador en una fila clara también en el móvil (nombre, disponible, correo, activos/entregados/ventas/generado) y botones grandes: Pagar, Cobro, Escribir y Quitar.
-- **Teléfonos y correos de verdad** (`js/validar.js`, se aplica solo a todos los campos `tel` y `email` de la web): un solo teléfono, español de 9 cifras (6/7/8/9, con o sin +34) o internacional con «+» y prefijo; solo deja escribir cifras y lo deja como +34 612 345 678. Un solo correo, sin espacios ni comas, con dominio válido, y propone el bueno si hay una errata (gmial.com → gmail.com). Un formulario con un dato mal no se envía.
+- **Teléfonos y correos de verdad** (`js/base/validar.js`, se aplica solo a todos los campos `tel` y `email` de la web): un solo teléfono, español de 9 cifras (6/7/8/9, con o sin +34) o internacional con «+» y prefijo; solo deja escribir cifras y lo deja como +34 612 345 678. Un solo correo, sin espacios ni comas, con dominio válido, y propone el bueno si hay una errata (gmial.com → gmail.com). Un formulario con un dato mal no se envía.
 - **Cuestionario del pedido por secciones** (8 pasos): Qué incluye → Tu negocio → Contacto (nombre, teléfono y correo) → **Dominio y correo** → Estilo → Extras → Diseño → Resumen (agrupado por secciones).
-- **Dominio y correo profesional** (`js/dominio.js`): dominio nuevo o propio, nombre con la extensión en botones grandes (.es, .com…), nombre del correo (info@, hola@…) y vista previa «www.tunegocio.es · info@tunegocio.es». Si es nuevo, se añade el extra «Dominio + alojamiento» avisando. El mismo bloque sale en el paso «Dominio» del proyecto, ya relleno con lo que el cliente dijo al pedir, y ya no se ve raro en el móvil.
-- **Web en inglés y español** (`js/idioma.js` + `js/idioma-en.js`): botón ES/EN en la cabecera; la primera vez se elige según el idioma del navegador (también `?lang=en`). Se traduce todo lo que ve el cliente (portada, calculadora, cuestionario, chat, Mis proyectos, soporte, cookies, Trabaja con nosotros). El panel y los ajustes del equipo siguen en español salvo que se elija inglés. Los textos legales se quedan en español (es la versión que vale) con un aviso en inglés. El asistente con IA responde en inglés si la web está en inglés.
-- **Para traducir un texto nuevo**: añade la pareja `'texto en español': 'English text'` en `js/idioma-en.js`. Las frases con números o fechas van en `PATRONES`.
+- **Dominio y correo profesional** (`js/cuenta/dominio.js`): dominio nuevo o propio, nombre con la extensión en botones grandes (.es, .com…), nombre del correo (info@, hola@…) y vista previa «www.tunegocio.es · info@tunegocio.es». Si es nuevo, se añade el extra «Dominio + alojamiento» avisando. El mismo bloque sale en el paso «Dominio» del proyecto, ya relleno con lo que el cliente dijo al pedir, y ya no se ve raro en el móvil.
+- **Web en inglés y español** (`js/base/idioma.js` + `js/base/idioma-en.js`): botón ES/EN en la cabecera; la primera vez se elige según el idioma del navegador (también `?lang=en`). Se traduce todo lo que ve el cliente (portada, calculadora, cuestionario, chat, Mis proyectos, soporte, cookies, Trabaja con nosotros). El panel y los ajustes del equipo siguen en español salvo que se elija inglés. Los textos legales se quedan en español (es la versión que vale) con un aviso en inglés. El asistente con IA responde en inglés si la web está en inglés.
+- **Para traducir un texto nuevo**: añade la pareja `'texto en español': 'English text'` en `js/base/idioma-en.js`. Las frases con números o fechas van en `PATRONES`.
 
 ## 38. Versión v51 — cabecera del móvil
 - En el móvil el botón de idioma pasa al menú ☰ («View in English» / «Ver en español»): en la cabecera no cabía junto a la campana y la cuenta y aplastaba la foto de perfil (salía ovalada). La foto y la campana ya no se encogen nunca.
@@ -846,7 +846,7 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 
 **Entrar y crear la cuenta con un código (sin contraseñas)**
 - Ya no hay contraseñas. Para **entrar**: email → llega un código de 6 cifras → se escribe y entras. Para **crear la cuenta**: nombre, email y aceptar las condiciones → el mismo código **verifica el correo** y crea la cuenta. Google sigue funcionando igual.
-- El campo del código (`js/otp.js`, basado en «OTP Input» de 21st.dev) acepta pegar el código entero, el autorrelleno del iPhone («Desde Mail») y lectores de pantalla. Si el código está mal, se sacude en rojo; si está bien, se enciende en verde de casilla en casilla. Se envía solo al escribir la sexta cifra y se puede pedir otro cada 60 segundos.
+- El campo del código (`js/base/otp.js`, basado en «OTP Input» de 21st.dev) acepta pegar el código entero, el autorrelleno del iPhone («Desde Mail») y lectores de pantalla. Si el código está mal, se sacude en rojo; si está bien, se enciende en verde de casilla en casilla. Se envía solo al escribir la sexta cifra y se puede pedir otro cada 60 segundos.
 - El código lo genera, caduca y comprueba Supabase, no la web. En Ajustes ya no aparece «Contraseña».
 - Las cuentas antiguas que tenían contraseña entran con el código igual (mismo email).
 
@@ -867,14 +867,14 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 - Todo lo que sale en la campana (pedido nuevo, cambio de etapa, vista previa lista, pago por revisar, mensajes, soporte, vídeos) llega también **por correo**, con el diseño de la web y un botón que lleva directo al proyecto o al pedido.
 - No satura: como mucho un correo cada 30 minutos por persona, proyecto y tipo de aviso (el resto se ve en la campana). Al cliente no le llega el aviso de «pago» porque ya recibe el recibo.
 - Cada persona lo apaga o elige qué tipos quiere en **Ajustes → Avisos** («Avisos por correo»).
-- Lo hace la función **`notificar`** de Supabase con Brevo (mismos secretos que los recibos). Para activarlo hay que pegar **una vez** `supabase/migraciones/avisos-correo-v58.sql` en Supabase → SQL Editor → Run: crea el disparador que llama a la función con cada aviso nuevo.
+- Lo hace la función **`notificar`** de Supabase con Brevo (mismos secretos que los recibos). Para activarlo hay que pegar **una vez** `supabase/migraciones/v58-avisos-correo.sql` en Supabase → SQL Editor → Run: crea el disparador que llama a la función con cada aviso nuevo.
 
 **Panel**
 - La ficha de cada pedido se abre a pantalla completa.
 
 ## 45. Versión v65 — Lista de lanzamiento, estadísticas, WhatsApp, iconos vivos y herramientas
 **Lo que tienes que hacer tú (una vez)**
-1. **Estadísticas de visitas**: pega `supabase/migraciones/visitas-v65.sql` en Supabase → SQL Editor → Run. Hasta entonces, el panel dice que aún no hay visitas.
+1. **Estadísticas de visitas**: pega `supabase/migraciones/v65-visitas.sql` en Supabase → SQL Editor → Run. Hasta entonces, el panel dice que aún no hay visitas.
 2. **WhatsApp** (opcional): Ajustes → Negocio → Redes → «WhatsApp (número)», con el prefijo 34 y sin espacios. Sale un botón en Contacto y en el pie. Vacío = no se ofrece.
 3. **HTTPS**: en GitHub → Settings → Pages, marca «Enforce HTTPS».
 4. **Google**: da de alta la web en Google Search Console y envía `https://aurevixweb.es/sitemap.xml`. Crea la **ficha de Google (Perfil de Empresa)** de AurevixWeb.
@@ -921,8 +921,8 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 ## 46. Versión v66 — Páginas por sector, guías, revisión gratis, mantenimiento, casos y recomendaciones
 **Lo que tienes que hacer tú (una vez)**
 1. En Supabase → SQL Editor, pega y ejecuta:
-   - `supabase/migraciones/visitas-v65.sql`, para las estadísticas de visitas;
-   - `supabase/migraciones/referidos-v66.sql`, para que valgan los códigos de amigo.
+   - `supabase/migraciones/v65-visitas.sql`, para las estadísticas de visitas;
+   - `supabase/migraciones/v66-referidos.sql`, para que valgan los códigos de amigo.
 2. Después, activa **Ajustes → Negocio → «Recomienda a un amigo»** y elige el descuento y el premio.
 3. Cuando tengas clientes que te den permiso, añade sus webs en **Ajustes → Negocio → «Casos reales»**. Salen en la portada, en la sección «Webs publicadas». Si no hay ninguno, la sección no aparece.
 4. En Google Search Console, vuelve a enviar `sitemap.xml`: ahora tiene 16 páginas.
@@ -1040,8 +1040,8 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 
 ## 49. Versión v70 — Mascota del asistente, animación de sesión y arreglo de la pantalla borrosa
 
-- **Arreglo:** al cerrar sesión desde el menú de la cuenta, la web se quedaba oscura y borrosa. El menú desaparecía al repintar la cabecera y el fondo oscurecido (`.menu-velo`) no se enteraba. Ahora `iniciarVelo()` (js/ui.js) también vigila cuándo desaparece un menú, y al cerrar sesión se cierran los menús antes.
-- **La mascota** (`js/mascota.js`, estilos al final de `funciones.css`):
+- **Arreglo:** al cerrar sesión desde el menú de la cuenta, la web se quedaba oscura y borrosa. El menú desaparecía al repintar la cabecera y el fondo oscurecido (`.menu-velo`) no se enteraba. Ahora `iniciarVelo()` (js/base/ui.js) también vigila cuándo desaparece un menú, y al cerrar sesión se cierran los menús antes.
+- **La mascota** (`js/asistente/mascota.js`, estilos al final de `funciones.css`):
   - Es un robot blanco con casco, auriculares y luces verdes, **dibujado en SVG** (no es una foto), con cuerpo entero para poder animarlo: cabeza, brazos, piernas, ojos y llamas bajo los pies.
   - Dos formas: **cara** (solo la cabeza en un disco: botón y cabecera del chat) y **cuerpo** (entero: vuelo y animación de sesión).
   - Estados: normal, feliz (salta con los brazos arriba), saluda, habla, piensa (puntos sobre la cabeza), dormido, adiós, guiño y vuela.
@@ -1049,9 +1049,9 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
   - En el chat: **piensa** mientras prepara la respuesta y **habla** mientras llega.
   - Respeta «Reducir animaciones» y el ajuste del sistema.
 - **Vuelo al abrir y cerrar el asistente:** al pulsar el botón, el robot sale de él con el cuerpo entero, cruza la pantalla en arco, gira, se encoge y aterriza como avatar en la cabecera del chat. Al cerrar, hace el camino de vuelta. Se dibuja ya al tamaño máximo y solo se reduce, moviéndose únicamente con `transform` (tarjeta gráfica), así va fluido.
-- **Animación al iniciar y cerrar sesión** (`transicionSesion` en js/mascota.js, usada desde js/ui.js): al entrar, el robot salta, saluda y suelta chispas con «¡Hola, Nombre!»; al salir, se despide con la mano, se duerme y pone «Hasta pronto». Dura lo justo (unos 2 segundos) y nunca se queda pegada (se quita sola a los 9 s).
+- **Animación al iniciar y cerrar sesión** (`transicionSesion` en js/asistente/mascota.js, usada desde js/base/ui.js): al entrar, el robot salta, saluda y suelta chispas con «¡Hola, Nombre!»; al salir, se despide con la mano, se duerme y pone «Hasta pronto». Dura lo justo (unos 2 segundos) y nunca se queda pegada (se quita sola a los 9 s).
 - **Pruebas:** `tests/pruebas.mjs` ahora comprueba (ordenador y móvil) que el asistente se abre y la mascota aterriza, que vuelve al botón, que iniciar y cerrar sesión funcionan con la animación y que no queda nada borroso. 58 comprobaciones.
-- `sw.js` sube a v70 y guarda `js/mascota.js` y `icons/logo-a-verde.png`.
+- `sw.js` sube a v70 y guarda `js/asistente/mascota.js` y `icons/logo-a-verde.png`.
 
 ## 50. Vuelta atrás: el código vuelve a servirse desde este mismo repositorio
 
@@ -1075,7 +1075,7 @@ pidan 5 caracteres y que el cambio entre «Entrar» y «Crear cuenta» conserva 
 
 **Robot del asistente a 60 fps**
 - **Por qué iba a tirones:** el robot era un único SVG con piezas que se movían por dentro. Eso obliga al navegador a repintar el dibujo en cada fotograma, en el hilo principal, y con la página ocupada caía a 20-30 fps.
-- **Ahora, por capas** (`js/mascota.js`, estilos en `funciones.css`): cada pieza (casco, ojos, torso, brazos, piernas, llamas, sombra) es su propio SVG a tamaño completo. Se dibuja una vez y después solo se mueve con `transform` y `opacity`, que hace la tarjeta gráfica sin pasar por el hilo principal. El robot se ve igual, pero el parpadeo, la mirada, los saltos y el vuelo ya no repintan nada.
+- **Ahora, por capas** (`js/asistente/mascota.js`, estilos en `funciones.css`): cada pieza (casco, ojos, torso, brazos, piernas, llamas, sombra) es su propio SVG a tamaño completo. Se dibuja una vez y después solo se mueve con `transform` y `opacity`, que hace la tarjeta gráfica sin pasar por el hilo principal. El robot se ve igual, pero el parpadeo, la mirada, los saltos y el vuelo ya no repintan nada.
 - **Vuelo con estela:** al abrir y cerrar el chat, el robot deja chispas por el camino (también solo `transform` y `opacity`).
 - **Más expresivo:** el salto de alegría se estira al subir y se aplasta al caer, la cabeza acompaña el movimiento, y al dormir respira con todo el cuerpo.
 - **60 imágenes del robot saludando** (`icons/asistente/saluda-00.webp` … `saluda-59.webp`, un bucle perfecto de 1 segundo) y la hoja con todas juntas (`saluda.webp`, 10 × 6 fotogramas). Las genera `node scripts/generar-mascota.js http://127.0.0.1:8731` desde el propio dibujo del robot. La web usa la hoja, no las 60 por separado.
@@ -1117,7 +1117,7 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 | `cuerpo-feliz` | 60 (1 s) | Al iniciar sesión: coge impulso, salta con los brazos arriba y cae aplastándose |
 | `cuerpo-vuela` | 60 (1 s) | En el vuelo del botón al chat: llamas vivas, brazos que equilibran y piernas con inercia |
 
-- **Reproducción:** dos animaciones por pasos de `translate` y `transform` (`js/mascota.js` → `aplicarHoja`). Van en la tarjeta gráfica, a 60 fps aunque la página esté ocupada. Cada mascota cambia de hoja sola al cambiar de estado.
+- **Reproducción:** dos animaciones por pasos de `translate` y `transform` (`js/asistente/mascota.js` → `aplicarHoja`). Van en la tarjeta gráfica, a 60 fps aunque la página esté ocupada. Cada mascota cambia de hoja sola al cambiar de estado.
 - **Respaldo:** si una hoja aún no ha llegado, o si la acción no tiene hoja (dormido), se ve el dibujo en vector, así que nunca hay un hueco. Con «reducir movimiento» no se usan.
 - **Carga:**
   - `cara-normal` (270 KB) se descarga cuando el navegador está libre.
@@ -1147,12 +1147,12 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **Pantalla del código:** botón «Entrar con Google» debajo de «pide otro», para poder entrar aunque el correo con el código no llegue.
 
 ### v78 — borradores en toda la web y el robot volando con vida
-- **Borradores en toda la web (`js/borradores.js`):** lo que alguien escribe en cualquier campo (contacto, chat, mensajes del panel, revisa tu web, trabaja con nosotros…) se guarda en su navegador mientras escribe. Si cierra, recarga o se le va la conexión, al volver lo encuentra tal cual.
+- **Borradores en toda la web (`js/base/borradores.js`):** lo que alguien escribe en cualquier campo (contacto, chat, mensajes del panel, revisa tu web, trabaja con nosotros…) se guarda en su navegador mientras escribe. Si cierra, recarga o se le va la conexión, al volver lo encuentra tal cual.
   - Solo en ese navegador (`localStorage`, claves `tm_bor:`), nunca se envía a ningún sitio. No se guardan contraseñas, códigos, tarjetas, archivos ni el buscador de preguntas.
   - Se borra al enviar (si el campo se vacía o desaparece), al vaciarlo a mano o a los 30 días. Cerrar un diálogo sin enviar no lo borra.
   - Si se rechazan las preferencias en el aviso de cookies, no se guarda nada y se borra lo guardado.
   - El cuestionario de pedido sigue con su propio borrador. Para excluir un campo: `data-sin-borrador`.
-- **El robot vuela con vida:** al abrir el asistente y al entrar o salir de la cuenta ya no viaja rígido. Bate los brazos como alas (más deprisa cuanto más rápido va, el de dentro de la curva más alto), patalea, adelanta la cabeza hacia donde va, mira el camino, parpadea y alarga las llamas al acelerar (`vidaEnVuelo` en `js/mascota.js`).
+- **El robot vuela con vida:** al abrir el asistente y al entrar o salir de la cuenta ya no viaja rígido. Bate los brazos como alas (más deprisa cuanto más rápido va, el de dentro de la curva más alto), patalea, adelanta la cabeza hacia donde va, mira el camino, parpadea y alarga las llamas al acelerar (`vidaEnVuelo` en `js/asistente/mascota.js`).
 - **Entrar y salir de la cuenta:** el robot sale volando del botón del asistente, cruza la pantalla en una curva amplia hasta el centro y saluda; al cerrar sesión se despide con la mano y vuelve volando a su botón (`trayecto`). La curva nunca se sale de la pantalla, también en el móvil. Con «menos movimiento» se queda como antes.
 - En reposo, la cabeza del dibujo respira y se balancea un poco.
 
@@ -1181,7 +1181,7 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - Cuando la función arranca, deja en sus registros el estado de la cuenta de Brevo: plan, envíos que quedan y si el remitente está verificado. Así se ve en Supabase → Edge Functions → codigo → Logs por qué no llegaría un correo, sin tener que entrar en Brevo.
   - Límites: un código por correo cada 40 s y 10 por IP cada 10 min.
 - **Función `correo` (facturas):** envía con el mismo módulo, así que también gana los reintentos y el motivo.
-- **Web (`js/store.js`):** pedir y comprobar el código, reescritos.
+- **Web (`js/base/store.js`):** pedir y comprobar el código, reescritos.
   - Primero la función `codigo`; si no responde o Brevo falla, el envío de Supabase Auth como respaldo.
   - Si los dos fallan, se explica el motivo y se propone entrar con Google.
   - Al comprobar el código, prueba `email` y, si no vale, `magiclink`.
@@ -1198,7 +1198,7 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **Bienvenida y despedida de la cuenta:** el fondo es opaco del todo (antes, al 97 %, se leía la página por detrás).
 
 ### v83 — celebración «logro desbloqueado» y vídeo promo de 15 s
-- **Celebración (`celebrar()` en `js/efectos.js`):** idea sacada de prompt-motion.com («badge unlock»). La insignia verde entra girando en 3D y se asienta sin rebote, la cruza un brillo y suelta una ráfaga de estrellas, rombos y puntos dorados y lima. Las partículas frenan con el aire, caen un poco y titilan al apagarse.
+- **Celebración (`celebrar()` en `js/base/efectos.js`):** idea sacada de prompt-motion.com («badge unlock»). La insignia verde entra girando en 3D y se asienta sin rebote, la cruza un brillo y suelta una ráfaga de estrellas, rombos y puntos dorados y lima. Las partículas frenan con el aire, caen un poco y titilan al apagarse.
   - Se ve al enviar el pedido, al avisar del pago, al dejar una reseña y al aprobar la web (sustituye al confeti de antes, y `confeti()` llama a esta).
   - Con «menos movimiento» no se hace.
 - **Vídeo promo de 15 s (`promo/promo-15s.html` + `scripts/grabar-promo.cjs`):** sigue las reglas de oficio de la skill `cinetic` (licencia MIT).
@@ -1208,7 +1208,7 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - No lleva sonido: se le pone la música en la app de cada red.
 
 ### v84 — inclinación 3D en la portada
-- **`js/inclinar.js` (nuevo):** la maqueta del portátil (`#vitrina`, hasta 7°) y las tarjetas de precios (`.plan-card`, hasta 5°) se inclinan hacia el puntero como un objeto real y crecen un poco. Las tarjetas llevan además una luz suave que sigue al ratón.
+- **`js/portada/inclinar.js` (nuevo):** la maqueta del portátil (`#vitrina`, hasta 7°) y las tarjetas de precios (`.plan-card`, hasta 5°) se inclinan hacia el puntero como un objeto real y crecen un poco. Las tarjetas llevan además una luz suave que sigue al ratón.
   - Muelle amortiguado (se acerca un 12 % por fotograma): llega y se para, sin rebotar. Solo `transform`.
   - Solo en ordenador con ratón (`hover:hover` y puntero fino) y sin «menos movimiento».
   - Se monta al primer paso del ratón, así que sirve también para tarjetas que se pintan después. En reposo quita su estilo y lo deja como estaba.
@@ -1227,14 +1227,14 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - No aplican a esta web: `animate-expo` y `write-swift` (apps nativas), `ask-sonner` y `pick-ui-library` (librerías de React) y `animation-vocabulary` (glosario).
 
 ### v86 — las skills que faltaban: ask-sonner, pick-ui-library, animate-expo y animation-vocabulary
-- **ask-sonner:** el aviso (`toast` en `js/ui.js`) sigue a Sonner, sin instalar nada.
+- **ask-sonner:** el aviso (`toast` en `js/base/ui.js`) sigue a Sonner, sin instalar nada.
   - Arreglado: con un diálogo abierto, el aviso quedaba tapado debajo. Ahora va en la capa superior del navegador (`popover`) y se ve siempre.
   - Los errores se anuncian al momento a los lectores de pantalla (`role="alert"`).
   - El tiempo, y su barrita, se pausan con el ratón encima o con la pestaña oculta.
   - En el móvil se quita deslizándolo hacia abajo (basta un toque rápido).
   - Ya no parte en dos líneas un texto corto.
 - **pick-ui-library:** revisados los componentes propios frente a lo que haría una librería (Radix o Base UI). El desplegable tiene roles, flechas, Inicio y Fin, buscar por letra y devuelve el foco; los diálogos son `<dialog>` nativos; el menú abre con Enter, cierra con Escape y devuelve el foco. No hacía falta ninguna librería.
-- **animate-expo (háptica):** `vibrar()` en `js/efectos.js` (en Android; Safari del iPhone no lo permite). Una vibración por acción y junto a lo que se ve: éxito con la celebración, error con el aviso de error y un toque al descartar un aviso.
+- **animate-expo (háptica):** `vibrar()` en `js/base/efectos.js` (en Android; Safari del iPhone no lo permite). Una vibración por acción y junto a lo que se ve: éxito con la celebración, error con el aviso de error y un toque al descartar un aviso.
 - **animation-vocabulary:** catálogo de movimiento con el nombre técnico de cada animación de la web, en `.claude/skills/aurevix-diseno/SKILL.md`.
 - **write-swift:** no aplica; la web no tiene código Swift.
 
@@ -1283,12 +1283,12 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - **Librería:** ya no forma parte de la web. Para pasarla a su propio repositorio privado, usa `scripts/separar-libreria.sh`. La tabla `suscripciones` sigue en Supabase.
 - **Cloudflare Pages:** `scripts/cloudflare-build.sh`, `_headers` y `_redirects`. Los pasos están en `docs/CLOUDFLARE.md`.
 - **Pendiente de aplicar** (necesita permiso):
-  - `supabase/migraciones/plataforma-v88.sql`. Es aditivo: límites al equipo, tickets, `gastos`, `estadisticas_web`, avisos de tickets, facturas de cuotas y extras, y `cambiosExtra` para el cliente.
+  - `supabase/migraciones/v88-plataforma.sql`. Es aditivo: límites al equipo, tickets, `gastos`, `estadisticas_web`, avisos de tickets, facturas de cuotas y extras, y `cambiosExtra` para el cliente.
   - Desplegar `correo` con los cambios de `_shared`.
   - Mientras no se aplique, el panel muestra cómo activarlo y lo demás sigue funcionando.
 
 ### v89: el asistente, animado en código (sin imágenes)
-- **Ya no usa hojas de fotogramas.** Antes, cada acción era una imagen `.webp` (unos 1,9 MB en total). Ahora el robot vectorial se anima en vivo en `js/mascota.js` (`COREO` y `hornear()`):
+- **Ya no usa hojas de fotogramas.** Antes, cada acción era una imagen `.webp` (unos 1,9 MB en total). Ahora el robot vectorial se anima en vivo en `js/asistente/mascota.js` (`COREO` y `hornear()`):
   - Cada estado se calcula fotograma a fotograma: se simula a 240 pasos por segundo y se guarda a 60 fps.
   - Lo reproduce la tarjeta gráfica (solo transform y opacity), con nitidez a cualquier tamaño.
   - Se han quitado `icons/asistente/`, `js/mascota-hojas.js` y `scripts/generar-mascota.js`.
@@ -1316,8 +1316,8 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - 9 colores: lima, cian, azul, violeta, rosa, rojo, naranja, oro y blanco.
   - Se elige en Ajustes → Apariencia o con el botón de la paleta de la cabecera del chat.
   - Cambian los ojos, los neones, el logotipo, los propulsores y la estela. El color viaja con la cuenta.
-  - Técnica: variables `--m-luz`, `--m-halo` y `--m-logo` (`js/apariencia.js` → `COLORES_ASISTENTE`). El logotipo es el PNG usado como máscara, y el color lo ponen las variables.
-- **Celebración** (`fiesta()` en `js/mascota.js`), solo en tres momentos: aviso de pago enviado, pedido recibido y web aprobada.
+  - Técnica: variables `--m-luz`, `--m-halo` y `--m-logo` (`js/base/apariencia.js` → `COLORES_ASISTENTE`). El logotipo es el PNG usado como máscara, y el color lo ponen las variables.
+- **Celebración** (`fiesta()` en `js/asistente/mascota.js`), solo en tres momentos: aviso de pago enviado, pedido recibido y web aprobada.
   - El robot sale volando del botón con una estela arcoíris.
   - Se pone en grande con los ojos enormes en arcoíris (estado «asombro»), suelta una explosión de chispas y enseña un bocadillo con el mensaje.
   - Vuelve en picado a su botón.
@@ -1327,12 +1327,12 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - Mirada con un pequeño rebote al llegar; la cabeza sigue al ratón con inercia.
   - Vuelos a 140 fotogramas.
 - **Estado de la web** (Ajustes → Negocio → «Estado de la web»): normal, demostración o mantenimiento. Nunca afecta al propietario ni a los trabajadores, ni a las webs publicadas de los clientes.
-  - **Demostración:** aparece una franja de aviso. Se puede probar todo, pero `js/store.js` no guarda pedidos, pagos, mensajes, consultas, candidaturas ni reseñas.
-  - **Mantenimiento** (`js/estado-web.js`):
+  - **Demostración:** aparece una franja de aviso. Se puede probar todo, pero `js/base/store.js` no guarda pedidos, pagos, mensajes, consultas, candidaturas ni reseñas.
+  - **Mantenimiento** (`js/base/estado-web.js`):
     - Pantalla completa con el robot dando volteretas. Al tocarlo se asombra, bota y suelta chispas; de vez en cuando saluda.
     - Se puede escribir un mensaje opcional. Hay un enlace discreto de «Acceso del equipo»: al entrar el propietario o un trabajador, la pantalla desaparece.
     - El freno de `store.js` también actúa aunque alguien quite la pantalla desde el navegador.
-    - Cierre también en el servidor: `supabase/migraciones/estado-web-v91.sql` (disparador `web_cerrada`) rechaza escribir en pedidos, consultas, mensajes, candidaturas, reseñas y vídeos mientras la web esté en demostración o mantenimiento, salvo al equipo y a las funciones del servidor.
+    - Cierre también en el servidor: `supabase/migraciones/v91-estado-web.sql` (disparador `web_cerrada`) rechaza escribir en pedidos, consultas, mensajes, candidaturas, reseñas y vídeos mientras la web esté en demostración o mantenimiento, salvo al equipo y a las funciones del servidor.
 
 ### v92: el robot, sutil y elegante fuera del chat
 - **El chat no cambia** (botón, cabecera y vuelo del botón a la cabecera).
@@ -1350,7 +1350,7 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
 - Se ha quitado el código que ya no se usa: el vuelo `trayecto()`, los ojos arcoíris y los estilos antiguos.
 
 ### v93: notificaciones que no tapan botones y vuelo del chat limpio
-- **Notificaciones** (`toast()` en `js/ui.js` → `colocarAviso()`):
+- **Notificaciones** (`toast()` en `js/base/ui.js` → `colocarAviso()`):
   - Antes de enseñarse miran si en su sitio hay algo que se pueda tocar: un botón, un enlace o un campo.
   - Si lo hay, suben justo por encima: el total y «Siguiente» del configurador, el campo del chat, el botón del asistente o los botones del pago.
   - Si abajo no queda hueco, se ponen arriba.
@@ -1374,12 +1374,12 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - Bloque «¿Cómo está tu web actual?», que lleva al análisis ya en marcha.
 - **Configurador:** vista previa en vivo en el paso «Estilo», con el nombre y el color del cliente.
 - **Tema claro u oscuro:** botón en la cabecera (en el móvil, en el menú) con transición circular (View Transitions).
-- **Reservar una llamada** (`js/llamada.js`):
+- **Reservar una llamada** (`js/portada/llamada.js`):
   - Horario en Ajustes → Negocio → Llamadas.
   - Huecos libres reales y confirmación con botón para añadirla a Google Calendar o archivo `.ics`.
   - Llega a Soporte y al resumen del panel.
   - El servidor impide reservar dos veces la misma hora.
-- **Firma en pantalla** (`js/firma.js`):
+- **Firma en pantalla** (`js/cuenta/firma.js`):
   - Al confirmar el pedido y al aceptar un cambio extra.
   - Se ve en el detalle del pedido y en el resumen imprimible.
 - **Revisa tu web:** mide a la vez, en vivo, la web del visitante y un diseño nuestro, y las compara.
@@ -1387,7 +1387,7 @@ Cada cosa que hace tiene su propia hoja de fotogramas, sacada de una coreografí
   - Cuota que vence o vencida, contenido pendiente, web lista para revisar.
   - Informe mensual en PDF el día 1.
   - Respeta el aviso «Recordatorios» de Ajustes → Avisos y nunca repite un aviso.
-- **SQL:** `supabase/migraciones/funciones-v94.sql`.
+- **SQL:** `supabase/migraciones/v94-funciones.sql`.
 - **Diseños predeterminados** (skill design-taste-frontend):
   - Sin etiquetas pequeñas encima de los títulos, ni sombras, ni emoji, ni cinta que corre, ni números decorativos.
   - Ventajas como lista limpia; títulos en dos líneas.

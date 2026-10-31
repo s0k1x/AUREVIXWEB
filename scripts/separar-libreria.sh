@@ -12,8 +12,8 @@ git worktree add --detach "$TMP/web" "$ORIGEN_COMMIT"
 mkdir -p "$TMP/libreria"
 cp -R "$TMP/web/library" "$TMP/web/biblioteca-ui" "$TMP/libreria/"
 mkdir -p "$TMP/libreria/js" "$TMP/libreria/supabase"
-cp "$TMP/web/js/zip.js" "$TMP/libreria/js/"                     # library.js lo importa con ../js/zip.js
-cp "$TMP/web/supabase/libreria-v60.sql" "$TMP/libreria/supabase/" # tabla «suscripciones»
+cp "$TMP/web/js/base/zip.js" "$TMP/libreria/js/"                     # library.js lo importa con ../js/base/zip.js
+cp "$TMP/web/supabase/v60-libreria.sql" "$TMP/libreria/supabase/" # tabla «suscripciones»
 git worktree remove --force "$TMP/web"
 cd "$TMP/libreria"
 cat > README.md <<'TXT'
@@ -21,7 +21,7 @@ cat > README.md <<'TXT'
 Separada de la web principal (aurevixweb.es) en la v88.
 - `library/`: buscador y descargas (index.html, library.js, índices).
 - `biblioteca-ui/`: los componentes con sus licencias.
-- `supabase/libreria-v60.sql`: tabla de suscripciones (sigue en el mismo proyecto de Supabase).
+- `supabase/v60-libreria.sql`: tabla de suscripciones (sigue en el mismo proyecto de Supabase).
 Se puede publicar aparte en Cloudflare Pages (proyecto propio) si algún día vuelve a ser pública.
 TXT
 git init -q -b main && git add -A && git commit -q -m "Librería separada de la web principal"

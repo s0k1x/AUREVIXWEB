@@ -47,6 +47,6 @@ Vuelve a poner los *nameservers* antiguos o, en Cloudflare DNS, apunta `aurevixw
 
 Ya no forma parte de esta web. Para guardarla en su propio repositorio privado:
 1. Crea en GitHub un repositorio **privado y vacío** (por ejemplo `aurevix-libreria`).
-2. Ejecuta `bash scripts/separar-libreria.sh <dirección-del-repositorio>`. Copia `library/`, `biblioteca-ui/`, `js/zip.js` y el SQL de suscripciones desde el commit `4f6d79e`.
+2. Ejecuta `bash scripts/separar-libreria.sh <dirección-del-repositorio>`. Copia `library/`, `biblioteca-ui/`, `js/base/zip.js` y el SQL de suscripciones desde el commit `4f6d79e`.
 
 La tabla `suscripciones` de Supabase no se ha borrado.

@@ -243,9 +243,9 @@
 
   <script type="module">
     import { CONFIG, PLANES } from './config.js';
-    import * as store from './js/store.js';
-    import { iniciarChat } from './js/asistente.js';
-    import { $, $$, esc, euros, icono, toast, arrancar, conSesion, fecha, campo, desplegable, opciones, aceptarTerminos, terminosAceptados, ocupado, etiquetas, infoDatos } from './js/ui.js';
+    import * as store from './js/base/store.js';
+    import { iniciarChat } from './js/asistente/asistente.js';
+    import { $, $$, esc, euros, icono, toast, arrancar, conSesion, fecha, campo, desplegable, opciones, aceptarTerminos, terminosAceptados, ocupado, etiquetas, infoDatos } from './js/base/ui.js';
 
     const PCT = CONFIG.comision ?? 30;
     $$('[data-comision]').forEach(e => (e.textContent = PCT));
