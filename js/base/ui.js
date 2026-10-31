@@ -404,9 +404,9 @@ export function pintarCabecera(activa = '') {
     <div class="wrap">
       <a href="../" class="logo"><img class="logo-img" src="icons/logo-a.png" alt="" width="34" height="34"><span data-marca>${marcaHTML()}</span></a>
       <nav class="nav" id="nav" aria-label="Principal">
+        <a href="${ir('#como')}">Cómo trabajamos</a>
         <a href="${ir('#disenos')}">Diseños</a>
         <a href="${ir('#webs')}">Precios</a>
-        <a href="${ir('#como')}">Cómo trabajamos</a>
         <a href="revisa-tu-web" class="${activa === 'revisa-tu-web' ? 'act' : ''}">Revisa tu web</a>
         <a href="${ir('#contacto')}">Contacto</a>
         <a href="trabaja-con-nosotros" class="${activa === 'trabaja' ? 'act' : ''}">Trabaja con nosotros</a>
@@ -470,9 +470,9 @@ export function pintarPie() {
     <div class="wrap footer-inner">
       <nav class="footer-cols" aria-label="Pie de página">
         <div class="footer-col"><b>Servicios</b>
-          <a href="./#webs">Tipos de web y precios</a>
-          <a href="./#disenos">Diseños de partida</a>
           <a href="./#como">Cómo trabajamos</a>
+          <a href="./#disenos">Diseños de partida</a>
+          <a href="./#webs">Tipos de web y precios</a>
         </div>
         <div class="footer-col"><b>Webs para…</b>
           <a href="webs-para-barberias">Barberías y peluquerías</a>

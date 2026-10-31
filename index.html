@@ -122,22 +122,23 @@
         </div>
         <div class="hero-art">
           <div class="vitrina" id="vitrina" role="button" tabindex="0" aria-label="Ver este diseño en grande">
-            <div class="lp" id="lp">
-              <i class="lp-sombra" aria-hidden="true"></i>
-              <img class="lp-f" src="img/3d/portatil-1.webp" alt="Portátil con una web de AurevixWeb en pantalla" width="996" height="702" decoding="async" fetchpriority="high">
-              <img class="lp-f" src="img/3d/portatil-2.webp" alt="" width="996" height="702" decoding="async">
-              <img class="lp-f" src="img/3d/portatil-3.webp" alt="" width="996" height="702" decoding="async">
-              <img class="lp-f" src="img/3d/portatil-4.webp" alt="" width="996" height="702" decoding="async">
-              <div class="lp-pant" id="lpPant">
-                <div class="lt-bar" aria-hidden="true"><i></i><i></i><i></i><span class="lt-url" id="vtUrl">barberiafilo.com</span></div>
-                <div class="lt-view" id="vtPc"></div>
+            <div class="laptop">
+              <i class="lt-sombra" aria-hidden="true"></i>
+              <div class="lt-escena">
+                <div class="lt-tapa">
+                  <div class="lt-screen">
+                    <div class="lt-menu" aria-hidden="true"><i></i><i></i><i></i><i class="lt-notch"></i><b></b></div>
+                    <div class="lt-bar"><i></i><i></i><i></i><span class="lt-url" id="vtUrl">barberiafilo.com</span></div>
+                    <div class="lt-view" id="vtPc"></div>
+                    <i class="lt-reflejo" aria-hidden="true"></i>
+                  </div>
+                  <div class="lt-dorso" aria-hidden="true"><i class="lt-brillo"></i><img src="icons/logo-a.png" alt="" width="56" height="56" decoding="async"></div>
+                </div>
+                <div class="lt-deck" aria-hidden="true"><i class="lt-teclas"></i><i class="lt-pad"></i></div>
+                <div class="lt-base"></div>
               </div>
             </div>
-            <div class="mv" id="mv"><img src="img/3d/movil.webp" alt="" width="298" height="581" decoding="async"><div class="mv-pant"><div class="mv-view" id="vtMv"></div></div></div>
-            <img class="obj obj-euro" src="img/3d/obj-euro.webp" alt="" width="404" height="418" loading="lazy" decoding="async">
-            <img class="obj obj-check" src="img/3d/obj-check.webp" alt="" width="410" height="424" loading="lazy" decoding="async">
-            <img class="obj obj-calendario" src="img/3d/obj-calendario.webp" alt="" width="422" height="420" loading="lazy" decoding="async">
-            <img class="obj obj-escudo" src="img/3d/obj-escudo.webp" alt="" width="378" height="450" loading="lazy" decoding="async">
+            <div class="vt-movil"><i class="mv-botones" aria-hidden="true"></i><div class="mv-notch"></div><div class="mv-view" id="vtMv"></div></div>
           </div>
           <div class="vt-tabs" id="vtChips" role="tablist" aria-label="Diseños de ejemplo"></div>
           <form class="vt-prueba" id="vtPrueba" novalidate>
@@ -158,6 +159,21 @@
         <li><i data-i="mail"></i><span><b>Respuesta rápida</b><small id="grResp">en menos de 24 h laborables</small></span></li>
       </ul>
     </div>
+
+    <!-- ===== CÓMO TRABAJAMOS ===== -->
+    <section id="como" class="alt">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <h2>Cómo trabajamos</h2>
+        </div>
+        <div class="steps timeline" id="pasos">
+          <div class="step reveal"><span class="st-dot"></span><h3>Pedido</h3><p>Eliges el tipo de web y un diseño de partida y respondes un breve cuestionario sobre tu negocio.</p></div>
+          <div class="step reveal"><span class="st-dot"></span><h3>Dominio y contenido</h3><p>Desde tu cuenta eliges el dominio y nos envías textos, fotos y logotipo. Para empezar se abona el 50 %.</p></div>
+          <div class="step reveal"><span class="st-dot"></span><h3>Diseño y revisión</h3><p>Preparamos la web y te enviamos una vista previa. Puedes aprobarla o pedir los cambios que necesites.</p></div>
+          <div class="step reveal"><span class="st-dot"></span><h3>Publicación</h3><p>Abonas el resto y publicamos la web en tu dominio. Te quedas con todos los accesos.</p></div>
+        </div>
+      </div>
+    </section>
 
 
 
@@ -228,20 +244,6 @@
         <div class="calc reveal" id="calc"></div>
       </div>
     </section>
-    <!-- ===== CÓMO TRABAJAMOS ===== -->
-    <section id="como" class="alt">
-      <div class="wrap">
-        <div class="sec-head reveal">
-          <h2>Cómo trabajamos</h2>
-        </div>
-        <div class="steps timeline" id="pasos">
-          <div class="step reveal"><span class="st-dot"></span><h3>Pedido</h3><p>Eliges el tipo de web y un diseño de partida y respondes un breve cuestionario sobre tu negocio.</p></div>
-          <div class="step reveal"><span class="st-dot"></span><h3>Dominio y contenido</h3><p>Desde tu cuenta eliges el dominio y nos envías textos, fotos y logotipo. Para empezar se abona el 50 %.</p></div>
-          <div class="step reveal"><span class="st-dot"></span><h3>Diseño y revisión</h3><p>Preparamos la web y te enviamos una vista previa. Puedes aprobarla o pedir los cambios que necesites.</p></div>
-          <div class="step reveal"><span class="st-dot"></span><h3>Publicación</h3><p>Abonas el resto y publicamos la web en tu dominio. Te quedas con todos los accesos.</p></div>
-        </div>
-      </div>
-    </section>
     <!-- ===== CASOS REALES (solo si el propietario añade alguno en Ajustes) ===== -->
     <section id="casos" hidden>
       <div class="wrap">
@@ -271,19 +273,6 @@
         <div class="op-actions" id="opActions"></div>
       </div>
     </section>
-    <!-- ===== REVISA TU WEB (lleva a revisa-tu-web con el análisis en marcha) ===== -->
-    <section id="revisa" class="alt">
-      <div class="wrap">
-        <div class="rv-portada reveal">
-          <div><h2>¿Cómo está tu web actual?</h2><p>Escribe su dirección: la medimos con Google y la comparamos con una de las nuestras. Gratis y en menos de un minuto.</p></div>
-          <form action="revisa-tu-web" method="get">
-            <input type="hidden" name="auto" value="1">
-            <input name="url" type="text" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="tunegocio.es" aria-label="Dirección de tu web" required maxlength="200">
-            <button class="btn btn-primary" type="submit">Revisar mi web</button>
-          </form>
-        </div>
-      </div>
-    </section>
     <!-- ===== PREGUNTAS FRECUENTES ===== -->
     <section id="faq">
       <div class="wrap faq-grid">
@@ -308,8 +297,21 @@
         </div>
       </div>
     </section>
+    <!-- ===== REVISA TU WEB (lleva a revisa-tu-web con el análisis en marcha) ===== -->
+    <section id="revisa" class="alt">
+      <div class="wrap">
+        <div class="rv-portada reveal">
+          <div><h2>¿Cómo está tu web actual?</h2><p>Escribe su dirección: la medimos con Google y la comparamos con una de las nuestras. Gratis y en menos de un minuto.</p></div>
+          <form action="revisa-tu-web" method="get">
+            <input type="hidden" name="auto" value="1">
+            <input name="url" type="text" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="tunegocio.es" aria-label="Dirección de tu web" required maxlength="200">
+            <button class="btn btn-primary" type="submit">Revisar mi web</button>
+          </form>
+        </div>
+      </div>
+    </section>
     <!-- ===== CONTACTO ===== -->
-    <section id="contacto" class="alt">
+    <section id="contacto">
       <div class="wrap contacto-grid">
         <div class="sec-head reveal">
           <h2>Cuéntanos tu proyecto</h2>

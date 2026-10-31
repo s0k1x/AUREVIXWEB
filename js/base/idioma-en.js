@@ -4,6 +4,8 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
+  // v126 · personas de ejemplo
+  'Personas de ejemplo creadas con IA. Las webs que enseñan son diseños de partida reales.': 'Example people created with AI. The websites they show are real starting designs.',
   // v112 · Revisa tu web
   'Google está muy ocupado, lo intentamos otra vez…': 'Google is very busy, trying again…',
   'Google tiene ahora mismo demasiadas revisiones. Prueba de nuevo en un par de minutos.': 'Google has too many checks right now. Please try again in a couple of minutes.',
