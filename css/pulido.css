@@ -574,3 +574,24 @@ html[data-tema=claro] .btn-primary,html[data-tema=claro] .btn-primary:hover{box-
 html .card,html[data-tema=claro] .card{box-shadow:none}
 /* Nada que se lea por debajo de 13 px */
 .footer small,.ck-par,.chat-h small,.info-datos b,.info-datos a{font-size:13px}
+
+/* ---------- Avisos (toast): siempre arriba en el centro, pequeños y discretos ----------
+   Una pastilla compacta que baja desde arriba (estilo iPhone), nunca tapa los botones de abajo
+   y sale siempre en el mismo sitio. El color va solo en el icono: verde si ha ido bien, rojo si hay un error. */
+html .toast,html .toast[popover]{top:calc(10px + env(safe-area-inset-top));bottom:auto;left:50%;right:auto;margin:0;
+  display:flex;align-items:center;gap:10px;width:max-content;max-width:min(440px,calc(100vw - 32px));min-height:42px;padding:8px 16px 8px 9px;
+  border:0;border-radius:999px;background:color-mix(in srgb,var(--card2) 94%,transparent);color:var(--text);
+  -webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);
+  box-shadow:0 12px 32px -14px rgba(0,0,0,.65),inset 0 0 0 1px rgba(255,255,255,.06);
+  font-size:14px;font-weight:600;line-height:1.35;text-align:left;
+  opacity:0;transform:translate(-50%,-16px) scale(.97);transition:opacity .25s var(--e-out),transform .35s var(--e-out)}
+html .toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
+html .toast.err{background:color-mix(in srgb,var(--card2) 94%,transparent);color:var(--text)}
+html .toast::after{display:none}
+html .toast .t-ic{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.08);color:var(--muted)}
+html .toast .t-ic svg{width:14px;height:14px}
+html .toast.ok .t-ic{background:color-mix(in srgb,var(--ok) 20%,transparent);color:var(--ok)}
+html .toast.err .t-ic{background:color-mix(in srgb,var(--danger) 20%,transparent);color:var(--danger)}
+html[data-tema=claro] .toast,html[data-tema=claro] .toast.err{background:rgba(255,255,255,.94);color:#16161b;box-shadow:0 12px 32px -14px rgba(20,20,26,.35),inset 0 0 0 1px rgba(20,20,26,.08)}
+html[data-tema=claro] .toast .t-ic{background:rgba(20,20,26,.06);color:#5d5b55}
+@media (prefers-reduced-motion:reduce){html .toast,html .toast.show{transform:translate(-50%,0);transition:opacity .2s linear}}
