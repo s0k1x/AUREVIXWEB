@@ -1664,7 +1664,7 @@ html[data-tema=claro] .aj-nav a.on{background:rgba(20,20,26,.06)}
 .compara-scroll{border:0}
 
 /* ---------- Seguimiento público del proyecto (/seguimiento) ---------- */
-.seg{max-width:820px;padding-top:56px;padding-bottom:96px}
+.seg-pagina{max-width:820px;padding-top:56px;padding-bottom:96px}
 .seg-cab h1{font-size:clamp(40px,6vw,72px);letter-spacing:-.035em;line-height:1;margin:0}
 .seg-cab .lead{margin:14px 0 0;font-size:19px}
 .seg-cab .lead b{color:var(--text)}
@@ -1692,7 +1692,7 @@ html[data-tema=claro] .aj-nav a.on{background:rgba(20,20,26,.06)}
 .seg-aviso-ic{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--card);color:var(--muted);margin-bottom:10px}
 .seg-aviso-ic svg{width:24px;height:24px}
 .seg-aviso .btn{margin-top:14px}
-@media (max-width:640px){.seg-datos{grid-template-columns:1fr}.seg{padding-top:32px}}
+@media (max-width:640px){.seg-datos{grid-template-columns:1fr}.seg-pagina{padding-top:32px}}
 html[data-tema=claro] .seg-etapas .hecha .seg-ic{color:#fff}
 .mp-seg{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:2px 0 14px}
 .mp-seg .link-btn{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--text)}

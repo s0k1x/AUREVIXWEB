@@ -747,3 +747,12 @@ html[data-tema=claro] .gal-pal i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}
 .faq-n{font-family:inherit}
 .faq-n svg{width:16px;height:16px;transition:transform .3s var(--e-out)}
 .faq-it[open] .faq-n svg{transform:rotate(45deg)}
+/* Vista previa en el móvil: nombre del diseño en una fila y, debajo, selector · «Lo quiero» · cerrar */
+@media (max-width:560px){
+  .prev-bar{flex-wrap:wrap;row-gap:10px}
+  .prev-name{flex:1 1 100%;display:flex;align-items:baseline;gap:10px;order:0}
+  .prev-name b{white-space:nowrap}
+  .prev-bar .seg{order:1;margin-right:auto}
+  .prev-bar .btn{order:2}
+  .prev-bar .icon-btn{order:3}
+}
