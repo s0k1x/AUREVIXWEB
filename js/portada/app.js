@@ -158,7 +158,7 @@ function mostrarVitrina(i) {
   });
   $('#vitrina').style.setProperty('--vt', p.c.accent);
   clearTimeout(vtTimer);
-  if (!vtPausa && vtVisible !== false && !document.hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA);
+  if (!vtPausa && vtVisible !== false && !document.hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) vtTimer = setTimeout(() => vitrinaCerrandose() ? vitrinaEsperar() : mostrarVitrina(vtIdx + 1), DURA);
 }
 $('#vtChips').addEventListener('click', e => { const b = e.target.closest('[data-vt]'); if (b) mostrarVitrina(+b.dataset.vt); });
 $('#vitrina').addEventListener('pointerenter', () => { vtPausa = true; clearTimeout(vtTimer); $('.hero-art').classList.add('pausa'); });
@@ -190,6 +190,10 @@ const arrancarVitrina = () => {
   vt.pc = capas($('#vtPc')); vt.mv = capas($('#vtMv'));
   escalaVitrina(); mostrarVitrina(0);
 };
+/* Mientras el portátil se cierra (cierre.js) la pantalla no cambia de diseño: espera a que vuelva a estar abierto */
+const vitrinaCerrandose = () => $('#vitrina').classList.contains('cerrando');
+const vitrinaEsperar = () => { clearTimeout(vtTimer); vtTimer = 0; };
+document.addEventListener('vitrina-abierta', () => reanudarVitrina());
 const reanudarVitrina = () => { if (vtArrancada && vtVisible && !vtPausa && !document.hidden) { clearTimeout(vtTimer); vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA); } };
 new IntersectionObserver(([e]) => {
   vtVisible = e.isIntersecting;
