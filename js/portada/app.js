@@ -197,7 +197,7 @@ new IntersectionObserver(([e]) => {
 }, { threshold: .05 }).observe($('#vitrina'));
 document.addEventListener('visibilitychange', () => document.hidden ? clearTimeout(vtTimer) : reanudarVitrina());
 const cuandoLibre = fn => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 600));
-const vitrinaLista = () => cuandoLibre(() => { if (window.self !== window.top) return; vtLista = true; arrancarVitrina(); });
+const vitrinaLista = () => cuandoLibre(() => { vtLista = true; arrancarVitrina(); });
 document.readyState === 'complete' ? vitrinaLista() : addEventListener('load', vitrinaLista);
 
 /* ==========================================================
@@ -399,7 +399,7 @@ function activarGal(i, forzar = false) {
 const ioGal = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) activarGal(+e.target.dataset.gal); }), { rootMargin: '-45% 0px -45% 0px' });
 $$('#disenosGrid .gal-item').forEach(it => ioGal.observe(it));
 // La ventana grande solo empieza a cargar cuando la galería está cerca
-new IntersectionObserver(([e]) => { if (e.isIntersecting && !galCerca && window.self === window.top) { galCerca = true; escalaGal(); activarGal(Math.max(0, galIdx), true); } }, { rootMargin: '400px 0px' }).observe($('#disenosGrid'));
+new IntersectionObserver(([e]) => { if (e.isIntersecting && !galCerca) { galCerca = true; escalaGal(); activarGal(Math.max(0, galIdx), true); } }, { rootMargin: '400px 0px' }).observe($('#disenosGrid'));
 galGrande.addEventListener('change', () => { escalaGal(); if (galGrande.matches) activarGal(Math.max(0, galIdx), true); });
 // Con nombre de prueba, las ventanas lo enseñan
 document.addEventListener('nombre-prueba', () => {
@@ -1610,7 +1610,8 @@ alternarFranjas();
 document.querySelectorAll('[data-reservar-llamada]').forEach(b => { b.hidden = !CONFIG.llamadas?.activo; });
 // Antes y después: la barbería con una web anticuada y con el diseño «Filo»
 import('./antes-despues.js').then(m => m.iniciarAntesDespues(urlPlantilla('filo', 'Barbería Filo', '', true))).catch(() => {});
-// Dentro de un marco (la propia portada vista en «Webs publicadas») no se pinta esta sección: así no se carga una dentro de otra
+// Dentro de un marco (la propia portada vista en «Webs publicadas») no se pinta esta sección: así no se carga una dentro de otra.
+// La vitrina y la galería sí funcionan (cargan los diseños, que no tienen esta sección), para que no se vean huecos.
 const incrustada = window.self !== window.top;
 if (incrustada) document.documentElement.classList.add('incrustada');
 if (CONFIG.casos?.length && !incrustada) {
@@ -1618,13 +1619,13 @@ if (CONFIG.casos?.length && !incrustada) {
   // o al verse en el móvil. Solo se carga cuando la tarjeta está a punto de verse.
   const dominio = u => u.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '');
   $('#casosGrid').innerHTML = CONFIG.casos.map(c => `<a class="caso reveal" href="${esc(c.url)}" target="_blank" rel="noopener">
-    <span class="caso-disp" aria-hidden="true"><span class="caso-bar"><i></i><i></i><i></i><em>${esc(dominio(c.url).replace(/\/.*$/, ''))}</em></span><span class="caso-pant cargando"><iframe data-src="${esc(c.url)}" width="1280" height="2200" tabindex="-1" title="" loading="lazy" referrerpolicy="no-referrer"></iframe></span></span>
+    <span class="caso-disp" aria-hidden="true"><span class="caso-bar"><i></i><i></i><i></i><em>${esc(dominio(c.url).replace(/\/.*$/, ''))}</em></span><span class="caso-pant cargando"><iframe data-src="${esc(c.url)}" width="1280" height="1200" tabindex="-1" title="" loading="lazy" referrerpolicy="no-referrer"></iframe></span></span>
     ${c.sector ? `<small>${esc(c.sector)}</small>` : ''}<h3>${esc(c.nombre)}</h3>${c.texto ? `<p>${esc(c.texto)}</p>` : '<p></p>'}
     <span class="caso-url">${esc(dominio(c.url))}${icono('external')}</span></a>`).join('');
   $('#casos').hidden = false;
   alternarFranjas();
   $$('#casos .reveal').forEach(el => io?.observe?.(el));
-  const escalaCaso = p => { if (p.clientWidth) { p.style.setProperty('--s', p.clientWidth / 1280); p.style.setProperty('--d', `${-(2200 * p.clientWidth / 1280 - p.clientHeight)}px`); } };
+  const escalaCaso = p => { if (p.clientWidth) { p.style.setProperty('--s', p.clientWidth / 1280); p.style.setProperty('--d', `${-(1200 * p.clientWidth / 1280 - p.clientHeight)}px`); } };
   const roCaso = new ResizeObserver(es => es.forEach(e => escalaCaso(e.target)));
   const ioCaso = new IntersectionObserver((es, o) => es.forEach(e => {
     if (!e.isIntersecting) return;
