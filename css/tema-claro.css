@@ -94,7 +94,6 @@ html[data-tema=claro] .kcard:hover{box-shadow:0 14px 30px -16px rgba(0,0,0,.14)}
 html[data-tema=claro] .tarea:hover{background:rgba(20,20,26,0.036)}
 html[data-tema=claro] .enlace{background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 10%,transparent),transparent 60%),var(--card);border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
 /* --- trabaja.css --- */
-html[data-tema=claro] .pct{box-shadow:0 10px 40px -10px color-mix(in srgb,var(--accent) 60%,transparent)}
 html[data-tema=claro] .rango input::-webkit-slider-thumb{box-shadow:0 0 0 1px var(--accent),0 6px 20px color-mix(in srgb,var(--accent) 40%,transparent)}
 html[data-tema=claro] .calc-barra{background:rgba(255,255,255,.94)}
 html[data-tema=claro] .faq details[open]{border-color:color-mix(in srgb,var(--accent) 30%,transparent)}

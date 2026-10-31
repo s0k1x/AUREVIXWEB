@@ -22,7 +22,6 @@
 .progreso{box-shadow:none}
 .steps.timeline::after{box-shadow:none}
 .cintas .cinta{box-shadow:0 18px 40px -22px rgba(0,0,0,.7)}
-.pct{box-shadow:0 10px 30px -14px rgba(0,0,0,.6)}
 .dot-spinner__dot::before{box-shadow:none}
 .gl-checkbox__input:checked ~ .gl-checkbox__box{box-shadow:0 0 0 3px rgba(200,240,96,.15)}
 html[data-tema=claro] .btn-primary,html[data-tema=claro] .btn-primary:hover{box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 6px 16px -8px rgba(20,20,26,.35)}
@@ -537,12 +536,10 @@ html .btn-primary{box-shadow:0 1px 2px rgba(0,0,0,.35),0 6px 16px -8px rgba(0,0,
 html .btn-primary:hover{box-shadow:0 2px 4px rgba(0,0,0,.3),0 12px 24px -10px rgba(0,0,0,.6)}
 @media (hover:hover){html .btn-fill:hover{box-shadow:0 2px 4px rgba(0,0,0,.3),0 12px 24px -10px rgba(0,0,0,.6)}}
 html .pg-plan.pg-rec{box-shadow:var(--luz,none),0 30px 60px -32px rgba(0,0,0,.75)}
-html .pct{box-shadow:0 10px 30px -12px rgba(0,0,0,.6)}
 html .chat-av{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--accent) 45%,transparent),0 4px 10px -2px rgba(0,0,0,.45)}
 html[data-tema=claro] .btn-primary{box-shadow:0 1px 2px rgba(20,20,10,.12),0 6px 14px -8px rgba(20,20,10,.3)}
 html[data-tema=claro] .btn-primary:hover{box-shadow:0 2px 4px rgba(20,20,10,.12),0 12px 22px -10px rgba(20,20,10,.32)}
 html[data-tema=claro] .plan-card.popular{box-shadow:0 26px 54px -30px rgba(20,20,10,.35),0 2px 8px rgba(20,20,10,.06)}
-html[data-tema=claro] .pct{box-shadow:0 10px 30px -12px rgba(20,20,10,.3)}
 html[data-tema=claro] .empty .em,html[data-tema=claro] .gate .em,html[data-tema=claro] .estado-cand .big{box-shadow:0 10px 24px -12px rgba(20,20,10,.25)}
 html .empty .em,html .gate .em,html .estado-cand .big{box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
 
@@ -568,3 +565,12 @@ html .empty .em,html .gate .em,html .estado-cand .big{box-shadow:0 10px 24px -12
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
 html.tema-vt ::view-transition-old(root){z-index:1}
 html.tema-vt ::view-transition-new(root){z-index:2}
+
+/* Botones planos: un solo color, sin sombras ni brillos (guía de diseño y design-taste-frontend) */
+html .btn,html .btn:hover,html .btn-primary,html .btn-primary:hover,
+html[data-tema=claro] .btn-primary,html[data-tema=claro] .btn-primary:hover{box-shadow:none}
+@media (hover:hover) and (pointer:fine){html .btn-primary:hover{transform:none;background:color-mix(in srgb,var(--accent) 88%,#fff)}}
+/* Tarjetas sin sombra en reposo: se separan por el tono del fondo. Solo flota lo que de verdad flota (menús, diálogos, botón del chat) */
+html .card,html[data-tema=claro] .card{box-shadow:none}
+/* Nada que se lea por debajo de 13 px */
+.footer small,.ck-par,.chat-h small,.info-datos b,.info-datos a{font-size:13px}

@@ -28,7 +28,7 @@ button{cursor:pointer}
 
 .wrap{width:100%;max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
 section{padding:92px 0;scroll-margin-top:70px}
-section.alt{background:var(--bg2);border-block:1px solid var(--line)}
+section.alt{background:var(--bg2)}
 h1,h2,h3,h4{font-family:var(--fd);line-height:1.06;letter-spacing:-.025em;font-weight:700}
 h2{font-size:clamp(32px,5.6vw,52px);margin:14px 0 14px;max-width:760px}
 h3{font-size:21px}
@@ -210,8 +210,8 @@ dialog.dlg::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit
 .toast.err{background:var(--danger);color:#fff}
 
 /* ---------- Pie ---------- */
-.footer{padding:0 0 calc(40px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
-.footer-brand{padding:44px 0;border-bottom:1px solid var(--line);margin-bottom:30px;background:var(--bg2)}
+.footer{padding:0 0 calc(40px + env(safe-area-inset-bottom))}
+.footer-brand{padding:44px 0;margin-bottom:30px;background:var(--bg2)}
 .fb-fila{display:flex;align-items:center;justify-content:space-between;gap:24px 40px;flex-wrap:wrap}
 .fb-marca .wordmark{height:22px}
 .fb-marca p{margin-top:12px;color:var(--muted);max-width:52ch;font-size:15px}
@@ -259,8 +259,8 @@ dialog.dlg::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit
   .js .reveal{opacity:1;transform:none}
 }
 
-/* Cabecera y pie pegados a los bordes de la pantalla */
-.header .wrap,.footer .footer-inner{max-width:none;padding-left:var(--borde);padding-right:var(--borde)}
+
+/* Cabecera y pie con los mismos márgenes que el contenido (una sola pareja de márgenes en toda la página) */
 
 /* ==========================================================
    Iconos en lugar de emojis
