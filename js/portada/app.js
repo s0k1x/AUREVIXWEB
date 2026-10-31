@@ -89,6 +89,10 @@ document.addEventListener('load', e => {
 const VITRINA = ['filo', 'calma', 'brasa', 'kiosko', 'pulso', 'lienzo'];
 const DURA = 5200;
 let vtIdx = 0, vtTimer = null, vtPausa = false, vtTurno = 0;
+/* «Pruébalo con tu negocio»: el nombre que escribe el visitante sale en la vitrina, en la galería y en las vistas previas */
+let vtNombre = '';
+try { vtNombre = sessionStorage.getItem('tm_prueba_nombre') || ''; } catch { /* sin almacenamiento */ }
+const dominioDe = n => (n.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 24) || 'tunegocio') + '.es';
 // Chrome, Edge y Firefox reducen la web con «zoom» (nítido). Safari se queda con scale:
 // su zoom no siempre llega al contenido del iframe
 if (/(Chrome|Firefox)\//.test(navigator.userAgent) && !/iP(hone|ad|od)/.test(navigator.userAgent)) document.documentElement.classList.add('zoom-ok');
@@ -120,7 +124,7 @@ function escalaVitrina() {
 new ResizeObserver(escalaVitrina).observe($('#vitrina'));
 $('#vtChips').innerHTML = VITRINA.map((id, i) => {
   const p = plantillaPorId(id);
-  return `<button type="button" role="tab" data-vt="${i}" style="--c:${p.c.accent}"><b class="vt-prog"></b><small>${String(i + 1).padStart(2, '0')}</small><span>${esc(p.nombre)}</span><em>${esc(p.sector.split('·')[0].trim())}</em></button>`;
+  return `<button type="button" role="tab" data-vt="${i}" style="--c:${p.c.accent}"><b class="vt-prog"></b><span>${esc(p.nombre)}</span><em>${esc(p.sector.split('·')[0].trim())}</em></button>`;
 }).join('');
 function mostrarVitrina(i) {
   vtIdx = (i + VITRINA.length) % VITRINA.length;
@@ -132,11 +136,11 @@ function mostrarVitrina(i) {
     const c = vt[k][sig], f = c.firstElementChild;
     c.classList.remove('on', 'vt-rec');
     f.onload = () => fotosListas(f).then(ok);
-    f.src = urlPlantilla(id, '', '', true);
+    f.src = urlPlantilla(id, vtNombre, '', true);
   }))).then(() => requestAnimationFrame(() => {
     if (turno !== vtTurno) return; // mientras tanto se ha pedido otro diseño
     vt.activa = sig; // la capa visible solo cambia cuando el nuevo diseño ya se ve
-    $('#vtUrl').textContent = p.dominio;
+    $('#vtUrl').textContent = vtNombre ? dominioDe(vtNombre) : p.dominio;
     ['pc', 'mv'].forEach(k => {
       const c = vt[k][sig];
       c.classList.add('on');
@@ -156,7 +160,20 @@ function mostrarVitrina(i) {
 $('#vtChips').addEventListener('click', e => { const b = e.target.closest('[data-vt]'); if (b) mostrarVitrina(+b.dataset.vt); });
 $('#vitrina').addEventListener('pointerenter', () => { vtPausa = true; clearTimeout(vtTimer); $('.hero-art').classList.add('pausa'); });
 $('#vitrina').addEventListener('pointerleave', () => { vtPausa = false; $('.hero-art').classList.remove('pausa'); mostrarVitrina(vtIdx + 1); });
-const abrirVitrina = () => abrirPreview(VITRINA[vtIdx]);
+const abrirVitrina = () => abrirPreview(VITRINA[vtIdx], { nombre: vtNombre });
+if (vtNombre) $('#vtNombre').value = vtNombre;
+let vtEscribe = null;
+$('#vtNombre').addEventListener('input', e => {
+  clearTimeout(vtEscribe);
+  vtEscribe = setTimeout(() => {
+    vtNombre = e.target.value.trim().slice(0, 32);
+    try { vtNombre ? sessionStorage.setItem('tm_prueba_nombre', vtNombre) : sessionStorage.removeItem('tm_prueba_nombre'); } catch { /* sin almacenamiento */ }
+    $('#vtAviso').textContent = vtNombre ? `Así se vería «${vtNombre}». Cambia de diseño abajo.` : 'Se ve al momento en todos los diseños';
+    if (vtArrancada) mostrarVitrina(vtIdx);
+    document.dispatchEvent(new CustomEvent('nombre-prueba', { detail: vtNombre }));
+  }, 450);
+});
+$('#vtPrueba').addEventListener('submit', e => { e.preventDefault(); $('#vtNombre').blur(); });
 $('#vitrina').addEventListener('click', abrirVitrina);
 $('#vitrina').addEventListener('keydown', e => { if (e.key === 'Enter') abrirVitrina(); });
 /* Fluidez: cada diseño de la vitrina es una web entera (HTML, estilos y fotos), así que no se carga
@@ -327,62 +344,68 @@ $('#verComparar').addEventListener('click', e => {
 /* ==========================================================
    GALERÍA DE DISEÑOS
    ========================================================== */
-const GRUPO = { filo: 'local', brasa: 'local', calma: 'local', pulso: 'local', kiosko: 'tienda', lienzo: 'pro' };
-const FILTROS_DZ = [['todos', 'Todos'], ['local', 'Negocio local'], ['tienda', 'Tienda online'], ['pro', 'Profesional']];
-$('#dzFiltro').innerHTML = FILTROS_DZ.map(([k, t], i) =>
-  `<label class="opt"><input type="radio" name="dzf" value="${k}" ${i === 0 ? 'checked' : ''}><span><i>${t}</i></span></label>`).join('');
-$('#dzFiltro').addEventListener('change', e => {
-  const g = e.target.value;
-  $$('#disenosGrid .dz').forEach((c, i) => {
-    const ver = g === 'todos' || c.dataset.grupo === g;
-    if (ver) { c.hidden = false; requestAnimationFrame(() => c.classList.remove('fuera')); c.style.transitionDelay = `${i * 40}ms`; }
-    else { c.classList.add('fuera'); setTimeout(() => { if (c.classList.contains('fuera')) c.hidden = true; }, 350); }
-  });
-});
-$('#disenosGrid').innerHTML = PLANTILLAS.map(p => `
-  <article class="dz reveal" data-ver="${p.id}" data-grupo="${GRUPO[p.id] || 'local'}" tabindex="0" role="button" aria-label="Ver diseño ${esc(p.nombre)}" style="--c:${p.c.accent}">
-    <div class="dz-win">
-      <div class="dz-bar"><i></i><i></i><i></i><span>${esc(p.dominio)}</span></div>
-      <div class="dz-view" style="background:${p.c.bg}"><div class="thumb-load">${spinner()}</div><iframe data-src="${urlPlantilla(p.id, '', '', true)}" width="1280" height="2600" tabindex="-1" aria-hidden="true" title=""></iframe></div>
-      <span class="dz-scroll" aria-hidden="true">${icono('move')} recorre la web</span>
+/* Galería a pantalla completa: a la izquierda cada diseño en grande (nombre, para quién, precio y botones);
+   a la derecha, fija mientras se baja, la web en vivo del diseño que está en el centro de la pantalla.
+   En el móvil cada diseño lleva su propia ventana. Las webs solo se cargan cuando están a punto de verse. */
+const planesDe = id => planesActivos().filter(pl => pl.plantillas.includes(id));
+const precioDesde = id => { const ps = planesDe(id); return ps.length ? Math.min(...ps.map(pl => pl.precio)) : null; };
+$('#disenosGrid').innerHTML = `<div class="gal-lista">${PLANTILLAS.map((p, i) => {
+  const ps = planesDe(p.id), desde = precioDesde(p.id);
+  return `<article class="gal-item${i === 0 ? ' on' : ''}" data-gal="${i}" style="--c:${p.c.accent}">
+    <div class="gal-mini" data-ver="${p.id}" role="button" tabindex="0" aria-label="Ver el diseño ${esc(p.nombre)} en vivo">
+      <div class="dz-bar"><i></i><i></i><i></i><span>${esc(vtNombre ? dominioDe(vtNombre) : p.dominio)}</span></div>
+      <div class="gal-mini-v" style="background:${p.c.bg}"><iframe data-src="${urlPlantilla(p.id, vtNombre, '', true)}" width="1280" height="2600" tabindex="-1" aria-hidden="true" title=""></iframe></div>
     </div>
-    <div class="dz-info">
-      <div><b>${esc(p.nombre)}</b><small>${esc(p.sector)}</small></div>
-      <div class="dz-pal" title="Colores del diseño">${[p.c.bg, p.c.accent, p.c.text].map(c => `<i style="background:${c}"></i>`).join('')}</div>
+    <h3>${esc(p.nombre)}</h3>
+    <p class="gal-sector">${esc(p.sector)}</p>
+    <p class="gal-desc">${esc(p.desc)}</p>
+    ${desde !== null ? `<p class="gal-precio"><b>Desde ${euros(desde)}</b><span>${ps.map(pl => esc(pl.nombre)).join(' · ')}</span></p>` : ''}
+    <div class="gal-pal" aria-hidden="true">${[p.c.bg, p.c.surface, p.c.accent, p.c.text].map(c => `<i style="background:${c}"></i>`).join('')}</div>
+    <div class="gal-btns">
+      <button type="button" class="btn btn-primary" data-quiero="${p.id}"><span>Quiero este diseño</span></button>
+      <button type="button" class="btn btn-ghost" data-ver="${p.id}"><span>Verlo en vivo</span></button>
+      <a class="gal-ficha" href="diseno-${p.id}">Ficha del diseño ${icono('arrow')}</a>
     </div>
-    <p>${esc(p.desc)}</p>
-    <div class="dz-cta"><span>Ver en vivo</span>${icono('arrow')}</div>
-  </article>`).join('');
+  </article>`;
+}).join('')}</div>
+<div class="gal-escena" aria-hidden="true"><div class="gal-win"><div class="dz-bar"><i></i><i></i><i></i><span id="galUrl">${esc(PLANTILLAS[0].dominio)}</span></div><div class="gal-view" id="galView"><div class="gal-capa"><iframe tabindex="-1" title=""></iframe></div><div class="gal-capa"><iframe tabindex="-1" title=""></iframe></div></div></div></div>`;
 vigilarCarga($('#disenosGrid'));
-/* Escala de cada ventana y «scroll» automático. El transform se escribe directamente en el iframe:
-   Safari (iPhone) no siempre vuelve a aplicar un transform que depende de variables CSS que cambian,
-   y la web se quedaba pequeña con un hueco blanco. */
-function colocarDz(card, animar = true, ancho, alto) {
-  const v = card.querySelector('.dz-view'), ifr = v?.querySelector('iframe');
-  ancho ??= v?.clientWidth; alto ??= v?.clientHeight;
-  if (!ifr || !ancho) return;
-  const s = ancho / 1280;
-  const d = card.classList.contains('recorre') ? Math.min(0, -(2600 * s - alto)) : 0;
-  // Al cambiar de tamaño la escala se aplica al momento; solo se anima el recorrido
-  if (!animar) ifr.style.transition = 'none';
-  ifr.style.transform = `translateY(${d.toFixed(1)}px) scale(${s.toFixed(5)})`;
-  if (!animar) { void ifr.offsetWidth; ifr.style.transition = ''; }
+const galGrande = matchMedia('(min-width:1000px)');
+let galIdx = -1, galCapa = 0, galTurno = 0, galCerca = false;
+function escalaGal() {
+  const v = $('#galView'); if (v?.clientWidth) { v.style.setProperty('--s', v.clientWidth / 1280); v.style.setProperty('--d', `${-(2600 * v.clientWidth / 1280 - v.clientHeight)}px`); }
+  $$('#disenosGrid .gal-mini-v').forEach(m => { if (m.clientWidth) m.style.setProperty('--s', m.clientWidth / 1280); });
 }
-const roDz = new ResizeObserver(es => {
-  const medidas = es.map(({ target: v }) => [v.closest('.dz'), v.clientWidth, v.clientHeight]); // leer todo antes de escribir
-  medidas.forEach(([c, w, h]) => colocarDz(c, false, w, h));
+new ResizeObserver(escalaGal).observe($('#disenosGrid'));
+function activarGal(i, forzar = false) {
+  if (i === galIdx && !forzar) return;
+  galIdx = i;
+  const p = PLANTILLAS[i];
+  $$('#disenosGrid .gal-item').forEach((it, k) => it.classList.toggle('on', k === i));
+  if (!galGrande.matches || !galCerca) return;
+  const capas = $$('#galView .gal-capa'), sig = 1 - galCapa, turno = ++galTurno, f = capas[sig].firstElementChild;
+  capas[sig].classList.remove('on', 'rec');
+  f.onload = () => fotosListas(f).then(() => requestAnimationFrame(() => {
+    if (turno !== galTurno) return;
+    capas[sig].classList.add('on'); capas[galCapa].classList.remove('on', 'rec'); galCapa = sig;
+    $('#galUrl').textContent = vtNombre ? dominioDe(vtNombre) : p.dominio;
+    $('#galView').style.setProperty('--c', p.c.accent);
+    setTimeout(() => turno === galTurno && capas[sig].classList.add('rec'), 900);
+  }));
+  f.src = urlPlantilla(p.id, vtNombre, '', true);
+}
+// El diseño activo es el que cruza el centro de la pantalla
+const ioGal = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) activarGal(+e.target.dataset.gal); }), { rootMargin: '-45% 0px -45% 0px' });
+$$('#disenosGrid .gal-item').forEach(it => ioGal.observe(it));
+// La ventana grande solo empieza a cargar cuando la galería está cerca
+new IntersectionObserver(([e]) => { if (e.isIntersecting && !galCerca) { galCerca = true; escalaGal(); activarGal(Math.max(0, galIdx), true); } }, { rootMargin: '400px 0px' }).observe($('#disenosGrid'));
+galGrande.addEventListener('change', () => { escalaGal(); if (galGrande.matches) activarGal(Math.max(0, galIdx), true); });
+// Con nombre de prueba, las ventanas lo enseñan
+document.addEventListener('nombre-prueba', () => {
+  $$('#disenosGrid .gal-mini .dz-bar span').forEach((sp, i) => { sp.textContent = vtNombre ? dominioDe(vtNombre) : PLANTILLAS[i].dominio; });
+  $$('#disenosGrid .gal-mini-v iframe').forEach((f, i) => { const u = urlPlantilla(PLANTILLAS[i].id, vtNombre, '', true); f.getAttribute('src') ? (f.src = u) : (f.dataset.src = u); });
+  if (galIdx >= 0) activarGal(galIdx, true);
 });
-$$('#disenosGrid .dz-view').forEach(v => roDz.observe(v));
-const recorrer = (card, si) => { card.classList.toggle('recorre', si); colocarDz(card); };
-if (matchMedia('(hover: hover)').matches) {
-  $$('#disenosGrid .dz').forEach(c => { c.addEventListener('mouseenter', () => recorrer(c, true)); c.addEventListener('mouseleave', () => recorrer(c, false)); });
-} else {
-  // En el móvil (sin ratón) la web se recorre sola cuando la tarjeta está en el centro de la pantalla
-  const ioDz = new IntersectionObserver(es => es.forEach(e => recorrer(e.target, e.isIntersecting)), { rootMargin: '-35% 0px -35% 0px' });
-  $$('#disenosGrid .dz').forEach(c => ioDz.observe(c));
-}
-// Al volver a la pestaña o girar el móvil, se recoloca todo
-addEventListener('pageshow', () => $$('#disenosGrid .dz').forEach(c => colocarDz(c, false)));
 
 /* ==========================================================
    OPINIONES
@@ -542,13 +565,16 @@ $$('[data-dev]', prevDlg).forEach(b => b.addEventListener('click', () => { dispo
 $('#prevPick').addEventListener('click', () => {
   cerrar(prevDlg);
   if (prevAlElegir) return prevAlElegir(prevActual);
-  const plan = PLANES.find(pl => pl.plantillas[0] === prevActual) || PLANES.find(pl => pl.plantillas.includes(prevActual)) || PLANES[2];
-  abrirCompra(plan.id, prevActual);
+  quieroDiseno(prevActual);
 });
 
+const planPara = id => PLANES.find(pl => pl.plantillas[0] === id) || PLANES.find(pl => pl.plantillas.includes(id)) || PLANES[2];
+const quieroDiseno = id => plantillaPorId(id) && abrirCompra(planPara(id).id, id);
 document.addEventListener('click', e => {
+  const q = e.target.closest('[data-quiero]');
+  if (q) return quieroDiseno(q.dataset.quiero);
   const v = e.target.closest('[data-ver]');
-  if (v) abrirPreview(v.dataset.ver);
+  if (v) abrirPreview(v.dataset.ver, { nombre: vtNombre });
   const c = e.target.closest('[data-comprar]');
   if (c) abrirCompra(c.dataset.comprar);
 });
@@ -1607,6 +1633,10 @@ if (hash === '#mis-pedidos' || hash.startsWith('#proyecto-')) {
 } else if (hash === '#soporte') {
   history.replaceState(null, '', location.pathname);
   abrirSoporte();
+} else if (hash.startsWith('#quiero-')) {
+  // Desde la ficha de un diseño (diseno-filo…): se abre el pedido con ese diseño elegido
+  history.replaceState(null, '', location.pathname);
+  quieroDiseno(hash.slice(8));
 }
 addEventListener('hashchange', () => {
   if (location.hash === '#mis-pedidos') { history.replaceState(null, '', location.pathname); abrirPedidos(); }

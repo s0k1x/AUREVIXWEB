@@ -12,7 +12,7 @@
 .pg-migas [aria-current]{color:var(--text)}
 .pg-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .pg-sec{padding:96px 0}
-.pg-sec.alt{background:var(--bg2);border-block:1px solid var(--line)}
+.pg-sec.alt{background:var(--bg2)}
 .pg-sec-head{max-width:720px;margin-bottom:44px}
 .pg-sec-head h2{font-size:clamp(30px,4vw,48px);margin-top:12px}
 .pg-sec-head .lead{margin-top:14px}
@@ -280,3 +280,26 @@ html[data-tema=claro] .rv-cat.mal .rv-anillo,html[data-tema=claro] .rv-cat.mal .
 .rv-portada input{flex:1;min-width:0;height:50px;padding:0 16px;border-radius:12px;border:1px solid var(--line2);background:var(--field);color:var(--text);font:inherit;font-size:16px}
 .rv-portada input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 @media (max-width:760px){.rv-portada{grid-template-columns:1fr}.rv-portada form{flex-direction:column}.rv-portada .btn{width:100%}}
+
+/* ---------- Ficha de cada diseño (diseno-filo…) ---------- */
+.dzf-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:56px;align-items:start}
+.dzf-trae{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:30px 40px}
+.dzf-trae li{display:grid;gap:6px}
+.dzf-trae b{font-family:var(--fd);font-size:20px;letter-spacing:-.01em}
+.dzf-trae span{color:var(--muted);font-size:16px;line-height:1.55}
+.dzf-estilo{display:grid;gap:28px}
+.dzf-colores{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.dzf-colores li{display:grid;gap:4px}
+.dzf-colores i{display:block;aspect-ratio:1;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);margin-bottom:8px}
+.dzf-colores b{font-size:15px}
+.dzf-colores span{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.dzf-letras{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dzf-letras p{margin:0;padding:20px 22px;border-radius:16px;background:var(--card);display:grid;gap:4px}
+.dzf-letras span{color:var(--muted);font-size:14px}
+.dzf-letras b{font-family:var(--fd);font-size:24px;letter-spacing:-.01em}
+@media (max-width:900px){
+  .dzf-grid{grid-template-columns:1fr;gap:28px}
+  .dzf-trae{grid-template-columns:1fr;gap:22px}
+  .dzf-colores{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+html[data-tema=claro] .dzf-colores i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}

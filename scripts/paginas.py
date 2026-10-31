@@ -15,6 +15,7 @@ se desactualizan. Si cambias un texto aquí, vuelve a ejecutar el script.
 import html
 import json
 import re
+import subprocess
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -586,16 +587,110 @@ MANT = pagina('mantenimiento', 'Mantenimiento mensual de tu web · AurevixWeb',
 
 
 # ==========================================================
+#  FICHA DE CADA DISEÑO (diseno-filo, diseno-calma…)
+#  Los datos salen de js/portada/plantillas.js (con node), así la ficha nunca se queda atrás.
+# ==========================================================
+_dz = json.loads(subprocess.run(['node', '--input-type=module', '-e',
+    "import { PLANTILLAS } from './js/portada/plantillas.js'; import { PLANES } from './config.js';"
+    "console.log(JSON.stringify({ t: PLANTILLAS.map(({ id, nombre, dominio, sector, desc, fuentes, c, secciones }) => ({ id, nombre, dominio, sector, desc, fuentes: { d: fuentes.d, b: fuentes.b }, c, secciones: secciones.map(x => x.tipo) })),"
+    " p: PLANES.map(({ id, plantillas }) => ({ id, plantillas })) }))"], cwd=RAIZ, capture_output=True, text=True, check=True).stdout)
+DISENOS = _dz['t']
+QUE_TRAE = {
+    'lista': ('Lista de servicios y precios', 'Cada servicio con su precio y su duración, fácil de leer en el móvil.'),
+    'precios': ('Tarifas', 'Tus bonos, cuotas o tarifas, claros y comparables.'),
+    'galeria': ('Galería de fotos', 'Tus trabajos, tu local o tus platos, a pantalla completa.'),
+    'opiniones': ('Opiniones de clientes', 'Las reseñas que ya tienes, con la nota media a la vista.'),
+    'info': ('Horario y cómo llegar', 'Si estás abierto ahora, el horario de la semana y la dirección.'),
+    'cta': ('Llamada final a reservar o escribir', 'Un último botón para que el visitante dé el paso.'),
+    'ventajas': ('Por qué elegirte', 'Lo que te diferencia, en pocas palabras.'),
+    'productos': ('Catálogo de productos', 'Fotos, precios y un carrito para comprar desde el móvil.'),
+    'proyectos': ('Proyectos', 'Tus trabajos con foto grande, título y lo que hiciste.'),
+    'sobre': ('Sobre ti', 'Quién está detrás, tu forma de trabajar y tu experiencia.'),
+    'reserva': ('Reserva de cita', 'El cliente elige servicio, día y hora sin llamar.'),
+}
+
+def ficha(d):
+    planes = [x['id'] for x in _dz['p'] if d['id'] in x['plantillas'] and x['id'] in PLANES]
+    plan = planes[0] if planes else 'negocio'
+    migas_html, migas_ld = migas(('Inicio', './'), ('Diseños', './#disenos'), (d['nombre'], ''))
+    otros = ''.join(f'<a class="pg-otro" href="diseno-{o["id"]}">{e(o["nombre"])}<i data-i="arrow"></i></a>' for o in DISENOS if o is not d)
+    trae = ''.join(f'<li><b>{e(QUE_TRAE[t][0])}</b><span>{e(QUE_TRAE[t][1])}</span></li>' for t in dict.fromkeys(['portada'] + d['secciones']) if t in QUE_TRAE)
+    trae = f'<li><b>Portada con lo esencial</b><span>Qué haces, dónde y un botón claro para reservar, llamar o comprar.</span></li>{trae}<li><b>Contacto por WhatsApp, teléfono y correo</b><span>A un toque desde cualquier pantalla.</span></li>'
+    colores = [('Fondo', d['c']['bg']), ('Superficie', d['c']['surface']), ('Acento', d['c']['accent']), ('Texto', d['c']['text'])]
+    titulo = f'Diseño {d["nombre"]} para {d["sector"].split("·")[0].strip().lower()}'
+    desc = f'{d["desc"]} Diseño de partida {d["nombre"]} de AurevixWeb, adaptado a tu marca y a precio cerrado.'
+    producto = {'@context': 'https://schema.org', '@type': 'Service', 'name': titulo, 'description': desc, 'areaServed': {'@type': 'Country', 'name': 'España'},
+                'provider': {'@id': f'{DOMINIO}/#negocio', '@type': 'ProfessionalService', 'name': 'AurevixWeb', 'url': f'{DOMINIO}/'}}
+    cuerpo = f'''    <section class="pg-hero">
+      <div class="wrap pg-hero-grid">
+        <div class="pg-hero-txt">
+          {migas_html}
+          <h1>{e(titulo[0].upper() + titulo[1:])}</h1>
+          <p class="lead">{e(d["desc"])} Lo adaptamos a tu marca: colores, textos, fotos y secciones.</p>
+          <div class="pg-ctas">
+            <a class="btn btn-primary" href="./?comprar={plan}&amp;diseno={d["id"]}" data-magnet>Quiero este diseño <i data-i="arrow"></i></a>
+            <a class="btn btn-ghost" href="diseno?t={d["id"]}" target="_blank" rel="noopener">Verlo en vivo <i data-i="external"></i></a>
+          </div>
+          <ul class="pg-datos">
+            <li><b>Desde {P(plan)}</b><span data-iva>IVA incluido</span></li>
+            <li><b>{ENT(plan)}</b><span>plazo de entrega</span></li>
+            <li><b>Precio cerrado</b><span>sin sorpresas</span></li>
+          </ul>
+        </div>
+        <figure class="pg-marco" data-diseno="{d["id"]}" aria-label="Vista previa del diseño {e(d["nombre"])}">
+          <div class="pg-marco-bar" aria-hidden="true"><i></i><i></i><i></i><span></span></div>
+          <div class="pg-marco-vista"></div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="pg-sec">
+      <div class="wrap dzf-grid">
+        <div class="pg-sec-head"><h2>Qué trae</h2><p class="lead">Las secciones con las que empieza. Quitamos, añadimos o reordenamos las que necesites.</p></div>
+        <ul class="dzf-trae">{trae}</ul>
+      </div>
+    </section>
+
+    <section class="pg-sec alt">
+      <div class="wrap dzf-grid">
+        <div class="pg-sec-head"><h2>Colores y letra</h2><p class="lead">Así viene de partida. Si tienes logotipo o colores de marca, lo cambiamos todo a los tuyos.</p></div>
+        <div class="dzf-estilo">
+          <ul class="dzf-colores">{"".join(f'<li><i style="background:{c}"></i><b>{n}</b><span>{c.upper()}</span></li>' for n, c in colores)}</ul>
+          <div class="dzf-letras"><p><span>Titulares</span><b>{e(d["fuentes"]["d"])}</b></p><p><span>Texto</span><b>{e(d["fuentes"]["b"])}</b></p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pg-sec">
+      <div class="wrap pg-planes-grid">
+        <div class="pg-sec-head"><h2>Tipos de web con este diseño</h2><p class="lead">Precio final, con el <span data-senal>50 %</span> al empezar y el resto a la entrega. Pagas por Bizum o transferencia.</p></div>
+        <div class="pg-planes" data-planes="{",".join(planes[:2] or [plan])}" data-diseno="{d["id"]}"></div>
+      </div>
+    </section>
+
+    <section class="pg-sec pg-cierre">
+      <div class="wrap">
+        <h2>¿Te quedas con {e(d["nombre"])}?</h2>
+        <p class="lead">Responde unas preguntas sobre tu negocio y ve el precio exacto antes de confirmar.</p>
+        <div class="pg-ctas"><a class="btn btn-primary" href="./?comprar={plan}&amp;diseno={d["id"]}">Quiero este diseño <i data-i="arrow"></i></a><a class="btn btn-ghost" href="./#disenos">Ver todos los diseños</a></div>
+        <nav class="pg-otros" aria-label="Otros diseños"><b>Otros diseños</b>{otros}</nav>
+      </div>
+    </section>'''
+    return pagina(f'diseno-{d["id"]}', f'{titulo[0].upper() + titulo[1:]} · AurevixWeb', desc, cuerpo, nombre_visita=f'dz-{d["id"]}', ld=[producto, migas_ld])
+
+
+# ==========================================================
 #  ESCRIBIR LOS ARCHIVOS Y EL SITEMAP
 # ==========================================================
 if __name__ == '__main__':
     salida = {s['slug']: sector(s, SECTORES) for s in SECTORES}
     salida.update({'guias': INDICE_GUIAS, 'cuanto-cuesta-una-pagina-web': G1, 'que-necesita-la-web-de-mi-negocio': G2,
                    'dominio-alojamiento-y-correo': G3, 'antes-de-lanzar-tu-web': G4, 'seo-local-para-negocios': G5, 'como-conseguir-resenas-en-google': G6, 'web-o-redes-sociales': G7, 'revisa-tu-web': REVISA, 'mantenimiento': MANT})
+    salida.update({f'diseno-{d["id"]}': ficha(d) for d in DISENOS})
     for slug, h in salida.items():
         (RAIZ / f'{slug}.html').write_text(h, encoding='utf-8')
     urls = [('', 'weekly', '1.0'), *[(s, 'monthly', '0.8') for s in [x['slug'] for x in SECTORES]],
-            ('revisa-tu-web', 'monthly', '0.7'), ('mantenimiento', 'monthly', '0.6'), ('guias', 'monthly', '0.6'),
+            *[(f'diseno-{d["id"]}', 'monthly', '0.7') for d in DISENOS], ('revisa-tu-web', 'monthly', '0.7'), ('mantenimiento', 'monthly', '0.6'), ('guias', 'monthly', '0.6'),
             *[(g[0], 'monthly', '0.6') for g in GUIAS_LISTA], ('trabaja-con-nosotros', 'monthly', '0.5'), ('terminos-y-privacidad', 'yearly', '0.3')]
     (RAIZ / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         ''.join(f'  <url><loc>{DOMINIO}/{u}</loc><changefreq>{f}</changefreq><priority>{p}</priority></url>\n' for u, f, p in urls) + '</urlset>\n', encoding='utf-8')
