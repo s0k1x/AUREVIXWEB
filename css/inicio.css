@@ -584,10 +584,10 @@ html.zoom-ok .vt-capa iframe{transform:none;zoom:var(--s)}
    Ronda 6 · Pestañas de la vitrina (sustituyen a las pastillas)
    ========================================================== */
 .vt-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 14px;margin-top:6px}
-.vt-tabs button{appearance:none;background:none;border:0;font:inherit;cursor:pointer;border-radius:0;position:relative;display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:baseline;text-align:left;padding:14px 0 4px;border-top:1px solid var(--line2);color:var(--muted);transition:color .3s}
+.vt-tabs button{appearance:none;background:none;border:0;font:inherit;cursor:pointer;border-radius:0;position:relative;display:grid;grid-template-columns:1fr;column-gap:8px;align-items:baseline;text-align:left;padding:14px 0 4px;border-top:1px solid var(--line2);color:var(--muted);transition:color .3s}
 .vt-tabs small{font-family:var(--fm);font-size:11px;color:var(--dim)}
 .vt-tabs span{font-family:var(--fd);font-weight:700;font-size:16px;letter-spacing:-.01em}
-.vt-tabs em{grid-column:2;font-style:normal;font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vt-tabs em{grid-column:1;font-style:normal;font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vt-tabs button:hover{color:var(--text)}
 .vt-tabs button.on{color:var(--text)}
 .vt-tabs button.on small{color:var(--c)}
@@ -685,3 +685,58 @@ html.zoom-ok .ad-despues iframe{transform:none;zoom:var(--s)}
 .cifras.dibuja .cg-linea{stroke-dashoffset:0}
 .cifras.dibuja .cg-area,.cifras.dibuja .cifra-graf circle{opacity:1}
 @media (prefers-reduced-motion:reduce){.cg-linea,.cg-area,.cifra-graf circle{transition:none}}
+
+/* «Pruébalo con tu negocio» (debajo de la vitrina) */
+.vt-prueba{margin-top:22px;display:grid;gap:8px}
+.vt-prueba label{font-weight:600;font-size:15px;color:var(--text)}
+.vt-campo{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.vt-campo input{flex:1 1 220px;min-width:0;height:48px;padding:0 18px;border-radius:999px;border:1px solid var(--line2);background:var(--field);color:var(--text);font:inherit;font-size:16px;outline:none;transition:border-color .2s var(--e-out)}
+.vt-campo input:focus{border-color:var(--accent)}
+.vt-campo span{flex:1 1 200px;color:var(--muted);font-size:14px}
+@media (max-width:640px){.vt-campo span{flex-basis:100%}}
+
+/* ==========================================================
+   GALERÍA DE DISEÑOS A PANTALLA COMPLETA (#disenos)
+   Escritorio: lista de diseños a la izquierda y, fija a la derecha, la web en vivo del que está en el
+   centro de la pantalla. Móvil: cada diseño con su propia ventana. Superficies lisas, un solo acento.
+   ========================================================== */
+.gal{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:64px;align-items:start;margin-top:8px}
+.gal-lista{display:grid}
+.gal-item{min-height:78vh;display:flex;flex-direction:column;justify-content:center;padding:40px 0;opacity:.32;transition:opacity .35s var(--e-out)}
+.gal-item.on{opacity:1}
+.gal-item h3{font-size:clamp(48px,5.4vw,88px);font-weight:800;letter-spacing:-.035em;line-height:1;margin:0}
+.gal-sector{margin:12px 0 0;font-size:19px;color:var(--text)}
+.gal-desc{margin:18px 0 0;max-width:46ch;font-size:17px;line-height:1.6;color:var(--muted)}
+.gal-precio{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:24px 0 0;font-size:16px;color:var(--muted)}
+.gal-precio b{font-family:var(--fd);font-size:26px;letter-spacing:-.02em;color:var(--text);font-variant-numeric:tabular-nums}
+.gal-pal{display:flex;gap:6px;margin-top:18px}
+.gal-pal i{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.gal-btns{display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px;margin-top:30px}
+.gal-ficha{display:inline-flex;align-items:center;gap:8px;padding:8px 4px;font-weight:600;color:var(--text);text-decoration:none}
+.gal-ficha svg{width:16px;height:16px;transition:transform .25s var(--e-out)}
+@media (hover:hover) and (pointer:fine){.gal-ficha:hover svg{transform:translateX(3px)}}
+.gal-mini{display:none}
+.gal-escena{position:sticky;top:96px;height:calc(100vh - 136px);min-height:420px;display:flex;align-items:center}
+.gal-win{width:100%;border-radius:18px;overflow:hidden;background:var(--card)}
+.gal-win .dz-bar,.gal-mini .dz-bar{border:0;display:flex;align-items:center;gap:6px;height:38px;padding:0 14px;background:var(--card2)}
+.gal-win .dz-bar i,.gal-mini .dz-bar i{width:9px;height:9px;border-radius:50%;background:var(--line2)}
+.gal-win .dz-bar span,.gal-mini .dz-bar span{font-family:inherit;margin-left:10px;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gal-view{position:relative;aspect-ratio:16/10;max-height:calc(100vh - 210px);width:100%;overflow:hidden;background:var(--bg2)}
+.gal-capa{position:absolute;inset:0;opacity:0;transition:opacity .45s var(--e-out)}
+.gal-capa.on{opacity:1}
+.gal-capa iframe{position:absolute;left:0;top:0;width:1280px;height:2600px;border:0;transform-origin:0 0;transform:scale(var(--s,.5));pointer-events:none}
+.gal-capa.rec iframe{animation:galRecorre 16s 0s ease-in-out infinite alternate}
+@keyframes galRecorre{to{transform:translateY(var(--d,0)) scale(var(--s,.5))}}
+@media (prefers-reduced-motion:reduce){.gal-capa.rec iframe{animation:none}.gal-item{transition:none}}
+html[data-movimiento=reducido] .gal-capa.rec iframe{animation:none}
+@media (max-width:999px){
+  .gal{grid-template-columns:1fr;gap:0}
+  .gal-escena{display:none}
+  .gal-item{min-height:0;opacity:1;padding:0 0 56px}
+  .gal-mini{display:block;margin-bottom:22px;border-radius:16px;overflow:hidden;background:var(--card);cursor:pointer}
+  .gal-mini-v{position:relative;aspect-ratio:16/11;overflow:hidden}
+  .gal-mini-v iframe{position:absolute;left:0;top:0;width:1280px;height:2600px;border:0;transform-origin:0 0;transform:scale(var(--s,.3));pointer-events:none}
+  .gal-item h3{font-size:clamp(40px,11vw,56px)}
+  .gal-btns .btn{flex:1 1 auto}
+}
+html[data-tema=claro] .gal-pal i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}

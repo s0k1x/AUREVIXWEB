@@ -2019,3 +2019,76 @@ async function exportarHTML(p, btn) {
   }
 }
 const pl_nombre = p => plantillaPorId(p.plantilla)?.nombre || 'web';
+
+/* ==========================================================
+   BUSCADOR RÁPIDO (Cmd/Ctrl + K) Y ATAJOS DE TECLADO
+   Como en las apps profesionales: se abre desde cualquier sección, busca secciones, pedidos,
+   clientes y consultas, y se maneja con el teclado (↑ ↓ Enter Esc).
+   Atajos: «/» o Cmd/Ctrl+K abre el buscador · 1–9 van a cada sección · R actualiza.
+   ========================================================== */
+const sinTildesP = t => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+let cmdDlg = null, cmdSel = 0, cmdRes = [];
+function resultadosCmd(q) {
+  const t = sinTildesP(q.trim());
+  const tiene = (...xs) => !t || xs.some(x => sinTildesP(x).includes(t));
+  const secciones = $$('[data-tab]', tabsEl).map(b => ({ grupo: 'Secciones', ic: b.querySelector('svg')?.outerHTML || '', t: b.querySelector('span').textContent, sub: '', ir: () => irTab(b.dataset.tab) }));
+  const out = secciones.filter(s => tiene(s.t));
+  if (!datos) return out;
+  if (t) {
+    out.push(...datos.pedidos.filter(p => tiene(neg(p), p.clienteNombre, p.clienteEmail, refPedido(p.id), p.planNombre)).slice(0, 6)
+      .map(p => ({ grupo: 'Pedidos', ic: icono('bag'), t: neg(p), sub: `${refPedido(p.id)} · ${p.clienteNombre || ''} · ${ETAPAS.find(x => x.id === etapaDe(p))?.txt || ''}`, ir: () => abrirPedido(p.id) })));
+    if (U.role === 'owner') out.push(...datos.usuarios.filter(u => u.role === 'client' && tiene(u.name, u.email)).slice(0, 4)
+      .map(u => ({ grupo: 'Clientes', ic: icono('user'), t: u.name || u.email, sub: u.email, ir: () => irTab('clientes') })));
+    out.push(...datos.tickets.filter(k => tiene(k.asunto, k.nombre, k.email)).slice(0, 4)
+      .map(k => ({ grupo: 'Soporte', ic: icono('help'), t: k.asunto || 'Consulta', sub: `${k.nombre || ''} · ${k.estado || ''}`, ir: () => irTab('soporte') })));
+  }
+  return out;
+}
+function pintarCmd() {
+  const q = $('#cmdQ', cmdDlg).value;
+  cmdRes = resultadosCmd(q);
+  cmdSel = Math.min(cmdSel, Math.max(0, cmdRes.length - 1));
+  let grupo = '';
+  $('#cmdLista', cmdDlg).innerHTML = cmdRes.length ? cmdRes.map((r, i) => {
+    const cab = r.grupo !== grupo ? `<li class="cmd-grupo" role="presentation">${esc(grupo = r.grupo)}</li>` : '';
+    return `${cab}<li role="option" id="cmd-${i}" data-cmd="${i}" aria-selected="${i === cmdSel}" class="${i === cmdSel ? 'on' : ''}">${r.ic}<span><b>${esc(r.t)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span></li>`;
+  }).join('') : `<li class="cmd-vacio" role="presentation">Nada coincide con «${esc(q)}»</li>`;
+  $('#cmdQ', cmdDlg).setAttribute('aria-activedescendant', cmdRes.length ? `cmd-${cmdSel}` : '');
+  $(`#cmd-${cmdSel}`, cmdDlg)?.scrollIntoView({ block: 'nearest' });
+}
+function elegirCmd(i) { const r = cmdRes[i]; if (!r) return; cerrar(cmdDlg); r.ir(); }
+function abrirCmd() {
+  if (!U || U.role === 'client' || !tabsEl.children.length) return;
+  if (!cmdDlg) {
+    cmdDlg = document.createElement('dialog');
+    cmdDlg.className = 'dlg dlg-cmd';
+    cmdDlg.setAttribute('aria-label', 'Buscador rápido');
+    cmdDlg.innerHTML = `<div class="dlg-box cmd-box">
+      <div class="cmd-campo">${icono('search')}<input id="cmdQ" type="search" placeholder="Busca una sección, un pedido, un cliente…" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="cmdLista"><kbd>Esc</kbd></div>
+      <ul class="cmd-lista" id="cmdLista" role="listbox"></ul>
+      <p class="cmd-pie"><span><kbd>↑</kbd><kbd>↓</kbd> moverte</span><span><kbd>Enter</kbd> abrir</span><span><kbd>1</kbd>–<kbd>9</kbd> secciones</span><span><kbd>R</kbd> actualizar</span></p>
+    </div>`;
+    document.body.append(cmdDlg);
+    const q = $('#cmdQ', cmdDlg);
+    q.addEventListener('input', () => { cmdSel = 0; pintarCmd(); });
+    q.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); cmdSel = (cmdSel + 1) % Math.max(1, cmdRes.length); pintarCmd(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); cmdSel = (cmdSel - 1 + cmdRes.length) % Math.max(1, cmdRes.length); pintarCmd(); }
+      else if (e.key === 'Enter') { e.preventDefault(); elegirCmd(cmdSel); }
+    });
+    $('#cmdLista', cmdDlg).addEventListener('click', e => { const li = e.target.closest('[data-cmd]'); if (li) elegirCmd(+li.dataset.cmd); });
+    cmdDlg.addEventListener('click', e => { if (e.target === cmdDlg) cerrar(cmdDlg); });
+  }
+  $('#cmdQ', cmdDlg).value = ''; cmdSel = 0; pintarCmd();
+  abrir(cmdDlg);
+  requestAnimationFrame(() => $('#cmdQ', cmdDlg).focus());
+}
+const escribiendo = el => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); return cmdDlg?.open ? cerrar(cmdDlg) : abrirCmd(); }
+  if (e.metaKey || e.ctrlKey || e.altKey || escribiendo(document.activeElement) || document.querySelector('dialog[open]')) return;
+  if (e.key === '/') { e.preventDefault(); abrirCmd(); }
+  else if (/^[1-9]$/.test(e.key)) { const b = $$('[data-tab]', tabsEl)[+e.key - 1]; if (b) irTab(b.dataset.tab); }
+  else if (e.key.toLowerCase() === 'r' && !$('#pnRefresh').hidden) $('#pnRefresh').click();
+});
+$('#pnBuscar')?.addEventListener('click', abrirCmd);
