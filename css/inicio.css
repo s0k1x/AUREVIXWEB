@@ -758,35 +758,43 @@ html[data-tema=claro] .gal-pal i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}
 }
 
 /* ==========================================================
-   Portátil y móvil con el scroll (v120)
+   Portátil y móvil con el scroll (v121)
    Al bajar, la tapa del portátil se cierra sobre el teclado y el móvil
-   pasa delante con el aviso «Tu web ya está publicada»; al subir se
-   abre otra vez. --p (0 abierto → 1 cerrado) lo pone js/portada/cierre.js.
-   Solo transform y opacity. Sin movimiento: se queda abierto.
+   se retira hasta desaparecer; al subir, se abre y el móvil vuelve.
+   La pantalla siempre enseña las webs. js/portada/cierre.js mueve las
+   piezas con transform y opacity (muelle sin rebote, un solo bucle).
+   Aquí, el estado abierto: es lo que se ve sin JavaScript o sin movimiento.
    ========================================================== */
-.vitrina{--p:0;--fondo:300px}
-.laptop{perspective:1900px;perspective-origin:50% 20%;margin-bottom:calc(var(--fondo) * .2)}
-.lt-escena{position:relative;transform-style:preserve-3d;
-  transform:translateZ(calc(var(--fondo) * -.45)) rotateX(calc(-9deg - var(--p) * 22deg)) translateY(calc(var(--p) * -14%))}
-.lt-tapa{position:relative;z-index:2;transform-style:preserve-3d;transform-origin:50% 100%;
-  transform:rotateX(calc(10deg - var(--p) * 100deg))}
+.vitrina{--fondo:300px}
+.laptop{position:relative;perspective:1900px;perspective-origin:50% 20%;margin-bottom:calc(var(--fondo) * .2)}
+.lt-escena{position:relative;transform-style:preserve-3d;transform:translateZ(calc(var(--fondo) * -.45)) rotateX(-9deg)}
+.lt-tapa{position:relative;z-index:2;transform-style:preserve-3d;transform-origin:50% 100%;transform:rotateX(10deg)}
+.lt-escena,.lt-tapa{will-change:transform}
 .lt-screen,.lt-dorso{backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.lt-dorso{position:absolute;inset:0;border-radius:18px 18px 4px 4px;transform:rotateX(180deg);
-  background:linear-gradient(160deg,#2c2c34,#19191e 55%,#121216);border:1px solid rgba(255,255,255,.12);display:grid;place-items:center}
-.lt-dorso img{width:12%;height:auto;opacity:.55}
-.lt-apagado{position:absolute;inset:0;background:#050506;pointer-events:none;opacity:clamp(0,calc(var(--p) * 1.6 - .25),1)}
+/* Cristal: un reflejo muy suave que se desliza al inclinar la tapa */
+.lt-reflejo{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.07) 50%,transparent 62%);
+  transform:translateX(-30%);will-change:transform}
+/* Dorso de aluminio oscuro con el logo; un brillo recorre la tapa al cerrarla */
+.lt-dorso{position:absolute;inset:0;overflow:hidden;border-radius:18px 18px 4px 4px;transform:rotateX(180deg) translateZ(1px);
+  background:linear-gradient(180deg,#34343c,#202026 45%,#17171b);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.06);display:grid;place-items:center}
+.lt-dorso img{position:relative;width:11%;height:auto;opacity:.8;filter:grayscale(1) brightness(1.6)}
+.lt-brillo{position:absolute;inset:-20% -10%;background:linear-gradient(100deg,transparent 35%,rgba(255,255,255,.09) 50%,transparent 65%);transform:translateX(-60%);will-change:transform}
 .lt-deck{position:absolute;left:-5%;right:-5%;top:calc(100% - 16px);height:var(--fondo);transform-origin:50% 0;transform:translateY(4px) rotateX(90deg);
-  border-radius:0 0 16px 16px;background:linear-gradient(#1c1c22,#141418);border:1px solid rgba(255,255,255,.08)}
-.lt-teclas{position:absolute;left:9%;right:9%;top:7%;height:46%;border-radius:8px;
-  background:repeating-linear-gradient(90deg,#0c0c0f 0 calc(100% / 14 - 3px),transparent 0 calc(100% / 14)),repeating-linear-gradient(#0c0c0f 0 calc(100% / 6 - 3px),transparent 0 calc(100% / 6));opacity:.9}
-.lt-pad{position:absolute;left:34%;right:34%;top:60%;height:30%;border-radius:10px;background:#18181d;border:1px solid rgba(255,255,255,.07)}
+  border-radius:0 0 18px 18px;background:linear-gradient(#24242b,#18181d);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+.lt-teclas{position:absolute;left:8%;right:8%;top:8%;height:44%;border-radius:8px;background:#101013;
+  -webkit-mask:repeating-linear-gradient(90deg,#000 0 calc(100% / 14 - 3px),transparent 0 calc(100% / 14)),repeating-linear-gradient(#000 0 calc(100% / 6 - 3px),transparent 0 calc(100% / 6));
+  -webkit-mask-composite:source-in;mask:repeating-linear-gradient(90deg,#000 0 calc(100% / 14 - 3px),transparent 0 calc(100% / 14)),repeating-linear-gradient(#000 0 calc(100% / 6 - 3px),transparent 0 calc(100% / 6));mask-composite:intersect}
+.lt-pad{position:absolute;left:33%;right:33%;top:60%;height:30%;border-radius:10px;background:#1d1d23;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
 .lt-base{position:relative;transform:translateY(-12px) translateZ(var(--fondo)) scaleY(.7);transform-origin:50% 0}
+/* Sombra en el suelo: más ancha y suave con la tapa abierta, más pegada al cerrarla */
+.lt-sombra{position:absolute;left:4%;right:4%;bottom:-6%;height:18%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.7),transparent);
+  pointer-events:none;will-change:transform,opacity}
 .vt-tabs,.vt-prueba{position:relative;z-index:3}
 
-/* El móvil, como un iPhone: marco de titanio, isla, botones laterales */
+/* El móvil, como un iPhone: marco de titanio, isla y botones laterales */
 .vt-movil{padding:6px;border-radius:30px;background:#060608;border:1.5px solid #4a4a52;
-  box-shadow:inset 0 0 0 1px #000,-20px 30px 60px -20px rgba(0,0,0,.9);
-  translate:calc(var(--p) * -70%) calc(var(--p) * 8%);scale:calc(1 + var(--p) * .2)}
+  box-shadow:inset 0 0 0 1px #000,-20px 30px 60px -20px rgba(0,0,0,.9);will-change:translate,scale,opacity}
+.vt-movil.fuera{visibility:hidden}
 .mv-view{border-radius:24px}
 .mv-notch{top:12px;width:32%;height:11px}
 .mv-botones,.mv-botones::before,.mv-botones::after{position:absolute;width:3px;border-radius:2px;background:#3d3d45}
@@ -794,19 +802,8 @@ html[data-tema=claro] .gal-pal i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}
 .mv-botones::before{content:"";left:0;top:170%;height:150%}
 .mv-botones::after{content:"";left:0;top:360%;height:150%}
 .vt-movil::after{content:"";position:absolute;right:-4.5px;top:27%;width:3px;height:13%;border-radius:2px;background:#3d3d45}
-.mv-aviso{--v:clamp(0,calc((var(--p) - .5) * 4),1);position:absolute;left:7%;right:7%;top:6.5%;z-index:4;display:flex;align-items:center;gap:7px;
-  padding:8px 9px;border-radius:14px;background:rgba(28,28,32,.92);color:#f3f1ea;font-size:9px;line-height:1.25;
-  opacity:var(--v);transform:translateY(calc((1 - var(--v)) * -40%)) scale(calc(.9 + var(--v) * .1))}
-.mv-aviso img{width:20px;height:20px;border-radius:5px;flex:none}
-.mv-aviso span{display:grid;min-width:0;flex:1}
-.mv-aviso b{font-size:9.5px;font-weight:700}
-.mv-aviso small{font-size:9px;color:#c9c7bf;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mv-aviso em{font-style:normal;font-size:8px;color:#a19f96;align-self:flex-start}
 @media (max-width:640px){
   .vt-movil{border-radius:20px;padding:4px}
   .mv-view{border-radius:16px}
   .mv-notch{top:8px;height:7px}
-  .mv-aviso{padding:5px 6px;gap:5px;border-radius:9px;font-size:7px}
-  .mv-aviso img{width:14px;height:14px;border-radius:4px}
-  .mv-aviso b{font-size:7.5px}.mv-aviso small{font-size:7px}.mv-aviso em{display:none}
 }
