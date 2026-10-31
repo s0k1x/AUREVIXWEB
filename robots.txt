@@ -3,5 +3,6 @@ User-agent: *
 Disallow: /panel
 Disallow: /ajustes
 Disallow: /vista-previa
+Disallow: /seguimiento
 
 Sitemap: https://aurevixweb.es/sitemap.xml
