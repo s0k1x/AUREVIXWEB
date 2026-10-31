@@ -604,3 +604,7 @@ html .masc-aviso .ma-linea{display:none}
 html[data-tema=claro] .masc-aviso{background:rgba(255,255,255,.94);box-shadow:0 12px 32px -14px rgba(20,20,26,.35),inset 0 0 0 1px rgba(20,20,26,.08)}
 /* Si coinciden los dos, el aviso normal se pone debajo del del robot en vez de encima */
 html.con-fiesta .toast{top:calc(70px + env(safe-area-inset-top))}
+/* Cabecera: los enlaces nunca se parten en dos líneas; en pantallas medianas «Trabaja con nosotros» va solo en el pie */
+@media (min-width:901px){.nav a{white-space:nowrap}}
+@media (min-width:901px) and (max-width:1240px){.nav{gap:18px}.nav a{font-size:14.5px}.nav a[href="trabaja-con-nosotros"]{display:none}}
+@media (min-width:901px) and (max-width:1060px){.nav{gap:14px}.nav a[href="revisa-tu-web"]{display:none}}

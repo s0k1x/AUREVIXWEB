@@ -398,8 +398,9 @@ export function pintarCabecera(activa = '') {
       <a href="../" class="logo"><img class="logo-img" src="icons/logo-a.png" alt="" width="34" height="34"><span data-marca>${marcaHTML()}</span></a>
       <nav class="nav" id="nav" aria-label="Principal">
         <a href="${ir('#disenos')}">Diseños</a>
-        <a href="${ir('#webs')}">Webs y precios</a>
+        <a href="${ir('#webs')}">Precios</a>
         <a href="${ir('#como')}">Cómo trabajamos</a>
+        <a href="revisa-tu-web" class="${activa === 'revisa-tu-web' ? 'act' : ''}">Revisa tu web</a>
         <a href="${ir('#contacto')}">Contacto</a>
         <a href="trabaja-con-nosotros" class="${activa === 'trabaja' ? 'act' : ''}">Trabaja con nosotros</a>
       </nav>
