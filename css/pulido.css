@@ -595,3 +595,16 @@ html .toast.err .t-ic{background:color-mix(in srgb,var(--danger) 20%,transparent
 html[data-tema=claro] .toast,html[data-tema=claro] .toast.err{background:rgba(255,255,255,.94);color:#16161b;box-shadow:0 12px 32px -14px rgba(20,20,26,.35),inset 0 0 0 1px rgba(20,20,26,.08)}
 html[data-tema=claro] .toast .t-ic{background:rgba(20,20,26,.06);color:#5d5b55}
 @media (prefers-reduced-motion:reduce){html .toast,html .toast.show{transform:translate(-50%,0);transition:opacity .2s linear}}
+/* El aviso del robot (pago enviado, pedido recibido…) con el mismo aspecto que los demás avisos */
+html .masc-aviso{top:calc(10px + env(safe-area-inset-top));border:0;border-radius:24px;padding:8px 18px 8px 8px;
+  background:color-mix(in srgb,var(--card2) 94%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);
+  box-shadow:0 12px 32px -14px rgba(0,0,0,.65),inset 0 0 0 1px rgba(255,255,255,.06)}
+html .masc-aviso .ma-cara{width:34px}
+html .masc-aviso .ma-linea{display:none}
+html[data-tema=claro] .masc-aviso{background:rgba(255,255,255,.94);box-shadow:0 12px 32px -14px rgba(20,20,26,.35),inset 0 0 0 1px rgba(20,20,26,.08)}
+/* Si coinciden los dos, el aviso normal se pone debajo del del robot en vez de encima */
+html.con-fiesta .toast{top:calc(70px + env(safe-area-inset-top))}
+/* Cabecera: los enlaces nunca se parten en dos líneas; en pantallas medianas «Trabaja con nosotros» va solo en el pie */
+@media (min-width:901px){.nav a{white-space:nowrap}}
+@media (min-width:901px) and (max-width:1240px){.nav{gap:18px}.nav a{font-size:14.5px}.nav a[href="trabaja-con-nosotros"]{display:none}}
+@media (min-width:901px) and (max-width:1060px){.nav{gap:14px}.nav a[href="revisa-tu-web"]{display:none}}

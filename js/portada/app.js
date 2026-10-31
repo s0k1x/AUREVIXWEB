@@ -5,7 +5,7 @@ import { fiesta } from '../asistente/mascota.js';
 import { CONFIG, PLANES, EXTRAS, COMPARATIVA } from '../../config.js';
 import { PLANTILLAS, plantillaPorId } from './plantillas.js';
 import * as store from '../base/store.js';
-import { $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, pedirLogin, arrancar, mailLink, refPedido, whatsappLink, contarEvento, ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados, desgloseIVA, ivaTexto, infoDatos, descargar, estrellas, ocupado, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, PAGOS, haceCuanto } from '../base/ui.js';
+import { $, $$, esc, revisarCampos, euros, fecha, icono, toast, abrir, cerrar, conSesion, pedirLogin, arrancar, mailLink, refPedido, whatsappLink, contarEvento, ESTADOS, campo, desplegable, opciones, interruptor, aceptarTerminos, terminosAceptados, desgloseIVA, ivaTexto, infoDatos, descargar, estrellas, ocupado, copiar, cargandoHTML, errorCarga, metaHTML, spinner, etiquetas, PAGOS, haceCuanto } from '../base/ui.js';
 import { planesActivos, extrasActivos } from '../base/sitio.js';
 import { montarHilo, montarArchivos, abrirRecibo } from '../cuenta/colabora.js';
 import { botonPago, abrirPago, abrirResena, animarYPagar } from '../cuenta/pago.js';
@@ -53,7 +53,8 @@ const leerAmigo = () => {
 await arrancar('inicio');
 iniciarInclinacion();
 if (amigoSesion && CONFIG.referidos?.activo) setTimeout(() => toast(`Un amigo te recomienda: tienes un ${CONFIG.referidos.pct} % de descuento en tu primera web`, 'ok'), 1200);
-iniciarChat();
+// El chat (y su robot) se prepara cuando el navegador queda libre: no compite con la carga de la portada
+('requestIdleCallback' in window ? requestIdleCallback : f => setTimeout(f, 800))(() => iniciarChat(), { timeout: 2000 });
 
 /* ==========================================================
    MINIATURAS VIVAS DE LAS PLANTILLAS
@@ -113,7 +114,7 @@ const fotosListas = f => new Promise(ok => {
   pend.forEach(i => { i.addEventListener('load', fin, { once: true }); i.addEventListener('error', fin, { once: true }); });
   setTimeout(ok, 3000);
 });
-const vt = { pc: capas($('#vtPc')), mv: capas($('#vtMv')), activa: 0 };
+const vt = { pc: null, mv: null, activa: 0 }; // las ventanas se crean al arrancar la vitrina (no durante la carga)
 function escalaVitrina() {
   const pc = $('#vtPc'), mv = $('#vtMv');
   pc.style.setProperty('--s', pc.clientWidth / 1280);
@@ -167,6 +168,7 @@ $('#vtNombre').addEventListener('input', e => {
   clearTimeout(vtEscribe);
   vtEscribe = setTimeout(() => {
     vtNombre = e.target.value.trim().slice(0, 32);
+    if (vtNombre) contarEvento('nombre-prueba');
     try { vtNombre ? sessionStorage.setItem('tm_prueba_nombre', vtNombre) : sessionStorage.removeItem('tm_prueba_nombre'); } catch { /* sin almacenamiento */ }
     $('#vtAviso').textContent = vtNombre ? `Así se vería «${vtNombre}». Cambia de diseño abajo.` : 'Se ve al momento en todos los diseños';
     if (vtArrancada) mostrarVitrina(vtIdx);
@@ -183,6 +185,7 @@ let vtVisible = false, vtLista = false, vtArrancada = false;
 const arrancarVitrina = () => {
   if (vtArrancada || !vtLista || !vtVisible) return;
   vtArrancada = true;
+  vt.pc = capas($('#vtPc')); vt.mv = capas($('#vtMv'));
   escalaVitrina(); mostrarVitrina(0);
 };
 const reanudarVitrina = () => { if (vtArrancada && vtVisible && !vtPausa && !document.hidden) { clearTimeout(vtTimer); vtTimer = setTimeout(() => mostrarVitrina(vtIdx + 1), DURA); } };
@@ -321,9 +324,10 @@ function pintarComparaMovil(P) {
   };
 }
 
-$('#verComparar').addEventListener('click', e => {
-  const b = e.currentTarget, t = $('#comparaTabla');
-  if (!t.innerHTML) {
+/* Comparativa de los tipos de web: siempre a la vista debajo de los precios (en el móvil, dos a dos) */
+function pintarComparativa() {
+  const t = $('#comparaTabla');
+  {
     const P = planesActivos();
     t.innerHTML = `<div class="compara-scroll"><table class="compara"><caption class="compara-iva">Precios finales con el ${CONFIG.iva || 0} % de IVA incluido.</caption>
       <thead><tr><th></th>${P.map(p => `<th class="${p.popular ? 'pop' : ''}"><span class="pc-ic">${icono(p.icono)}</span><b>${esc(p.nombre)}</b><small>desde ${euros(p.precio)}</small></th>`).join('')}</tr></thead>
@@ -335,11 +339,8 @@ $('#verComparar').addEventListener('click', e => {
       <div class="cmp-m" id="cmpMovil"></div>`;
     pintarComparaMovil(P);
   }
-  t.hidden = !t.hidden;
-  b.setAttribute('aria-expanded', String(!t.hidden));
-  b.querySelector('span').textContent = t.hidden ? 'Comparar todos los planes' : 'Ocultar la comparativa';
-  if (!t.hidden) t.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-});
+}
+pintarComparativa();
 
 /* ==========================================================
    GALERÍA DE DISEÑOS
@@ -451,8 +452,10 @@ function avanzarPasos() {
   pasosEl.style.setProperty('--prog', k.toFixed(3));
   pasosHijos.forEach((s, i) => s.classList.toggle('hecho', k >= (i + .35) / pasosHijos.length));
 }
-addEventListener('scroll', () => requestAnimationFrame(avanzarPasos), { passive: true });
-avanzarPasos();
+// Solo se mide mientras la sección está cerca de la pantalla (antes, en cada scroll desde el principio)
+let pasosCerca = false;
+new IntersectionObserver(([e]) => { pasosCerca = e.isIntersecting; if (pasosCerca) requestAnimationFrame(avanzarPasos); }, { rootMargin: '200px 0px' }).observe(pasosEl);
+addEventListener('scroll', () => { if (pasosCerca) requestAnimationFrame(avanzarPasos); }, { passive: true });
 
 /* ==========================================================
    TE AYUDO A ELEGIR (asistente: texto libre o 3 preguntas)
@@ -553,6 +556,7 @@ function abrirPreview(id, { nombre = '', color = '', alElegir = null } = {}) {
   if (!p) return;
   prevActual = id;
   prevAlElegir = alElegir;
+  contarEvento('vio-diseno');
   $('#prevTitle').textContent = `Diseño ${p.nombre}`;
   $('#prevSector').textContent = p.sector;
   $('#prevPick').innerHTML = `<span>${alElegir ? 'Elegir este' : 'Lo quiero'}</span>`;
@@ -570,7 +574,18 @@ $('#prevPick').addEventListener('click', () => {
 
 const planPara = id => PLANES.find(pl => pl.plantillas[0] === id) || PLANES.find(pl => pl.plantillas.includes(id)) || PLANES[2];
 const quieroDiseno = id => plantillaPorId(id) && abrirCompra(planPara(id).id, id);
-document.addEventListener('click', e => {
+document.addEventListener('click', async e => {
+  const sg = e.target.closest('[data-seguimiento]');
+  if (sg) {
+    ocupado(sg, true);
+    try {
+      const url = `${location.origin}${location.pathname.replace(/[^/]*$/, '')}seguimiento?t=${await store.crearSeguimiento(sg.dataset.seguimiento)}`;
+      if (navigator.share && matchMedia('(pointer: coarse)').matches) { try { await navigator.share({ title: 'Así va mi web', url }); } catch { /* cancelado */ } }
+      else await copiar(url);
+    } catch (err) { toast(err.message, 'err'); }
+    ocupado(sg, false);
+    return;
+  }
   const q = e.target.closest('[data-quiero]');
   if (q) return quieroDiseno(q.dataset.quiero);
   const v = e.target.closest('[data-ver]');
@@ -872,6 +887,7 @@ function irA(i) {
   W.paso = i;
   W.max = Math.max(W.max || 0, i);
   const paso = PASOS[i];
+  contarEvento(`paso-${paso.id}`);
   $('#wizDots').innerHTML = PASOS.map((p, k) =>
     `<button type="button" class="${k === i ? 'on' : k <= W.max ? 'hecho' : ''}" data-ir="${k}" ${k > W.max ? 'disabled' : ''} aria-label="Paso ${k + 1}: ${p.titulo}"></button>`).join('');
   guardarBorrador();
@@ -1179,6 +1195,30 @@ function resumenProyectos() {
   </div>`;
 }
 
+/* «Lo que te toca»: cada tarea del cliente, con un botón que abre su proyecto en la pestaña donde se hace */
+const PEST_TAREA = { dominio: 'estado', contenido: 'archivos', revision: 'estado', pago: 'pagos' };
+function tareasCliente() {
+  const tareas = [];
+  misPedidos.filter(p => !['entregado', 'cancelado'].includes(p.estado)).forEach(p => {
+    const nombre = p.respuestas?.negocio || p.planNombre;
+    if ((p.pagoEstado || 'pendiente') === 'pendiente') tareas.push({ p, ic: 'euro', t: 'Paga la señal para empezar', pest: 'pagos', nombre });
+    const e = ETAPAS.find(x => x.id === (p.etapa || 'recibido'));
+    if (e?.accion && !(e.id === 'pago' && (p.pagoEstado || 'pendiente') === 'pendiente')) tareas.push({ p, ic: e.icono, t: e.cliente, pest: PEST_TAREA[e.id] || 'estado', nombre });
+  });
+  if (!tareas.length) return misPedidos.some(p => !['entregado', 'cancelado'].includes(p.estado))
+    ? `<div class="mp-hoy al-dia">${icono('check')}<div><b>Todo al día</b><span>Ahora nos toca a nosotros. Te avisamos cuando necesitemos algo.</span></div></div>` : '';
+  return `<section class="mp-hoy" aria-label="Lo que te toca">
+    <h3>Lo que te toca</h3>
+    <ul>${tareas.map(x => `<li><button type="button" data-ir-proy="${x.p.id}" data-ir-pest="${x.pest}">${icono(x.ic)}<span><b>${esc(x.t)}</b><small>${esc(x.nombre)}</small></span>${icono('arrow')}</button></li>`).join('')}</ul>
+  </section>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-ir-proy]');
+  if (!b) return;
+  abierto = b.dataset.irProy; pestana = b.dataset.irPest || 'estado';
+  pintarPedidos().then(() => $(`[data-proy="${abierto}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+});
+
 /* Acceso al correo que hemos creado (lo rellena el equipo en el panel) */
 function accesoCorreo(p) {
   const c = p.accesos?.correo;
@@ -1229,6 +1269,7 @@ function tarjetaProyecto(p) {
     ${cancelado ? '<p class="muted">Este pedido está cancelado.</p>' : `
     ${barraEtapas(p)}
     ${abiertoAqui ? `
+    <div class="mp-seg"><button type="button" class="link-btn" data-seguimiento="${p.id}">${icono('link')}<span>Compartir el seguimiento</span></button><small>Un enlace para enseñar cómo va tu web, sin iniciar sesión</small></div>
     <nav class="mp-tabs" role="tablist">${PESTANAS.map(([k, t, ic]) => `<button type="button" role="tab" data-pest="${k}" class="${pestana === k ? 'on' : ''}">${icono(ic)}<span>${t}</span></button>`).join('')}</nav>
     <div class="mp-pest" id="pest-${p.id}">${pestanaHTML(p)}</div>` : `
     <button type="button" class="mp-abrir" data-toggle="${p.id}">${ETAPAS.find(e => e.id === (p.etapa || 'recibido'))?.accion ? `${icono('alert')} <b>Te toca a ti:</b> ${esc(ETAPAS.find(e => e.id === p.etapa)?.cliente || '')}` : `${icono('eye')} Ver detalles, mensajes y archivos`}</button>`}`}
@@ -1293,7 +1334,7 @@ async function pintarPedidos() {
       return;
     }
     if (!abierto || !misPedidos.some(p => p.id === abierto)) abierto = misPedidos.length === 1 ? misPedidos[0].id : '';
-    list.innerHTML = resumenProyectos() + '<div id="mpPush"></div>' + tarjetaAmigo() + misPedidos.map(tarjetaProyecto).join('');
+    list.innerHTML = resumenProyectos() + tareasCliente() + '<div id="mpPush"></div>' + tarjetaAmigo() + misPedidos.map(tarjetaProyecto).join('');
     import('../base/push.js').then(m => m.montarAvisoPush($('#mpPush'))).catch(() => {});
     etiquetas(list);
     montarPestana();
@@ -1334,7 +1375,7 @@ $('#pedidosList').addEventListener('click', e => {
   if (tg) {
     abierto = abierto === tg.dataset.toggle ? '' : tg.dataset.toggle;
     pestana = 'estado';
-    $('#pedidosList').innerHTML = resumenProyectos() + misPedidos.map(tarjetaProyecto).join('');
+    $('#pedidosList').innerHTML = resumenProyectos() + tareasCliente() + misPedidos.map(tarjetaProyecto).join('');
     etiquetas($('#pedidosList'));
     montarPestana();
     if (abierto) $(`[data-proy="${abierto}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1590,7 +1631,7 @@ $$('.faq details').forEach((d, i) => {
   const t = document.createElement('span');
   t.className = 'faq-t';
   t.append(...s.childNodes);
-  s.innerHTML = `<span class="faq-n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>`;
+  s.innerHTML = `<span class="faq-n" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>`;
   s.append(t);
   d.classList.add('faq-it');
 });

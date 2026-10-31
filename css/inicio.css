@@ -13,7 +13,7 @@
 .hero h1{font-size:clamp(44px,7.6vw,80px);font-weight:800;margin:22px 0 20px}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
-.trust{display:flex;gap:30px;margin-top:44px;padding-top:26px;border-top:1px solid var(--line)}
+.trust{display:flex;gap:30px;margin-top:40px}
 .trust b{display:block;font-family:var(--fd);font-size:22px;letter-spacing:-.02em}
 .trust span{font-size:13px;color:var(--muted)}
 
@@ -468,7 +468,7 @@ dialog.dlg-prev{padding:0}
 .vitrina{--vt:var(--accent);position:relative;padding:0 9% 6% 0;cursor:pointer;outline:none}
 .vitrina::before{content:"";position:absolute;inset:8% 4% 0 8%;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--vt) 30%,transparent),transparent);filter:blur(30px);transition:background 1s var(--e-out);z-index:0}
 .laptop{position:relative;z-index:1}
-.lt-screen{border-radius:14px 14px 4px 4px;padding:0;background:#1b1b21;border:1px solid var(--line2);overflow:hidden;box-shadow:0 40px 90px -40px rgba(0,0,0,.95)}
+.lt-screen{border-radius:14px 14px 4px 4px;padding:0;background:#1b1b21;border:1px solid var(--line2);overflow:hidden}
 .lt-bar{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;background:#202027;border-bottom:1px solid var(--line)}
 .lt-bar i{width:9px;height:9px;border-radius:50%;background:#3a3a44}
 .lt-bar i:nth-child(1){background:#ff6159}.lt-bar i:nth-child(2){background:#ffbd2e}.lt-bar i:nth-child(3){background:#28c941}
@@ -554,7 +554,7 @@ html.zoom-ok .vt-capa iframe{transform:none;zoom:var(--s)}
    Ronda 5 · Vitrina con marco real + cintas cruzadas
    ========================================================== */
 .lt-screen{position:relative;padding:11px 11px 0;background:#0a0a0d;border:1px solid rgba(255,255,255,.13);border-radius:18px 18px 4px 4px;
-  box-shadow:0 40px 90px -40px rgba(0,0,0,.95),inset 0 0 0 1px rgba(255,255,255,.04)}
+  box-shadow:none}
 .lt-screen::before{content:"";position:absolute;top:4px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#2a2a33}
 .lt-bar{border-radius:7px 7px 0 0}
 .lt-view,.mv-view{background:#0e0e12}
@@ -740,3 +740,10 @@ html[data-movimiento=reducido] .gal-capa.rec iframe{animation:none}
   .gal-btns .btn{flex:1 1 auto}
 }
 html[data-tema=claro] .gal-pal i{box-shadow:inset 0 0 0 1px rgba(20,20,26,.12)}
+
+/* Cabecera de la portada: el estado («Plazas abiertas…») va debajo de los botones, como una línea discreta */
+.hero .status{margin:22px 0 0;padding:0;border:0;background:none;font-size:15px}
+/* Preguntas: un «+» que se convierte en «×» al abrir (en vez de números) */
+.faq-n{font-family:inherit}
+.faq-n svg{width:16px;height:16px;transition:transform .3s var(--e-out)}
+.faq-it[open] .faq-n svg{transform:rotate(45deg)}

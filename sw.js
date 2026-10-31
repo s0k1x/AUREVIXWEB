@@ -12,15 +12,15 @@
    - Fotos de los diseños: se guardan la primera vez y después
      salen al instante.
    ========================================================== */
-const VERSION = 'v105';
+const VERSION = 'v106';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
 const ARCHIVOS = [
-  './', 'trabaja-con-nosotros', 'panel', 'diseno', 'terminos-y-privacidad', 'sin-conexion', 'vista-previa',
+  './', 'trabaja-con-nosotros', 'panel', 'diseno', 'terminos-y-privacidad', 'sin-conexion', 'vista-previa', 'seguimiento',
   'css/style.css', 'css/componentes.css', 'css/animaciones.css', 'css/inicio.css', 'css/panel.css', 'css/trabaja.css', 'config.js',
   'js/portada/app.js', 'js/base/ui.js', 'js/base/store.js', 'js/portada/plantillas.js', 'js/cuenta/panel.js', 'js/cuenta/pago.js', 'js/base/efectos.js',
-  'js/vendor/supabase.js', 'js/base/sinzoom.js', 'js/base/iconos.js', 'js/asistente/asistente.js', 'js/cuenta/proyecto.js', 'js/cuenta/negocio.js', 'js/cuenta/seo.js', 'js/base/sitio.js', 'js/base/cookies.js', 'js/base/apariencia.js', 'js/base/avisos.js', 'js/cuenta/colabora.js', 'js/cuenta/ajustes.js', 'js/base/otp.js', 'js/portada/calculadora.js', 'js/base/validar.js', 'js/cuenta/dominio.js', 'js/base/idioma.js', 'js/base/idioma-en.js', 'js/portada/publica.js', 'js/cuenta/vistaweb.js', 'js/cuenta/vista.js', 'js/base/desplegable.js', 'js/base/zip.js', 'js/cuenta/brief.js', 'js/base/temporada.js', 'js/base/push.js', 'js/base/verificacion.js', 'js/portada/presupuesto.js',
+  'js/vendor/supabase.js', 'js/base/sinzoom.js', 'js/base/iconos.js', 'js/asistente/asistente.js', 'js/cuenta/proyecto.js', 'js/cuenta/negocio.js', 'js/cuenta/seo.js', 'js/base/sitio.js', 'js/base/cookies.js', 'js/base/apariencia.js', 'js/base/avisos.js', 'js/cuenta/colabora.js', 'js/cuenta/ajustes.js', 'js/base/otp.js', 'js/portada/calculadora.js', 'js/base/validar.js', 'js/cuenta/dominio.js', 'js/base/idioma.js', 'js/base/idioma-en.js', 'js/portada/publica.js', 'js/cuenta/vistaweb.js', 'js/cuenta/vista.js', 'js/portada/seguimiento.js', 'js/base/desplegable.js', 'js/base/zip.js', 'js/cuenta/brief.js', 'js/base/temporada.js', 'js/base/push.js', 'js/base/verificacion.js', 'js/portada/presupuesto.js',
   'ajustes', 'css/funciones.css', 'css/widgets.css', 'css/tema-claro.css', 'css/pulido.css', 'css/temporadas.css', 'css/iconos-vivos.css', 'css/paginas.css', 'js/portada/pagina.js', 'icons/nombre-oscuro.png',
   'fuentes/fuentes.css', 'fuentes/instrument-sans-latin-046090.woff2', 'fuentes/instrument-sans-latin-ext-284bb9.woff2', 'fuentes/bricolage-grotesque-latin-a97232.woff2', 'fuentes/bricolage-grotesque-latin-ext-a4fe79.woff2', 'fuentes/jetbrains-mono-latin-f70309.woff2', 'fuentes/jetbrains-mono-latin-ext-a83f17.woff2',
   'manifest.json', 'icons/logo-a.png', 'icons/logo-a-verde.png', 'js/asistente/mascota.js', 'js/base/estado-web.js', 'js/portada/llamada.js', 'js/cuenta/firma.js', 'js/portada/antes-despues.js', 'js/base/borradores.js', 'js/portada/inclinar.js', 'icons/nombre.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
