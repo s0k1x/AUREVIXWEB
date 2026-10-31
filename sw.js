@@ -12,7 +12,7 @@
    - Fotos de los diseños: se guardan la primera vez y después
      salen al instante.
    ========================================================== */
-const VERSION = 'v104';
+const VERSION = 'v105';
 const CACHE = `tumarca-${VERSION}`;
 const FOTOS = 'tumarca-fotos';
 
@@ -58,35 +58,6 @@ async function redPrimero(req) {
     if (req.mode === 'navigate') return (await cache.match('./')) || cache.match('sin-conexion');
     return fetch(req);
   }
-}
-
-// Páginas y código: la copia de esta versión al instante; si no está, internet (y se guarda)
-async function deLaVersion(req, e) {
-  const cache = await caches.open(CACHE);
-  const guardado = await cache.match(req, { ignoreSearch: req.mode === 'navigate' });
-  if (!guardado) return redPrimero(req);
-  if (req.mode === 'navigate') e.waitUntil(comprobarCambios(req, guardado.clone()));
-  return guardado;
-}
-
-// ¿Ha cambiado la web en internet sin cambiar VERSION? Como mucho una vez por minuto
-let ultimaComprobacion = 0;
-async function comprobarCambios(req, guardado) {
-  if (Date.now() - ultimaComprobacion < 60000) return;
-  ultimaComprobacion = Date.now();
-  try {
-    const res = await fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' });
-    if (!res.ok || res.redirected) return;
-    const [nuevo, viejo] = await Promise.all([res.clone().text(), guardado.text()]);
-    if (nuevo === viejo) return;
-    const cache = await caches.open(CACHE);
-    await cache.put(req, res);
-    await Promise.all(ARCHIVOS.map(a => cache.add(new Request(a, { cache: 'reload' })).catch(() => {})));
-    // Lo que no está en ARCHIVOS (páginas de sector, guías…) se vuelve a pedir la próxima vez
-    const sueltas = (await cache.keys()).filter(r => !ARCHIVOS.some(a => new URL(a, self.registration.scope).href === r.url) && r.url !== req.url);
-    await Promise.all(sueltas.map(r => cache.delete(r)));
-    (await self.clients.matchAll({ type: 'window' })).forEach(c => c.postMessage({ tipo: 'aurevix-nueva' }));
-  } catch { /* sin conexión: ya se comprobará */ }
 }
 
 // Fuentes e imágenes propias: la copia guardada al instante y, por detrás, la de internet.
@@ -150,6 +121,8 @@ self.addEventListener('fetch', e => {
   if (url.hostname === 'images.pexels.com') { e.respondWith(fotoRapida(req)); return; }
   if (url.origin !== self.location.origin) return; // Supabase, Gemini, CDN: siempre en vivo
 
+  // Páginas y código: siempre internet primero (comprobando con el servidor, normalmente un 304 sin descarga)
+  // y la copia guardada solo sin conexión o si tarda. Así nunca se mezcla una página nueva con código viejo.
   const codigo = req.mode === 'navigate' || ['document', 'script', 'style', 'manifest'].includes(req.destination) || /\.(m?js|css|json)$/.test(url.pathname);
-  e.respondWith(codigo ? deLaVersion(req, e) : guardadoYActualiza(req, e));
+  e.respondWith(codigo ? redPrimero(req) : guardadoYActualiza(req, e));
 });
