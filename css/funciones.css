@@ -1695,3 +1695,20 @@ html[data-tema=claro] .seg-etapas .hecha .seg-ic{color:#fff}
 .mp-seg .link-btn{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--text)}
 .mp-seg .link-btn svg{width:16px;height:16px;color:var(--accent)}
 .mp-seg small{color:var(--muted);font-size:13px}
+
+/* «Lo que te toca» en Mis proyectos */
+.mp-hoy{margin:0 0 16px;padding:18px;border-radius:18px;background:var(--card)}
+.mp-hoy h3{margin:0 0 10px 4px;font-size:17px}
+.mp-hoy ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.mp-hoy button{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px;border:0;border-radius:14px;background:var(--bg2);color:var(--text);font:inherit;text-align:left;cursor:pointer;transition:background-color .2s var(--e-out)}
+.mp-hoy button > svg:first-child{width:20px;height:20px;flex:none;color:var(--accent)}
+.mp-hoy button > svg:last-child{width:16px;height:16px;flex:none;margin-left:auto;color:var(--muted)}
+.mp-hoy button span{display:grid;gap:2px;min-width:0}
+.mp-hoy button b{font-weight:600;font-size:15px;line-height:1.35}
+.mp-hoy button small{color:var(--muted);font-size:13px}
+@media (hover:hover) and (pointer:fine){.mp-hoy button:hover{background:var(--card2)}}
+.mp-hoy.al-dia{display:flex;align-items:center;gap:14px}
+.mp-hoy.al-dia > svg{width:22px;height:22px;flex:none;color:var(--ok)}
+.mp-hoy.al-dia div{display:grid;gap:2px}
+.mp-hoy.al-dia span{color:var(--muted);font-size:14px}
+html[data-tema=claro] .mp-hoy button{background:rgba(20,20,26,.04)}

@@ -1191,6 +1191,30 @@ function resumenProyectos() {
   </div>`;
 }
 
+/* «Lo que te toca»: cada tarea del cliente, con un botón que abre su proyecto en la pestaña donde se hace */
+const PEST_TAREA = { dominio: 'estado', contenido: 'archivos', revision: 'estado', pago: 'pagos' };
+function tareasCliente() {
+  const tareas = [];
+  misPedidos.filter(p => !['entregado', 'cancelado'].includes(p.estado)).forEach(p => {
+    const nombre = p.respuestas?.negocio || p.planNombre;
+    if ((p.pagoEstado || 'pendiente') === 'pendiente') tareas.push({ p, ic: 'euro', t: 'Paga la señal para empezar', pest: 'pagos', nombre });
+    const e = ETAPAS.find(x => x.id === (p.etapa || 'recibido'));
+    if (e?.accion && !(e.id === 'pago' && (p.pagoEstado || 'pendiente') === 'pendiente')) tareas.push({ p, ic: e.icono, t: e.cliente, pest: PEST_TAREA[e.id] || 'estado', nombre });
+  });
+  if (!tareas.length) return misPedidos.some(p => !['entregado', 'cancelado'].includes(p.estado))
+    ? `<div class="mp-hoy al-dia">${icono('check')}<div><b>Todo al día</b><span>Ahora nos toca a nosotros. Te avisamos cuando necesitemos algo.</span></div></div>` : '';
+  return `<section class="mp-hoy" aria-label="Lo que te toca">
+    <h3>Lo que te toca</h3>
+    <ul>${tareas.map(x => `<li><button type="button" data-ir-proy="${x.p.id}" data-ir-pest="${x.pest}">${icono(x.ic)}<span><b>${esc(x.t)}</b><small>${esc(x.nombre)}</small></span>${icono('arrow')}</button></li>`).join('')}</ul>
+  </section>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-ir-proy]');
+  if (!b) return;
+  abierto = b.dataset.irProy; pestana = b.dataset.irPest || 'estado';
+  pintarPedidos().then(() => $(`[data-proy="${abierto}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+});
+
 /* Acceso al correo que hemos creado (lo rellena el equipo en el panel) */
 function accesoCorreo(p) {
   const c = p.accesos?.correo;
@@ -1306,7 +1330,7 @@ async function pintarPedidos() {
       return;
     }
     if (!abierto || !misPedidos.some(p => p.id === abierto)) abierto = misPedidos.length === 1 ? misPedidos[0].id : '';
-    list.innerHTML = resumenProyectos() + '<div id="mpPush"></div>' + tarjetaAmigo() + misPedidos.map(tarjetaProyecto).join('');
+    list.innerHTML = resumenProyectos() + tareasCliente() + '<div id="mpPush"></div>' + tarjetaAmigo() + misPedidos.map(tarjetaProyecto).join('');
     import('../base/push.js').then(m => m.montarAvisoPush($('#mpPush'))).catch(() => {});
     etiquetas(list);
     montarPestana();
@@ -1347,7 +1371,7 @@ $('#pedidosList').addEventListener('click', e => {
   if (tg) {
     abierto = abierto === tg.dataset.toggle ? '' : tg.dataset.toggle;
     pestana = 'estado';
-    $('#pedidosList').innerHTML = resumenProyectos() + misPedidos.map(tarjetaProyecto).join('');
+    $('#pedidosList').innerHTML = resumenProyectos() + tareasCliente() + misPedidos.map(tarjetaProyecto).join('');
     etiquetas($('#pedidosList'));
     montarPestana();
     if (abierto) $(`[data-proy="${abierto}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
