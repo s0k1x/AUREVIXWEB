@@ -19,11 +19,11 @@ export function iniciarPersonas() {
   const enlaces = [...nav.querySelectorAll('a.pg-otro')].map(a => ({ href: a.getAttribute('href'), texto: a.firstChild?.textContent?.trim() || a.textContent.trim() })).filter(e => SECTORES[e.href]);
   if (enlaces.length < 3) return;
   const titulo = nav.querySelector('b')?.textContent || '';
-  nav.className = 'dz-personas reveal';
-  nav.innerHTML = `<b>${esc(titulo)}</b><ul>${enlaces.map(e => {
+  nav.className = 'dz-personas anim'; // anim: las tarjetas entran escalonadas al verlas (sin JavaScript se ven ya)
+  nav.innerHTML = `<b>${esc(titulo)}</b><ul>${enlaces.map((e, n) => {
     const id = SECTORES[e.href], d = ESCENA.personas[id], p = plantillaPorId(id);
     if (!d) return '';
-    return `<li><a class="pc" href="${esc(e.href)}" style="--ac:${p.c.accent}" data-id="${id}">
+    return `<li><a class="pc" href="${esc(e.href)}" style="--ac:${p.c.accent};--i:${n}" data-id="${id}">
       <span class="pc-txt"><b>${esc(e.texto)}</b><small>${esc(p.nombre)} · ${esc(p.sector.split('·')[0].trim())}</small></span>
       <span class="pc-fig" style="aspect-ratio:${d.ancho}/${d.alto}"><img src="img/3d/persona-${id}.webp" width="${d.ancho}" height="${d.alto}" alt="" loading="lazy" decoding="async"><span class="pc-pant"><iframe tabindex="-1" aria-hidden="true" title="" data-src="diseno?t=${id}&amp;m=1"></iframe></span></span>
       <span class="pc-ir" aria-hidden="true">${icono('arrow')}</span></a></li>`;
@@ -46,11 +46,19 @@ export function iniciarPersonas() {
   };
   const ro = new ResizeObserver(es => es.forEach(e => encaja(e.target)));
   nav.querySelectorAll('.pc-fig').forEach(f => { encaja(f); ro.observe(f); });
-  // Las webs de las pantallas se cargan al acercarse (cada una es un diseño entero)
+  // Las webs de las pantallas se cargan al acercarse; al llegar la web, la pantalla «se enciende»
+  const encender = f => {
+    const pant = f.parentElement; let hecho = false;
+    const ok = () => { if (!hecho) { hecho = true; pant.classList.add('lista'); } };
+    f.addEventListener('load', ok, { once: true }); setTimeout(ok, 5000);
+  };
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return;
-    const f = e.target.querySelector('iframe[data-src]'); if (f) { f.src = f.dataset.src; f.removeAttribute('data-src'); }
+    const f = e.target.querySelector('iframe[data-src]'); if (f) { encender(f); f.src = f.dataset.src; f.removeAttribute('data-src'); }
     io.unobserve(e.target);
   }), { rootMargin: '300px' });
-  nav.querySelectorAll('.pc').forEach(c => io.observe(c));
+  // Entrada escalonada (una vez) y respiración solo mientras la tarjeta se ve
+  const entra = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('viva'); entra.unobserve(e.target); } }), { threshold: .2 });
+  const vista = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('en-vista', e.isIntersecting)), { threshold: 0 });
+  nav.querySelectorAll('.pc').forEach(c => { io.observe(c); entra.observe(c); vista.observe(c); });
 }

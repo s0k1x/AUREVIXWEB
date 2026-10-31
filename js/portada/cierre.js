@@ -20,7 +20,7 @@ export function iniciarCierre() {
   const $ = s => v.querySelector(s);
   const escena = $('.lt-escena'), tapa = $('.lt-tapa'), movil = $('.vt-movil'), sombra = $('.lt-sombra'), brillo = $('.lt-brillo'), reflejo = $('.lt-reflejo');
   if (!escena || !tapa) return;
-  let inicio = 0, tramo = 1, fondo = 300, hueco = 0, extra = 0, actual = 0, objetivo = 0, raf = 0, t0 = 0;
+  let inicio = 0, tramo = 1, fondo = 300, hueco = 0, extra = 0, actual = 0, objetivo = 0, crudo = 0, raf = 0, t0 = 0, margenPuesto = null;
 
   const medir = () => {
     const r = v.getBoundingClientRect(), y = r.top + scrollY;
@@ -42,7 +42,7 @@ export function iniciarCierre() {
       pintar(actual);
     }
   };
-  const leer = () => (objetivo = quieto() ? 0 : lim((scrollY - inicio) / tramo));
+  const leer = () => (crudo = objetivo = quieto() ? 0 : lim((scrollY - inicio) / tramo));
 
   const LIMPIO = el => { el.style.transform = ''; };
   let en3d = null, cerrada = null;
@@ -57,20 +57,22 @@ export function iniciarCierre() {
     }
     if (!d3) { LIMPIO(escena); LIMPIO(tapa); }
     else {
-      escena.style.transform = `translateZ(${(-fondo * .45 * e).toFixed(1)}px) rotateX(${(-31 * e).toFixed(2)}deg) translateY(${(-hueco * e).toFixed(1)}px) scale(${(1 - .22 * e).toFixed(3)})`;
+      escena.style.transform = `translateZ(${(-fondo * .45 * e).toFixed(1)}px) rotateX(${(-31 * e).toFixed(2)}deg) translateY(${(-hueco * suave(crudo)).toFixed(1)}px) scale(${(1 - .22 * e).toFixed(3)})`;
       tapa.style.transform = `rotateX(${(-90 * e).toFixed(2)}deg)`;
     }
     // La tapa se ve de canto a ~74 % del cierre: antes enseña la pantalla, después el dorso
     const c = e > .74;
     if (c !== cerrada) { cerrada = c; tapa.classList.toggle('cerrada', c); }
     // El hueco que deja la tapa al caer se recoge: la maqueta sube y lo de debajo la sigue (sin espacio vacío)
-    v.style.marginBottom = hueco ? `${(-Math.max(0, hueco - extra) * e).toFixed(1)}px` : '';
+    // (con el scroll en bruto, no con el muelle: así lo de debajo no va con retraso respecto al dedo)
+    const mg = hueco ? Math.round(-Math.max(0, hueco - extra) * suave(crudo) * 2) / 2 : 0;
+    if (mg !== margenPuesto) { margenPuesto = mg; v.style.marginBottom = mg ? `${mg}px` : ''; }
     if (reflejo) reflejo.style.transform = `translateX(${(-30 + 80 * e).toFixed(1)}%)`;
     if (brillo) brillo.style.transform = `translateX(${(-60 + 120 * e).toFixed(1)}%)`;
     if (sombra) { sombra.style.transform = `scale(${(1 - .12 * e).toFixed(3)}, ${(1 - .35 * e).toFixed(3)})`; sombra.style.opacity = (1 - .3 * e).toFixed(3); }
     if (movil) {
-      // El móvil se va en la primera mitad del cierre: baja, se hace pequeño y se desvanece
-      const q = suave(lim(p / .5));
+      // El móvil se va en el primer tramo del cierre (y solo vuelve cuando el portátil ya está casi abierto)
+      const q = suave(lim(p / .22));
       movil.style.translate = `${(8 * q).toFixed(1)}% ${(18 * q).toFixed(1)}%`;
       movil.style.scale = (1 - .12 * q).toFixed(3);
       movil.style.opacity = (1 - q).toFixed(3);
@@ -80,8 +82,8 @@ export function iniciarCierre() {
 
   const bucle = t => {
     const dt = Math.min(.05, (t - (t0 || t)) / 1000); t0 = t;
-    // Muelle críticamente amortiguado (~0,12 s): llega sin pasarse
-    actual += (objetivo - actual) * (1 - Math.exp(-dt / .07));
+    // Muelle críticamente amortiguado (~0,15 s): llega sin pasarse
+    actual += (objetivo - actual) * (1 - Math.exp(-dt / .08));
     if (Math.abs(objetivo - actual) < .0008) actual = objetivo;
     pintar(actual);
     raf = actual === objetivo ? 0 : requestAnimationFrame(bucle);
