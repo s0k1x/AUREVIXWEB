@@ -4,8 +4,11 @@
    Las frases con números o nombres van en PATRONES (abajo).
    ========================================================== */
 export const EN = {
-  // v126 · personas de ejemplo
-  'Personas de ejemplo creadas con IA. Las webs que enseñan son diseños de partida reales.': 'Example people created with AI. The websites they show are real starting designs.',
+  // v130 · «Revisa tu web» y «Contacto»
+  'Qué medimos': 'What we measure', 'Velocidad': 'Speed', 'Accesibilidad': 'Accessibility', 'Móvil': 'Mobile',
+  'Qué pasa después': 'What happens next', 'Nos escribes': 'You write to us', 'Cuéntanos qué necesitas.': 'Tell us what you need.',
+  'Te respondemos por correo': 'We reply by email', 'En menos de 24 horas laborables.': 'Within 24 working hours.',
+  'Precio cerrado': 'Fixed price', 'Lo ves antes de pagar nada.': 'You see it before paying anything.',
   // v112 · Revisa tu web
   'Google está muy ocupado, lo intentamos otra vez…': 'Google is very busy, trying again…',
   'Google tiene ahora mismo demasiadas revisiones. Prueba de nuevo en un par de minutos.': 'Google has too many checks right now. Please try again in a couple of minutes.',
