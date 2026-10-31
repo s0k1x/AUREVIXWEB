@@ -443,13 +443,21 @@ export function pintarCabecera(activa = '') {
   $$('[data-marca]').forEach(el => (el.innerHTML = marcaHTML()));
 }
 
+/** Redes del negocio (Ajustes → Negocio → Contacto), con el enlace limpio: sin los códigos de seguimiento que añaden las apps */
+const enlaceLimpio = u => { try { const x = new URL(u); return /^(www\.)?(instagram|tiktok|linkedin)\.com$/.test(x.hostname) ? `${x.origin}${x.pathname.replace(/\/$/, '')}` : ''; } catch { return ''; } };
+export function redesHTML() {
+  const R = CONFIG.redes || {};
+  const items = [['instagram', 'Instagram'], ['tiktok', 'TikTok'], ['linkedin', 'LinkedIn']].map(([k, n]) => [k, n, enlaceLimpio(R[k] || '')]).filter(x => x[2]);
+  return items.length ? `<div class="fb-redes">${items.map(([k, n, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener me" aria-label="${n}">${icono(k)}</a>`).join('')}</div>` : '';
+}
+
 export function pintarPie() {
   const f = $('#footer');
   if (!f) return;
   f.className = 'footer';
   f.innerHTML = `
     <div class="footer-brand"><div class="wrap fb-fila">
-      <div class="fb-marca"><span data-marca>${marcaHTML()}</span><p>Páginas web para negocios, a precio cerrado. Te la diseñamos, la publicamos y sigues cada paso desde tu cuenta.</p></div>
+      <div class="fb-marca"><span data-marca>${marcaHTML()}</span><p>Páginas web para negocios, a precio cerrado. Te la diseñamos, la publicamos y sigues cada paso desde tu cuenta.</p>${redesHTML()}</div>
       <a class="btn btn-primary" href="./#webs"><span>Ver webs y precios</span>${icono('arrow')}</a>
     </div></div>
     <div class="wrap footer-inner">
