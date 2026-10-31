@@ -35,7 +35,7 @@ INGLES = linea('<script>/* Inglés: se oculta la página')
 I18N_CSS = linea('<style>html.i18n-pendiente body{visibility:hidden}')
 SPLASH = linea('<div class="splash listo" id="splash0"')
 SPLASH_JS = next(l for l in lineas if l.startswith("<script>(function(){var s=document.getElementById('splash0')"))
-ICONOS = '\n'.join(l for l in lineas if re.match(r'\s*<link rel="(icon|apple-touch-icon|manifest)"', l) or 'name="theme-color"' in l)
+ICONOS = '\n'.join(l for l in lineas if re.match(r'\s*<link rel="(icon|shortcut icon|apple-touch-icon|manifest)"', l) or 'name="theme-color"' in l)
 
 CSS = ['fuentes/fuentes.css', 'css/style.css', 'css/componentes.css', 'css/animaciones.css', 'css/inicio.css', 'css/funciones.css',
        'css/tema-claro.css', 'css/pulido.css', 'css/temporadas.css', 'css/iconos-vivos.css', 'css/paginas.css']
@@ -691,6 +691,8 @@ def ficha(d):
 #  ESCRIBIR LOS ARCHIVOS Y EL SITEMAP
 # ==========================================================
 if __name__ == '__main__':
+    import datetime
+    HOY = datetime.date.today().isoformat()
     salida = {s['slug']: sector(s, SECTORES) for s in SECTORES}
     salida.update({'guias': INDICE_GUIAS, 'cuanto-cuesta-una-pagina-web': G1, 'que-necesita-la-web-de-mi-negocio': G2,
                    'dominio-alojamiento-y-correo': G3, 'antes-de-lanzar-tu-web': G4, 'seo-local-para-negocios': G5, 'como-conseguir-resenas-en-google': G6, 'web-o-redes-sociales': G7, 'revisa-tu-web': REVISA, 'mantenimiento': MANT})
@@ -701,5 +703,5 @@ if __name__ == '__main__':
             *[(f'diseno-{d["id"]}', 'monthly', '0.7') for d in DISENOS], ('revisa-tu-web', 'monthly', '0.7'), ('mantenimiento', 'monthly', '0.6'), ('guias', 'monthly', '0.6'),
             *[(g[0], 'monthly', '0.6') for g in GUIAS_LISTA], ('trabaja-con-nosotros', 'monthly', '0.5'), ('terminos-y-privacidad', 'yearly', '0.3')]
     (RAIZ / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-        ''.join(f'  <url><loc>{DOMINIO}/{u}</loc><changefreq>{f}</changefreq><priority>{p}</priority></url>\n' for u, f, p in urls) + '</urlset>\n', encoding='utf-8')
+        ''.join(f'  <url><loc>{DOMINIO}/{u}</loc><lastmod>{HOY}</lastmod><changefreq>{f}</changefreq><priority>{p}</priority></url>\n' for u, f, p in urls) + '</urlset>\n', encoding='utf-8')
     print('Generadas:', ', '.join(salida))
