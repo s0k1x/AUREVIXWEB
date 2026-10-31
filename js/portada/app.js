@@ -149,7 +149,8 @@ function mostrarVitrina(i) {
     ['pc', 'mv'].forEach(k => {
       const c = vt[k][sig];
       c.classList.add('on');
-      vt[k][old].classList.remove('on', 'vt-rec');
+      // La capa anterior se queda un instante más: así nunca hay un fotograma con la pantalla en negro mientras la nueva se pinta
+      setTimeout(() => vt[k][old].classList.remove('on', 'vt-rec'), 320);
       setTimeout(() => turno === vtTurno && c.classList.add('vt-rec'), 700);
     });
   }));
